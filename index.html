@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Stream | Hub de Conteúdo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium Stream | Hub de Conteúdo Profissional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
@@ -13,22 +13,44 @@
     <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 
     <style>
-        body { background-color: #09090b; color: #f4f4f5; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { 
+            background-color: #09090b; 
+            color: #f4f4f5; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            overflow-x: hidden;
+        }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .nav-btn.active { color: #10b981; border-top: 2px solid #10b981; }
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-        .plyr { border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7); }
+        
+        /* Ajustes do Player */
+        .plyr { border-radius: 20px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7); }
         .plyr--video { background: #000 !important; }
+        
+        /* Layout travado com anúncios fixos */
+        .ad-container-fixed {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 28rem; /* max-w-md */
+            background-color: #09090b;
+            z-index: 50;
+            display: flex;
+            flex-col;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen items-center bg-zinc-950">
 
     <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
         <div class="text-center mb-4">
             <h1 class="text-3xl font-black text-white tracking-tight">Premium Stream 💎</h1>
-            <p class="text-zinc-400 text-sm mt-1">Sua plataforma estável de streaming recompensado</p>
+            <p class="text-zinc-400 text-sm mt-1">Sua plataforma estável de streaming monetizado</p>
         </div>
         <div class="space-y-3">
             <input type="email" id="email" placeholder="Seu e-mail" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl text-white focus:outline-none focus:border-emerald-500 transition">
@@ -38,21 +60,21 @@
         <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta</button>
     </section>
 
-    <div id="dashboard" class="hidden flex flex-col min-h-screen">
+    <div id="dashboard" class="hidden w-full max-w-md flex flex-col min-h-screen bg-zinc-900/20 border-x border-zinc-900 relative">
         
-        <div class="w-full bg-zinc-950 text-center py-1.5 border-b border-zinc-900 text-[10px] text-zinc-500 sticky top-0 z-50">
-            <span class="block text-[9px] uppercase tracking-widest text-zinc-600 mb-1">Patrocinado</span>
-            <div id="ad-slot-top" class="min-h-[60px] flex items-center justify-center bg-zinc-900/40 max-w-md mx-auto rounded-lg">
+        <div class="ad-container-fixed top-0 border-b border-zinc-900 py-1.5">
+            <span class="text-[8px] uppercase tracking-widest text-zinc-500 font-bold mb-1">Publicidade</span>
+            <div id="ad-slot-top" class="w-full min-h-[50px] flex items-center justify-center">
                 <div class="native-ad-holder" data-zone="11216881"></div>
             </div>
         </div>
 
-        <header class="bg-zinc-900/60 backdrop-blur p-4 border-b border-zinc-800/50 flex justify-between items-center max-w-md mx-auto w-full">
-            <span class="font-black text-white tracking-wider text-sm">PREMIUM STREAM</span>
+        <header class="p-4 border-b border-zinc-800/60 flex justify-between items-center mt-[75px]">
+            <span class="font-black text-white tracking-wider text-xs">PREMIUM STREAM</span>
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
-        <main class="flex-grow p-4 max-w-md mx-auto w-full pb-32">
+        <main class="flex-grow p-4 pb-40">
             
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
@@ -66,7 +88,6 @@
             </section>
 
             <section id="aba-videos" class="tab-content space-y-4">
-                
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">🍿 Todos</button>
                     <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">💥 Ação</button>
@@ -82,50 +103,51 @@
                     <div class="flex justify-between items-center px-1">
                         <div class="max-w-[75%]">
                             <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando catálogo...</h4>
-                            <p class="text-xs text-zinc-500 mt-0.5">Assista com a tela focada para gerar saldo.</p>
+                            <p class="text-xs text-zinc-500 mt-0.5">Assista para computar seu saldo.</p>
                         </div>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-1 rounded-md border border-emerald-500/20">Auto-Contagem</span>
                     </div>
 
                     <div class="bg-zinc-950 p-3 rounded-xl flex justify-between items-center border border-zinc-800">
-                        <span class="text-xs text-zinc-400">Tempo assistido nesta sessão:</span>
+                        <span class="text-xs text-zinc-400">Progresso de validação:</span>
                         <span id="txt-contador-tempo" class="text-xs font-mono font-bold text-emerald-400">0s / 60s</span>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider pl-1">Catálogo de Conteúdos Longos</h3>
+                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider pl-1">Filmes Disponíveis</h3>
                     <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3"></div>
                 </div>
             </section>
 
             <section id="aba-sacar" class="tab-content space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4">
-                    <h3 class="font-bold text-lg text-white">Retirada Direta</h3>
+                    <h3 class="font-bold text-lg text-white">Retirada</h3>
                     <div class="space-y-3">
                         <input type="number" id="valor-saque" placeholder="Valor (Mínimo R$ 10)" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm text-white">
                         <input type="text" id="chave-pix" placeholder="Chave Pix" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm text-white">
                     </div>
-                    <button onclick="alert('Pedido de saque computado!')" class="w-full bg-emerald-500 py-3.5 rounded-xl font-bold text-black transition">Solicitar Retirada</button>
+                    <button onclick="solicitarSaque()" class="w-full bg-emerald-500 py-3.5 rounded-xl font-bold text-black transition hover:bg-emerald-600">Solicitar Retirada via Pix</button>
                 </div>
             </section>
         </main>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-900 z-50 max-w-md mx-auto">
-            <div class="text-center py-1 text-[9px] text-zinc-600 border-b border-zinc-900/50">
-                <div id="ad-slot-bottom" class="min-h-[50px] flex items-center justify-center bg-zinc-900/30">
+        <div class="fixed bottom-0 left-50 transform -translate-x-50 w-full max-w-md bg-zinc-950 border-t border-zinc-900 z-50">
+            <div class="text-center py-1 border-b border-zinc-900/60">
+                <div id="ad-slot-bottom" class="w-full min-h-[45px] flex items-center justify-center">
                     <div class="native-ad-holder" data-zone="11216881"></div>
                 </div>
             </div>
-            <nav class="p-2 flex justify-around items-center bg-zinc-950/90 backdrop-blur">
-                <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center w-full text-xs font-semibold">Início</button>
-                <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center w-full text-xs font-semibold">Vídeos</button>
-                <button onclick="changeTab('sacar')" id="btn-tab-sacar" class="nav-btn flex flex-col items-center w-full text-xs font-semibold">Sacar</button>
+            <nav class="p-3 flex justify-around items-center bg-zinc-950/95 backdrop-blur">
+                <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center w-full text-xs font-bold py-1">Início</button>
+                <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center w-full text-xs font-bold py-1">Vídeos</button>
+                <button onclick="changeTab('sacar')" id="btn-tab-sacar" class="nav-btn flex flex-col items-center w-full text-xs font-bold py-1">Sacar</button>
             </nav>
         </div>
     </div>
 
     <script>
+        // Inicialização do Supabase (Mantenha suas credenciais de teste)
         const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
         let userData = { saldo: 0, tarefas: 0 };
         let userId = null;
@@ -134,35 +156,54 @@
         let playerInstance = null;
         const RECOMPENSA_MINUTO = 0.1200;
 
-        // CATÁLOGO VARIADO E ESTÁVEL DE SUCESSO COLETIVO
+        // Catálogo otimizado com curtas/mídias abertas e imagens limpas de cinema
         const CATALOGO_FILMES = [
             { id: "1", titulo: "A Noite dos Mortos Vivos (Dublado)", genero: "Suspense", ytId: "7z70S_S-R_E", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "2", titulo: "Megajestruturas: Engenharia Suprema", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "3", titulo: "Profundezas do Oceano Azul", genero: "Documentários", ytId: "Jg02F_7zCiw", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "4", titulo: "A Fortaleza Rebelde (Ação Clássica)", genero: "Ação", ytId: "4_Z06M-w0mE", capa: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400" }
+            { id: "2", titulo: "Megastruturas da Engenharia Moderna", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400" },
+            { id: "3", titulo: "As Maravilhas Ocultas do Oceano", genero: "Documentários", ytId: "Jg02F_7zCiw", capa: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
+            { id: "4", titulo: "Operação Resgate: Ação Militar", genero: "Ação", ytId: "4_Z06M-w0mE", capa: "https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=400" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializa o Plyr de forma elegante
             playerInstance = new Plyr('#player-target', {
                 controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-                fullscreen: { enabled: true, fallback: true, iosNative: true }
+                youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3 }
             });
             
-            // ATUALIZAÇÃO AUTOMÁTICA DOS ANÚNCIOS SEM FECHAR ABAS (A cada 30 segundos)
+            // ROTACIONADOR PROFISSIONAL DE BANNER (Auto-Refresh de 45 segundos)
             setInterval(() => {
-                if (userId) {
-                    console.log("Atualizando banners patrocinados de forma silenciosa...");
-                    if(typeof refreshBanners === 'function') { refreshBanners(); }
+                if (userId && document.getElementById('aba-videos').classList.contains('active')) {
+                    console.log("Rotacionando anúncios nativos fixados...");
+                    const topSlot = document.getElementById('ad-slot-top');
+                    const bottomSlot = document.getElementById('ad-slot-bottom');
+                    
+                    if (topSlot && bottomSlot) {
+                        // Força a reinjeção da tag estrutural para a biblioteca de anúncios ler novamente
+                        topSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
+                        bottomSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
+                        
+                        // Executa o gatilho interno de reload caso o SDK do AdNetwork esteja disponível
+                        if (window.ctag && typeof window.ctag.run === 'function') {
+                            window.ctag.run();
+                        }
+                    }
                 }
-            }, 3000);
+            }, 45000);
         });
 
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
             userId = user.id;
-            let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
-            if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
+            
+            let { data, error } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
+            if (data) { 
+                userData = data; 
+            } else { 
+                userData = { id: userId, saldo: 0, tarefas: 0 }; 
+                await _supabase.from('usuarios_ptc').insert([userData]); 
+            }
             updateUI();
             renderizarCatalogo(CATALOGO_FILMES);
             darPlayNoFilme(CATALOGO_FILMES[0].ytId, CATALOGO_FILMES[0].titulo);
@@ -174,8 +215,8 @@
             filmes.forEach(filme => {
                 container.innerHTML += `
                     <div onclick="darPlayNoFilme('${filme.ytId}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
-                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-75">
-                        <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
+                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-80">
+                        <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1 mb-1">${filme.titulo}</p>
                     </div>
                 `;
             });
@@ -203,6 +244,7 @@
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
+                // O saldo só computa se o player estiver ativamente em modo "PLAY"
                 if (playerInstance && playerInstance.playing) {
                     secondsWatched++;
                     document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
@@ -212,7 +254,12 @@
                         userData.saldo += RECOMPENSA_MINUTO;
                         userData.tarefas += 1;
                         updateUI();
-                        await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                        
+                        // Atualiza no banco do Supabase
+                        await _supabase.from('usuarios_ptc').update({ 
+                            saldo: userData.saldo, 
+                            tarefas: userData.tarefas 
+                        }).eq('id', userId);
                     }
                 }
             }, 1000);
@@ -228,20 +275,40 @@
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(`aba-${tabName}`).classList.add('active');
             document.getElementById(`btn-tab-${tabName}`).classList.add('active');
+            
+            // Pausa o filme se ele navegar para fora da aba de vídeos
             if (tabName !== 'videos') {
                 clearInterval(watchInterval);
                 watchInterval = null;
                 if (playerInstance) playerInstance.pause();
+            } else {
+                iniciarRastreadorTempo();
             }
         }
 
-        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta registrada com sucesso!"); }
+        async function solicitarSaque() {
+            const valor = parseFloat(document.getElementById('valor-saque').value);
+            const chave = document.getElementById('chave-pix').value.trim();
+            if(!valor || valor < 10) return alert("O valor mínimo para saque é R$ 10.");
+            if(!chave) return alert("Por favor, insira uma chave Pix válida.");
+            if(valor > userData.saldo) return alert("Saldo insuficiente.");
+            
+            alert(`Solicitação de R$ ${valor.toFixed(2)} enviada! Aguarde o processamento.`);
+        }
+
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta registrada! Verifique seu e-mail."); }
         async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); loadUserData(); }
-            else { document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('dashboard').classList.add('hidden'); }
+            if (session) { 
+                document.getElementById('auth-screen').classList.add('hidden'); 
+                document.getElementById('dashboard').classList.remove('hidden'); 
+                loadUserData(); 
+            } else { 
+                document.getElementById('auth-screen').classList.remove('hidden'); 
+                document.getElementById('dashboard').classList.add('hidden'); 
+            }
         });
     </script>
 </body>
