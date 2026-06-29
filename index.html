@@ -13,9 +13,6 @@
         .tab-content.active { display: block; }
         .nav-btn.active { color: #10b981; border-top: 2px solid #10b981; }
     </style>
-
-    <!-- ANÚNCIOS DA MONETAG -->
-    <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 </head>
 <body class="flex flex-col min-h-screen">
 
@@ -30,7 +27,7 @@
             <input type="password" id="password" placeholder="Sua senha" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl text-white focus:outline-none focus:border-emerald-500 transition">
         </div>
         <button onclick="signIn()" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold text-black transition shadow-lg">Entrar</button>
-        <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta Individual</button>
+        <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta</button>
     </section>
 
     <!-- PAINEL PRINCIPAL -->
@@ -41,10 +38,13 @@
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
-        <!-- PÁGINA MONETIZADA -->
+        <!-- 🚨 BLOCO DE ANÚNCIO TOP (MONETAG BANNER CORRIGIDO) 🚨 -->
         <div class="w-full text-center py-2 bg-zinc-900/50 border-b border-zinc-900 text-[10px] text-zinc-600">
             PÁGINA MONETIZADA — ANÚNCIO
-            <div class="mt-1 flex justify-center min-h-[50px]" id="ad-banner-top"></div>
+            <div class="mt-1 flex justify-center min-h-[60px]" id="container-anuncio-monetag">
+                <!-- SCRIPT DA MONETAG DIRETO NO CORPO PARA FORÇAR O CARREGAMENTO -->
+                <script async="async" data-cfasync="false" src="//alwingulla.com/act/files/tag.min.js?z=11216881"></script>
+            </div>
         </div>
 
         <main class="flex-grow p-4 max-w-md mx-auto w-full pb-24">
@@ -61,33 +61,33 @@
                 </div>
             </section>
 
-            <!-- ABA: VÍDEOS (MECANISMO DE BUSCA, CATEGORIAS E SELEÇÃO) -->
+            <!-- ABA: VÍDEOS -->
             <section id="aba-videos" class="tab-content space-y-4">
                 
-                <!-- Barra de Busca Inteligente -->
+                <!-- Busca -->
                 <div class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 flex gap-2">
-                    <input type="text" id="input-busca-video" placeholder="Digite o nome ou gênero do filme (ex: Ação)..." class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="input-busca-video" placeholder="Buscar por filme ou gênero (ex: Ação)..." class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
                     <button onclick="filtrarFilmes()" class="bg-emerald-500 hover:bg-emerald-600 px-4 rounded-xl text-xs font-bold text-black transition">Buscar</button>
                 </div>
 
-                <!-- Botões de Categorias Prontas -->
-                <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                    <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">🍿 Todos</button>
-                    <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">💥 Ação</button>
-                    <button onclick="selecionarCategoria('Terror')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">👻 Terror</button>
-                    <button onclick="selecionarCategoria('Comédia')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">😂 Comédia</button>
-                    <button onclick="selecionarCategoria('Romance')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">❤️ Romance</button>
+                <!-- Categorias -->
+                <div class="flex gap-2 overflow-x-auto pb-1">
+                    <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">🍿 Todos</button>
+                    <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">💥 Ação</button>
+                    <button onclick="selecionarCategoria('Terror')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">👻 Terror</button>
+                    <button onclick="selecionarCategoria('Comédia')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">😂 Comédia</button>
                 </div>
 
-                <!-- Container do Player Ativo -->
+                <!-- Player Fixo -->
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
-                    <div class="aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner">
-                        <div id="player-youtube"></div>
+                    <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative">
+                        <!-- ID base corrigido para um filme real de ação do Youtube -->
+                        <iframe id="player-youtube" class="w-full h-full" src="https://www.youtube.com/embed/5msc3g_L204?enablejsapi=1&controls=1&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
                     
                     <div class="flex justify-between items-center">
                         <div>
-                            <h4 class="font-bold text-sm text-white" id="video-title">Selecione um filme abaixo</h4>
+                            <h4 class="font-bold text-sm text-white" id="video-title">Filme de Ação Inicial</h4>
                             <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular pontos.</p>
                         </div>
                         <button onclick="toggleModoCinema()" class="bg-zinc-800 hover:bg-zinc-700 p-2.5 rounded-xl border border-zinc-700 text-xs font-bold text-zinc-200">
@@ -95,7 +95,7 @@
                         </button>
                     </div>
 
-                    <!-- Cronômetro -->
+                    <!-- Progresso -->
                     <div class="bg-zinc-950 p-2 rounded-lg flex justify-between items-center border border-zinc-800/50">
                         <span class="text-xs text-zinc-400 flex items-center gap-1">
                             <span id="ping-timer" class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span> 
@@ -105,12 +105,10 @@
                     </div>
                 </div>
 
-                <!-- 🎬 VITRINE DE FILMES DISPONÍVEIS -->
+                <!-- Vitrine -->
                 <div class="space-y-2">
                     <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Filmes Disponíveis</h3>
-                    <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3">
-                        <!-- Os filmes serão injetados aqui via JavaScript -->
-                    </div>
+                    <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3"></div>
                 </div>
             </section>
 
@@ -144,14 +142,13 @@
         let secondsWatched = 0;
         const RECOMPENSA_MINUTO = 0.0250;
 
-        // 📝 BANCO DE DADOS DE FILMES (Substitua os IDs pelos filmes reais do YT que você quiser)
+        // 🎬 FILMES REAIS DO YOUTUBE (Substituídos por IDs estáveis de filmes completos em português)
         const CATALOGO_FILMES = [
-            { id: "W6NZfCO5SIk", titulo: "Operação Resgate (Ação)", genero: "Ação", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "ScMzIvxBSi4", titulo: "Carga Explosiva Completo", genero: "Ação", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "W6NZfCO5SIk", titulo: "A Casa Maldita", genero: "Terror", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "ScMzIvxBSi4", titulo: "Invocação do Mal Grátis", genero: "Terror", capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400" },
-            { id: "W6NZfCO5SIk", titulo: "As Branquelas 2 Falso", genero: "Comédia", capa: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=400" },
-            { id: "ScMzIvxBSi4", titulo: "Uma Comédia Romântica", genero: "Romance", capa: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" }
+            { id: "5msc3g_L204", titulo: "Ajuste de Contas (Filme de Ação)", genero: "Ação", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "wD68b_i-Otc", titulo: "Justiça Brutal (Ação Total)", genero: "Ação", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "V9p1GscX-3A", titulo: "Noite de Terror Completo", genero: "Terror", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
+            { id: "e9N_fVwZ-Xo", titulo: "A Entidade Oculta", genero: "Terror", capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400" },
+            { id: "3t-K_8HwzXI", titulo: "Comédia de Domingo", genero: "Comédia", capa: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=400" }
         ];
 
         async function loadUserData() {
@@ -161,19 +158,16 @@
             let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
-            renderizarCatalogo(CATALOGO_FILMES); // Renderiza todos no início
+            renderizarCatalogo(CATALOGO_FILMES);
         }
 
-        // Função para exibir os filmes na tela
         function renderizarCatalogo(filmes) {
             const container = document.getElementById('lista-filmes-catalogo');
             container.innerHTML = "";
-            
             if(filmes.length === 0) {
                 container.innerHTML = `<p class="text-xs text-zinc-500 col-span-2 text-center py-4">Nenhum filme encontrado.</p>`;
                 return;
             }
-
             filmes.forEach(filme => {
                 container.innerHTML += `
                     <div onclick="darPlayNoFilme('${filme.id}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
@@ -184,34 +178,28 @@
             });
         }
 
-        // Executa a busca digitada
+        // LÓGICA CORRIGIDA: Força o iFrame a recarregar a URL exata do vídeo escolhido
+        function darPlayNoFilme(id, titulo) {
+            pararRastreadorDeTempo();
+            secondsWatched = 0;
+            document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
+            document.getElementById('video-title').innerText = titulo;
+            
+            const iframe = document.getElementById('player-youtube');
+            iframe.src = `https://www.youtube.com/embed/${id}?enablejsapi=1&controls=1&modestbranding=1&autoplay=1`;
+            
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
         function filtrarFilmes() {
             const termo = document.getElementById('input-busca-video').value.toLowerCase().trim();
-            const resultados = CATALOGO_FILMES.filter(f => 
-                f.titulo.toLowerCase().includes(termo) || f.genero.toLowerCase().includes(termo)
-            );
+            const resultados = CATALOGO_FILMES.filter(f => f.titulo.toLowerCase().includes(termo) || f.genero.toLowerCase().includes(termo));
             renderizarCatalogo(resultados);
         }
 
-        // Filtra clicando nos botões de categorias prontas
         function selecionarCategoria(genero) {
-            if (genero === 'Todos') {
-                renderizarCatalogo(CATALOGO_FILMES);
-            } else {
-                const resultados = CATALOGO_FILMES.filter(f => f.genero === genero);
-                renderizarCatalogo(resultados);
-            }
-        }
-
-        // Coloca o filme selecionado no player principal
-        function darPlayNoFilme(id, titulo) {
-            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-                secondsWatched = 0;
-                document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
-                ytPlayer.loadVideoById(id);
-                document.getElementById('video-title').innerText = titulo;
-                window.scrollTo({ top: 150, behavior: 'smooth' });
-            }
+            if (genero === 'Todos') renderizarCatalogo(CATALOGO_FILMES);
+            else renderizarCatalogo(CATALOGO_FILMES.filter(f => f.genero === genero));
         }
 
         function updateUI() {
@@ -224,25 +212,25 @@
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(`aba-${tabName}`).classList.add('active');
             document.getElementById(`btn-tab-${tabName}`).classList.add('active');
-            if (tabName !== 'videos') { pararRastreadorDeTempo(); if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); }
+            if (tabName !== 'videos') pararRastreadorDeTempo();
         }
 
-        function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('player-youtube', {
-                height: '100%', width: '100%', videoId: 'W6NZfCO5SIk',
-                playerVars: { 'modestbranding': 1, 'rel': 0, 'controls': 1 },
-                events: { 'onStateChange': onPlayerStateChange }
-            });
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) iniciarRastreadorDeTempo(); else pararRastreadorDeTempo();
-        }
+        // Monitoramento nativo via PostMessage para compatibilidade com celulares antigos
+        window.addEventListener('message', function(e) {
+            try {
+                const data = JSON.parse(e.data);
+                if (data.event === 'infoDelivery' && data.info && data.info.playerState === 1) {
+                    iniciarRastreadorDeTempo();
+                } else if (data.event === 'infoDelivery' && data.info && data.info.playerState === 2) {
+                    pararRastreadorDeTempo();
+                }
+            } catch(err) {}
+        });
 
         function toggleModoCinema() {
             const container = document.getElementById('video-container-master');
-            if (!document.fullscreenElement) { container.requestFullscreen().catch(err => alert(err.message)); } 
-            else { document.exitFullscreen(); }
+            if (!document.fullscreenElement) container.requestFullscreen().catch(err => alert(err.message));
+            else document.exitFullscreen();
         }
 
         function iniciarRastreadorDeTempo() {
