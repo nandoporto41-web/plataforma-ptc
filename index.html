@@ -66,12 +66,14 @@
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🍿 Todos</button>
                     <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">💥 Ação</button>
                     <button onclick="selecionarCategoria('Ficção')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🚀 Ficção</button>
-                    <button onclick="selecionarCategoria('Animação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🎨 Animação</button>
                 </div>
 
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
-                    <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative">
-                        <video id="player-principal-html5" class="w-full h-full object-cover" controls playsinline></video>
+                    <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative flex items-center justify-center">
+                        <video id="player-principal-html5" class="w-full h-full object-contain" controls playsinline preload="auto">
+                            <source id="video-source-element" src="" type="video/mp4">
+                            Seu navegador não suporta este player.
+                        </video>
                     </div>
                     
                     <div class="flex justify-between items-center">
@@ -124,19 +126,18 @@
         let userId = null;
         let watchInterval = null;
         let secondsWatched = 0;
-        const RECOMPENSA_MINUTO = 0.1500; // Aumentado para valorização real
+        const RECOMPENSA_MINUTO = 0.1500;
 
-        // LINKS DIRETOS DO SERVIDOR (STREAM COMPLETO - NUNCA BLOQUEIAM)
+        // SERVIDORES CDN GLOBAIS ESTÁVEIS E COMPATÍVEIS COM SMARTPHONES
         const CATALOGO_FILMES = [
-            { id: "1", titulo: "Operação Resgate (Ação)", genero: "Ação", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "2", titulo: "Carga Explosiva (Ação)", genero: "Ação", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "3", titulo: "A Entidade Oculta (Ficção)", genero: "Ficção", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "4", titulo: "A Noite dos Mortos (Animação)", genero: "Animação", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400" }
+            { id: "1", titulo: "Operação Resgate (Ação)", genero: "Ação", url: "https://vjs.zencdn.net/v/oceans.mp4", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "2", titulo: "Carga Explosiva (Ação)", genero: "Ação", url: "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "3", titulo: "A Entidade Oculta (Ficção)", genero: "Ficção", url: "https://html5demos.com/assets/dizzy.mp4", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
         ];
 
         const videoPlayer = document.getElementById('player-principal-html5');
+        const videoSource = document.getElementById('video-source-element');
 
-        // Escutar eventos de Play/Pause nativos para o Cronómetro
         videoPlayer.addEventListener('play', () => iniciarRastreadorTempo());
         videoPlayer.addEventListener('pause', () => pararRastreadorTempo());
         videoPlayer.addEventListener('ended', () => pararRastreadorTempo());
@@ -149,8 +150,6 @@
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
             renderizarCatalogo(CATALOGO_FILMES);
-            
-            // Carregar o primeiro filme automaticamente no player
             darPlayNoFilme(CATALOGO_FILMES[0].url, CATALOGO_FILMES[0].titulo);
         }
 
@@ -173,9 +172,17 @@
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
-            videoPlayer.src = url;
+            videoPlayer.pause();
+            videoSource.src = url;
             videoPlayer.load();
-            videoPlayer.play().catch(() => console.log("Aguardando clique do utilizador para iniciar"));
+            
+            // Tratamento assíncrono para garantir reprodução em qualquer celular
+            const playPromise = videoPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Reprodução automática retida. Aguardando interação.");
+                });
+            }
         }
 
         function selecionarCategoria(genero) {
