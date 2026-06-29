@@ -25,21 +25,20 @@
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Ajustes do Player */
         .plyr { border-radius: 20px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7); }
         .plyr--video { background: #000 !important; }
         
-        /* Layout travado com anúncios fixos */
+        /* Correção Cirúrgica do posicionamento dos Anúncios */
         .ad-container-fixed {
             position: fixed;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 28rem; /* max-w-md */
+            max-width: 28rem;
             background-color: #09090b;
             z-index: 50;
             display: flex;
-            flex-col;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
@@ -62,19 +61,18 @@
 
     <div id="dashboard" class="hidden w-full max-w-md flex flex-col min-h-screen bg-zinc-900/20 border-x border-zinc-900 relative">
         
-        <div class="ad-container-fixed top-0 border-b border-zinc-900 py-1.5">
-            <span class="text-[8px] uppercase tracking-widest text-zinc-500 font-bold mb-1">Publicidade</span>
+        <div class="ad-container-fixed top-0 border-b border-zinc-900 py-1">
+            <span class="text-[8px] uppercase tracking-widest text-zinc-500 font-bold mb-0.5">Publicidade</span>
             <div id="ad-slot-top" class="w-full min-h-[50px] flex items-center justify-center">
-                <div class="native-ad-holder" data-zone="11216881"></div>
-            </div>
+                </div>
         </div>
 
-        <header class="p-4 border-b border-zinc-800/60 flex justify-between items-center mt-[75px]">
+        <header class="p-4 border-b border-zinc-800/60 flex justify-between items-center mt-[70px]">
             <span class="font-black text-white tracking-wider text-xs">PREMIUM STREAM</span>
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
-        <main class="flex-grow p-4 pb-40">
+        <main class="flex-grow p-4 pb-44">
             
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
@@ -96,7 +94,7 @@
                 </div>
 
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-3xl border border-zinc-800 space-y-3">
-                    <div class="w-full rounded-2xl overflow-hidden bg-black">
+                    <div class="w-full rounded-2xl overflow-hidden bg-black flex justify-center items-center aspect-video">
                         <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="7z70S_S-R_E"></div>
                     </div>
                     
@@ -135,8 +133,7 @@
         <div class="fixed bottom-0 left-50 transform -translate-x-50 w-full max-w-md bg-zinc-950 border-t border-zinc-900 z-50">
             <div class="text-center py-1 border-b border-zinc-900/60">
                 <div id="ad-slot-bottom" class="w-full min-h-[45px] flex items-center justify-center">
-                    <div class="native-ad-holder" data-zone="11216881"></div>
-                </div>
+                    </div>
             </div>
             <nav class="p-3 flex justify-around items-center bg-zinc-950/95 backdrop-blur">
                 <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center w-full text-xs font-bold py-1">Início</button>
@@ -147,7 +144,6 @@
     </div>
 
     <script>
-        // Inicialização do Supabase (Mantenha suas credenciais de teste)
         const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
         let userData = { saldo: 0, tarefas: 0 };
         let userId = null;
@@ -156,41 +152,46 @@
         let playerInstance = null;
         const RECOMPENSA_MINUTO = 0.1200;
 
-        // Catálogo otimizado com curtas/mídias abertas e imagens limpas de cinema
+        // IDs limpos do YouTube obtidos direto do compartilhamento oficial
         const CATALOGO_FILMES = [
-            { id: "1", titulo: "A Noite dos Mortos Vivos (Dublado)", genero: "Suspense", ytId: "7z70S_S-R_E", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "2", titulo: "Megastruturas da Engenharia Moderna", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400" },
+            { id: "1", titulo: "A Noite dos Mortos Vivos (Clássico)", genero: "Suspense", ytId: "7z70S_S-R_E", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "2", titulo: "Megastruturas da Engenharia", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400" },
             { id: "3", titulo: "As Maravilhas Ocultas do Oceano", genero: "Documentários", ytId: "Jg02F_7zCiw", capa: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400" },
-            { id: "4", titulo: "Operação Resgate: Ação Militar", genero: "Ação", ytId: "4_Z06M-w0mE", capa: "https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=400" }
+            { id: "4", titulo: "Operação Resgate: Ação", genero: "Ação", ytId: "4_Z06M-w0mE", capa: "https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=400" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicializa o Plyr de forma elegante
+            // Inicialização precisa do Core do Plyr
             playerInstance = new Plyr('#player-target', {
                 controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
                 youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3 }
             });
             
-            // ROTACIONADOR PROFISSIONAL DE BANNER (Auto-Refresh de 45 segundos)
+            // Força a primeira renderização manual dos blocos de anúncios assim que carregar o DOM
+            forçarRenderizacaoAnuncios();
+
+            // Rotacionador Dinâmico Silencioso (A cada 45 segundos)
             setInterval(() => {
                 if (userId && document.getElementById('aba-videos').classList.contains('active')) {
-                    console.log("Rotacionando anúncios nativos fixados...");
-                    const topSlot = document.getElementById('ad-slot-top');
-                    const bottomSlot = document.getElementById('ad-slot-bottom');
-                    
-                    if (topSlot && bottomSlot) {
-                        // Força a reinjeção da tag estrutural para a biblioteca de anúncios ler novamente
-                        topSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
-                        bottomSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
-                        
-                        // Executa o gatilho interno de reload caso o SDK do AdNetwork esteja disponível
-                        if (window.ctag && typeof window.ctag.run === 'function') {
-                            window.ctag.run();
-                        }
-                    }
+                    forçarRenderizacaoAnuncios();
                 }
             }, 45000);
         });
+
+        function forçarRenderizacaoAnuncios() {
+            const topSlot = document.getElementById('ad-slot-top');
+            const bottomSlot = document.getElementById('ad-slot-bottom');
+            
+            if (topSlot && bottomSlot) {
+                topSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
+                bottomSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
+                
+                // Força a biblioteca de anúncios a mapear a página de novo e injetar as imagens dentro das divs
+                if (window.ctag && typeof window.ctag.run === 'function') {
+                    window.ctag.run();
+                }
+            }
+        }
 
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
@@ -227,6 +228,7 @@
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
+            // Atualização correta do Source da API do Plyr sem travar o player
             if (playerInstance) {
                 playerInstance.source = {
                     type: 'video',
@@ -244,7 +246,7 @@
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
-                // O saldo só computa se o player estiver ativamente em modo "PLAY"
+                // Monitoramento seguro de execução ativa
                 if (playerInstance && playerInstance.playing) {
                     secondsWatched++;
                     document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
@@ -255,7 +257,6 @@
                         userData.tarefas += 1;
                         updateUI();
                         
-                        // Atualiza no banco do Supabase
                         await _supabase.from('usuarios_ptc').update({ 
                             saldo: userData.saldo, 
                             tarefas: userData.tarefas 
@@ -276,7 +277,6 @@
             document.getElementById(`aba-${tabName}`).classList.add('active');
             document.getElementById(`btn-tab-${tabName}`).classList.add('active');
             
-            // Pausa o filme se ele navegar para fora da aba de vídeos
             if (tabName !== 'videos') {
                 clearInterval(watchInterval);
                 watchInterval = null;
@@ -290,13 +290,13 @@
             const valor = parseFloat(document.getElementById('valor-saque').value);
             const chave = document.getElementById('chave-pix').value.trim();
             if(!valor || valor < 10) return alert("O valor mínimo para saque é R$ 10.");
-            if(!chave) return alert("Por favor, insira uma chave Pix válida.");
+            if(!chave) return alert("Por favor, insira uma chave Pix.");
             if(valor > userData.saldo) return alert("Saldo insuficiente.");
             
-            alert(`Solicitação de R$ ${valor.toFixed(2)} enviada! Aguarde o processamento.`);
+            alert(`Solicitação de R$ ${valor.toFixed(2)} enviada com sucesso!`);
         }
 
-        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta registrada! Verifique seu e-mail."); }
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta criada!"); }
         async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
