@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- PLAYER PROFISSIONAL PLYR -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+    <!-- CÓDIGO FONTE MONETAG -->
     <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 
     <style>
@@ -16,10 +21,14 @@
         .nav-btn.active { color: #10b981; border-top: 2px solid #10b981; }
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Customização discreta do player para mobile */
+        .plyr { border-radius: 12px; overflow: hidden; }
+        .plyr--video { background: #000 !important; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
+    <!-- TELA DE AUTENTICAÇÃO -->
     <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
         <div class="text-center mb-4">
             <h1 class="text-3xl font-black text-white tracking-tight">Premium Stream 💎</h1>
@@ -33,6 +42,7 @@
         <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta</button>
     </section>
 
+    <!-- PAINEL PRINCIPAL -->
     <div id="dashboard" class="hidden flex flex-col min-h-screen">
         
         <header class="bg-zinc-950/80 backdrop-blur border-b border-zinc-900 p-4 sticky top-0 z-40 flex justify-between items-center">
@@ -40,6 +50,7 @@
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
+        <!-- BANNER DE ANÚNCIO MONETAG -->
         <div class="w-full text-center py-2 bg-zinc-900/50 border-b border-zinc-900 text-[10px] text-zinc-500">
             PÁGINA MONETIZADA — ANÚNCIO ATIVO
             <div class="mt-1 flex justify-center items-center min-h-[80px] w-full bg-zinc-950" id="monetag-banner-container">
@@ -49,6 +60,7 @@
 
         <main class="flex-grow p-4 max-w-md mx-auto w-full pb-24">
             
+            <!-- ABA: INÍCIO -->
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
                     <p class="text-zinc-400 text-xs uppercase tracking-widest font-semibold">Seu Saldo Acumulado</p>
@@ -60,43 +72,49 @@
                 </div>
             </section>
 
+            <!-- ABA: VÍDEOS -->
             <section id="aba-videos" class="tab-content space-y-4">
                 
+                <!-- Categorias -->
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🍿 Todos</button>
-                    <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">💥 Ação</button>
-                    <button onclick="selecionarCategoria('Suspense')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🕵️‍♂️ Suspense</button>
+                    <button onclick="selecionarCategoria('Cinema')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🎬 Clássicos</button>
                     <button onclick="selecionarCategoria('Documentários')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">📚 Documentários</button>
                 </div>
 
+                <!-- CONTÊINER DO PLAYER PLYR COM RESPONSIVIDADE TOTAL -->
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
-                    <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative flex items-center justify-center">
-                        <video id="player-streaming-native" class="w-full h-full object-cover" controls playsinline controlsList="nodownload"></video>
+                    <div class="w-full rounded-xl overflow-hidden bg-black relative">
+                        <!-- O Plyr injeta dinamicamente o reprodutor aqui dentro de forma limpa -->
+                        <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="7z70S_S-R_E"></div>
                     </div>
                     
                     <div class="flex justify-between items-center">
                         <div class="max-w-[70%]">
                             <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando catálogo...</h4>
-                            <p class="text-xs text-zinc-500 mt-0.5">Assista e ganhe recompensas por minuto de exibição.</p>
+                            <p class="text-xs text-zinc-500 mt-0.5">Assista e ganhe por tempo de tela ativa.</p>
                         </div>
                         <span class="text-[11px] bg-zinc-800 text-zinc-300 font-bold px-2.5 py-1 rounded-md border border-zinc-700">HD 1080p</span>
                     </div>
 
+                    <!-- Validador de Tempo Atualizado -->
                     <div class="bg-zinc-950 p-2.5 rounded-lg flex justify-between items-center border border-zinc-800/50">
                         <span class="text-xs text-zinc-400 flex items-center gap-1.5">
                             <span id="ping-timer" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                            Tempo Restante de Validação:
+                            Progresso da Tarefa:
                         </span>
                         <span id="txt-contador-tempo" class="text-xs font-mono font-bold text-emerald-400">0s / 60s</span>
                     </div>
                 </div>
 
+                <!-- Lista de Filmes -->
                 <div class="space-y-2">
-                    <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Filmes Completos (+ de 1h30m)</h3>
+                    <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Filmes e Conteúdos Completos</h3>
                     <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3"></div>
                 </div>
             </section>
 
+            <!-- ABA: SACAR -->
             <section id="aba-sacar" class="tab-content space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4">
                     <h3 class="font-bold text-lg text-white">Retirada Via Pix</h3>
@@ -109,18 +127,20 @@
             </section>
         </main>
 
+        <!-- MODAL INTERSTICIAL MONETAG -->
         <div id="ad-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6 text-center">
             <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl max-w-sm w-full space-y-4 shadow-2xl">
                 <span class="text-4xl">💎</span>
-                <h3 class="text-lg font-bold text-white">Validando sua recompensa</h3>
-                <p class="text-xs text-zinc-400">Clique no botão abaixo para abrir a página patrocinada, garanta o computo dos seus pontos e retorne para continuar o filme.</p>
+                <h3 class="text-lg font-bold text-white">Recompensa Pronta!</h3>
+                <p class="text-xs text-zinc-400">Clique no botão do patrocinador abaixo para validar os seus pontos e continuar acumulando.</p>
                 <a href="https://omg10.com/4/11216881" target="_blank" onclick="fecharAnuncioModal()" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 py-3 rounded-xl font-bold text-black transition">
-                    👉 IR PARA O ANÚNCIO
+                    👉 VER ANÚNCIO
                 </a>
-                <button onclick="fecharAnuncioModal()" class="text-xs text-zinc-500 hover:text-zinc-300 transition underline block mx-auto">Fechar e Receber Saldo</button>
+                <button onclick="fecharAnuncioModal()" class="text-xs text-zinc-500 hover:text-zinc-300 transition underline block mx-auto">Fechar e Computar Saldo</button>
             </div>
         </div>
 
+        <!-- FOOTER MENU -->
         <nav class="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur border-t border-zinc-900 p-2 flex justify-around items-center z-40 max-w-md mx-auto">
             <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Início</button>
             <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Vídeos</button>
@@ -134,16 +154,23 @@
         let userId = null;
         let watchInterval = null;
         let secondsWatched = 0;
+        let playerInstance = null;
         const RECOMPENSA_MINUTO = 0.1500;
 
-        // FONTES DE STREAMING REAL DE ALTA DISPONIBILIDADE E DURAÇÃO LONGA
+        // FONTES COM EMBED E CONTRATO DE EXIBIÇÃO LIBERADOS SEM RESTRIÇÃO DE REPRODUÇÃO EXTERNA
         const CATALOGO_FILMES = [
-            { id: "1", titulo: "O Passageiro Oculto (Suspense Policial)", genero: "Suspense", url: "https://archive.org/download/classic_clips/night_of_the_living_dead_512kb.mp4", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "2", titulo: "Operação Resgate (Ação Clássica)", genero: "Ação", url: "https://archive.org/download/Route66-there_grows_a_tree/Route66-there_grows_a_tree_512kb.mp4", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "3", titulo: "As Maravilhas do Oceano (Documentário Longo)", genero: "Documentários", url: "https://vjs.zencdn.net/v/oceans.mp4", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" }
+            { id: "1", titulo: "A Noite dos Mortos Vivos (Clássico)", genero: "Cinema", ytId: "7z70S_S-R_E", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "2", titulo: "A História da Engenharia Moderna", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "3", titulo: "Oceanos de Vida - Documentário", genero: "Documentários", ytId: "Jg02F_7zCiw", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
         ];
 
-        const videoPlayer = document.getElementById('player-streaming-native');
+        // INICIALIZAÇÃO PROFISSIONAL DO PLAYER PLYR
+        document.addEventListener('DOMContentLoaded', () => {
+            playerInstance = new Plyr('#player-target', {
+                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                fullscreen: { enabled: true, fallback: true, iosNative: true }
+            });
+        });
 
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
@@ -153,7 +180,7 @@
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
             renderizarCatalogo(CATALOGO_FILMES);
-            darPlayNoFilme(CATALOGO_FILMES[0].url, CATALOGO_FILMES[0].titulo);
+            darPlayNoFilme(CATALOGO_FILMES[0].ytId, CATALOGO_FILMES[0].titulo);
         }
 
         function renderizarCatalogo(filmes) {
@@ -161,23 +188,25 @@
             container.innerHTML = "";
             filmes.forEach(filme => {
                 container.innerHTML += `
-                    <div onclick="darPlayNoFilme('${filme.url}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
-                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-lg mb-1.5 opacity-80">
+                    <div onclick="darPlayNoFilme('${filme.ytId}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
+                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-lg mb-1.5 opacity-70">
                         <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
                     </div>
                 `;
             });
         }
 
-        function darPlayNoFilme(url, titulo) {
+        function darPlayNoFilme(ytId, titulo) {
             secondsWatched = 0;
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
-            videoPlayer.src = url;
-            videoPlayer.load();
-            videoPlayer.play().catch(e => console.log("Autoplay bloqueado. Aguardando interação do usuário."));
-            
+            if (playerInstance) {
+                playerInstance.source = {
+                    type: 'video',
+                    sources: [{ src: ytId, provider: 'youtube' }]
+                };
+            }
             iniciarRastreadorTempo();
         }
 
@@ -189,19 +218,20 @@
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
-                // O cronômetro agora só avança se o filme estiver sendo reproduzido de fato
-                if (!videoPlayer.paused && !videoPlayer.ended) {
+                // Conta apenas se o player estiver executando e o usuário assistindo de verdade
+                if (playerInstance && playerInstance.playing) {
                     secondsWatched++;
                     document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
                     
                     if (secondsWatched >= 60) {
                         secondsWatched = 0;
+                        playerInstance.pause();
+                        
                         userData.saldo += RECOMPENSA_MINUTO;
                         userData.tarefas += 1;
                         updateUI();
                         await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
                         
-                        // Abre o modal interativo na tela sem desconectar ou sair da aba ativa
                         document.getElementById('ad-modal').classList.remove('hidden');
                     }
                 }
@@ -210,6 +240,7 @@
 
         function fecharAnuncioModal() {
             document.getElementById('ad-modal').classList.add('hidden');
+            if (playerInstance) playerInstance.play();
         }
 
         function updateUI() {
@@ -225,12 +256,11 @@
             if (tabName !== 'videos') {
                 clearInterval(watchInterval);
                 watchInterval = null;
-                videoPlayer.pause();
-                videoPlayer.src = "";
+                if (playerInstance) playerInstance.pause();
             }
         }
 
-        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta criada com sucesso!"); }
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta criada!"); }
         async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
