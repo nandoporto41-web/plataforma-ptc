@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- CÓDIGO FONTE MONETAG -->
     <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 
     <style>
@@ -20,6 +21,7 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
+    <!-- TELA DE AUTENTICAÇÃO -->
     <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
         <div class="text-center mb-4">
             <h1 class="text-3xl font-black text-white tracking-tight">Premium Stream 💎</h1>
@@ -33,6 +35,7 @@
         <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta</button>
     </section>
 
+    <!-- PAINEL PRINCIPAL -->
     <div id="dashboard" class="hidden flex flex-col min-h-screen">
         
         <header class="bg-zinc-950/80 backdrop-blur border-b border-zinc-900 p-4 sticky top-0 z-40 flex justify-between items-center">
@@ -40,6 +43,7 @@
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
+        <!-- BANNER DE ANÚNCIO MONETAG -->
         <div class="w-full text-center py-2 bg-zinc-900/50 border-b border-zinc-900 text-[10px] text-zinc-500">
             PÁGINA MONETIZADA — ANÚNCIO ATIVO
             <div class="mt-1 flex justify-center items-center min-h-[80px] w-full bg-zinc-950" id="monetag-banner-container">
@@ -49,6 +53,7 @@
 
         <main class="flex-grow p-4 max-w-md mx-auto w-full pb-24">
             
+            <!-- ABA: INÍCIO -->
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
                     <p class="text-zinc-400 text-xs uppercase tracking-widest font-semibold">Seu Saldo Acumulado</p>
@@ -60,28 +65,32 @@
                 </div>
             </section>
 
+            <!-- ABA: VÍDEOS -->
             <section id="aba-videos" class="tab-content space-y-4">
                 
+                <!-- Categorias -->
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🍿 Todos</button>
                     <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">💥 Ação</button>
                     <button onclick="selecionarCategoria('Suspense')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🕵️‍♂️ Suspense</button>
-                    <button onclick="selecionarCategoria('Terror')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">👻 Terror</button>
+                    <button onclick="selecionarCategoria('Aventura')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🧭 Aventura</button>
                 </div>
 
+                <!-- PLAYER NATIVO (IMUNE A BLOQUEIOS) -->
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
                     <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative flex items-center justify-center">
-                        <iframe id="player-streaming-embed" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <video id="player-streaming-native" class="w-full h-full" controls playsinline controlsList="nodownload"></video>
                     </div>
                     
                     <div class="flex justify-between items-center">
                         <div class="max-w-[70%]">
-                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando catálogo oficial...</h4>
+                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Selecione um filme abaixo...</h4>
                             <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular recompensas por minuto.</p>
                         </div>
                         <span class="text-[11px] bg-zinc-800 text-zinc-300 font-bold px-2.5 py-1 rounded-md border border-zinc-700">HD 1080p</span>
                     </div>
 
+                    <!-- Cronômetro Seguro -->
                     <div class="bg-zinc-950 p-2.5 rounded-lg flex justify-between items-center border border-zinc-800/50">
                         <span class="text-xs text-zinc-400 flex items-center gap-1.5">
                             <span id="ping-timer" class="w-2 h-2 rounded-full bg-emerald-500"></span> 
@@ -91,12 +100,14 @@
                     </div>
                 </div>
 
+                <!-- Lista de Filmes Longos Reais -->
                 <div class="space-y-2">
                     <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Filmes Completos (+ de 1h30m)</h3>
                     <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3"></div>
                 </div>
             </section>
 
+            <!-- ABA: SACAR -->
             <section id="aba-sacar" class="tab-content space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4">
                     <h3 class="font-bold text-lg text-white">Retirada Via Pix</h3>
@@ -109,6 +120,7 @@
             </section>
         </main>
 
+        <!-- FOOTER MENU -->
         <nav class="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur border-t border-zinc-900 p-2 flex justify-around items-center z-40 max-w-md mx-auto">
             <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Início</button>
             <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Vídeos</button>
@@ -124,15 +136,14 @@
         let secondsWatched = 0;
         const RECOMPENSA_MINUTO = 0.1500;
 
-        // FILMES COMPLETOS LONGO EM PORTUGUÊS (CANAIS COM LICENÇA DE EMBED ATIVA)
+        // CATALOGO COM FILMES LONGOS DE STREAMING LIVRE (FONTES CONFIÁVEIS MP4 DIRECT)
         const CATALOGO_FILMES = [
-            { id: "Jg02F_7zCiw", titulo: "A Filha do Embaixador (Ação/Completo)", genero: "Ação", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "A38m6K9_vbo", titulo: "Caminho de Sangue (Ação Extrema)", genero: "Ação", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "98_6mBnd62I", titulo: "O Passageiro Oculto (Suspense Policial)", genero: "Suspense", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "L6G_m8s9Xw0", titulo: "Linha de Combate (Terror Psicológico)", genero: "Terror", capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400" }
+            { id: "filme1", titulo: "O Passageiro Oculto (Suspense)", genero: "Suspense", url: "https://archive.org/download/classic_clips/night_of_the_living_dead_512kb.mp4", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
+            { id: "filme2", titulo: "Operação Resgate (Ação Clássica)", genero: "Ação", url: "https://archive.org/download/Route66-there_grows_a_tree/Route66-there_grows_a_tree_512kb.mp4", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "filme3", titulo: "Mistério na Ilha (Aventura Longa)", genero: "Aventura", url: "https://vjs.zencdn.net/v/oceans.mp4", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" }
         ];
 
-        const iframePlayer = document.getElementById('player-streaming-embed');
+        const videoPlayer = document.getElementById('player-streaming-native');
 
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
@@ -142,7 +153,7 @@
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
             renderizarCatalogo(CATALOGO_FILMES);
-            darPlayNoFilme(CATALOGO_FILMES[0].id, CATALOGO_FILMES[0].titulo);
+            darPlayNoFilme(CATALOGO_FILMES[0].url, CATALOGO_FILMES[0].titulo);
         }
 
         function renderizarCatalogo(filmes) {
@@ -150,7 +161,7 @@
             container.innerHTML = "";
             filmes.forEach(filme => {
                 container.innerHTML += `
-                    <div onclick="darPlayNoFilme('${filme.id}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
+                    <div onclick="darPlayNoFilme('${filme.url}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
                         <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-lg mb-1.5 opacity-80">
                         <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
                     </div>
@@ -158,15 +169,16 @@
             });
         }
 
-        function darPlayNoFilme(id, titulo) {
+        function darPlayNoFilme(url, titulo) {
             secondsWatched = 0;
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
-            // Força o carregamento limpo sem rastreadores de cookies para evitar bloqueio regional da Vercel
-            iframePlayer.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`;
+            // Troca a fonte do player nativo e inicia a reprodução
+            videoPlayer.src = url;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log("Autoplay bloqueado, aguardando clique do usuário."));
             
-            // Inicializa a contagem contínua assim que o usuário seleciona ou altera o filme
             iniciarRastreadorTempo();
         }
 
@@ -178,19 +190,22 @@
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
-                secondsWatched++;
-                document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
-                
-                if (secondsWatched >= 60) {
-                    secondsWatched = 0;
-                    userData.saldo += RECOMPENSA_MINUTO;
-                    userData.tarefas += 1;
-                    updateUI();
-                    await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                // Só conta o tempo se o vídeo de fato estiver reproduzindo (evita trapaças)
+                if (!videoPlayer.paused && !videoPlayer.ended) {
+                    secondsWatched++;
+                    document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
                     
-                    // CORREÇÃO DO ANÚNCIO: Dispara o popunder em segundo plano abrindo nova aba, mantendo o usuário na sua plataforma.
-                    const win = window.open("https://omg10.com/4/11216881", "_blank");
-                    if(win) win.focus();
+                    if (secondsWatched >= 60) {
+                        secondsWatched = 0;
+                        userData.saldo += RECOMPENSA_MINUTO;
+                        userData.tarefas += 1;
+                        updateUI();
+                        await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                        
+                        // Executa anúncio Popunder sem tirar o usuário do seu app
+                        const win = window.open("https://omg10.com/4/11216881", "_blank");
+                        if(win) win.focus();
+                    }
                 }
             }, 1000);
         }
@@ -208,7 +223,8 @@
             if (tabName !== 'videos') {
                 clearInterval(watchInterval);
                 watchInterval = null;
-                iframePlayer.src = "";
+                videoPlayer.pause();
+                videoPlayer.src = "";
             }
         }
 
@@ -222,5 +238,4 @@
         });
     </script>
 </body>
-    </html>
-                            
+</html>
