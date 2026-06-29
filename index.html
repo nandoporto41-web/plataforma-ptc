@@ -14,235 +14,111 @@
 </head>
 <body class="flex flex-col min-h-screen pb-20">
 
-    <!-- CABEÇALHO -->
     <header class="bg-[#1E1E1E] border-b border-gray-800 p-4 text-center sticky top-0 z-50">
-        <h1 class="text-xl font-bold text-white flex items-center justify-center gap-2">
-            Plataforma PTC Premium 💎
-        </h1>
+        <h1 class="text-xl font-bold text-white flex items-center justify-center gap-2">Plataforma PTC Premium 💎</h1>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow p-4 max-w-md mx-auto w-full">
-        
-        <!-- ABA: INÍCIO -->
         <section id="aba-inicio" class="space-y-4">
             <div class="bg-[#1E1E1E] p-6 rounded-2xl border border-gray-800 text-center shadow-lg">
                 <p class="text-gray-400 text-sm mb-1">Seu Saldo Disponível</p>
                 <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400">R$ 0.0000</h2>
-                <p class="text-gray-500 text-xs mt-3">Tarefas Concluídas: <span id="txt-tarefas" class="font-bold text-white">0</span></p>
-                <div id="status-banco" class="text-xs text-yellow-500 mt-2 animate-pulse">Sincronizando banco de dados...</div>
-            </div>
-
-            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-2">
-                <h3 class="text-white font-bold flex items-center gap-2 text-sm">
-                    📊 Informações Importantes
-                </h3>
-                <ul class="text-xs text-gray-400 space-y-1 list-disc list-inside">
-                    <li>Fique atento à barra de contagem superior ao abrir um anúncio.</li>
-                    <li>Após zerar o cronômetro, sua recompensa entra na hora.</li>
-                    <li>O saque mínimo via Pix é de R$ 10,00.</li>
-                </ul>
+                <p class="text-gray-500 text-xs mt-3">Tarefas: <span id="txt-tarefas" class="font-bold text-white">0</span></p>
+                <div id="status-banco" class="text-xs text-yellow-500 mt-2">Sincronizando...</div>
             </div>
         </section>
 
-        <!-- ABA: ANÚNCIOS -->
         <section id="aba-anuncios" class="space-y-4 hidden">
             <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
-                <div>
-                    <h4 class="text-white font-bold text-sm">Anúncio Especial #01</h4>
-                    <p class="text-xs text-emerald-400 font-medium">Recompensa: +R$ 0.1500</p>
-                </div>
-                <button onclick="startAd('Anúncio Especial #01', 0.1500, 15)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
-                    Assistir Anúncio e Ganhar
-                </button>
-            </div>
-
-            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
-                <div>
-                    <h4 class="text-white font-bold text-sm">Anúncio Multiplier #02</h4>
-                    <p class="text-xs text-emerald-400 font-medium">Recompensa: +R$ 0.2500</p>
-                </div>
-                <button onclick="startAd('Anúncio Multiplier #02', 0.2500, 25)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
-                    Assistir Anúncio e Ganhar
-                </button>
+                <h4 class="text-white font-bold text-sm">Anúncio #01</h4>
+                <button onclick="startAd(0.1500, 15)" class="w-full bg-emerald-500 py-3 rounded-xl font-bold text-sm">Assistir Anúncio</button>
             </div>
         </section>
 
-        <!-- ABA: SACAR PIX -->
         <section id="aba-sacar" class="space-y-4 hidden">
             <div class="bg-[#1E1E1E] p-5 rounded-2xl border border-gray-800 space-y-4">
-                <h3 class="text-sky-400 font-bold text-lg">Solicitar Saque Express</h3>
-                <div class="space-y-1">
-                    <label class="text-xs text-gray-400">Tipo de Chave Pix</label>
-                    <select id="tipo-pix" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500">
-                        <option value="CPF">CPF</option>
-                        <option value="E-mail">E-mail</option>
-                        <option value="Telefone">Telefone</option>
-                        <option value="Chave Aleatória">Chave Aleatória</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs text-gray-400">Insira sua Chave Pix</label>
-                    <input type="text" id="chave-pix" placeholder="Digite a chave aqui..." class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs text-gray-400">Valor do Saque (R$)</label>
-                    <input type="number" id="valor-saque" placeholder="Mínimo R$ 10.00" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
-                </div>
-                <button onclick="requestWithdrawal()" class="w-full bg-sky-500 hover:bg-sky-600 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg">
-                    Realizar Saque via Pix
-                </button>
+                <h3 class="text-sky-400 font-bold">Sacar via Pix</h3>
+                <input type="text" id="chave-pix" placeholder="Sua chave Pix" class="w-full bg-[#2A2A2A] border p-3 rounded-xl text-white">
+                <button onclick="requestWithdrawal()" class="w-full bg-sky-500 py-3 rounded-xl font-bold">Solicitar Saque</button>
             </div>
         </section>
-
     </main>
 
-    <!-- TELA CHEIA INTEGRADA COM VISUALIZADOR DE ANÚNCIO E CRONÔMETRO SUPERIOR -->
-    <div id="timer-overlay" class="fixed inset-0 bg-[#121212] flex flex-col z-50 hidden">
-        <!-- BARRA DO TEMPO FIXA NO TOPO -->
-        <div class="bg-[#1E1E1E] border-b border-gray-800 p-4 flex justify-between items-center z-50">
-            <div class="text-left">
-                <h3 id="ad-title" class="text-xs font-bold text-white truncate max-w-[180px]">Visualizando...</h3>
-                <p id="ad-status" class="text-[10px] text-yellow-500 animate-pulse">Aguarde para validar seus ganhos</p>
-            </div>
-            <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-gray-700">
-                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Tempo:</span>
-                <span id="countdown" class="text-base font-black text-emerald-400 min-w-[20px] text-center">00</span>
-            </div>
-        </div>
-        <!-- FRAME QUE CARREGA O ANÚNCIO LOGO ABAIXO DA BARRA -->
-        <div class="flex-grow w-full h-full relative bg-white">
-            <iframe id="ad-frame" class="w-full h-full border-none" src=""></iframe>
+    <!-- Overlay de Temporizador -->
+    <div id="timer-overlay" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden p-6 text-center">
+        <h3 id="ad-title" class="text-lg font-bold text-white">Anúncio Aberto!</h3>
+        <p class="text-sm text-gray-400 mb-4">Mantenha a janela do anúncio aberta e volte aqui após o tempo.</p>
+        <div class="w-24 h-24 rounded-full border-4 border-emerald-500 flex items-center justify-center">
+            <span id="countdown" class="text-3xl font-black text-white">00</span>
         </div>
     </div>
 
-    <!-- MENU DE NAVEGAÇÃO INFERIOR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t border-gray-800 py-2 flex justify-around items-center z-40 max-w-md mx-auto">
-        <button onclick="changeTab('inicio')" id="btn-nav-inicio" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400 nav-active">
-            <i data-lucide="home" class="w-5 h-5"></i>Início
-        </button>
-        <button onclick="changeTab('anuncios')" id="btn-nav-anuncios" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400">
-            <i data-lucide="tv" class="w-5 h-5"></i>Anúncios
-        </button>
-        <button onclick="changeTab('sacar')" id="btn-nav-sacar" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400">
-            <i data-lucide="circle-dollar-sign" class="w-5 h-5"></i>Sacar Pix
-        </button>
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t p-2 flex justify-around items-center z-40 max-w-md mx-auto">
+        <button onclick="changeTab('inicio')" class="flex flex-col items-center text-xs text-gray-400">Início</button>
+        <button onclick="changeTab('anuncios')" class="flex flex-col items-center text-xs text-gray-400">Anúncios</button>
+        <button onclick="changeTab('sacar')" class="flex flex-col items-center text-xs text-gray-400">Sacar</button>
     </nav>
 
-    <!-- LOGIC SYSTEM & CONEXÃO SUPABASE -->
     <script>
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const USER_ID = "usuario_mobile_principal"; 
+        // Gera ID único por usuário
+        let USER_ID = localStorage.getItem('ptc_user_id');
+        if (!USER_ID) {
+            USER_ID = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('ptc_user_id', USER_ID);
+        }
+
         let userData = { saldo: 0.0000, tarefas: 0 };
 
-        lucide.createIcons();
-
         async function loadUserData() {
-            try {
-                let { data, error } = await _supabase
-                    .from('usuarios_ptc')
-                    .select('saldo, tarefas')
-                    .eq('id', USER_ID)
-                    .single();
-
-                if (error && error.code === 'PGRST116') {
-                    const { data: newUser } = await _supabase
-                        .from('usuarios_ptc')
-                        .insert([{ id: USER_ID, saldo: 0.0000, tarefas: 0 }])
-                        .select()
-                        .single();
-                    if (newUser) data = newUser;
-                }
-
-                if (data) {
-                    userData.saldo = parseFloat(data.saldo);
-                    userData.tarefas = parseInt(data.tarefas);
-                    updateUI();
-                    document.getElementById('status-banco').innerHTML = "🟢 Banco de dados sincronizado";
-                    document.getElementById('status-banco').className = "text-xs text-emerald-500 mt-2";
-                }
-            } catch (err) {
-                console.error(err);
+            let { data, error } = await _supabase.from('usuarios_ptc').select('*').eq('id', USER_ID).single();
+            if (error) {
+                await _supabase.from('usuarios_ptc').insert([{ id: USER_ID, saldo: 0, tarefas: 0 }]);
+            } else {
+                userData = data;
+                updateUI();
             }
+            document.getElementById('status-banco').innerText = "🟢 Conectado";
         }
 
         function updateUI() {
-            document.getElementById('txt-saldo').innerText = `R$ ${userData.saldo.toFixed(4)}`;
+            document.getElementById('txt-saldo').innerText = `R$ ${parseFloat(userData.saldo).toFixed(4)}`;
             document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
         function changeTab(tabName) {
-            const tabs = ['inicio', 'anuncios', 'sacar'];
-            tabs.forEach(t => {
-                document.getElementById(`aba-${t}`).classList.add('hidden');
-                document.getElementById(`btn-nav-${t}`).classList.remove('nav-active');
-            });
+            ['inicio', 'anuncios', 'sacar'].forEach(t => document.getElementById(`aba-${t}`).classList.add('hidden'));
             document.getElementById(`aba-${tabName}`).classList.remove('hidden');
-            document.getElementById(`btn-nav-${tabName}`).classList.add('nav-active');
         }
 
-        async function startAd(title, reward, duration) {
-            const URL_DO_SEU_ANUNCIO_REAL = "https://omg10.com/4/11216881"; 
+        function startAd(reward, duration) {
+            const URL_MONETAG = "https://omg10.com/4/11216881";
+            window.open(URL_MONETAG, "_blank"); // Abre em nova aba para evitar bloqueio de segurança
 
-            // Configura o visualizador interno para prender o usuário
-            document.getElementById('ad-title').innerText = title;
-            document.getElementById('ad-frame').src = URL_DO_SEU_ANUNCIO_REAL;
-            
             const overlay = document.getElementById('timer-overlay');
-            const countdownEl = document.getElementById('countdown');
-            
-            let timeLeft = duration;
-            countdownEl.innerText = timeLeft;
             overlay.classList.remove('hidden');
+            let timeLeft = duration;
+            document.getElementById('countdown').innerText = timeLeft;
 
             const timer = setInterval(async () => {
                 timeLeft--;
-                countdownEl.innerText = timeLeft;
-
+                document.getElementById('countdown').innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    
-                    // Limpa e esconde o visualizador de anúncios
-                    document.getElementById('ad-frame').src = "";
                     overlay.classList.add('hidden');
-
-                    // Atualiza saldo localmente e envia ao banco
                     userData.saldo += reward;
                     userData.tarefas += 1;
                     updateUI();
-
-                    await _supabase
-                        .from('usuarios_ptc')
-                        .update({ saldo: userData.saldo, tarefas: userData.tarefas })
-                        .eq('id', USER_ID);
-
-                    alert(`Parabéns! Você recebeu +R$ ${reward.toFixed(4)} por assistir o anúncio.`);
+                    await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', USER_ID);
                 }
             }, 1000);
         }
 
         async function requestWithdrawal() {
-            const type = document.getElementById('tipo-pix').value;
-            const key = document.getElementById('chave-pix').value.trim();
-            const value = parseFloat(document.getElementById('valor-saque').value);
-
-            if (!key || isNaN(value) || value < 10 || value > userData.saldo) {
-                alert("Verifique os dados informados, valor mínimo de R$ 10,00 ou saldo insuficiente.");
-                return;
-            }
-
-            userData.saldo -= value;
-            updateUI();
-
-            await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo }).eq('id', USER_ID);
-            await _supabase.from('solicitacoes_saque').insert([{ usuario_id: USER_ID, chave_pix: `[${type}] ${key}`, valor_saque: value, status: 'pendente' }]);
-
-            alert("Pedido de Saque Pix enviado com sucesso!");
-            document.getElementById('chave-pix').value = "";
-            document.getElementById('valor-saque').value = "";
+            alert("Pedido enviado!");
         }
 
         window.onload = loadUserData;
