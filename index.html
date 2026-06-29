@@ -1,483 +1,286 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma PTC Premium</title>
-    <!-- Supabase CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #0b0c0d;
-            color: #ffffff;
-            padding-bottom: 70px; /* Espaço para o menu inferior */
-        }
-
-        /* Topbar */
-        .topbar {
-            background-color: #16181a;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-bottom: 2px solid #00e676;
-            letter-spacing: 0.5px;
-        }
-
-        /* Container Principal */
-        .container {
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        /* Cards Principais */
-        .card {
-            background-color: #16181a;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-titulo {
-            color: #888e94;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        .saldo {
-            color: #00e676;
-            font-size: 2.2rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .status-banco {
-            font-size: 0.85rem;
-            color: #888e94;
-            margin-top: 10px;
-        }
-
-        /* Dicas e Novidades */
-        .card-info {
-            background-color: #16181a;
-            border-radius: 16px;
-            padding: 15px;
-            text-align: left;
-            border-left: 4px solid #00b0ff;
-        }
-
-        .card-info h3 {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .card-info ul {
-            list-style: none;
-            font-size: 0.85rem;
-            color: #b0b5b8;
-        }
-
-        .card-info li {
-            margin-bottom: 6px;
-        }
-
-        /* Bloco de Anúncios */
-        .anuncio-item {
-            background-color: #16181a;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: left;
-            border: 1px solid #242729;
-        }
-
-        .anuncio-info h4 {
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-
-        .anuncio-info p {
-            font-size: 0.8rem;
-            color: #00e676;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        /* Botões */
-        .btn {
-            background-color: #00e676;
-            color: #000000;
-            border: none;
-            padding: 12px 20px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            border-radius: 8px;
-            width: 100%;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn:active {
-            background-color: #00b354;
-        }
-
-        .btn-saque {
-            background-color: #00b0ff;
-            color: #ffffff;
-        }
-
-        .btn-saque:active {
-            background-color: #0081cb;
-        }
-
-        /* Inputs para área de Saque */
-        .input-grupo {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        .input-grupo label {
-            display: block;
-            font-size: 0.85rem;
-            color: #888e94;
-            margin-bottom: 6px;
-        }
-
-        .input-grupo input, .input-grupo select {
-            width: 100%;
-            padding: 12px;
-            background-color: #242729;
-            border: 1px solid #33373a;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        /* Menu Inferior Fixo */
-        .menu-inferior {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #16181a;
-            border-top: 1px solid #242729;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.75rem;
-            color: #888e94;
-            cursor: pointer;
-            width: 33%;
-            padding: 8px 0;
-        }
-
-        .menu-item span {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
-        }
-
-        .menu-item.ativo {
-            color: #00e676;
-            font-weight: bold;
-        }
-
-        /* Cronômetro Flutuante do Anúncio */
-        .overlay-anuncio {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(11, 12, 13, 0.98);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .cronometro {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #00e676;
-            margin: 20px 0;
-        }
+        body { background-color: #121212; color: #E0E0E0; font-family: sans-serif; }
+        .nav-active { color: #10B981; } /* Verde brilhante para aba ativa */
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen pb-20">
 
-    <div class="topbar">Plataforma PTC Premium 💎</div>
+    <header class="bg-[#1E1E1E] border-b border-gray-800 p-4 text-center sticky top-0 z-50">
+        <h1 class="text-xl font-bold text-white flex items-center justify-center gap-2">
+            Plataforma PTC Premium 💎
+        </h1>
+    </header>
 
-    <!-- SEÇÃO 1: INÍCIO -->
-    <div id="secao-inicio" class="container" style="display: block;">
-        <div class="card">
-            <p class="card-titulo">Seu Saldo Disponível</p>
-            <p id="exibir-saldo" class="saldo">R$ 0.0000</p>
-            <p class="card-titulo">Tarefas Concluídas: <span id="exibir-tarefas" style="color:white; font-weight:bold;">0</span></p>
-            <p id="status-banco" class="status-banco">Sincronizando banco de dados...</p>
-        </div>
+    <main class="flex-grow p-4 max-w-md mx-auto w-full">
+        
+        <section id="aba-inicio" class="space-y-4">
+            <div class="bg-[#1E1E1E] p-6 rounded-2xl border border-gray-800 text-center shadow-lg">
+                <p class="text-gray-400 text-sm mb-1">Seu Saldo Disponível</p>
+                <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400">R$ 0.0000</h2>
+                <p class="text-gray-500 text-xs mt-3">Tarefas Concluídas: <span id="txt-tarefas" class="font-bold text-white">0</span></p>
+                <div id="status-banco" class="text-xs text-yellow-500 mt-2 animate-pulse">Sincronizando banco de dados...</div>
+            </div>
 
-        <div class="card-info">
-            <h3>📊 Novidades e Dicas</h3>
-            <ul>
-                <li>• Assista aos anúncios na aba "Anúncios" para acumular saldo.</li>
-                <li>• Mantenha a aba aberta durante o cronômetro para validar a recompensa.</li>
-                <li>• O valor mínimo para retirada via Pix é de R$ 10,00.</li>
-            </ul>
+            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-2">
+                <h3 class="text-white font-bold flex items-center gap-2 text-sm">
+                    📊 Novidades e Dicas
+                </h3>
+                <ul class="text-xs text-gray-400 space-y-1 list-disc list-inside">
+                    <li>Assista aos anúncios na aba "Anúncios" para acumular saldo.</li>
+                    <li>Mantenha a aba aberta durante o cronômetro para validar a recompensa.</li>
+                    <li>O valor mínimo para retirada via Pix é de R$ 10,00.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="aba-anuncios" class="space-y-4 hidden">
+            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
+                <div>
+                    <h4 class="text-white font-bold text-sm">Anúncio Master #01</h4>
+                    <p class="text-xs text-emerald-400 font-medium">Recompensa: +R$ 0.1500</p>
+                </div>
+                <button onclick="startAd('Anúncio Master #01', 0.1500, 15)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
+                    Assistir Anúncio e Ganhar
+                </button>
+            </div>
+
+            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
+                <div>
+                    <h4 class="text-white font-bold text-sm">Anúncio Multiplier #02</h4>
+                    <p class="text-xs text-emerald-400 font-medium">Recompensa: +R$ 0.2500</p>
+                </div>
+                <button onclick="startAd('Anúncio Multiplier #02', 0.2500, 25)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
+                    Assistir Anúncio e Ganhar
+                </button>
+            </div>
+        </section>
+
+        <section id="aba-sacar" class="space-y-4 hidden">
+            <div class="bg-[#1E1E1E] p-5 rounded-2xl border border-gray-800 space-y-4">
+                <h3 class="text-sky-400 font-bold text-lg">Solicitar Saque Express</h3>
+                
+                <div class="space-y-1">
+                    <label class="text-xs text-gray-400">Tipo de Chave Pix</label>
+                    <select id="tipo-pix" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500">
+                        <option value="CPF">CPF</option>
+                        <option value="E-mail">E-mail</option>
+                        <option value="Telefone">Telefone</option>
+                        <option value="Chave Aleatória">Chave Aleatória</option>
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs text-gray-400">Insira sua Chave Pix</label>
+                    <input type="text" id="chave-pix" placeholder="Digite a chave aqui..." class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs text-gray-400">Valor do Saque (R$)</label>
+                    <input type="number" id="valor-saque" placeholder="Mínimo R$ 10.00" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
+                </div>
+
+                <button onclick="requestWithdrawal()" class="w-full bg-sky-500 hover:bg-sky-600 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg">
+                    Realizar Saque via Pix
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="timer-overlay" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden p-6 text-center">
+        <div class="space-y-4 max-w-xs">
+            <h3 id="ad-title" class="text-lg font-bold text-white">Visualizando anúncio...</h3>
+            <p class="text-sm text-gray-400">Aguarde o cronômetro terminar para validar seus ganhos.</p>
+            <div class="relative flex items-center justify-center">
+                <div class="w-24 h-24 rounded-full border-4 border-gray-800 flex items-center justify-center">
+                    <span id="countdown" class="text-3xl font-black text-emerald-400">00</span>
+                </div>
+            </div>
+            <p class="text-xs text-yellow-500 animate-pulse">Não feche esta página!</p>
         </div>
     </div>
 
-    <!-- SEÇÃO 2: ANÚNCIOS -->
-    <div id="secao-anuncios" class="container" style="display: none;">
-        <div class="anuncio-item">
-            <div class="anuncio-info">
-                <h4>Anúncio Master #01</h4>
-                <p>Recompensa: +R$ 0.1500</p>
-            </div>
-            <button class="btn" onclick="iniciarAnuncio(0.1500, 10)">Assistir Anúncio e Ganhar</button>
-        </div>
-
-        <div class="anuncio-item">
-            <div class="anuncio-info">
-                <h4>Anúncio Multiplier #02</h4>
-                <p>Recompensa: +R$ 0.2500</p>
-            </div>
-            <button class="btn" onclick="iniciarAnuncio(0.2500, 15)">Assistir Anúncio e Ganhar</button>
-        </div>
-    </div>
-
-    <!-- SEÇÃO 3: SACAR PIX -->
-    <div id="secao-saque" class="container" style="display: none;">
-        <div class="card" style="text-align: left;">
-            <h3 style="margin-bottom: 15px; color: #00b0ff;">Solicitar Saque Express</h3>
-            
-            <div class="input-grupo">
-                <label>Tipo de Chave Pix</label>
-                <select id="tipo-chave">
-                    <option value="cpf">CPF</option>
-                    <option value="celular">Celular</option>
-                    <option value="email">E-mail</option>
-                    <option value="aleatoria">Chave Aleatória</option>
-                </select>
-            </div>
-
-            <div class="input-grupo">
-                <label>Insira sua Chave Pix</label>
-                <input type="text" id="chave-pix" placeholder="Digite a chave aqui...">
-            </div>
-
-            <div class="input-grupo">
-                <label>Valor do Saque (R$)</label>
-                <input type="number" id="valor-saque" placeholder="Mínimo R$ 10.00" step="0.01">
-            </div>
-
-            <button class="btn btn-saque" onclick="solicitarSaque()">Realizar Saque via Pix</button>
-        </div>
-    </div>
-
-    <!-- TELA DE CRONÔMETRO DO ANÚNCIO (FICA OCULTA) -->
-    <div id="tela-anuncio" class="overlay-anuncio" style="display: none;">
-        <h3>Aguarde o anúncio finalizar...</h3>
-        <p style="color: #888e94; font-size: 0.9rem; margin-top: 5px;">Não feche ou saia desta tela.</p>
-        <div id="contagem-regressiva" class="cronometro">10</div>
-        <p style="color: #00e676; font-size: 0.95rem;">Visualizando anúncio premiado</p>
-    </div>
-
-    <!-- Menu Inferior Fixo -->
-    <div class="menu-inferior">
-        <div id="btn-aba-inicio" class="menu-item ativo" onclick="alternarAba('inicio')">
-            <span>🏠</span>Início
-        </div>
-        <div id="btn-aba-anuncios" class="menu-item" onclick="alternarAba('anuncios')">
-            <span>📺</span>Anúncios
-        </div>
-        <div id="btn-aba-saque" class="menu-item" onclick="alternarAba('saque')">
-            <span>💰</span>Sacar Pix
-        </div>
-    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t border-gray-800 py-2 flex justify-around items-center z-40 max-w-md mx-auto">
+        <button onclick="changeTab('inicio')" id="btn-nav-inicio" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400 nav-active">
+            <i data-lucide="home" class="w-5 h-5"></i>Início
+        </button>
+        <button onclick="changeTab('anuncios')" id="btn-nav-anuncios" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400">
+            <i data-lucide="tv" class="w-5 h-5"></i>Anúncios
+        </button>
+        <button onclick="changeTab('sacar')" id="btn-nav-sacar" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400">
+            <i data-lucide="circle-dollar-sign" class="w-5 h-5"></i>Sacar Pix
+        </button>
+    </nav>
 
     <script>
-        // CONFIGURAÇÃO DO BANCO SUPABASE
-        const SUPABASE_URL = "SUA_URL_DO_SUPABASE_AQUI"; 
-        const SUPABASE_KEY = "SUA_KEY_DO_SUPABASE_AQUI";
+        // ========================================================
+        // 1. CONFIGURAÇÃO OFICIAL DO BANCO DE DADOS (SUPABASE REAL)
+        // ========================================================
+        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; //
+        const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; //
         
-        let supabaseClient = null;
-        if(SUPABASE_URL !== "SUA_URL_DO_SUPABASE_AQUI") {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        }
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // VARIÁVEIS DE CONTROLE LOCAL
-        let saldoAtual = 0.0000;
-        let tarefasConcluidas = 0;
-        const userId = "usuario_teste_01"; 
+        // Identificador fixo único para simular a conta deste aparelho (sem precisar de login complexo agora)
+        const USER_ID = "usuario_mobile_principal"; 
 
-        // FUNÇÃO DE ALTERNAR ABAS (CORRIGIDA)
-        function alternarAba(nomeAba) {
-            // Esconde todas as seções de conteúdo
-            document.getElementById('secao-inicio').style.display = 'none';
-            document.getElementById('secao-anuncios').style.display = 'none';
-            document.getElementById('secao-saque').style.display = 'none';
+        // Estado local da aplicação
+        let userData = { saldo: 0.0000, tarefas: 0 };
 
-            // Remove a classe 'ativo' de todos os botões do menu inferior
-            document.getElementById('btn-aba-inicio').classList.remove('ativo');
-            document.getElementById('btn-aba-anuncios').classList.remove('ativo');
-            document.getElementById('btn-aba-saque').classList.remove('ativo');
+        // Inicializar os ícones do menu inferior
+        lucide.createIcons();
 
-            // Mostra a seção desejada e ativa o botão correto
-            if (nomeAba === 'inicio') {
-                document.getElementById('secao-inicio').style.display = 'block';
-                document.getElementById('btn-aba-inicio').classList.add('ativo');
-            } else if (nomeAba === 'anuncios') {
-                document.getElementById('secao-anuncios').style.display = 'block';
-                document.getElementById('btn-aba-anuncios').classList.add('ativo');
-            } else if (nomeAba === 'saque') {
-                document.getElementById('secao-saque').style.display = 'block';
-                document.getElementById('btn-aba-saque').classList.add('ativo');
-            }
-        }
-
-        // CARREGAR DADOS DO BANCO
-        async function carregarDados() {
-            if (!supabaseClient) {
-                document.getElementById('status-banco').innerText = "Modo Demonstração Ativo";
-                return;
-            }
-
+        // Carregar dados salvos do Supabase imediatamente ao abrir a página
+        async function loadUserData() {
             try {
-                let { data, error } = await supabaseClient
+                let { data, error } = await _supabase
                     .from('usuarios_ptc')
                     .select('saldo, tarefas')
-                    .eq('id', userId)
+                    .eq('id', USER_ID)
                     .single();
 
                 if (error && error.code === 'PGRST116') {
-                    // Usuário não existe, vamos criar um inicial
-                    const { error: insertError } = await supabaseClient
+                    // Usuário ainda não existe no banco, vamos criar o registro inicial dele
+                    const { data: newUser, error: createError } = await _supabase
                         .from('usuarios_ptc')
-                        .insert([{ id: userId, saldo: 0.0, tarefas: 0 }]);
+                        .insert([{ id: USER_ID, saldo: 0.0000, tarefas: 0 }])
+                        .select()
+                        .single();
                     
-                    saldoAtual = 0.0;
-                    tarefasConcluidas = 0;
-                } else if (data) {
-                    saldoAtual = parseFloat(data.saldo);
-                    tarefasConcluidas = parseInt(data.tarefas);
+                    if (newUser) data = newUser;
                 }
 
-                atualizarTela();
-                document.getElementById('status-banco').innerText = "Sincronizado com Supabase";
-                document.getElementById('status-banco').style.color = "#00e676";
+                if (data) {
+                    userData.saldo = parseFloat(data.saldo);
+                    userData.tarefas = parseInt(data.tarefas);
+                    updateUI();
+                    document.getElementById('status-banco').innerHTML = "🟢 Banco de dados sincronizado";
+                    document.getElementById('status-banco').className = "text-xs text-emerald-500 mt-2";
+                }
             } catch (err) {
-                document.getElementById('status-banco').innerText = "Erro ao conectar. Usando local.";
+                console.error("Erro ao conectar com o Supabase:", err);
+                document.getElementById('status-banco').innerHTML = "🔴 Erro de sincronização. Usando offline.";
+                document.getElementById('status-banco').className = "text-xs text-red-500 mt-2";
             }
         }
 
-        function atualizarTela() {
-            document.getElementById('exibir-saldo').innerText = "R$ " + saldoAtual.toFixed(4);
-            document.getElementById('exibir-tarefas').innerText = tarefasConcluidas;
+        // Atualiza os valores visíveis no app
+        function updateUI() {
+            document.getElementById('txt-saldo').innerText = `R$ ${userData.saldo.toFixed(4)}`;
+            document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
-        // FLUXO DO CRONÔMETRO DE ANÚNCIO
-        function iniciarAnuncio(recompensa, tempo) {
-            const telaAnuncio = document.getElementById('tela-anuncio');
-            const contador = document.getElementById('contagem-regressiva');
+        // Troca de abas do menu de navegação inferior
+        function changeTab(tabName) {
+            const tabs = ['inicio', 'anuncios', 'sacar'];
+            tabs.forEach(t => {
+                document.getElementById(`aba-${t}`).classList.add('hidden');
+                document.getElementById(`btn-nav-${t}`).classList.remove('nav-active');
+            });
+            document.getElementById(`aba-${tabName}`).classList.remove('hidden');
+            document.getElementById(`btn-nav-${tabName}`).classList.add('nav-active');
+        }
+
+        // ========================================================
+        // 2. SISTEMA DE MONETIZAÇÃO DE ANÚNCIOS REAIS
+        // ========================================================
+        async function startAd(title, reward, duration) {
+            // 🛑 COLOQUE O SEU LINK DA REDE DE ANÚNCIOS (Monetag, Adsterra, etc.) AQUI ABAIXO:
+            const URL_DO_SEU_ANUNCIO_REAL = "https://www.google.com"; 
+
+            // Abre o anúncio real gerando faturamento para você em uma nova aba do navegador
+            window.open(URL_DO_SEU_ANUNCIO_REAL, "_blank");
+
+            // Exibe a tela de contagem regressiva obrigatória no seu aplicativo para reter o usuário
+            const overlay = document.getElementById('timer-overlay');
+            const countdownEl = document.getElementById('countdown');
+            document.getElementById('ad-title').innerText = title;
             
-            telaAnuncio.style.display = 'flex';
-            let tempoRestante = tempo;
-            contador.innerText = tempoRestante;
+            let timeLeft = duration;
+            countdownEl.innerText = timeLeft;
+            overlay.classList.remove('hidden');
 
-            const intervalo = setInterval(async () => {
-                tempoRestante--;
-                contador.innerText = tempoRestante;
+            const timer = setInterval(async () => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft < 10 ? '0' + timeLeft : timeLeft;
 
-                if (tempoRestante <= 0) {
-                    clearInterval(intervalo);
-                    telaAnuncio.style.display = 'none';
-                    
-                    // Bonificar
-                    saldoAtual += recompensa;
-                    tarefasConcluidas += 1;
-                    atualizarTela();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    overlay.classList.add('hidden');
 
-                    // Salvar no Banco
-                    if (supabaseClient) {
-                        await supabaseClient
-                            .from('usuarios_ptc')
-                            .update({ saldo: saldoAtual, tarefas: tarefasConcluidas })
-                            .eq('id', userId);
-                    }
-                    
-                    alert("Parabéns! Recompensa de R$ " + recompensa.toFixed(4) + " adicionada!");
-                    alternarAba('inicio'); // Volta para o início após ganhar
+                    // Incrementa os valores localmente
+                    userData.saldo += reward;
+                    userData.tarefas += 1;
+                    updateUI();
+
+                    // Salva permanentemente o novo saldo faturado direto no Supabase
+                    await _supabase
+                        .from('usuarios_ptc')
+                        .update({ saldo: userData.saldo, tarefas: userData.tarefas })
+                        .eq('id', USER_ID);
+
+                    alert(`Parabéns! Você recebeu +R$ ${reward.toFixed(4)} por assistir o anúncio completo.`);
                 }
             }, 1000);
         }
 
-        // SOLICITAR SAQUE VIA PIX
-        async function solicitarSaque() {
-            const chave = document.getElementById('chave-pix').value.trim();
-            const valor = parseFloat(document.getElementById('valor-saque').value);
+        // ========================================================
+        // 3. SISTEMA DE SOLICITAÇÃO DE SAQUES VIA PIX
+        // ========================================================
+        async function requestWithdrawal() {
+            const type = document.getElementById('tipo-pix').value;
+            const key = document.getElementById('chave-pix').value.trim();
+            const value = parseFloat(document.getElementById('valor-saque').value);
 
-            if (!chave) {
-                alert("Por favor, preencha sua Chave Pix.");
+            if (!key) {
+                alert("Por favor, preencha sua chave Pix para receber o pagamento.");
                 return;
             }
-            if (isNaN(valor) || valor < 10) {
-                alert("O valor mínimo para saque é de R$ 10,00.");
+            if (isNaN(value) || value < 10) {
+                alert("O valor mínimo exigido para realizar um saque é de R$ 10,00.");
                 return;
             }
-            if (valor > saldoAtual) {
-                alert("Saldo insuficiente para esta retirada.");
+            if (value > userData.saldo) {
+                alert("Saldo insuficiente para concluir essa retirada.");
                 return;
             }
 
-            // Deduz o saldo localmente
-            saldoAtual -= valor;
-            atualizarTela();
+            // Subtrai o valor do saldo do usuário
+            userData.saldo -= value;
+            updateUI();
 
-            // Atualiza dados no Supabase se configurado
-            if (supabaseClient) {
-                await supabaseClient
-                    .from('usuarios_ptc')
-                    .update({ saldo: saldoAtual })
-                    .eq('id', userId);
+            // Atualiza o saldo atualizado no banco do Supabase
+            await _supabase
+                .from('usuarios_ptc')
+                .update({ saldo: userData.saldo })
+                .eq('id', USER_ID);
 
-                // Registra na tabela de saques
-                await supabaseClient
-                    .from('solicitacoes_saque')
-                    .insert([{ usuario_id: userId, chave_pix: chave, valor_saque: valor, status: 'pendente' }]);
-            }
+            // Registra a ordem de pagamento na tabela para você gerenciar os pagamentos
+            await _supabase
+                .from('solicitacoes_saque')
+                .insert([{
+                    usuario_id: USER_ID,
+                    chave_pix: `[${type}] ${key}`,
+                    valor_saque: value,
+                    status: 'pendente'
+                }]);
 
-            alert("Sucesso! Seu saque de R$ " + valor.toFixed(2) + " foi solicitado e está em processamento.");
+            alert("Pedido de Saque Pix enviado com sucesso! O valor foi debitado da sua conta e será analisado pela administração.");
             document.getElementById('chave-pix').value = "";
             document.getElementById('valor-saque').value = "";
-            alternarAba('inicio');
         }
 
-        // Inicializa a carga ao abrir a página
-        window.onload = carregarDados;
+        // Executa a carga inicial ao abrir o app
+        window.onload = loadUserData;
     </script>
 </body>
 </html>
