@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium Stream | Hub de Conteúdo Profissional</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
@@ -25,16 +25,17 @@
         .scrollbar-none::-webkit-scrollbar { display: none; }
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Customização do Container de Vídeo */
         .plyr { border-radius: 20px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7); }
         .plyr--video { background: #000 !important; }
         
-        /* Correção Cirúrgica do posicionamento dos Anúncios */
+        /* Posicionamento Cirúrgico dos Blocos de Anúncios Fixos */
         .ad-container-fixed {
             position: fixed;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 28rem;
+            max-width: 28rem; /* Limita ao tamanho max-w-md */
             background-color: #09090b;
             z-index: 50;
             display: flex;
@@ -144,15 +145,16 @@
     </div>
 
     <script>
+        // Configuração Pública de Acesso ao Supabase
         const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
         let userData = { saldo: 0, tarefas: 0 };
         let userId = null;
         let watchInterval = null;
         let secondsWatched = 0;
         let playerInstance = null;
-        const RECOMPENSA_MINUTO = 0.1200;
+        const RECOMPENSA_MINUTO = 0.1200; // Valor pago por minuto assistido completo
 
-        // IDs limpos do YouTube obtidos direto do compartilhamento oficial
+        // Catálogo de Mídias Livres Estabilizado com IDs limpos do YouTube
         const CATALOGO_FILMES = [
             { id: "1", titulo: "A Noite dos Mortos Vivos (Clássico)", genero: "Suspense", ytId: "7z70S_S-R_E", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
             { id: "2", titulo: "Megastruturas da Engenharia", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400" },
@@ -161,16 +163,16 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicialização precisa do Core do Plyr
+            // Inicialização precisa e limpa da API do Plyr
             playerInstance = new Plyr('#player-target', {
                 controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
                 youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3 }
             });
             
-            // Força a primeira renderização manual dos blocos de anúncios assim que carregar o DOM
+            // Dispara os anúncios nativos imediatamente na primeira carga
             forçarRenderizacaoAnuncios();
 
-            // Rotacionador Dinâmico Silencioso (A cada 45 segundos)
+            // GERENCIADOR REFRESH: Rotaciona e puxa novos banners a cada 45 segundos de forma silenciosa
             setInterval(() => {
                 if (userId && document.getElementById('aba-videos').classList.contains('active')) {
                     forçarRenderizacaoAnuncios();
@@ -178,6 +180,7 @@
             }, 45000);
         });
 
+        // Função responsável por reinjetar as tags da AdNetwork e forçar o re-mapeamento do script parceiro
         function forçarRenderizacaoAnuncios() {
             const topSlot = document.getElementById('ad-slot-top');
             const bottomSlot = document.getElementById('ad-slot-bottom');
@@ -186,13 +189,14 @@
                 topSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
                 bottomSlot.innerHTML = '<div class="native-ad-holder" data-zone="11216881"></div>';
                 
-                // Força a biblioteca de anúncios a mapear a página de novo e injetar as imagens dentro das divs
+                // Aciona o re-render nativo do script da rede, se carregado no escopo global
                 if (window.ctag && typeof window.ctag.run === 'function') {
                     window.ctag.run();
                 }
             }
         }
 
+        // Recupera ou cria os dados de perfil do usuário logado dentro do banco de dados
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
@@ -210,6 +214,7 @@
             darPlayNoFilme(CATALOGO_FILMES[0].ytId, CATALOGO_FILMES[0].titulo);
         }
 
+        // Renderiza dinamicamente as capas do catálogo
         function renderizarCatalogo(filmes) {
             const container = document.getElementById('lista-filmes-catalogo');
             container.innerHTML = "";
@@ -223,12 +228,12 @@
             });
         }
 
+        // Altera o Source do player ativo e reseta o marcador local de minutos
         function darPlayNoFilme(ytId, titulo) {
             secondsWatched = 0;
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
-            // Atualização correta do Source da API do Plyr sem travar o player
             if (playerInstance) {
                 playerInstance.source = {
                     type: 'video',
@@ -238,15 +243,16 @@
             iniciarRastreadorTempo();
         }
 
+        // Filtra os filmes pelas categorias informadas
         function selecionarCategoria(genero) {
             if (genero === 'Todos') renderizarCatalogo(CATALOGO_FILMES);
             else renderizarCatalogo(CATALOGO_FILMES.filter(f => f.genero === genero));
         }
 
+        // Temporizador inteligente. Só conta se o player estiver em estado de PLAY ativo
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
-                // Monitoramento seguro de execução ativa
                 if (playerInstance && playerInstance.playing) {
                     secondsWatched++;
                     document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
@@ -257,6 +263,7 @@
                         userData.tarefas += 1;
                         updateUI();
                         
+                        // Atualização direta na tabela do banco
                         await _supabase.from('usuarios_ptc').update({ 
                             saldo: userData.saldo, 
                             tarefas: userData.tarefas 
@@ -266,11 +273,13 @@
             }, 1000);
         }
 
+        // Sincroniza os dados com as labels de texto da Interface do Usuário
         function updateUI() {
             document.getElementById('txt-saldo').innerText = `R$ ${parseFloat(userData.saldo).toFixed(4)}`;
             document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
+        // Altera de abas e gerencia o estado de pausa do player para evitar fraudes de áudio em background
         function changeTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -286,6 +295,7 @@
             }
         }
 
+        // Processamento básico local do gatilho de saques
         async function solicitarSaque() {
             const valor = parseFloat(document.getElementById('valor-saque').value);
             const chave = document.getElementById('chave-pix').value.trim();
@@ -293,13 +303,15 @@
             if(!chave) return alert("Por favor, insira uma chave Pix.");
             if(valor > userData.saldo) return alert("Saldo insuficiente.");
             
-            alert(`Solicitação de R$ ${valor.toFixed(2)} enviada com sucesso!`);
+            alert(`Solicitação de R$ ${valor.toFixed(2)} enviada com sucesso para processamento!`);
         }
 
-        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta criada!"); }
+        // Funções de Autenticação Nativas do Supabase Auth
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta criada com sucesso!"); }
         async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
+        // Ouvinte de estado de Sessão Ativa do Supabase
         _supabase.auth.onAuthStateChange((event, session) => {
             if (session) { 
                 document.getElementById('auth-screen').classList.add('hidden'); 
