@@ -1,0 +1,148 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganhe no Pix - Plataforma PTC</title>
+    <!-- Carrega a biblioteca oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #121212; color: #fff; margin: 0; padding: 20px; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); max-width: 400px; margin: 20px auto; }
+        .btn { background: #00e676; color: #000; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn:disabled { background: #555; color: #aaa; cursor: not-allowed; }
+        #cronometro { font-size: 24px; color: #ffeb3b; margin: 15px 0; display: none; }
+        .status { color: #888; font-size: 12px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Seu Saldo Real</h2>
+        <h1 style="color: #00e676;">R$ <span id="saldo">0.0000</span></h1>
+        <p>Anúncios vistos: <span id="contador">0</span></p>
+        
+        <hr style="border: 1px solid #333;">
+
+        <div id="cronometro">Assista ao Anúncio: <span id="tempo">15</span>s</div>
+        <button class="btn" id="btnAnuncio" onclick="iniciarAnuncio()">Assistir Anúncio e Ganhar</button>
+        <div class="status" id="statusConexao">Conectando ao banco de dados...</div>
+    </div>
+
+    <script>
+        // Configuração das suas credenciais do Supabase
+        const SUPABASE_URL = "https://hvivrmdygyttdlapjbi.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ID do usuário administrativo de teste que criamos no banco
+        const USUARIO_TESTE_EMAIL = "admin@teste.com";
+        let usuarioId = null;
+        let saldoAtual = 0.0000;
+        let anunciosVistos = 0;
+        let tempoRestante = 15;
+        let intervalo = null;
+        let estaAssistindo = false;
+
+        // Puxa os dados reais do banco assim que a página abre
+        async function carregarDadosUsuario() {
+            try {
+                let { data, error } = await supabase
+                    .from('usuarios')
+                    .select('*')
+                    .eq('email', USUARIO_TESTE_EMAIL)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    usuarioId = data.id;
+                    saldoAtual = parseFloat(data.saldo_reais);
+                    anunciosVistos = data.total_anuncios_vistos;
+                    
+                    document.getElementById("saldo").innerText = saldoAtual.toFixed(4);
+                    document.getElementById("contador").innerText = anunciosVistos;
+                    document.getElementById("statusConexao").innerText = "Sincronizado com o Banco com Sucesso! ✅";
+                    document.getElementById("statusConexao").style.color = "#00e676";
+                }
+            } catch (err) {
+                console.error("Erro ao conectar:", err);
+                document.getElementById("statusConexao").innerText = "Erro de conexão ou política RLS ativa.";
+                document.getElementById("statusConexao").style.color = "#ff5252";
+            }
+        }
+
+        // SISTEMA ANTIFRAUDE: Trava o ganho se o usuário mudar de aba ou minimizar
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && estaAssistindo) {
+                clearInterval(intervalo);
+                alert("⚠️ Cronômetro PAUSADO! Você saiu da página. O anúncio precisa ser assistido sem fechar a tela.");
+            } else if (!document.hidden && estaAssistindo) {
+                intervalo = setInterval(atualizarTempo, 1000);
+            }
+        });
+
+        function iniciarAnuncio() {
+            if (!usuarioId) {
+                alert("Aguarde a sincronização com o banco de dados.");
+                return;
+            }
+            estaAssistindo = true;
+            tempoRestante = 15;
+            document.getElementById("btnAnuncio").disabled = true;
+            document.getElementById("cronometro").style.display = "block";
+            document.getElementById("tempo").innerText = tempoRestante;
+
+            intervalo = setInterval(atualizarTempo, 1000);
+        }
+
+        function atualizarTempo() {
+            tempoRestante--;
+            document.getElementById("tempo").innerText = tempoRestante;
+            if (tempoRestante <= 0) {
+                clearInterval(intervalo);
+                finalizarAnuncio();
+            }
+        }
+
+        // Executado quando o anúncio termina com sucesso
+        async function finalizarAnuncio() {
+            estaAssistindo = false;
+            document.getElementById("cronometro").style.display = "none";
+            document.getElementById("btnAnuncio").disabled = false;
+            
+            // Valor de recompensa por clique (Ex: R$ 0,02)
+            const recompensa = 0.0200;
+            saldoAtual += recompensa;
+            anunciosVistos += 1;
+
+            document.getElementById("statusConexao").innerText = "Salvando saldo no banco de dados...";
+            document.getElementById("statusConexao").style.color = "#ffeb3b";
+
+            // SALVA DIRETO NO SUPABASE
+            const { error } = await supabase
+                .from('usuarios')
+                .update({ 
+                    saldo_reais: saldoAtual, 
+                    total_anuncios_vistos: anunciosVistos,
+                    ultimo_anuncio_visto: new Date().toISOString()
+                })
+                .eq('id', usuarioId);
+
+            if (error) {
+                alert("Erro ao salvar saldo. Verifique as políticas de segurança.");
+                console.error(error);
+            } else {
+                document.getElementById("saldo").innerText = saldoAtual.toFixed(4);
+                document.getElementById("contador").innerText = anunciosVistos;
+                document.getElementById("statusConexao").innerText = "Saldo atualizado na Nuvem! 💰";
+                document.getElementById("statusConexao").style.color = "#00e676";
+                alert("🎉 Parabéns! R$ 0,02 foram creditados na sua conta.");
+            }
+        }
+
+        // Inicializa a conexão
+        carregarDadosUsuario();
+    </script>
+</body>
+</html>
