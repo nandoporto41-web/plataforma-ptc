@@ -35,12 +35,12 @@
 
             <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-2">
                 <h3 class="text-white font-bold flex items-center gap-2 text-sm">
-                    📊 Novidades e Dicas
+                    📊 Informações Importantes
                 </h3>
                 <ul class="text-xs text-gray-400 space-y-1 list-disc list-inside">
-                    <li>Assista aos anúncios na aba "Anúncios" para acumular saldo.</li>
-                    <li>Mantenha a aba aberta durante o cronômetro para validar a recompensa.</li>
-                    <li>O valor mínimo para retirada via Pix é de R$ 10,00.</li>
+                    <li>Fique atento à barra de contagem superior ao abrir um anúncio.</li>
+                    <li>Após zerar o cronômetro, sua recompensa entra na hora.</li>
+                    <li>O saque mínimo via Pix é de R$ 10,00.</li>
                 </ul>
             </div>
         </section>
@@ -49,10 +49,10 @@
         <section id="aba-anuncios" class="space-y-4 hidden">
             <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
                 <div>
-                    <h4 class="text-white font-bold text-sm">Anúncio Master #01</h4>
+                    <h4 class="text-white font-bold text-sm">Anúncio Especial #01</h4>
                     <p class="text-xs text-emerald-400 font-medium">Recompensa: +R$ 0.1500</p>
                 </div>
-                <button onclick="startAd('Anúncio Master #01', 0.1500, 15)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
+                <button onclick="startAd('Anúncio Especial #01', 0.1500, 15)" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-xl transition text-sm">
                     Assistir Anúncio e Ganhar
                 </button>
             </div>
@@ -97,17 +97,22 @@
 
     </main>
 
-    <!-- TELA FLUTUANTE DE ANÚNCIO -->
-    <div id="timer-overlay" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden p-6 text-center">
-        <div class="space-y-4 max-w-xs">
-            <h3 id="ad-title" class="text-lg font-bold text-white">Visualizando anúncio...</h3>
-            <p class="text-sm text-gray-400">Aguarde o cronômetro terminar para validar seus ganhos.</p>
-            <div class="relative flex items-center justify-center">
-                <div class="w-24 h-24 rounded-full border-4 border-gray-800 flex items-center justify-center">
-                    <span id="countdown" class="text-3xl font-black text-emerald-400">00</span>
-                </div>
+    <!-- TELA CHEIA INTEGRADA COM VISUALIZADOR DE ANÚNCIO E CRONÔMETRO SUPERIOR -->
+    <div id="timer-overlay" class="fixed inset-0 bg-[#121212] flex flex-col z-50 hidden">
+        <!-- BARRA DO TEMPO FIXA NO TOPO -->
+        <div class="bg-[#1E1E1E] border-b border-gray-800 p-4 flex justify-between items-center z-50">
+            <div class="text-left">
+                <h3 id="ad-title" class="text-xs font-bold text-white truncate max-w-[180px]">Visualizando...</h3>
+                <p id="ad-status" class="text-[10px] text-yellow-500 animate-pulse">Aguarde para validar seus ganhos</p>
             </div>
-            <p class="text-xs text-yellow-500 animate-pulse">Não feche esta página!</p>
+            <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-gray-700">
+                <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Tempo:</span>
+                <span id="countdown" class="text-base font-black text-emerald-400 min-w-[20px] text-center">00</span>
+            </div>
+        </div>
+        <!-- FRAME QUE CARREGA O ANÚNCIO LOGO ABAIXO DA BARRA -->
+        <div class="flex-grow w-full h-full relative bg-white">
+            <iframe id="ad-frame" class="w-full h-full border-none" src=""></iframe>
         </div>
     </div>
 
@@ -180,14 +185,14 @@
         }
 
         async function startAd(title, reward, duration) {
-            // LINK MONETIZADO CONFIGURADO COM SUCESSO COLETADO DO PRINT Screenshot_2026-06-29-11-55-14-208_com.android.chrome.jpg
             const URL_DO_SEU_ANUNCIO_REAL = "https://omg10.com/4/11216881"; 
 
-            window.open(URL_DO_SEU_ANUNCIO_REAL, "_blank");
-
+            // Configura o visualizador interno para prender o usuário
+            document.getElementById('ad-title').innerText = title;
+            document.getElementById('ad-frame').src = URL_DO_SEU_ANUNCIO_REAL;
+            
             const overlay = document.getElementById('timer-overlay');
             const countdownEl = document.getElementById('countdown');
-            document.getElementById('ad-title').innerText = title;
             
             let timeLeft = duration;
             countdownEl.innerText = timeLeft;
@@ -195,12 +200,16 @@
 
             const timer = setInterval(async () => {
                 timeLeft--;
-                countdownEl.innerText = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+                countdownEl.innerText = timeLeft;
 
                 if (timeLeft <= 0) {
                     clearInterval(timer);
+                    
+                    // Limpa e esconde o visualizador de anúncios
+                    document.getElementById('ad-frame').src = "";
                     overlay.classList.add('hidden');
 
+                    // Atualiza saldo localmente e envia ao banco
                     userData.saldo += reward;
                     userData.tarefas += 1;
                     updateUI();
@@ -210,7 +219,7 @@
                         .update({ saldo: userData.saldo, tarefas: userData.tarefas })
                         .eq('id', USER_ID);
 
-                    alert(`Parabéns! Você recebeu +R$ ${reward.toFixed(4)} por assistir o anúncio completo.`);
+                    alert(`Parabéns! Você recebeu +R$ ${reward.toFixed(4)} por assistir o anúncio.`);
                 }
             }, 1000);
         }
