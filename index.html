@@ -9,19 +9,22 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { background-color: #121212; color: #E0E0E0; font-family: sans-serif; }
-        .nav-active { color: #10B981; } /* Verde brilhante para aba ativa */
+        .nav-active { color: #10B981; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen pb-20">
 
+    <!-- CABEÇALHO -->
     <header class="bg-[#1E1E1E] border-b border-gray-800 p-4 text-center sticky top-0 z-50">
         <h1 class="text-xl font-bold text-white flex items-center justify-center gap-2">
             Plataforma PTC Premium 💎
         </h1>
     </header>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow p-4 max-w-md mx-auto w-full">
         
+        <!-- ABA: INÍCIO -->
         <section id="aba-inicio" class="space-y-4">
             <div class="bg-[#1E1E1E] p-6 rounded-2xl border border-gray-800 text-center shadow-lg">
                 <p class="text-gray-400 text-sm mb-1">Seu Saldo Disponível</p>
@@ -42,6 +45,7 @@
             </div>
         </section>
 
+        <!-- ABA: ANÚNCIOS -->
         <section id="aba-anuncios" class="space-y-4 hidden">
             <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
                 <div>
@@ -64,10 +68,10 @@
             </div>
         </section>
 
+        <!-- ABA: SACAR PIX -->
         <section id="aba-sacar" class="space-y-4 hidden">
             <div class="bg-[#1E1E1E] p-5 rounded-2xl border border-gray-800 space-y-4">
                 <h3 class="text-sky-400 font-bold text-lg">Solicitar Saque Express</h3>
-                
                 <div class="space-y-1">
                     <label class="text-xs text-gray-400">Tipo de Chave Pix</label>
                     <select id="tipo-pix" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-sky-500">
@@ -77,17 +81,14 @@
                         <option value="Chave Aleatória">Chave Aleatória</option>
                     </select>
                 </div>
-
                 <div class="space-y-1">
                     <label class="text-xs text-gray-400">Insira sua Chave Pix</label>
                     <input type="text" id="chave-pix" placeholder="Digite a chave aqui..." class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
                 </div>
-
                 <div class="space-y-1">
                     <label class="text-xs text-gray-400">Valor do Saque (R$)</label>
                     <input type="number" id="valor-saque" placeholder="Mínimo R$ 10.00" class="w-full bg-[#2A2A2A] border border-gray-700 rounded-xl p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
                 </div>
-
                 <button onclick="requestWithdrawal()" class="w-full bg-sky-500 hover:bg-sky-600 text-black font-bold py-3 rounded-xl transition text-sm shadow-lg">
                     Realizar Saque via Pix
                 </button>
@@ -96,6 +97,7 @@
 
     </main>
 
+    <!-- TELA FLUTUANTE DE ANÚNCIO -->
     <div id="timer-overlay" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden p-6 text-center">
         <div class="space-y-4 max-w-xs">
             <h3 id="ad-title" class="text-lg font-bold text-white">Visualizando anúncio...</h3>
@@ -109,6 +111,7 @@
         </div>
     </div>
 
+    <!-- MENU DE NAVEGAÇÃO INFERIOR -->
     <nav class="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t border-gray-800 py-2 flex justify-around items-center z-40 max-w-md mx-auto">
         <button onclick="changeTab('inicio')" id="btn-nav-inicio" class="flex flex-col items-center gap-1 text-xs font-medium text-gray-400 nav-active">
             <i data-lucide="home" class="w-5 h-5"></i>Início
@@ -121,25 +124,17 @@
         </button>
     </nav>
 
+    <!-- LOGIC SYSTEM & CONEXÃO SUPABASE -->
     <script>
-        // ========================================================
-        // 1. CONFIGURAÇÃO OFICIAL DO BANCO DE DADOS (SUPABASE REAL)
-        // ========================================================
-        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; //
-        const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; //
-        
+        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
+        const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Identificador fixo único para simular a conta deste aparelho (sem precisar de login complexo agora)
         const USER_ID = "usuario_mobile_principal"; 
-
-        // Estado local da aplicação
         let userData = { saldo: 0.0000, tarefas: 0 };
 
-        // Inicializar os ícones do menu inferior
         lucide.createIcons();
 
-        // Carregar dados salvos do Supabase imediatamente ao abrir a página
         async function loadUserData() {
             try {
                 let { data, error } = await _supabase
@@ -149,13 +144,11 @@
                     .single();
 
                 if (error && error.code === 'PGRST116') {
-                    // Usuário ainda não existe no banco, vamos criar o registro inicial dele
-                    const { data: newUser, error: createError } = await _supabase
+                    const { data: newUser } = await _supabase
                         .from('usuarios_ptc')
                         .insert([{ id: USER_ID, saldo: 0.0000, tarefas: 0 }])
                         .select()
                         .single();
-                    
                     if (newUser) data = newUser;
                 }
 
@@ -167,19 +160,15 @@
                     document.getElementById('status-banco').className = "text-xs text-emerald-500 mt-2";
                 }
             } catch (err) {
-                console.error("Erro ao conectar com o Supabase:", err);
-                document.getElementById('status-banco').innerHTML = "🔴 Erro de sincronização. Usando offline.";
-                document.getElementById('status-banco').className = "text-xs text-red-500 mt-2";
+                console.error(err);
             }
         }
 
-        // Atualiza os valores visíveis no app
         function updateUI() {
             document.getElementById('txt-saldo').innerText = `R$ ${userData.saldo.toFixed(4)}`;
             document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
-        // Troca de abas do menu de navegação inferior
         function changeTab(tabName) {
             const tabs = ['inicio', 'anuncios', 'sacar'];
             tabs.forEach(t => {
@@ -190,17 +179,12 @@
             document.getElementById(`btn-nav-${tabName}`).classList.add('nav-active');
         }
 
-        // ========================================================
-        // 2. SISTEMA DE MONETIZAÇÃO DE ANÚNCIOS REAIS
-        // ========================================================
         async function startAd(title, reward, duration) {
-            // 🛑 COLOQUE O SEU LINK DA REDE DE ANÚNCIOS (Monetag, Adsterra, etc.) AQUI ABAIXO:
-            const URL_DO_SEU_ANUNCIO_REAL = "https://www.google.com"; 
+            // LINK MONETIZADO CONFIGURADO COM SUCESSO COLETADO DO PRINT Screenshot_2026-06-29-11-55-14-208_com.android.chrome.jpg
+            const URL_DO_SEU_ANUNCIO_REAL = "https://omg10.com/4/11216881"; 
 
-            // Abre o anúncio real gerando faturamento para você em uma nova aba do navegador
             window.open(URL_DO_SEU_ANUNCIO_REAL, "_blank");
 
-            // Exibe a tela de contagem regressiva obrigatória no seu aplicativo para reter o usuário
             const overlay = document.getElementById('timer-overlay');
             const countdownEl = document.getElementById('countdown');
             document.getElementById('ad-title').innerText = title;
@@ -217,12 +201,10 @@
                     clearInterval(timer);
                     overlay.classList.add('hidden');
 
-                    // Incrementa os valores localmente
                     userData.saldo += reward;
                     userData.tarefas += 1;
                     updateUI();
 
-                    // Salva permanentemente o novo saldo faturado direto no Supabase
                     await _supabase
                         .from('usuarios_ptc')
                         .update({ saldo: userData.saldo, tarefas: userData.tarefas })
@@ -233,53 +215,27 @@
             }, 1000);
         }
 
-        // ========================================================
-        // 3. SISTEMA DE SOLICITAÇÃO DE SAQUES VIA PIX
-        // ========================================================
         async function requestWithdrawal() {
             const type = document.getElementById('tipo-pix').value;
             const key = document.getElementById('chave-pix').value.trim();
             const value = parseFloat(document.getElementById('valor-saque').value);
 
-            if (!key) {
-                alert("Por favor, preencha sua chave Pix para receber o pagamento.");
-                return;
-            }
-            if (isNaN(value) || value < 10) {
-                alert("O valor mínimo exigido para realizar um saque é de R$ 10,00.");
-                return;
-            }
-            if (value > userData.saldo) {
-                alert("Saldo insuficiente para concluir essa retirada.");
+            if (!key || isNaN(value) || value < 10 || value > userData.saldo) {
+                alert("Verifique os dados informados, valor mínimo de R$ 10,00 ou saldo insuficiente.");
                 return;
             }
 
-            // Subtrai o valor do saldo do usuário
             userData.saldo -= value;
             updateUI();
 
-            // Atualiza o saldo atualizado no banco do Supabase
-            await _supabase
-                .from('usuarios_ptc')
-                .update({ saldo: userData.saldo })
-                .eq('id', USER_ID);
+            await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo }).eq('id', USER_ID);
+            await _supabase.from('solicitacoes_saque').insert([{ usuario_id: USER_ID, chave_pix: `[${type}] ${key}`, valor_saque: value, status: 'pendente' }]);
 
-            // Registra a ordem de pagamento na tabela para você gerenciar os pagamentos
-            await _supabase
-                .from('solicitacoes_saque')
-                .insert([{
-                    usuario_id: USER_ID,
-                    chave_pix: `[${type}] ${key}`,
-                    valor_saque: value,
-                    status: 'pendente'
-                }]);
-
-            alert("Pedido de Saque Pix enviado com sucesso! O valor foi debitado da sua conta e será analisado pela administração.");
+            alert("Pedido de Saque Pix enviado com sucesso!");
             document.getElementById('chave-pix').value = "";
             document.getElementById('valor-saque').value = "";
         }
 
-        // Executa a carga inicial ao abrir o app
         window.onload = loadUserData;
     </script>
 </body>
