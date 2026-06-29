@@ -6,7 +6,6 @@
     <title>Premium Stream | Assista e Ganhe</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- API do Player do YouTube para monitoramento profissional -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <style>
         body { background-color: #09090b; color: #f4f4f5; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -14,10 +13,13 @@
         .tab-content.active { display: block; }
         .nav-btn.active { color: #10b981; border-top: 2px solid #10b981; }
     </style>
+
+    <!-- ANÚNCIOS DA MONETAG -->
+    <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <!-- TELA DE AUTENTICAÇÃO (LOGIN/CADASTRO) -->
+    <!-- TELA DE AUTENTICAÇÃO -->
     <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
         <div class="text-center mb-4">
             <h1 class="text-3xl font-black text-white tracking-tight">Premium Stream 💎</h1>
@@ -27,34 +29,29 @@
             <input type="email" id="email" placeholder="Seu e-mail" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl text-white focus:outline-none focus:border-emerald-500 transition">
             <input type="password" id="password" placeholder="Sua senha" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl text-white focus:outline-none focus:border-emerald-500 transition">
         </div>
-        <button onclick="signIn()" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold text-black transition shadow-lg shadow-emerald-500/10">Entrar</button>
+        <button onclick="signIn()" class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold text-black transition shadow-lg">Entrar</button>
         <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta Individual</button>
     </section>
 
-    <!-- PAINEL PRINCIPAL (PROTEGIDO) -->
+    <!-- PAINEL PRINCIPAL -->
     <div id="dashboard" class="hidden flex flex-col min-h-screen">
         
-        <!-- Header Principal -->
         <header class="bg-zinc-950/80 backdrop-blur border-b border-zinc-900 p-4 sticky top-0 z-40 flex justify-between items-center">
             <span class="font-black text-white tracking-wider">PREMIUM STREAM</span>
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
 
-        <!-- ESPAÇO PARA ANÚNCIO TOP (MONETAG BANNER) -->
+        <!-- PÁGINA MONETIZADA -->
         <div class="w-full text-center py-2 bg-zinc-900/50 border-b border-zinc-900 text-[10px] text-zinc-600">
             PÁGINA MONETIZADA — ANÚNCIO
-            <div id="monetag-banner-top" class="mt-1 flex justify-center">
-                <!-- Cole seu script de Banner da Monetag aqui -->
-            </div>
+            <div class="mt-1 flex justify-center min-h-[50px]" id="ad-banner-top"></div>
         </div>
 
-        <!-- CONTEÚDO DINÂMICO -->
         <main class="flex-grow p-4 max-w-md mx-auto w-full pb-24">
             
-            <!-- ABA: INÍCIO / SALDO -->
+            <!-- ABA: INÍCIO -->
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl"></div>
                     <p class="text-zinc-400 text-xs uppercase tracking-widest font-semibold">Seu Saldo Acumulado</p>
                     <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400 my-2">R$ 0.0000</h2>
                     <div class="flex justify-between items-center text-xs text-zinc-500 pt-2 border-t border-zinc-800/60">
@@ -62,97 +59,159 @@
                         <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sistema Seguro</span>
                     </div>
                 </div>
-
-                <!-- Card informativo sobre regras -->
-                <div class="bg-zinc-900/40 p-4 rounded-2xl border border-zinc-800/60 text-xs text-zinc-400 space-y-1">
-                    <p class="font-semibold text-zinc-300">💡 Como funciona?</p>
-                    <p>A cada 60 segundos assistidos na aba "Vídeos", você pontua de verdade. Bots ou abas inativas invalidam o saldo diário.</p>
-                </div>
             </section>
 
-            <!-- ABA: VÍDEOS (SISTEMA COM PONTUAÇÃO AUTOMÁTICA) -->
+            <!-- ABA: VÍDEOS (MECANISMO DE BUSCA, CATEGORIAS E SELEÇÃO) -->
             <section id="aba-videos" class="tab-content space-y-4">
-                <div class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
+                
+                <!-- Barra de Busca Inteligente -->
+                <div class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 flex gap-2">
+                    <input type="text" id="input-busca-video" placeholder="Digite o nome ou gênero do filme (ex: Ação)..." class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <button onclick="filtrarFilmes()" class="bg-emerald-500 hover:bg-emerald-600 px-4 rounded-xl text-xs font-bold text-black transition">Buscar</button>
+                </div>
+
+                <!-- Botões de Categorias Prontas -->
+                <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">🍿 Todos</button>
+                    <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">💥 Ação</button>
+                    <button onclick="selecionarCategoria('Terror')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">👻 Terror</button>
+                    <button onclick="selecionarCategoria('Comédia')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">😂 Comédia</button>
+                    <button onclick="selecionarCategoria('Romance')" class="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300">❤️ Romance</button>
+                </div>
+
+                <!-- Container do Player Ativo -->
+                <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
                     <div class="aspect-video w-full rounded-xl overflow-hidden bg-black shadow-inner">
-                        <!-- O Player do YouTube será injetado dinamicamente aqui -->
                         <div id="player-youtube"></div>
                     </div>
-                    <div class="p-1">
-                        <h4 class="font-bold text-sm text-white" id="video-title">Filme Recomendado: Domínio Público</h4>
-                        <p class="text-xs text-zinc-500 mt-1">Assista para acumular pontos em tempo real.</p>
-                        <!-- Indicador visual de progresso de pontos -->
-                        <div class="mt-3 bg-zinc-950 p-2 rounded-lg flex justify-between items-center border border-zinc-800/50">
-                            <span class="text-xs text-zinc-400 flex items-center gap-1">
-                                <span id="ping-timer" class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span> 
-                                Cronômetro ativo:
-                            </span>
-                            <span id="txt-contador-tempo" class="text-xs font-bold text-emerald-400">0s / 60s</span>
+                    
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-sm text-white" id="video-title">Selecione um filme abaixo</h4>
+                            <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular pontos.</p>
                         </div>
+                        <button onclick="toggleModoCinema()" class="bg-zinc-800 hover:bg-zinc-700 p-2.5 rounded-xl border border-zinc-700 text-xs font-bold text-zinc-200">
+                            📐 Tela Cheia
+                        </button>
+                    </div>
+
+                    <!-- Cronômetro -->
+                    <div class="bg-zinc-950 p-2 rounded-lg flex justify-between items-center border border-zinc-800/50">
+                        <span class="text-xs text-zinc-400 flex items-center gap-1">
+                            <span id="ping-timer" class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span> 
+                            Progresso:
+                        </span>
+                        <span id="txt-contador-tempo" class="text-xs font-bold text-emerald-400">0s / 60s</span>
+                    </div>
+                </div>
+
+                <!-- 🎬 VITRINE DE FILMES DISPONÍVEIS -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Filmes Disponíveis</h3>
+                    <div id="lista-filmes-catalogo" class="grid grid-cols-2 gap-3">
+                        <!-- Os filmes serão injetados aqui via JavaScript -->
                     </div>
                 </div>
             </section>
 
-            <!-- ABA: SACAR (MODERNO COM LIMITE DE SEGURANÇA) -->
+            <!-- ABA: SACAR -->
             <section id="aba-sacar" class="tab-content space-y-4">
-                <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4 shadow-xl">
-                    <div>
-                        <h3 class="font-bold text-lg text-white">Retirada Instantânea</h3>
-                        <p class="text-xs text-zinc-400">Envie seus ganhos diretamente para sua conta bancária via Pix.</p>
-                    </div>
+                <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 space-y-4">
+                    <h3 class="font-bold text-lg text-white">Retirada Instantânea</h3>
                     <div class="space-y-3">
-                        <div>
-                            <label class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Valor do Saque (Mínimo R$ 10,00)</label>
-                            <input type="number" id="valor-saque" placeholder="R$ 10.00" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
-                        </div>
-                        <div>
-                            <label class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Sua Chave Pix</label>
-                            <input type="text" id="chave-pix" placeholder="CPF, E-mail ou Telefone" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
-                        </div>
+                        <input type="number" id="valor-saque" placeholder="Valor (Mínimo R$ 10)" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm">
+                        <input type="text" id="chave-pix" placeholder="Sua Chave Pix" class="w-full bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-sm">
                     </div>
-                    <button onclick="requestWithdrawal()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black py-3.5 rounded-xl font-bold transition shadow-md">Solicitar Saque</button>
+                    <button onclick="requestWithdrawal()" class="w-full bg-emerald-500 py-3.5 rounded-xl font-bold text-black transition">Solicitar Saque</button>
                 </div>
             </section>
         </main>
 
-        <!-- ESPAÇO PARA ANÚNCIO BOTTOM (MONETAG BANNER) -->
-        <div class="fixed bottom-[64px] left-0 right-0 text-center py-1 bg-zinc-950 border-t border-zinc-900 text-[9px] text-zinc-600 z-30">
-            <!-- Espaço para SmartTag ou Banner Fixo da Monetag -->
-        </div>
-
-        <!-- Barra de Navegação Inferior -->
+        <!-- NAVEGAÇÃO -->
         <nav class="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur border-t border-zinc-900 p-2 flex justify-around items-center z-40 max-w-md mx-auto">
-            <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400 transition">Início</button>
-            <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400 transition">Vídeos</button>
-            <button onclick="changeTab('sacar')" id="btn-tab-sacar" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400 transition">Sacar</button>
+            <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Início</button>
+            <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Vídeos</button>
+            <button onclick="changeTab('sacar')" id="btn-tab-sacar" class="nav-btn flex flex-col items-center pt-2 w-full text-xs font-medium text-zinc-400">Sacar</button>
         </nav>
     </div>
 
     <script>
-        // Configuração Inicial do Supabase
         const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
-        
         let userData = { saldo: 0, tarefas: 0 };
         let userId = null;
         let ytPlayer = null;
         let watchInterval = null;
         let secondsWatched = 0;
-        const RECOMPENSA_MINUTO = 0.0250; // Valor ganho a cada 60 segundos assistidos (Sustentável)
+        const RECOMPENSA_MINUTO = 0.0250;
 
-        // Carregar dados com segurança do usuário autenticado
+        // 📝 BANCO DE DADOS DE FILMES (Substitua os IDs pelos filmes reais do YT que você quiser)
+        const CATALOGO_FILMES = [
+            { id: "W6NZfCO5SIk", titulo: "Operação Resgate (Ação)", genero: "Ação", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "ScMzIvxBSi4", titulo: "Carga Explosiva Completo", genero: "Ação", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "W6NZfCO5SIk", titulo: "A Casa Maldita", genero: "Terror", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
+            { id: "ScMzIvxBSi4", titulo: "Invocação do Mal Grátis", genero: "Terror", capa: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400" },
+            { id: "W6NZfCO5SIk", titulo: "As Branquelas 2 Falso", genero: "Comédia", capa: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=400" },
+            { id: "ScMzIvxBSi4", titulo: "Uma Comédia Romântica", genero: "Romance", capa: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400" }
+        ];
+
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
             userId = user.id;
-
-            let { data, error } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
-            if (data) { 
-                userData = data; 
-            } else {
-                // Cria o registro inicial no banco se for um novo usuário cadastrado
-                userData = { id: userId, saldo: 0, tarefas: 0 };
-                await _supabase.from('usuarios_ptc').insert([userData]);
-            }
+            let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
+            if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
+            renderizarCatalogo(CATALOGO_FILMES); // Renderiza todos no início
+        }
+
+        // Função para exibir os filmes na tela
+        function renderizarCatalogo(filmes) {
+            const container = document.getElementById('lista-filmes-catalogo');
+            container.innerHTML = "";
+            
+            if(filmes.length === 0) {
+                container.innerHTML = `<p class="text-xs text-zinc-500 col-span-2 text-center py-4">Nenhum filme encontrado.</p>`;
+                return;
+            }
+
+            filmes.forEach(filme => {
+                container.innerHTML += `
+                    <div onclick="darPlayNoFilme('${filme.id}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
+                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-lg mb-1.5 opacity-80">
+                        <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Executa a busca digitada
+        function filtrarFilmes() {
+            const termo = document.getElementById('input-busca-video').value.toLowerCase().trim();
+            const resultados = CATALOGO_FILMES.filter(f => 
+                f.titulo.toLowerCase().includes(termo) || f.genero.toLowerCase().includes(termo)
+            );
+            renderizarCatalogo(resultados);
+        }
+
+        // Filtra clicando nos botões de categorias prontas
+        function selecionarCategoria(genero) {
+            if (genero === 'Todos') {
+                renderizarCatalogo(CATALOGO_FILMES);
+            } else {
+                const resultados = CATALOGO_FILMES.filter(f => f.genero === genero);
+                renderizarCatalogo(resultados);
+            }
+        }
+
+        // Coloca o filme selecionado no player principal
+        function darPlayNoFilme(id, titulo) {
+            if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+                secondsWatched = 0;
+                document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
+                ytPlayer.loadVideoById(id);
+                document.getElementById('video-title').innerText = titulo;
+                window.scrollTo({ top: 150, behavior: 'smooth' });
+            }
         }
 
         function updateUI() {
@@ -160,125 +219,58 @@
             document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
-        // Sistema de abas profissional
         function changeTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(`aba-${tabName}`).classList.add('active');
             document.getElementById(`btn-tab-${tabName}`).classList.add('active');
-
-            // Pausa o rastreador se sair da aba de vídeos para evitar fraude
-            if (tabName !== 'videos') {
-                pararRastreadorDeTempo();
-                if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
-            }
+            if (tabName !== 'videos') { pararRastreadorDeTempo(); if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo(); }
         }
 
-        // Integração profissional do Player do YouTube
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('player-youtube', {
-                height: '100%',
-                width: '100%',
-                videoId: 'W6NZfCO5SIk', // SUBSTITUA pelo ID de um filme/vídeo longo do YouTube
+                height: '100%', width: '100%', videoId: 'W6NZfCO5SIk',
                 playerVars: { 'modestbranding': 1, 'rel': 0, 'controls': 1 },
                 events: { 'onStateChange': onPlayerStateChange }
             });
         }
 
         function onPlayerStateChange(event) {
-            // Se o vídeo estiver tocando (State = 1), inicia a contagem de pontos por engajamento
-            if (event.data === YT.PlayerState.PLAYING) {
-                iniciarRastreadorDeTempo();
-            } else {
-                pararRastreadorDeTempo();
-            }
+            if (event.data === YT.PlayerState.PLAYING) iniciarRastreadorDeTempo(); else pararRastreadorDeTempo();
+        }
+
+        function toggleModoCinema() {
+            const container = document.getElementById('video-container-master');
+            if (!document.fullscreenElement) { container.requestFullscreen().catch(err => alert(err.message)); } 
+            else { document.exitFullscreen(); }
         }
 
         function iniciarRastreadorDeTempo() {
             if (watchInterval) return;
             document.getElementById('ping-timer').classList.replace('bg-zinc-600', 'bg-emerald-500');
-            
             watchInterval = setInterval(async () => {
                 secondsWatched++;
                 document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
-
                 if (secondsWatched >= 60) {
                     secondsWatched = 0;
                     userData.saldo += RECOMPENSA_MINUTO;
                     userData.tarefas += 1;
                     updateUI();
-                    
-                    // Salva diretamente na linha segura do usuário logado
-                    await _supabase.from('usuarios_ptc').update({ 
-                        saldo: userData.saldo, 
-                        tarefas: userData.tarefas 
-                    }).eq('id', userId);
-                    
-                    // Executa o Direct Link da Monetag em segundo plano para gerar ganhos extras para você
+                    await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
                     window.open("https://omg10.com/4/11216881", "_blank");
                 }
             }, 1000);
         }
 
-        function pararRastreadorDeTempo() {
-            clearInterval(watchInterval);
-            watchInterval = null;
-            document.getElementById('ping-timer').classList.replace('bg-emerald-500', 'bg-zinc-600');
-        }
+        function pararRastreadorDeTempo() { clearInterval(watchInterval); watchInterval = null; document.getElementById('ping-timer').classList.replace('bg-emerald-500', 'bg-zinc-600'); }
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Confirme seu e-mail!"); }
+        async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
+        async function logout() { await _supabase.auth.signOut(); location.reload(); }
+        async function requestWithdrawal() { alert("Processando saque..."); }
 
-        // Funções de Autenticação Segura (Supabase Auth)
-        async function signUp() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            if(!email || !password) return alert("Preencha todos os campos.");
-            
-            const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert(error.message); 
-            else alert("Cadastro iniciado! Confirme seu e-mail na sua caixa de entrada para ativar.");
-        }
-
-        async function signIn() {
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert("Credenciais incorretas: " + error.message); 
-            else location.reload();
-        }
-
-        async function logout() {
-            await _supabase.auth.signOut();
-            location.reload();
-        }
-
-        // Sistema de Saque Validados
-        async function requestWithdrawal() {
-            const valor = parseFloat(document.getElementById('valor-saque').value);
-            const chave = document.getElementById('chave-pix').value.trim();
-
-            if (!chave || isNaN(valor) || valor < 10) {
-                alert("O valor mínimo exigido para o saque profissional é de R$ 10,00.");
-                return;
-            }
-            if (valor > userData.saldo) {
-                alert("Saldo atual insuficiente para concluir esta transação.");
-                return;
-            }
-
-            alert(`Solicitação de Saque Registrada!\nValor: R$ ${valor.toFixed(2)}\nChave: ${chave}\nAguarde o processamento em até 24 horas.`);
-        }
-
-        // Escuta o status do login em tempo real
         _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                loadUserData();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('dashboard').classList.add('hidden');
-            }
+            if (session) { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); loadUserData(); }
+            else { document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('dashboard').classList.add('hidden'); }
         });
     </script>
 </body>
