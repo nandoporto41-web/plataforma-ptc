@@ -65,18 +65,19 @@
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🍿 Todos</button>
                     <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">💥 Ação</button>
-                    <button onclick="selecionarCategoria('Ficção')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🚀 Ficção</button>
+                    <button onclick="selecionarCategoria('Suspense')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">🕵️‍♂️ Suspense</button>
+                    <button onclick="selecionarCategoria('Documentários')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap text-zinc-300 hover:bg-zinc-800">📚 Documentários</button>
                 </div>
 
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-2xl border border-zinc-800 space-y-3">
                     <div class="aspect-video w-full rounded-xl overflow-hidden bg-black relative flex items-center justify-center">
-                        <iframe id="player-streaming-iframe" class="w-full h-full" src="" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" referrerpolicy="no-referrer"></iframe>
+                        <video id="player-streaming-native" class="w-full h-full object-cover" controls playsinline controlsList="nodownload"></video>
                     </div>
                     
                     <div class="flex justify-between items-center">
                         <div class="max-w-[70%]">
-                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Selecione um filme abaixo...</h4>
-                            <p class="text-xs text-zinc-500 mt-0.5">Assista e ganhe por minuto de exibição.</p>
+                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando catálogo...</h4>
+                            <p class="text-xs text-zinc-500 mt-0.5">Assista e ganhe recompensas por minuto de exibição.</p>
                         </div>
                         <span class="text-[11px] bg-zinc-800 text-zinc-300 font-bold px-2.5 py-1 rounded-md border border-zinc-700">HD 1080p</span>
                     </div>
@@ -111,8 +112,8 @@
         <div id="ad-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6 text-center">
             <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl max-w-sm w-full space-y-4 shadow-2xl">
                 <span class="text-4xl">💎</span>
-                <h3 class="text-lg font-bold text-white">Validando Recompensa</h3>
-                <p class="text-xs text-zinc-400">Clique no link do patrocinador abaixo para gerar seus pontos e clique em fechar para liberar seu saldo.</p>
+                <h3 class="text-lg font-bold text-white">Validando sua recompensa</h3>
+                <p class="text-xs text-zinc-400">Clique no botão abaixo para abrir a página patrocinada, garanta o computo dos seus pontos e retorne para continuar o filme.</p>
                 <a href="https://omg10.com/4/11216881" target="_blank" onclick="fecharAnuncioModal()" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 py-3 rounded-xl font-bold text-black transition">
                     👉 IR PARA O ANÚNCIO
                 </a>
@@ -135,14 +136,14 @@
         let secondsWatched = 0;
         const RECOMPENSA_MINUTO = 0.1500;
 
-        // INDEXAÇÃO HÍBRIDA: UTILIZA PLAYERS PUBLICOS COM NO-REFERRER EVITANDO TRAVA REGIONAL
+        // FONTES DE STREAMING REAL DE ALTA DISPONIBILIDADE E DURAÇÃO LONGA
         const CATALOGO_FILMES = [
-            { id: "filme1", titulo: "A Noite dos Mortos Vivos (Clássico Dublado)", genero: "Ficção", url: "https://www.youtube-nocookie.com/embed/7z70S_S-R_E?autoplay=1&modestbranding=1&rel=0", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "filme2", titulo: "O Passageiro Oculto (Suspense Policial)", genero: "Todos", url: "https://www.youtube-nocookie.com/embed/u3K8Y79zU8A?autoplay=1&modestbranding=1&rel=0", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
-            { id: "filme3", titulo: "Impacto Profundo (Ação / Sci-Fi)", genero: "Ação", url: "https://www.youtube-nocookie.com/embed/Jg02F_7zCiw?autoplay=1&modestbranding=1&rel=0", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" }
+            { id: "1", titulo: "O Passageiro Oculto (Suspense Policial)", genero: "Suspense", url: "https://archive.org/download/classic_clips/night_of_the_living_dead_512kb.mp4", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
+            { id: "2", titulo: "Operação Resgate (Ação Clássica)", genero: "Ação", url: "https://archive.org/download/Route66-there_grows_a_tree/Route66-there_grows_a_tree_512kb.mp4", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "3", titulo: "As Maravilhas do Oceano (Documentário Longo)", genero: "Documentários", url: "https://vjs.zencdn.net/v/oceans.mp4", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" }
         ];
 
-        const iframePlayer = document.getElementById('player-streaming-iframe');
+        const videoPlayer = document.getElementById('player-streaming-native');
 
         async function loadUserData() {
             const { data: { user } } = await _supabase.auth.getUser();
@@ -173,7 +174,10 @@
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
             
-            iframePlayer.src = url;
+            videoPlayer.src = url;
+            videoPlayer.load();
+            videoPlayer.play().catch(e => console.log("Autoplay bloqueado. Aguardando interação do usuário."));
+            
             iniciarRastreadorTempo();
         }
 
@@ -185,18 +189,21 @@
         function iniciarRastreadorTempo() {
             if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(async () => {
-                secondsWatched++;
-                document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
-                
-                if (secondsWatched >= 60) {
-                    secondsWatched = 0;
-                    userData.saldo += RECOMPENSA_MINUTO;
-                    userData.tarefas += 1;
-                    updateUI();
-                    await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                // O cronômetro agora só avança se o filme estiver sendo reproduzido de fato
+                if (!videoPlayer.paused && !videoPlayer.ended) {
+                    secondsWatched++;
+                    document.getElementById('txt-contador-tempo').innerText = `${secondsWatched}s / 60s`;
                     
-                    // Exibe o modal na tela simulando popunder nativo
-                    document.getElementById('ad-modal').classList.remove('hidden');
+                    if (secondsWatched >= 60) {
+                        secondsWatched = 0;
+                        userData.saldo += RECOMPENSA_MINUTO;
+                        userData.tarefas += 1;
+                        updateUI();
+                        await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                        
+                        // Abre o modal interativo na tela sem desconectar ou sair da aba ativa
+                        document.getElementById('ad-modal').classList.remove('hidden');
+                    }
                 }
             }, 1000);
         }
@@ -218,7 +225,8 @@
             if (tabName !== 'videos') {
                 clearInterval(watchInterval);
                 watchInterval = null;
-                iframePlayer.src = "";
+                videoPlayer.pause();
+                videoPlayer.src = "";
             }
         }
 
