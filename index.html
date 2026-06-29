@@ -25,7 +25,7 @@
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
+    <section id="auth-screen" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col justify-center p-6 max-w-md mx-auto w-full space-y-4">
         <div class="text-center mb-4">
             <h1 class="text-3xl font-black text-white tracking-tight">Premium Stream 💎</h1>
             <p class="text-zinc-400 text-sm mt-1">Sua plataforma estável de streaming monetizado</p>
@@ -38,9 +38,9 @@
         <button onclick="signUp()" class="w-full border border-zinc-800 hover:bg-zinc-900 py-4 rounded-2xl font-medium text-zinc-300 transition">Criar Conta</button>
     </section>
 
-    <div id="dashboard" class="hidden flex flex-col min-h-screen">
+    <div id="dashboard" class="flex flex-col min-h-screen w-full">
         
-        <div class="w-full bg-zinc-950 text-center py-2 border-b border-zinc-900 sticky top-0 z-50">
+        <div class="w-full bg-zinc-950 text-center py-2 border-b border-zinc-900 sticky top-0 z-40">
             <span class="block text-[8px] uppercase tracking-widest text-zinc-600 font-bold mb-1">Patrocinador</span>
             <div class="min-h-[50px] flex items-center justify-center bg-zinc-900/30 max-w-md mx-auto rounded-lg overflow-hidden">
                 <div class="native-ad-holder" data-zone="11216881"></div>
@@ -80,7 +80,7 @@
                     
                     <div class="flex justify-between items-center px-1">
                         <div class="max-w-[75%]">
-                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando catálogo...</h4>
+                            <h4 class="font-bold text-sm text-white truncate" id="video-title">A Noite dos Mortos Vivos</h4>
                             <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular o seu saldo.</p>
                         </div>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-1 rounded-md border border-emerald-500/20">Contagem Ativa</span>
@@ -110,7 +110,7 @@
             </section>
         </main>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-900 z-50 max-w-md mx-auto">
+        <div class="fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-900 z-40 max-w-md mx-auto">
             <div class="text-center py-1 border-b border-zinc-900/40">
                 <div class="min-h-[45px] flex items-center justify-center bg-zinc-900/20 overflow-hidden">
                     <div class="native-ad-holder" data-zone="11216881"></div>
@@ -133,7 +133,6 @@
         let playerInstance = null;
         const RECOMPENSA_MINUTO = 0.1200;
 
-        // IDs DO YOUTUBE VERIFICADOS QUE PERMITEM EMBED SEM RESTRIÇÕES DE REPRODUÇÃO EXTERNA
         const CATALOGO_FILMES = [
             { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Ação", ytId: "Nj2U6TEg9xo", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
             { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
@@ -154,7 +153,6 @@
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
             renderizarCatalogo(CATALOGO_FILMES);
-            darPlayNoFilme(CATALOGO_FILMES[0].ytId, CATALOGO_FILMES[0].titulo);
         }
 
         function renderizarCatalogo(filmes) {
@@ -224,13 +222,18 @@
             }
         }
 
-        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta registrada com sucesso!"); }
+        async function signUp() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signUp({ email, password }); if (error) alert(error.message); else alert("Conta registrada!"); }
         async function signIn() { const email = document.getElementById('email').value.trim(); const password = document.getElementById('password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) alert(error.message); else location.reload(); }
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); loadUserData(); }
-            else { document.getElementById('auth-screen').classList.remove('hidden'); document.getElementById('dashboard').classList.add('hidden'); }
+            if (session) { 
+                document.getElementById('auth-screen').classList.add('hidden'); 
+                loadUserData(); 
+            }
+            else { 
+                document.getElementById('auth-screen').classList.remove('hidden'); 
+            }
         });
     </script>
 </body>
