@@ -3,85 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma PTC Premium</title>
+    <title>Premium PTC | Painel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { background-color: #121212; color: #E0E0E0; font-family: sans-serif; }
-        .nav-active { color: #10B981; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+        .nav-active { color: #22c55e !important; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen pb-20">
+<body class="flex flex-col min-h-screen">
 
-    <header class="bg-[#1E1E1E] border-b border-gray-800 p-4 text-center sticky top-0 z-50">
-        <h1 class="text-xl font-bold text-white flex items-center justify-center gap-2">Plataforma PTC Premium 💎</h1>
-    </header>
+    <section id="auth-screen" class="flex-grow flex flex-col justify-center p-6 space-y-4 max-w-md mx-auto w-full">
+        <h2 class="text-white text-2xl font-bold text-center mb-4">Premium PTC 💎</h2>
+        <input type="email" id="email" placeholder="Seu E-mail" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-white">
+        <input type="password" id="password" placeholder="Sua Senha" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-white">
+        <button onclick="signIn()" class="w-full bg-emerald-500 py-4 rounded-xl font-bold text-black">Entrar</button>
+        <button onclick="signUp()" class="w-full border border-slate-700 py-4 rounded-xl text-white">Criar Conta</button>
+    </section>
 
-    <main class="flex-grow p-4 max-w-md mx-auto w-full">
-        <section id="aba-inicio" class="space-y-4">
-            <div class="bg-[#1E1E1E] p-6 rounded-2xl border border-gray-800 text-center shadow-lg">
-                <p class="text-gray-400 text-sm mb-1">Seu Saldo Disponível</p>
-                <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400">R$ 0.0000</h2>
-                <p class="text-gray-500 text-xs mt-3">Tarefas: <span id="txt-tarefas" class="font-bold text-white">0</span></p>
-                <div id="status-banco" class="text-xs text-yellow-500 mt-2">Sincronizando...</div>
-            </div>
-        </section>
+    <div id="dashboard" class="hidden flex flex-col min-h-screen">
+        <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 text-center font-bold">Premium PTC 💎</header>
+        
+        <main class="flex-grow p-4 max-w-md mx-auto w-full space-y-4">
+            <section id="aba-inicio" class="space-y-4">
+                <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-xl text-center">
+                    <p class="text-slate-400 text-xs uppercase tracking-widest">Saldo Disponível</p>
+                    <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400 my-2">R$ 0.0000</h2>
+                    <p class="text-slate-500 text-xs">Tarefas concluídas: <b id="txt-tarefas" class="text-white">0</b></p>
+                </div>
+            </section>
 
-        <section id="aba-anuncios" class="space-y-4 hidden">
-            <div class="bg-[#1E1E1E] p-4 rounded-2xl border border-gray-800 space-y-3">
-                <h4 class="text-white font-bold text-sm">Anúncio #01</h4>
-                <button onclick="startAd(0.1500, 15)" class="w-full bg-emerald-500 py-3 rounded-xl font-bold text-sm">Assistir Anúncio</button>
-            </div>
-        </section>
+            <section id="aba-anuncios" class="space-y-4 hidden">
+                <div class="bg-slate-800 p-5 rounded-3xl border border-slate-700 flex justify-between items-center">
+                    <div><h4 class="font-bold">Anúncio Premium</h4><p class="text-xs text-emerald-400">+R$ 0.1500</p></div>
+                    <button onclick="startAd(0.1500, 15)" class="bg-emerald-500 px-6 py-2 rounded-xl font-bold text-sm text-black">Ver</button>
+                </div>
+            </section>
 
-        <section id="aba-sacar" class="space-y-4 hidden">
-            <div class="bg-[#1E1E1E] p-5 rounded-2xl border border-gray-800 space-y-4">
-                <h3 class="text-sky-400 font-bold">Sacar via Pix</h3>
-                <input type="text" id="chave-pix" placeholder="Sua chave Pix" class="w-full bg-[#2A2A2A] border p-3 rounded-xl text-white">
-                <button onclick="requestWithdrawal()" class="w-full bg-sky-500 py-3 rounded-xl font-bold">Solicitar Saque</button>
-            </div>
-        </section>
-    </main>
+            <section id="aba-sacar" class="space-y-4 hidden">
+                <div class="bg-slate-800 p-6 rounded-3xl border border-slate-700 space-y-4">
+                    <h3 class="font-bold text-lg text-sky-400">Sacar via Pix</h3>
+                    <input type="number" id="valor-saque" placeholder="Valor (mín. R$ 10)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm">
+                    <input type="text" id="chave-pix" placeholder="Sua chave Pix" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm">
+                    <button onclick="requestWithdrawal()" class="w-full bg-sky-500 py-3 rounded-xl font-bold text-black">Solicitar Saque</button>
+                </div>
+            </section>
+        </main>
 
-    <!-- Overlay de Temporizador -->
-    <div id="timer-overlay" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden p-6 text-center">
-        <h3 id="ad-title" class="text-lg font-bold text-white">Anúncio Aberto!</h3>
-        <p class="text-sm text-gray-400 mb-4">Mantenha a janela do anúncio aberta e volte aqui após o tempo.</p>
-        <div class="w-24 h-24 rounded-full border-4 border-emerald-500 flex items-center justify-center">
-            <span id="countdown" class="text-3xl font-black text-white">00</span>
-        </div>
+        <nav class="fixed bottom-0 w-full bg-slate-900 border-t border-slate-800 p-3 flex justify-around">
+            <button onclick="changeTab('inicio')" class="text-xs text-slate-400">Início</button>
+            <button onclick="changeTab('anuncios')" class="text-xs text-slate-400">Anúncios</button>
+            <button onclick="changeTab('sacar')" class="text-xs text-slate-400">Sacar</button>
+        </nav>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-[#1E1E1E] border-t p-2 flex justify-around items-center z-40 max-w-md mx-auto">
-        <button onclick="changeTab('inicio')" class="flex flex-col items-center text-xs text-gray-400">Início</button>
-        <button onclick="changeTab('anuncios')" class="flex flex-col items-center text-xs text-gray-400">Anúncios</button>
-        <button onclick="changeTab('sacar')" class="flex flex-col items-center text-xs text-gray-400">Sacar</button>
-    </nav>
+    <div id="timer-overlay" class="fixed inset-0 bg-slate-950/95 z-50 hidden flex flex-col items-center justify-center p-6 text-center">
+        <div id="countdown" class="text-6xl font-black text-emerald-400 mb-4">15</div>
+        <div id="btn-container" class="hidden"><button onclick="finishAd()" class="bg-white text-black px-10 py-3 rounded-full font-bold">Coletar Recompensa</button></div>
+    </div>
 
     <script>
-        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
-        const SUPABASE_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; 
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Gera ID único por usuário
-        let USER_ID = localStorage.getItem('ptc_user_id');
-        if (!USER_ID) {
-            USER_ID = 'user_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('ptc_user_id', USER_ID);
-        }
-
-        let userData = { saldo: 0.0000, tarefas: 0 };
+        const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
+        let userData = { saldo: 0, tarefas: 0 };
+        let activeReward = 0;
+        let userId = null;
 
         async function loadUserData() {
-            let { data, error } = await _supabase.from('usuarios_ptc').select('*').eq('id', USER_ID).single();
-            if (error) {
-                await _supabase.from('usuarios_ptc').insert([{ id: USER_ID, saldo: 0, tarefas: 0 }]);
-            } else {
-                userData = data;
-                updateUI();
-            }
-            document.getElementById('status-banco').innerText = "🟢 Conectado";
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) return;
+            userId = user.id;
+            let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
+            if (data) { userData = data; updateUI(); }
+        }
+
+        async function signUp() {
+            const { error } = await _supabase.auth.signUp({ email: document.getElementById('email').value, password: document.getElementById('password').value });
+            if (error) alert(error.message); else alert("Confirme seu e-mail!");
+        }
+
+        async function signIn() {
+            const { error } = await _supabase.auth.signInWithPassword({ email: document.getElementById('email').value, password: document.getElementById('password').value });
+            if (error) alert("Erro: " + error.message); else location.reload();
         }
 
         function updateUI() {
@@ -89,39 +92,36 @@
             document.getElementById('txt-tarefas').innerText = userData.tarefas;
         }
 
-        function changeTab(tabName) {
+        function changeTab(tab) {
             ['inicio', 'anuncios', 'sacar'].forEach(t => document.getElementById(`aba-${t}`).classList.add('hidden'));
-            document.getElementById(`aba-${tabName}`).classList.remove('hidden');
+            document.getElementById(`aba-${tab}`).classList.remove('hidden');
         }
 
         function startAd(reward, duration) {
-            const URL_MONETAG = "https://omg10.com/4/11216881";
-            window.open(URL_MONETAG, "_blank"); // Abre em nova aba para evitar bloqueio de segurança
-
-            const overlay = document.getElementById('timer-overlay');
-            overlay.classList.remove('hidden');
+            activeReward = reward;
+            window.open("https://omg10.com/4/11216881", "_blank");
+            document.getElementById('timer-overlay').classList.remove('hidden');
             let timeLeft = duration;
             document.getElementById('countdown').innerText = timeLeft;
-
-            const timer = setInterval(async () => {
+            document.getElementById('btn-container').classList.add('hidden');
+            const timer = setInterval(() => {
                 timeLeft--;
                 document.getElementById('countdown').innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    overlay.classList.add('hidden');
-                    userData.saldo += reward;
-                    userData.tarefas += 1;
-                    updateUI();
-                    await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', USER_ID);
-                }
+                if (timeLeft <= 0) { clearInterval(timer); document.getElementById('btn-container').classList.remove('hidden'); }
             }, 1000);
         }
 
-        async function requestWithdrawal() {
-            alert("Pedido enviado!");
+        async function finishAd() {
+            userData.saldo += activeReward;
+            userData.tarefas += 1;
+            updateUI();
+            await _supabase.from('usuarios_ptc').upsert({ id: userId, saldo: userData.saldo, tarefas: userData.tarefas });
+            document.getElementById('timer-overlay').classList.add('hidden');
         }
 
-        window.onload = loadUserData;
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (session) { document.getElementById('auth-screen').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); loadUserData(); }
+        });
     </script>
 </body>
 </html>
