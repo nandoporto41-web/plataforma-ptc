@@ -132,7 +132,7 @@
         let watchInterval = null;
         let secondsWatched = 0;
         let playerInstance = null;
-        let listaFilmesGlobal = []; // Vai guardar os filmes vindos do banco
+        let listaFilmesGlobal = []; 
         const RECOMPENSA_MINUTO = 0.1200;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -147,37 +147,32 @@
             if (!user) return;
             userId = user.id;
             
-            // Puxa dados do usuário
             let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
             
-            // BUSCA AUTOMÁTICA DOS FILMES NO SUPABASE (Evita sumiço)
             await puxarFilmesDoSupabase();
         }
 
         async function puxarFilmesDoSupabase() {
             try {
-                // Tenta ler da tabela 'filmes' ou 'catalogo' do seu banco. 
-                // Se sua tabela tiver outro nome, altere 'filmes' abaixo:
                 let { data: filmesDoBanco, error } = await _supabase.from('filmes').select('*');
                 
                 if (filmesDoBanco && filmesDoBanco.length > 0) {
                     listaFilmesGlobal = filmesDoBanco;
                 } else {
-                    // Fallback de segurança com os 2 links ativos caso o banco esteja vazio
                     listaFilmesGlobal = [
-                        { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Ação", ytId: "9g267fUnybA", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-                        { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
+                        { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Terror", yt_id: "9g267fUnybA", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+                        { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", yt_id: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
                     ];
                 }
             } catch (e) {
-                console.log("Erro ao conectar na tabela de filmes, usando padrão.");
+                console.log("Erro ao conectar na tabela, usando fallback.");
             }
             
             renderizarCatalogo(listaFilmesGlobal);
             if(listaFilmesGlobal.length > 0) {
-                darPlayNoFilme(listaFilmesGlobal[0].ytId, listaFilmesGlobal[0].titulo);
+                darPlayNoFilme(listaFilmesGlobal[0].yt_id, listaFilmesGlobal[0].titulo);
             }
         }
 
@@ -186,7 +181,7 @@
             container.innerHTML = "";
             filmes.forEach(filme => {
                 container.innerHTML += `
-                    <div onclick="darPlayNoFilme('${filme.ytId}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
+                    <div onclick="darPlayNoFilme('${filme.yt_id}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
                         <img src="${filme.capa || 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400'}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-70">
                         <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
                     </div>
@@ -194,7 +189,7 @@
             });
         }
 
-        function darPlayNoFilme(ytId, titulo) {
+        function darPlayNoFilme(yt_id, titulo) {
             secondsWatched = 0;
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
@@ -202,15 +197,25 @@
             if (playerInstance) {
                 playerInstance.source = {
                     type: 'video',
-                    sources: [{ src: ytId, provider: 'youtube' }]
+                    sources: [{ src: yt_id, provider: 'youtube' }]
                 };
             }
             iniciarRastreadorTempo();
         }
 
+        function normalizarTexto(texto) {
+            return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
         function selecionarCategoria(genero) {
-            if (genero === 'Todos') renderizarCatalogo(listaFilmesGlobal);
-            else renderizarCatalogo(listaFilmesGlobal.filter(f => f.genero === genero));
+            if (genero === 'Todos') {
+                renderizarCatalogo(listaFilmesGlobal);
+            } else {
+                const filtrados = listaFilmesGlobal.filter(f => {
+                    return normalizarTexto(f.genero) === normalizarTexto(genero);
+                });
+                renderizarCatalogo(filtrados);
+            }
         }
 
         function iniciarRastreadorTempo() {
