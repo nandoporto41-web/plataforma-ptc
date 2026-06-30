@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- In-Page Push (Banner) -->
     <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
+    <!-- Vignette banner -->
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <meta charset="UTF-8">
@@ -42,14 +44,7 @@
 
     <div id="dashboard" class="flex flex-col min-h-screen w-full">
         
-        <div class="w-full bg-zinc-950 text-center py-2 border-b border-zinc-900 sticky top-0 z-40">
-            <span class="block text-[8px] uppercase tracking-widest text-zinc-600 font-bold mb-1">Patrocinador</span>
-            <div class="min-h-[50px] flex items-center justify-center bg-zinc-900/30 max-w-md mx-auto rounded-lg overflow-hidden">
-                <div class="native-ad-holder" data-zone="11216881"></div>
-            </div>
-        </div>
-
-        <header class="bg-zinc-900/40 backdrop-blur p-4 border-b border-zinc-800/60 flex justify-between items-center max-w-md mx-auto w-full">
+        <header class="bg-zinc-900/40 backdrop-blur p-4 border-b border-zinc-800/60 flex justify-between items-center max-w-md mx-auto w-full sticky top-0 z-40">
             <span class="font-black text-white tracking-wider text-xs">PREMIUM STREAM</span>
             <button onclick="logout()" class="text-xs text-zinc-500 hover:text-red-400 transition">Sair</button>
         </header>
@@ -58,7 +53,7 @@
             
             <section id="aba-inicio" class="tab-content active space-y-4">
                 <div class="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-2xl relative overflow-hidden">
-                    <p class="text-zinc-400 text-xs uppercase tracking-widest font-semibold">Seu Saldo Acumulado</p>
+                    <p class="text-zinc-400 text-xs uppercase tracking-wildest font-semibold">Seu Saldo Acumulado</p>
                     <h2 id="txt-saldo" class="text-4xl font-black text-emerald-400 my-2">R$ 0.0000</h2>
                     <div class="flex justify-between items-center text-xs text-zinc-500 pt-2 border-t border-zinc-800/60">
                         <span>Vídeos assistidos: <b id="txt-tarefas" class="text-zinc-200">0</b></span>
@@ -71,18 +66,20 @@
                 
                 <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                     <button onclick="selecionarCategoria('Todos')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">🍿 Todos</button>
+                    <button onclick="selecionarCategoria('Suspense')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">🕵️‍♂️ Suspense</button>
+                    <button onclick="selecionarCategoria('Romance')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">❤️ Romance</button>
                     <button onclick="selecionarCategoria('Ação')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">💥 Ação</button>
-                    <button onclick="selecionarCategoria('Documentários')" class="bg-zinc-900 border border-zinc-800 text-[11px] font-bold px-4 py-2 rounded-full text-zinc-300">📚 Documentários</button>
                 </div>
 
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-3xl border border-zinc-800 space-y-3">
                     <div class="w-full rounded-2xl overflow-hidden bg-black">
-                        <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="u3K8Y79zU8A"></div>
+                        <!-- Inicializa por padrão com o primeiro filme estável -->
+                        <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="LDiHvBBGKAQ"></div>
                     </div>
                     
                     <div class="flex justify-between items-center px-1">
                         <div class="max-w-[75%]">
-                            <h4 class="font-bold text-sm text-white truncate" id="video-title">História do Planeta Terra</h4>
+                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Laços Que Matam</h4>
                             <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular o seu saldo.</p>
                         </div>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-1 rounded-md border border-emerald-500/20">Contagem Ativa</span>
@@ -113,11 +110,6 @@
         </main>
 
         <div class="fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-900 z-40 max-w-md mx-auto">
-            <div class="text-center py-1 border-b border-zinc-900/40">
-                <div class="min-h-[45px] flex items-center justify-center bg-zinc-900/20 overflow-hidden">
-                    <div class="native-ad-holder" data-zone="11216881"></div>
-                </div>
-            </div>
             <nav class="p-2 flex justify-around items-center bg-zinc-950/90 backdrop-blur">
                 <button onclick="changeTab('inicio')" id="btn-tab-inicio" class="nav-btn active flex flex-col items-center w-full text-xs font-semibold">Início</button>
                 <button onclick="changeTab('videos')" id="btn-tab-videos" class="nav-btn flex flex-col items-center w-full text-xs font-semibold">Vídeos</button>
@@ -135,10 +127,14 @@
         let playerInstance = null;
         const RECOMPENSA_MINUTO = 0.1200;
 
-        // Mantidos exatamente os mesmos ids de filme do seu primeiro código que rodava perfeitamente
+        // Catálogo completamente preenchido com os links enviados por você
         const CATALOGO_FILMES = [
-            { id: "1", titulo: "História do Planeta Terra", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" },
-            { id: "2", titulo: "A Noite dos Mortos Vivos", genero: "Ação", ytId: "Nj2U6TEg9xo", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" }
+            { id: "1", titulo: "Laços Que Matam", genero: "Suspense", ytId: "LDiHvBBGKAQ", capa: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" },
+            { id: "2", titulo: "Um Par Para O Príncipe", genero: "Romance", ytId: "DjsUNWuxkc8", capa: "https://images.unsplash.com/photo-1518173946687-a4c8a3b1f98e?w=400" },
+            { id: "3", titulo: "Salvação", genero: "Suspense", ytId: "rN9LBUDaw2s", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+            { id: "4", titulo: "Um Esquema Perigoso", genero: "Suspense", ytId: "6ne_en5USyM", capa: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=400" },
+            { id: "5", titulo: "Filme de Ação 1", genero: "Ação", ytId: "AnIGIekG_pE", capa: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400" },
+            { id: "6", titulo: "Filme de Ação 2", genero: "Ação", ytId: "6B9efHg4AdA", capa: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
