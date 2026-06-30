@@ -76,12 +76,12 @@
 
                 <div id="video-container-master" class="bg-zinc-900 p-3 rounded-3xl border border-zinc-800 space-y-3">
                     <div class="w-full rounded-2xl overflow-hidden bg-black">
-                        <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="Nj2U6TEg9xo"></div>
+                        <div id="player-target" data-plyr-provider="youtube" data-plyr-embed-id="9g267fUnybA"></div>
                     </div>
                     
                     <div class="flex justify-between items-center px-1">
                         <div class="max-w-[75%]">
-                            <h4 class="font-bold text-sm text-white truncate" id="video-title">A Noite dos Mortos Vivos</h4>
+                            <h4 class="font-bold text-sm text-white truncate" id="video-title">Carregando filme...</h4>
                             <p class="text-xs text-zinc-500 mt-0.5">Assista para acumular o seu saldo.</p>
                         </div>
                         <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-1 rounded-md border border-emerald-500/20">Contagem Ativa</span>
@@ -132,12 +132,8 @@
         let watchInterval = null;
         let secondsWatched = 0;
         let playerInstance = null;
+        let listaFilmesGlobal = []; // Vai guardar os filmes vindos do banco
         const RECOMPENSA_MINUTO = 0.1200;
-
-        const CATALOGO_FILMES = [
-            { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Ação", ytId: "Nj2U6TEg9xo", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-            { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
-        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             playerInstance = new Plyr('#player-target', {
@@ -150,10 +146,39 @@
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
             userId = user.id;
+            
+            // Puxa dados do usuário
             let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
             if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
             updateUI();
-            renderizarCatalogo(CATALOGO_FILMES);
+            
+            // BUSCA AUTOMÁTICA DOS FILMES NO SUPABASE (Evita sumiço)
+            await puxarFilmesDoSupabase();
+        }
+
+        async function puxarFilmesDoSupabase() {
+            try {
+                // Tenta ler da tabela 'filmes' ou 'catalogo' do seu banco. 
+                // Se sua tabela tiver outro nome, altere 'filmes' abaixo:
+                let { data: filmesDoBanco, error } = await _supabase.from('filmes').select('*');
+                
+                if (filmesDoBanco && filmesDoBanco.length > 0) {
+                    listaFilmesGlobal = filmesDoBanco;
+                } else {
+                    // Fallback de segurança com os 2 links ativos caso o banco esteja vazio
+                    listaFilmesGlobal = [
+                        { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Ação", ytId: "9g267fUnybA", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+                        { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", ytId: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
+                    ];
+                }
+            } catch (e) {
+                console.log("Erro ao conectar na tabela de filmes, usando padrão.");
+            }
+            
+            renderizarCatalogo(listaFilmesGlobal);
+            if(listaFilmesGlobal.length > 0) {
+                darPlayNoFilme(listaFilmesGlobal[0].ytId, listaFilmesGlobal[0].titulo);
+            }
         }
 
         function renderizarCatalogo(filmes) {
@@ -162,7 +187,7 @@
             filmes.forEach(filme => {
                 container.innerHTML += `
                     <div onclick="darPlayNoFilme('${filme.ytId}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
-                        <img src="${filme.capa}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-70">
+                        <img src="${filme.capa || 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400'}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-70">
                         <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
                     </div>
                 `;
@@ -184,8 +209,8 @@
         }
 
         function selecionarCategoria(genero) {
-            if (genero === 'Todos') renderizarCatalogo(CATALOGO_FILMES);
-            else renderizarCatalogo(CATALOGO_FILMES.filter(f => f.genero === genero));
+            if (genero === 'Todos') renderizarCatalogo(listaFilmesGlobal);
+            else renderizarCatalogo(listaFilmesGlobal.filter(f => f.genero === genero));
         }
 
         function iniciarRastreadorTempo() {
@@ -226,21 +251,12 @@
         async function signUp() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            
-            if(!email || !password) {
-                alert("Preencha todos os campos!");
-                return;
-            }
-
+            if(!email || !password) { alert("Preencha os campos!"); return; }
             const { data, error } = await _supabase.auth.signUp({ email, password });
-            
-            if (error) {
-                alert(error.message);
-            } else {
-                alert("Conta criada com sucesso!");
-                const { error: loginError } = await _supabase.auth.signInWithPassword({ email, password });
-                if (loginError) alert(loginError.message);
-                else location.reload();
+            if (error) { alert(error.message); } else {
+                alert("Conta criada!");
+                await _supabase.auth.signInWithPassword({ email, password });
+                location.reload();
             }
         }
 
@@ -248,13 +264,8 @@
         async function logout() { await _supabase.auth.signOut(); location.reload(); }
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) { 
-                document.getElementById('auth-screen').classList.add('hidden'); 
-                loadUserData(); 
-            }
-            else { 
-                document.getElementById('auth-screen').classList.remove('hidden'); 
-            }
+            if (session) { document.getElementById('auth-screen').classList.add('hidden'); loadUserData(); }
+            else { document.getElementById('auth-screen').classList.remove('hidden'); }
         });
     </script>
 </body>
