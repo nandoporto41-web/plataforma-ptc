@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ViralRewards Pro - Painel Oficial</title>
 
-<!-- Scripts Externos -->
-<script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+<!-- Script Monetag -->
+<script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
+
+<!-- Dependências -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -14,79 +16,53 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 body { background: #000; color: #fff; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-
 .tiktok-container { position: relative; width: 100%; max-width: 450px; height: 100vh; background: #000; display: flex; flex-direction: column; overflow: hidden; }
-
-/* Menu Drawer Corrigido */
-.menu-drawer {
-    position: absolute; top: 0; left: -100%; width: 90%; max-width: 380px; height: 100%;
-    background: #0a0a0a; z-index: 100; transition: left 0.3s ease;
-    display: flex; flex-direction: column; padding: 20px; border-right: 2px solid #ff9d00;
-}
-.menu-drawer.active { left: 0; }
-.menu-scroll-area { flex: 1; overflow-y: auto; padding-right: 5px; }
-
-/* Perfil e Estilização */
-.user-profile-box { background: #1a1a1a; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; border: 1px solid #333; }
-.user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ff9d00; }
-.points-header { position: absolute; top: 25px; left: 15px; right: 15px; z-index: 20; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); padding: 10px 18px; border-radius: 50px; }
-.score-box { background: linear-gradient(135deg, #ff9d00, #ffb700); padding: 5px 14px; border-radius: 20px; color: #000; font-weight: 800; font-size: 13px; }
-.video-box { width: 100%; height: 100%; overflow: hidden; }
+.points-header { position: absolute; top: 25px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 20; background: rgba(0, 0, 0, 0.8); padding: 10px 18px; border-radius: 50px; backdrop-filter: blur(8px); }
+.logo-text { font-weight: 800; font-size: 15px; background: linear-gradient(90deg, #25f4ee, #fe2c55); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.score-box { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #ff9d00, #ffb700); padding: 5px 14px; border-radius: 20px; color: #000; font-weight: 800; font-size: 13px; }
+.video-box { width: 100%; height: 100%; overflow: hidden; background: #000; }
 #videoPlayer { width: 100%; height: 100%; border: none; }
-
-/* Botões e Ações */
-.btn-saque { background: linear-gradient(90deg, #00bfa5, #00c853); color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 8px; width: 100%; cursor: pointer; }
-.btn-suporte { display: block; background: #25f4ee; color: #000; padding: 12px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 800; }
+.menu-drawer { position: absolute; top: 0; left: -100%; width: 88%; max-width: 380px; height: 100%; background: rgba(10, 10, 10, 0.98); border-right: 2px solid #ff9d00; z-index: 40; transition: left 0.3s ease; padding: 40px 20px 20px 20px; display: flex; flex-direction: column; gap: 22px; backdrop-filter: blur(15px); overflow-y: auto; }
+.menu-drawer.active { left: 0; }
+.data-card { background: rgba(255,255,255,0.04); padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+.btn-saque { background: linear-gradient(90deg, #00bfa5, #00c853); color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 8px; cursor: pointer; width: 100%; }
+.support-box { background: rgba(37, 244, 238, 0.04); border: 1px solid rgba(37, 244, 238, 0.15); padding: 15px; border-radius: 12px; text-align: center; }
+.btn-suporte { display: block; background: #25f4ee; color: #000; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; }
 .side-bar { position: absolute; right: 12px; bottom: 12%; display: flex; flex-direction: column; gap: 18px; align-items: center; z-index: 10; }
-.circle-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(20,20,20,0.85); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
+.circle-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(20, 20, 20, 0.85); border: 1px solid rgba(255, 255, 255, 0.2); color: white; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 .btn-next { background: linear-gradient(45deg, #fe2c55, #25f4ee); border: none; }
 </style>
 </head>
 <body>
 
 <div class="tiktok-container" id="mainContainer">
-    <!-- Menu Lateral -->
+    <!-- MENU -->
     <div class="menu-drawer" id="menuDrawer">
-        <i class="fa-solid fa-xmark" style="font-size:22px; cursor:pointer; align-self:flex-end; color:#fe2c55;" onclick="toggleMenu()"></i>
-        <h2><i class="fa-solid fa-wallet"></i> Seu Painel</h2>
-
-        <div class="menu-scroll-area">
-            <!-- Perfil do Usuário -->
-            <div class="user-profile-box">
-                <img src="https://ui-avatars.com/api/?name=Usuario&background=ff9d00" class="user-avatar" id="userAvatar">
-                <div>
-                    <h3 id="userNameDisplay">Usuário</h3>
-                    <p style="font-size:11px; color:#aaa;">Status: <span style="color:#25f4ee;">Verificado</span></p>
-                </div>
-            </div>
-
-            <div style="background:#1a1a1a; padding:15px; border-radius:12px; margin-bottom:20px;">
-                <p style="font-size:12px; color:#aaa;">Saldo Disponível</p>
-                <span id="ptsTotal" style="font-size:22px; font-weight:bold;">0</span> <span style="color:#ff9d00;">PTS</span>
-                <div style="margin-top:5px; font-size:13px;">Estimado: <span id="realBalance" style="color:#00c853;">R$ 0,00</span></div>
-            </div>
-
-            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
-
-            <div style="margin-top:30px; border-top:1px solid #333; padding-top:20px;">
-                <p style="margin-bottom:10px; font-size:12px; color:#aaa;">Precisa de suporte?</p>
-                <a href="https://t.me/seu_grupo_suporte" target="_blank" class="btn-suporte">
-                    <i class="fa-brands fa-telegram"></i> Chamar no Telegram
-                </a>
-            </div>
+        <i class="fa-solid fa-xmark" onclick="toggleMenu()" style="position:absolute; top:20px; right:20px; color:#fe2c55; cursor:pointer; font-size:22px;"></i>
+        <h2>Seu Painel</h2>
+        <div class="data-card">
+            <p>Pontos Acumulados</p>
+            <span id="ptsTotal" style="font-size:18px; font-weight:bold;">0</span> PTS
+        </div>
+        <button class="btn-saque" onclick="solicitarSaque()">Sacar via Pix</button>
+        <h3>Ajuda</h3>
+        <div class="support-box">
+            <p style="font-size:12px; color:#ccc; margin-bottom:10px;">Problemas com saque ou saldo?</p>
+            <a href="https://t.me/SEU_LINK_AQUI" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="points-header">
         <div class="circle-btn" style="width:35px; height:35px; border:none;" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></div>
-        <span style="font-weight:800; font-size:14px; color:#fff;">VIRAL TOK</span>
+        <span class="logo-text">VIRAL TOK</span>
         <div class="score-box"><i class="fa-solid fa-coins"></i> <span id="pointsBalance">0</span></div>
     </div>
 
+    <!-- PLAYER -->
     <div class="video-box"><div id="videoPlayer"></div></div>
 
-    <!-- Controles Laterais -->
+    <!-- CONTROLES -->
     <div class="side-bar">
         <div class="circle-btn" id="likeBtnIcon" onclick="toggleLike()"><i class="fa-solid fa-heart"></i></div>
         <div class="circle-btn" onclick="executarCompartilhamento()"><i class="fa-solid fa-share"></i></div>
@@ -98,28 +74,32 @@ body { background: #000; color: #fff; font-family: 'Poppins', sans-serif; displa
     const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
     const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
     let totalPontos = parseInt(localStorage.getItem('wallet_total_pts')) || 0;
-    
+    let player;
+
     function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
 
-    function atualizarInterfaceMoedas() {
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('videoPlayer', { videoId: 'O4PWcIGL2SQ', events: { 'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) { totalPontos += 10; localStorage.setItem('wallet_total_pts', totalPontos); atualizarInterface(); } } } });
+    }
+
+    async function solicitarSaque() {
+        if (totalPontos < 50000) { alert('Mínimo 50.000 pts (R$ 5,00).'); return; }
+        let chavePix = prompt("Digite sua chave PIX:");
+        if (chavePix) {
+            const { error } = await _supabase.from('saques').insert([{ chave_pix: chavePix, pontos: totalPontos }]);
+            error ? alert("Erro ao processar.") : alert("Pedido enviado!");
+        }
+    }
+
+    function atualizarInterface() {
         document.getElementById('pointsBalance').innerText = totalPontos;
         document.getElementById('ptsTotal').innerText = totalPontos;
-        document.getElementById('realBalance').innerText = (totalPontos / 10000).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    function solicitarSaque() {
-        if (totalPontos < 50000) alert('Mínimo de 50.000 pontos para saque.');
-        else alert('Solicitação enviada para auditoria!');
-    }
+    function toggleLike() { const l = document.getElementById('likeBtnIcon'); l.style.color = (l.style.color === 'rgb(254, 44, 85)') ? '#fff' : '#fe2c55'; }
 
-    function toggleLike() {
-        const icon = document.getElementById('likeBtnIcon');
-        icon.style.color = (icon.style.color === 'rgb(254, 44, 85)') ? '#fff' : '#fe2c55';
-    }
-
-    atualizarInterfaceMoedas();
+    atualizarInterface();
 </script>
 </body>
 </html>
