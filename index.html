@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
-    <!-- Script Oficial Monetag -->
     <script src="https://alwingulla.com/act/files/tag.min.js?z=11216881" data-zone="11216881" async></script>
 
     <style>
@@ -127,13 +126,14 @@
 
     <script>
         const _supabase = supabase.createClient("https://hvivrmdygytttdlapjbi.supabase.co", "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM");
-        let userData = { saldo: 0, tarefas: 0 };
+        
+        let userData = { saldo_reais: 0, xp: 0 }; // Adaptado para a nova tabela
         let userId = null;
         let watchInterval = null;
         let secondsWatched = 0;
         let playerInstance = null;
         let listaFilmesGlobal = []; 
-        const RECOMPENSA_MINUTO = 0.1200;
+        let filmeAtualId = null; // Variável nova para rastrear o ID do banco
 
         document.addEventListener('DOMContentLoaded', () => {
             playerInstance = new Plyr('#player-target', {
@@ -147,10 +147,17 @@
             if (!user) return;
             userId = user.id;
             
-            let { data } = await _supabase.from('usuarios_ptc').select('*').eq('id', userId).single();
-            if (data) { userData = data; } else { userData = { id: userId, saldo: 0, tarefas: 0 }; await _supabase.from('usuarios_ptc').insert([userData]); }
-            updateUI();
+            // Puxando da tabela definitiva que criamos no Termux
+            let { data } = await _supabase.from('usuarios').select('*').eq('id', userId).single();
             
+            if (data) { 
+                userData = data; 
+            } else { 
+                userData = { id: userId, saldo_reais: 0, xp: 0, nivel: 1 }; 
+                await _supabase.from('usuarios').insert([userData]); 
+            }
+            
+            updateUI();
             await puxarFilmesDoSupabase();
         }
 
@@ -161,18 +168,19 @@
                 if (filmesDoBanco && filmesDoBanco.length > 0) {
                     listaFilmesGlobal = filmesDoBanco;
                 } else {
+                    // Fallback visual se a tabela filmes estiver vazia
                     listaFilmesGlobal = [
-                        { id: "1", titulo: "A Noite dos Mortos Vivos", genero: "Terror", yt_id: "9g267fUnybA", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
-                        { id: "2", titulo: "História do Planeta Terra", genero: "Documentários", yt_id: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
+                        { id: "demo-1", titulo: "A Noite dos Mortos Vivos (DEMO)", genero: "Terror", yt_id: "9g267fUnybA", capa: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400" },
+                        { id: "demo-2", titulo: "História do Planeta Terra (DEMO)", genero: "Documentários", yt_id: "u3K8Y79zU8A", capa: "https://images.unsplash.com/photo-1505635552518-3448ff116af3?w=400" }
                     ];
                 }
             } catch (e) {
-                console.log("Erro ao conectar na tabela, usando fallback.");
+                console.log("Erro ao conectar na tabela de filmes.");
             }
             
             renderizarCatalogo(listaFilmesGlobal);
             if(listaFilmesGlobal.length > 0) {
-                darPlayNoFilme(listaFilmesGlobal[0].yt_id, listaFilmesGlobal[0].titulo);
+                darPlayNoFilme(listaFilmesGlobal[0].yt_id, listaFilmesGlobal[0].titulo, listaFilmesGlobal[0].id);
             }
         }
 
@@ -180,8 +188,9 @@
             const container = document.getElementById('lista-filmes-catalogo');
             container.innerHTML = "";
             filmes.forEach(filme => {
+                // Passando o filme.id na chamada
                 container.innerHTML += `
-                    <div onclick="darPlayNoFilme('${filme.yt_id}', '${filme.titulo}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
+                    <div onclick="darPlayNoFilme('${filme.yt_id}', '${filme.titulo}', '${filme.id}')" class="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden cursor-pointer hover:border-emerald-500 transition p-1.5 flex flex-col justify-between">
                         <img src="${filme.capa || 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400'}" class="w-full aspect-video object-cover rounded-xl mb-1.5 opacity-70">
                         <p class="text-[11px] font-bold text-zinc-200 line-clamp-1 px-1">${filme.titulo}</p>
                     </div>
@@ -189,7 +198,8 @@
             });
         }
 
-        function darPlayNoFilme(yt_id, titulo) {
+        function darPlayNoFilme(yt_id, titulo, id_do_banco) {
+            filmeAtualId = id_do_banco; // Guarda o ID atual para a função de recompensa
             secondsWatched = 0;
             document.getElementById('txt-contador-tempo').innerText = `0s / 60s`;
             document.getElementById('video-title').innerText = titulo;
@@ -227,18 +237,48 @@
                     
                     if (secondsWatched >= 60) {
                         secondsWatched = 0;
-                        userData.saldo += RECOMPENSA_MINUTO;
-                        userData.tarefas += 1;
-                        updateUI();
-                        await _supabase.from('usuarios_ptc').update({ saldo: userData.saldo, tarefas: userData.tarefas }).eq('id', userId);
+                        document.getElementById('txt-contador-tempo').innerText = `Processando...`;
+                        await finalizarSessaoVideo();
                     }
                 }
             }, 1000);
         }
 
+        // Nova função segura conectada ao SQL do Supabase
+        async function finalizarSessaoVideo() {
+            if (!filmeAtualId || filmeAtualId.includes("demo")) {
+                console.warn("Vídeo de demonstração não gera saldo. Cadastre filmes reais no Supabase.");
+                document.getElementById('txt-contador-tempo').innerText = `Modo Demo`;
+                setTimeout(() => { document.getElementById('txt-contador-tempo').innerText = `0s / 60s`; }, 2000);
+                return;
+            }
+
+            const { data, error } = await _supabase
+                .rpc('computar_recompensa', { p_filme_id: filmeAtualId });
+
+            if (error) {
+                console.error("Erro na blindagem do Supabase:", error);
+                document.getElementById('txt-contador-tempo').innerText = `Erro de conexão`;
+            } else if (data && data.sucesso) {
+                userData.saldo_reais = (parseFloat(userData.saldo_reais) || 0) + 0.10; 
+                userData.xp = (userData.xp || 0) + 10;
+                updateUI();
+                document.getElementById('txt-contador-tempo').innerText = `+ R$ 0.10!`;
+            } else {
+                // Caso a trava de 12 horas já tenha sido ativada
+                document.getElementById('txt-contador-tempo').innerText = data.mensagem || `Limite de ganho`;
+            }
+            
+            setTimeout(() => { document.getElementById('txt-contador-tempo').innerText = `0s / 60s`; }, 3000);
+        }
+
         function updateUI() {
-            document.getElementById('txt-saldo').innerText = `R$ ${parseFloat(userData.saldo).toFixed(4)}`;
-            document.getElementById('txt-tarefas').innerText = userData.tarefas;
+            // Usa o saldo_reais e converte o XP para o número de tarefas (10 XP = 1 Tarefa)
+            const saldoFormatado = parseFloat(userData.saldo_reais || 0).toFixed(4);
+            const qtdTarefas = Math.floor((userData.xp || 0) / 10);
+            
+            document.getElementById('txt-saldo').innerText = `R$ ${saldoFormatado}`;
+            document.getElementById('txt-tarefas').innerText = qtdTarefas;
         }
 
         function changeTab(tabName) {
