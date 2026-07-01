@@ -3,32 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vídeos Virais</title>
-    <!-- Inclui o Supabase Client -->
+    <title>ViralTube</title>
+    
+    <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; }
-        .video-container { height: 90vh; display: flex; align-items: center; justify-content: center; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; }
+        .ad-container { width: 100%; text-align: center; margin: 10px 0; }
+        .player-box { width: 95%; max-width: 400px; height: 300px; background: #111; border-radius: 15px; overflow: hidden; margin-top: 20px; }
         iframe { width: 100%; height: 100%; }
-        .ad-banner { height: 10vh; background: #222; text-align: center; padding-top: 10px; }
+        button { padding: 15px 30px; font-size: 18px; border: none; border-radius: 30px; background: #28a745; color: white; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- Espaço para anúncio Monetag (Topo) -->
-    <div class="ad-banner"> [INSIRA AQUI O CÓDIGO DA MONETAG] </div>
+    <script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
 
-    <div class="video-container" id="player">
-        <iframe id="videoFrame" src="" frameborder="0" allowfullscreen></iframe>
+    <div class="player-box">
+        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
     </div>
 
+    <button onclick="carregarVideo()">Próximo Vídeo</button>
+
     <script>
-        const supabase = supabase.createClient('SUA_URL_SUPABASE', 'SUA_CHAVE_ANON');
+        // Use a URL que você me passou
+        const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
+        // Você precisa da chave 'anon' que fica no painel Supabase > Settings > API
+        const supabaseKey = 'COLE_A_SUA_CHAVE_ANON_AQUI'; 
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function carregarVideo() {
-            const { data, error } = await supabase.from('videos_virais').select('*').limit(1);
-            if (data) {
-                document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${data[0].url_video}`;
+            const { data, error } = await supabase.from('videos_virais').select('*');
+            if (data && data.length > 0) {
+                const random = Math.floor(Math.random() * data.length);
+                document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${data[random].url_video}?autoplay=1`;
             }
         }
         carregarVideo();
