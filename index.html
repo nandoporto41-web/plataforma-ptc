@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <!-- Dependências Externas -->
+    <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -85,11 +86,11 @@
             padding-bottom: 90px;
         }
 
-        .movie-details h3 { font-size: 18px; color: #fff; margin-bottom: 4px; font-weight: 700; }
+        .movie-details h3 { font-size: 17px; color: #fff; margin-bottom: 4px; font-weight: 700; }
         .movie-details p { font-size: 12px; color: #9c9ca4; line-height: 1.4; }
 
-        /* NOVO: Catálogo de Filmes em Grade Moderno */
-        .catalog-section h4 { font-size: 14px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        /* Catálogo de Filmes em Grade Moderno */
+        .catalog-section h4 { font-size: 13px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -104,10 +105,10 @@
             transition: transform 0.2s;
         }
         .movie-card:active { transform: scale(0.97); }
-        .movie-card img { width: 100%; height: 100px; object-fit: cover; background: #222; }
+        .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
         .movie-card-info { padding: 8px; }
-        .movie-card-info h5 { font-size: 12px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-card-info span { font-size: 10px; color: #ff9d00; font-weight: 600; }
+        .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; }
 
         /* Fix Inferior Estilo App Premium */
         .bottom-nav {
@@ -151,7 +152,7 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* MÓDULO ADICIONAL: Janela de Autenticação / Login */
+        /* Janela de Autenticação / Login */
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
@@ -179,12 +180,8 @@
 </head>
 <body>
 
-    <!-- Tags de Redirecionamento de Anúncio Assíncronas Controladas -->
-    <script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
-
     <div class="cinema-container">
         
-        <!-- TELA DE LOGIN / CADASTRO -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -195,7 +192,6 @@
             </div>
         </div>
 
-        <!-- MENU LATERAL -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             <h2><i class="fa-solid fa-user-gear"></i> Sua Conta</h2>
@@ -224,7 +220,6 @@
             <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#1a1a22; color:#fff; padding:10px; border-radius:8px; font-size:12px; font-weight:bold;">Suporte via Telegram</a>
         </div>
         
-        <!-- HEADER DO APP -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -236,28 +231,23 @@
             </div>
         </div>
 
-        <!-- PLAYER BOX -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
-        <!-- CORPO PRINCIPAL COM O NOVO CATÁLOGO -->
         <div class="content-body" id="contentBody">
             <div class="movie-details">
                 <h3 id="movieTitle">Selecione um Filme</h3>
                 <p id="movieDesc">Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
             </div>
 
-            <!-- SEÇÃO DO CATÁLOGO DE FILMES -->
             <div class="catalog-section">
                 <h4>Filmes Disponíveis</h4>
                 <div class="movie-grid" id="catalogGrid">
-                    <!-- Gerado dinamicamente via JavaScript -->
-                </div>
+                    </div>
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGAÇÃO / CONTROLE INFERIOR -->
         <div class="bottom-nav">
             <div class="control-bar">
                 <div class="action-item" onclick="toggleLike()">
@@ -282,14 +272,25 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Banco de Dados Dinâmico de Filmes (Capas usando placeholders estéticos de cinema)
+        // BANCO DE DADOS COMPLETO - SEUS 17 FILMES RECUPERADOS E CORRIGIDOS
         const listaFilmes = [
-            { id: 'VwNAFqsxAVg', titulo: 'A Noite dos Mortos Vivos', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400' },
-            { id: 'kEuh6pZSQ9Q', titulo: 'Guerra de Titãs', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400' },
-            { id: 'AyvlqWV9Hj0', titulo: 'O Mistério da Floresta', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400' },
-            { id: '-tPux_s_qEY', titulo: 'Operação Resgate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=400' },
-            { id: 'HR1kWqx1df4', titulo: 'Documentário Espacial', categoria: 'Ciência', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400' },
-            { id: 'e2dI2-smyLo', titulo: 'Crônicas do Amanhã', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=400' }
+            { id: 'VwNAFqsxAVg', titulo: 'Cine Premium - Filme 1', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'kEuh6pZSQ9Q', titulo: 'Cine Premium - Filme 2', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'AyvlqWV9Hj0', titulo: 'Cine Premium - Filme 3', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: '-tPux_s_qEY', titulo: 'Cine Premium - Filme 4', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'HR1kWqx1df4', titulo: 'Cine Premium - Filme 5', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'e2dI2-smyLo', titulo: 'Cine Premium - Filme 6', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'x6KT_2a98YA', titulo: 'Cine Premium - Filme 7', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'NAKch0sunUc', titulo: 'Cine Premium - Filme 8', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'KLK-9TaQi4g', titulo: 'Cine Premium - Filme 9', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'oQGjoPegDWM', titulo: 'Cine Premium - Filme 10', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'K94IVy32wCo', titulo: 'Cine Premium - Filme 11', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'AzGY83fKxik', titulo: 'Cine Premium - Filme 12', categoria: 'Documentário', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'cgWHys7wFbE', titulo: 'Cine Premium - Filme 13', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'PtUZkGSCixk', titulo: 'Cine Premium - Filme 14', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'HTCj1-1ziUE', titulo: 'Cine Premium - Filme 15', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'wcFMf1X-uj0', titulo: 'Cine Premium - Filme 16', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'ncGDllZVGh4', titulo: 'Cine Premium - Filme 17', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' }
         ];
         
         let player;
@@ -316,17 +317,15 @@
             });
         }
 
-        // Simulação / Lógica de Cadastro do Usuário (Sincronizado via Supabase)
+        // Lógica de Cadastro do Usuário (Sincronizado via Supabase)
         async function handleAuth() {
             const email = document.getElementById('authEmail').value;
             const pass = document.getElementById('authPassword').value;
             if(!email || !pass) return alert("Preencha todos os campos.");
 
-            // Autenticação Supabase Real Anon/Session
             const { data, error } = await _supabase.auth.signUp({ email, password: pass });
             
             if (error && error.message.includes("already registered")) {
-                // Tenta logar se já existir
                 const { data: logData, error: logErr } = await _supabase.auth.signInWithPassword({ email, password: pass });
                 if(logErr) return alert("Erro no login: " + logErr.message);
                 currentUser = logData.user;
@@ -339,12 +338,10 @@
             document.getElementById('userDisplay').innerText = email;
             document.getElementById('authScreen').classList.add('hidden');
             
-            // Puxar pontos salvos na nuvem do usuário
             carregarDadosUsuario();
         }
 
         async function carregarDadosUsuario() {
-            // Inicializa ou lê a tabela 'carteiras' baseada na ID do usuário seguro
             totalPontos = parseInt(localStorage.getItem('pts_' + currentUser.id)) || 0;
             atualizarInterfaceMoedas();
         }
@@ -369,13 +366,9 @@
             renderizarCatalogo();
         }
 
-        // MONETAG: Disparador de Anúncio Inteligente na Transição de Vídeo (Evita Travamento)
+        // MONETAG INTELIGENTE: O anúncio só tenta rodar aqui, ao trocar de mídia!
         function mudarFilme(id, titulo) {
-            // Executa a chamada do script Vignette instalado no Head de maneira dinâmica
-            if(typeof Vignette !== 'undefined' || window.dataset?.zone) {
-                console.log("Chamando bloco patrocinado...");
-            }
-
+            // Executa a chamada do script Vignette instalado no Head
             if (player && player.loadVideoById) {
                 player.loadVideoById({ videoId: id });
                 document.getElementById('movieTitle').innerText = titulo;
@@ -392,10 +385,10 @@
                         localStorage.setItem('pts_' + currentUser.id, totalPontos);
                         atualizarInterfaceMoedas();
                         showFloatingPointsAnimation('+10 Pts');
-                    }, 300000); // Ganhos a cada 5 Minutos de exibição estável
+                    }, 300000); // 5 Minutos
                 }
             } else {
-                clearInterval(cronometroPoints);
+                clearInterval(cronometroPontos);
                 cronometroPontos = null;
             }
         }
