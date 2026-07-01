@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ViralRewards Pro - Painel Oficial</title>
 
+<!-- Script Monetag 1 (Vignette) -->
 <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
+<!-- Dependências -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <style>
-• { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 body {
 background: #000;
 color: #fff;
@@ -304,14 +306,17 @@ pointer-events: none;
 </head>
 <body>
 
+<!-- Script Monetag 2 -->
 <script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
 
 <div class="tiktok-container" id="mainContainer">
 
+<!-- MENU LATERAL EXPANSÍVEL REORGANIZADO -->
 <div class="menu-drawer" id="menuDrawer">
 <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
 <h2><i class="fa-solid fa-wallet"></i> Seu Painel</h2>
 
+<!-- Carteira e Saldo -->
 <div class="data-card">
 <p>Pontos Acumulados</p>
 <span id="ptsTotal">0</span> PTS
@@ -322,16 +327,19 @@ pointer-events: none;
 <p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>Rlatex
  1,00&lt;/strong&gt; em dinheiro real.&lt;/p&gt; &lt;div style="margin-top: 10px; font-size: 14px; font-weight: bold;"&gt; Saldo Estimado: &lt;span id="realBalance" style="color: #00c853;"&gt;R
 
- 0,00</span></div>
+ 0,00</span>
+</div>
 </div>
 
 <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
 
+<!-- Sistema Antifraude -->
 <div class="data-card" style="background: rgba(254, 44, 85, 0.03); border-color: rgba(254, 44, 85, 0.15);">
 <p style="color: #fe2c55; font-weight: bold; font-size: 12px;"><i class="fa-solid fa-shield-halved"></i> Auditoria de Segurança</p>
 <p style="font-size: 11px; color: #bbb; margin-top: 3px; line-height: 1.4;">Para garantir a legitimidade dos pagamentos, os pedidos passam por checagem automática de impressões de anúncios e validação de retenção.</p>
 </div>
 
+<!-- NOVA SEÇÃO INFORMATIVA (Transferida para cá) -->
 <h3><i class="fa-solid fa-circle-info"></i> Como Funciona?</h3>
 <div class="menu-info-section">
 <p>Somos uma plataforma de recompensas financiada por publicidade. Dividimos o faturamento dos anúncios exibidos com quem consome os conteúdos!</p>
@@ -359,14 +367,15 @@ pointer-events: none;
 </div>
 </div>
 
+<!-- SUPORTE (Transferido para cá) -->
 <h3><i class="fa-solid fa-headset"></i> Ajuda & Termos</h3>
 <div class="support-box">
 <p>Identificou falhas no saldo ou quer contestar uma auditoria? Fale diretamente com nossa equipe de suporte.</p>
-<a href="https://t.me/mestre_quant_v6
-" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
+<a href="https://t.me/seu_grupo_suporte" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
 </div>
 </div>
 
+<!-- Header Principal -->
 <div class="points-header">
 <div class="circle-btn" style="width:35px; height:35px; font-size:14px; border:none;" onclick="toggleMenu()">
 <i class="fa-solid fa-bars"></i>
@@ -378,26 +387,32 @@ pointer-events: none;
 </div>
 </div>
 
+<!-- Player de Vídeo -->
 <div class="video-box">
 <div id="videoPlayer"></div>
 </div>
 
+<!-- Descrição do Conteúdo -->
 <div class="video-footer">
 <h3 id="videoAuthor">@viral_master</h3>
 <p id="videoDesc">Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp</p>
 </div>
 
+<!-- Controles Flutuantes Laterais -->
 <div class="side-bar">
+<!-- Curtir Corrigido -->
 <div class="action-item">
 <div class="circle-btn" id="likeBtnIcon" onclick="toggleLike()"><i class="fa-solid fa-heart"></i></div>
 <span class="btn-label" id="likeCount">15.4K</span>
 </div>
 
+<!-- Compartilhar -->
 <div class="action-item" onclick="executarCompartilhamento()">
 <div class="circle-btn" style="color: #25f4ee;"><i class="fa-solid fa-share"></i></div>
 <span class="btn-label">Compartilhar</span>
 </div>
 
+<!-- Avançar Vídeo -->
 <div class="action-item">
 <button class="circle-btn btn-next" onclick="carregarProximoVideo()"><i class="fa-solid fa-forward"></i></button>
 <span class="btn-label" style="color: #fe2c55; font-weight:800;">Avançar</span>
@@ -545,7 +560,7 @@ function solicitarSaque() {
 if (totalPontos < 50000) {
 alert('O limite mínimo para processamento e conferência de segurança do Pix é de 50.000 pontos (R$ 5,00). Continue assistindo!');
 } else {
-alert('Solicitação recebida! Seu saldo entrou na fila de auditoria para checagem dos cliques nos anúncios da Monetag. O pagamento será enviado para o Pix cadastrado em até 48 hours.');
+alert('Solicitação recebida! Seu saldo entrou na fila de auditoria para checagem dos cliques nos anúncios da Monetag. O pagamento será enviado para o Pix cadastrado em até 48 horas.');
 }
 }
 
