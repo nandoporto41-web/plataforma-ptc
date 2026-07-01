@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Premium - Entretenimento Oficial</title>
+    <title>CineRewards Pro - Cinema Oficial</title>
     
-    <script src="https://quge5.com/88/tag.min.js" data-zone="255380" async data-cfasync="false"></script>
-    
+    <!-- Script Monetag (Vignette) -->
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
+    <!-- Dependências -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Poppins', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body { 
-            background: #060608; 
+            background: #0a0a0c; 
             color: #fff; 
+            font-family: 'Poppins', sans-serif; 
             display: flex; 
             justify-content: center;
             align-items: center; 
@@ -31,336 +31,374 @@
             width: 100%;
             max-width: 450px;
             height: 100vh;
-            background: #0c0c0f;
+            background: #0a0a0c;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* Top Bar Estilizada */
+        /* Header Superior */
         .points-header {
             position: absolute;
-            top: 15px; left: 15px; right: 15px;
-            display: flex; justify-content: space-between; align-items: center;
+            top: 20px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             z-index: 20;
-            background: rgba(12, 12, 15, 0.75);
-            padding: 12px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 12, 0.85);
+            padding: 10px 18px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo-text {
-            font-weight: 800; font-size: 15px;
+            font-weight: 800;
+            font-size: 16px;
             background: linear-gradient(90deg, #ff9d00, #ffb700);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
         }
 
         .score-box {
-            display: flex; align-items: center; gap: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             background: linear-gradient(135deg, #ff9d00, #ffb700);
-            padding: 6px 14px; border-radius: 20px;
-            color: #000; font-weight: 800; font-size: 11px;
-            box-shadow: 0 4px 15px rgba(255, 157, 0, 0.3);
+            padding: 5px 14px;
+            border-radius: 20px;
+            color: #000;
+            font-weight: 800;
+            font-size: 12px;
         }
 
-        /* Player Box */
+        /* Player de Cinema */
         .video-box {
             width: 100%;
-            height: 56.25vw;
+            height: 56.25vw; 
             max-height: 253px;
             background: #000;
-            margin-top: 85px;
-            border-bottom: 2px solid rgba(255,255,255,0.03);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin-top: 90px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        #videoPlayer { width: 100%; height: 100%; border: none; }
 
-        /* Área de Conteúdo Fluída */
-        .content-body {
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Menu Lateral */
+        .menu-drawer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 88%;
+            max-width: 380px;
+            height: 100%;
+            background: rgba(12, 12, 15, 0.99);
+            border-right: 2px solid #ff9d00;
+            z-index: 40;
+            transition: left 0.3s ease;
+            padding: 40px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            backdrop-filter: blur(15px);
+            overflow-y: auto;
+        }
+
+        .menu-drawer.active { left: 0; }
+        
+        .menu-drawer h2 {
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            color: #ff9d00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-drawer h3 {
+            font-size: 15px;
+            color: #ffb700;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .data-card {
+            background: rgba(255,255,255,0.03);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .data-card p { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+        .data-card span { font-size: 16px; font-weight: 700; color: #fff; }
+
+        .conversion-box {
+            background: rgba(255, 157, 0, 0.06);
+            border: 1px dashed rgba(255, 157, 0, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        .conversion-box h4 { font-size: 13px; color: #ffb700; margin-bottom: 5px; }
+        .conversion-box p { font-size: 12px; color: #ddd; line-height: 1.4; }
+
+        .btn-saque {
+            background: linear-gradient(90deg, #00bfa5, #00c853);
+            color: #000;
+            font-weight: 800;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 22px;
+            color: #ff9d00;
+            cursor: pointer;
+        }
+
+        .menu-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.01);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .menu-info-section > p { font-size: 12px; color: #ccc; line-height: 1.5; }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .step-icon {
+            background: #ff9d00;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .step-text h4 { font-size: 13px; color: #fff; }
+        .step-text p { font-size: 11px; color: #aaa; line-height: 1.3; }
+
+        .support-box {
+            background: rgba(255, 157, 0, 0.02);
+            border: 1px solid rgba(255, 157, 0, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .support-box p { font-size: 11px; color: #ccc; margin-bottom: 10px; line-height: 1.4; }
+        .btn-suporte { display: block; background: #ff9d00; color: #000; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+        /* Rodapé do Filme */
+        .content-footer {
             flex: 1;
             padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            justify-content: space-between;
+            gap: 15px;
             overflow-y: auto;
-            padding-bottom: 95px;
         }
+        .movie-details h3 { font-size: 18px; color: #fff; margin-bottom: 6px; font-weight: 700; }
+        .movie-details p { font-size: 13px; color: #aaa; line-height: 1.5; }
 
-        .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
-        .movie-details p { font-size: 11px; color: #9c9ca4; line-height: 1.4; }
-
-        /* Catálogo de Filmes em Grade */
-        .catalog-section h4 { font-size: 12px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        .movie-card {
-            background: #141419;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.03);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .movie-card:active { transform: scale(0.97); }
-        .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
-        .movie-card-info { padding: 8px; }
-        .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; }
-
-        /* Fix Inferior Estilo App Premium */
-        .bottom-nav {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, #060608 80%, transparent);
-            padding: 20px 15px; z-index: 10;
-        }
+        /* Controles Inferiores */
         .control-bar {
-            display: flex; justify-content: space-around; align-items: center;
-            background: #121216; padding: 12px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-around;
+            background: rgba(20, 20, 25, 0.6);
+            padding: 15px 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.03);
+            margin-top: auto;
         }
-        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
+
+        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 5px; }
         .circle-btn {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: #1a1a22; border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white; font-size: 16px; display: flex; justify-content: center; align-items: center;
-            transition: all 0.2s ease;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(30, 30, 35, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s ease, background 0.2s;
         }
-        .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
-        .btn-label { font-size: 10px; color: #a0a0ab; }
-
-        /* Menu Lateral Drawer */
-        .menu-drawer {
-            position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
-            background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
-            z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 60px 15px 30px 15px; display: flex; flex-direction: column; gap: 15px;
-            overflow-y: auto;
+        .circle-btn.btn-next {
+            background: linear-gradient(135deg, #ff9d00, #ffb700);
+            border: none;
+            color: #000;
         }
-        .menu-drawer.active { left: 0; }
-        .close-menu { position: absolute; top: 18px; right: 20px; font-size: 24px; color: #ff9d00; cursor: pointer; }
-        
-        .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
-        .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
-        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
+        .circle-btn:active { transform: scale(0.9); }
+        .btn-label { font-size: 11px; color: #bbb; font-weight: 500; }
 
-        .btn-saque {
-            background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
-            font-weight: 800; border: none; padding: 14px; border-radius: 10px;
-            cursor: pointer; width: 100%; font-size: 13px; gap: 8px;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        /* Janela de Autenticação */
-        .auth-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #060608; z-index: 50; display: flex; flex-direction: column;
-            justify-content: center; padding: 30px; transition: opacity 0.3s ease;
-        }
-        .auth-screen.hidden { opacity: 0; pointer-events: none; }
-        .auth-box { display: flex; flex-direction: column; gap: 15px; }
-        .auth-box h2 { font-size: 24px; color: #ff9d00; margin-bottom: 5px; text-align: center; }
-        .auth-box p { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 15px; }
-        .auth-input { background: #121216; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 10px; color: #fff; font-size: 14px; outline: none; }
-        .auth-input:focus { border-color: #ff9d00; }
-        .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; }
-
-        /* Animações Flutuantes */
         .floating-points {
-            position: absolute; color: #ffb700; font-weight: 900; font-size: 24px;
-            text-shadow: 0 4px 10px #000; animation: floatUp 0.8s ease-out forwards;
-            z-index: 30; pointer-events: none;
+            position: absolute;
+            color: #ffb700;
+            font-weight: 900;
+            font-size: 26px;
+            text-shadow: 0 0 8px #000;
+            animation: floatUp 0.9s ease-out forwards;
+            z-index: 30;
+            pointer-events: none;
         }
+
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-70px) scale(1.3); opacity: 0; }
+            100% { transform: translateY(-90px) scale(1.4); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="cinema-container">
+    <div class="cinema-container" id="mainContainer">
         
-        <div class="auth-screen" id="authScreen">
-            <div class="auth-box">
-                <h2>CineRewards Pro</h2>
-                <p>Crie sua conta ou faça login para começar a acumular pontos convertíveis em Pix.</p>
-                <input type="email" id="authEmail" class="auth-input" placeholder="Seu melhor e-mail">
-                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha segura">
-                <button class="btn-auth" onclick="handleAuth()">Entrar no Cinema</button>
-            </div>
-        </div>
-
+        <!-- MENU LATERAL EXPANSÍVEL -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
-            <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
+            <h2><i class="fa-solid fa-wallet"></i> Seu Painel</h2>
             
-            <div class="data-card">
-                <p>Usuário Ativo</p>
-                <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
-            </div>
-
             <div class="data-card">
                 <p>Pontos Acumulados</p>
                 <span id="ptsTotal">0</span> PTS
             </div>
             
-            <div class="data-card" style="background: rgba(255, 157, 0, 0.04);">
-                <p>Saldo Convertido</p>
-                <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+            <div class="conversion-box">
+                <h4>Conversão Comercial</h4>
+                <p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>R$ 1,00</strong> em dinheiro real.</p>
+                <div style="margin-top: 10px; font-size: 14px; font-weight: bold;">
+                    Saldo Estimado: <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+                </div>
             </div>
 
-            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-bolt"></i> Sacar via Pix</button>
-            
-            <div class="data-card" style="font-size: 11px; color:#bcbcc4; line-height:1.5;">
-                <h4 style="color:#ff9d00; margin-bottom:5px; font-size:12px;"><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                Somos uma plataforma financiada por anúncios. Dividimos parte do faturamento gerado com você em pontos de fidelidade resgatáveis.<br><br>
-                <strong>Termos:</strong> O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
+            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
+
+            <div class="data-card" style="background: rgba(255, 157, 0, 0.02); border-color: rgba(255, 157, 0, 0.15);">
+                <p style="color: #ff9d00; font-weight: bold; font-size: 12px;"><i class="fa-solid fa-shield-halved"></i> Auditoria de Segurança</p>
+                <p style="font-size: 11px; color: #bbb; margin-top: 3px; line-height: 1.4;">Para garantir a legitimidade do saldo, nosso sistema analisa o tempo real de tela ligada e a frequência orgânica de visualizações.</p>
             </div>
 
-            <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
-                <i class="fa-brands fa-telegram" style="font-size:16px;"></i> Suporte Oficial Telegram
-            </a>
+            <h3><i class="fa-solid fa-circle-info"></i> Como Funciona?</h3>
+            <div class="menu-info-section">
+                <p>Somos uma plataforma de entretenimento financiada por anúncios. Dividimos parte dos lucros gerados com você enquanto assiste!</p>
+                <div class="step-item">
+                    <div class="step-icon">1</div>
+                    <div class="step-text">
+                        <h4>Assista aos Filmes</h4>
+                        <p>Você acumula +10 pontos a cada 5 minutos de reprodução contínua.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">2</div>
+                    <div class="step-text">
+                        <h4>Bônus de Fim</h4>
+                        <p>Ao concluir qualquer filme completo da lista, você recebe +50 pontos extras.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3><i class="fa-solid fa-headset"></i> Ajuda & Termos</h3>
+            <div class="support-box">
+                <p>Dúvidas sobre o saldo ou solicitações? Entre em contato direto via Telegram.</p>
+                <div onclick="abrirSuporte()" class="btn-suporte">Abrir Chamado no Telegram</div>
+            </div>
         </div>
         
+        <!-- Header Principal -->
         <div class="points-header">
-            <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
+            <div class="circle-btn" style="width:35px; height:35px; font-size:14px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
             </div>
             <span class="logo-text">CINE REWARDS</span>
             <div class="score-box">
-                <i class="fa-solid fa-wallet"></i>
+                <i class="fa-solid fa-coins"></i>
                 <span id="pointsBalance">0</span> PTS
             </div>
         </div>
 
+        <!-- Player de Cinema -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
-        <div class="content-body" id="contentBody">
+        <!-- Detalhes do Filme e Ações Inferiores -->
+        <div class="content-footer">
             <div class="movie-details">
-                <h3 id="movieTitle">Carregando...</h3>
-                <p id="movieDesc">Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
+                <h3 id="movieTitle">Carregando Filme...</h3>
+                <p id="movieDesc">Aproveite o cinema completo! Você ganha pontos automaticamente enquanto acompanha a história de forma contínua.</p>
             </div>
 
-            <div class="catalog-section">
-                <h4>Filmes Disponíveis</h4>
-                <div class="movie-grid" id="catalogGrid">
-                    </div>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
             <div class="control-bar">
                 <div class="action-item" onclick="toggleLike()">
                     <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
                     <span class="btn-label">Gostei</span>
                 </div>
+
                 <div class="action-item" onclick="executarCompartilhamento()">
-                    <div class="circle-btn" style="color: #ffb700;"><i class="fa-solid fa-share-nodes"></i></div>
-                    <span class="btn-label">Indicar</span>
+                    <div class="circle-btn" style="color: #ffb700;"><i class="fa-solid fa-share"></i></div>
+                    <span class="btn-label">Compartilhar</span>
                 </div>
-                <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn btn-main"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Carteira</span>
+
+                <div class="action-item" onclick="carregarProximoVideo()">
+                    <div class="circle-btn btn-next"><i class="fa-solid fa-forward"></i></div>
+                    <span class="btn-label" style="color: #ff9d00; font-weight:700;">Próximo</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Configurações Supabase
         const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // MAPEAMENTO ESTRITO DOS 24 FILMES BASEADO NO PLAYER DE VÍDEO
-        const listaFilmes = [
-            { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse (Clássico)', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'Hw_gWagWJRE', titulo: 'Filme Gospel - O Casamento', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'Qqf8f-cVKto', titulo: 'Faroeste - Sete Homens e Um Destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos (1968)', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'Y4odIuso4yc', titulo: 'Mazaropi - Jeca Contra o Capeta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'tW1Dbo1dVtA', titulo: 'Django - O Vingador Clássico', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'AzGY83fKxik', titulo: 'Bruce Lee - A Fúria do Dragão', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'Y7SKTDtNON0', titulo: 'Faroeste - Três Homens em Conflito', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'e2dI2-smyLo', titulo: 'Filme Gospel - A Virada', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: '-tPux_s_qEY', titulo: 'A Vingança do Mascarado', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'oQGjoPegDWM', titulo: 'Kung Fu - Mestre Invencível', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'KLK-9TaQi4g', titulo: 'Mazaropi - O Coroinha', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'Lvj4_ZrdL7s', titulo: 'Faroeste - Por Um Punhado de Dólares', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'K94IVy32wCo', titulo: 'Filme Gospel - Cicatrizes', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '6KHpz3hvP6E', titulo: 'Faroeste - Os Brutos Também Amam', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'qmdRZTxX5L4', titulo: 'Mazaropi - O Puritano da Rua Augusta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'uQPbA530OP4', titulo: 'A Noite do Terror Cego', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'S3QBs1Do9-4', titulo: 'Faroeste - O Dólar Furado', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'Ru6u7Po53V8', titulo: 'Filme Gospel - Em Seus Passos', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'HeFGNV5Jj5k', titulo: 'Mazaropi - O Jeca e a Freira', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'XQQmPddfYLE', titulo: 'Faroeste - Sartana Vem Aí', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'aMrZu0P9ikc', titulo: 'Filme Gospel - Decisões', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'kOCEtpOa9gs', titulo: 'Faroeste - Trinity é o Meu Nome', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' }
+        const monetagDirectLink = 'https://omg10.com/4/11216881';
+
+        const filmesCinema = [
+            'VwNAFqsxAVg', 'kEuh6pZSQ9Q', 'AyvlqWV9Hj0', '-tPux_s_qEY', 
+            'HR1kWqx1df4', 'e2dI2-smyLo', 'x6KT_2a98YA', 'NAKch0sunUc', 
+            'KLK-9TaQi4g', 'oQGjoPegDWM', 'K94IVy32wCo', 'AzGY83fKxik', 
+            'cgWHys7wFbE', 'PtUZkGSCixk', 'HTCj1-1ziUE', 'wcFMf1X-uj0', 'ncGDllZVGh4'
         ];
         
+        let ultimoIndice = -1;
         let player;
-        let currentUser = null;
-        let cronometroPontos = null;
-        let cronometroAnunciosMidRoll = null; // Temporizador recorrente de anúncios
-        let totalPontos = 0;
-
-        function renderizarCatalogo() {
-            const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = '';
-            listaFilmes.forEach(filme => {
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.onclick = () => {
-                    mudarFilme(filme.id, filme.titulo);
-                };
-                card.innerHTML = `
-                    <img src="${filme.thumb}" alt="${filme.titulo}">
-                    <div class="movie-card-info">
-                        <h5>${filme.titulo}</h5>
-                        <span>${filme.categoria}</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        async function handleAuth() {
-            const email = document.getElementById('authEmail').value;
-            const pass = document.getElementById('authPassword').value;
-            if(!email || !pass) return alert("Preencha todos os campos.");
-
-            const { data, error } = await _supabase.auth.signUp({ email, password: pass });
-            
-            if (error && error.message.includes("already registered")) {
-                const { data: logData, error: logErr } = await _supabase.auth.signInWithPassword({ email, password: pass });
-                if(logErr) return alert("Erro no login: " + logErr.message);
-                currentUser = logData.user;
-            } else if (error) {
-                return alert(error.message);
-            } else {
-                currentUser = data.user;
-            }
-
-            document.getElementById('userDisplay').innerText = email;
-            document.getElementById('authScreen').classList.add('hidden');
-            
-            carregarDadosUsuario();
-        }
-
-        async function carregarDadosUsuario() {
-            if(!currentUser) return;
-            totalPontos = parseInt(localStorage.getItem('pts_' + currentUser.id)) || 0;
-            atualizarInterfaceMoedas();
-        }
+        let estaCurtido = false; 
+        let cronometroPontos;
+        let totalPontos = parseInt(localStorage.getItem('wallet_total_pts')) || 0;
 
         function atualizarInterfaceMoedas() {
             document.getElementById('pointsBalance').innerText = totalPontos;
@@ -369,119 +407,132 @@
             document.getElementById('realBalance').innerText = valorEmReais;
         }
 
-        function toggleMenu() { 
-            document.getElementById('menuDrawer').classList.toggle('active'); 
+        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
+
+        function dispararAnuncioDirect() {
+            window.open(monetagDirectLink, '_blank');
         }
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
-                height: '100%', width: '100%',
-                videoId: listaFilmes[0].id,
-                playerVars: { 'autoplay': 0, 'controls': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
+                height: '100%',
+                width: '100%',
+                videoId: filmesCinema[0],
+                playerVars: { 'autoplay': 1, 'controls': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
                 events: { 'onStateChange': onPlayerStateChange }
             });
-            document.getElementById('movieTitle').innerText = listaFilmes[0].titulo;
-            renderizarCatalogo();
-        }
-
-        function mudarFilme(id, titulo) {
-            if (player && player.loadVideoById) {
-                player.loadVideoById({ videoId: id });
-                document.getElementById('movieTitle').innerText = titulo;
-                document.getElementById('contentBody').scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            document.getElementById('movieTitle').innerText = "Cine Premium - Filme " + (filmesCinema.indexOf(filmesCinema[0]) + 1);
         }
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                // 1. Contador de pontos do usuário (5 minutos)
                 if (!cronometroPontos) {
                     cronometroPontos = setInterval(() => {
-                        if(!currentUser) return;
                         totalPontos += 10;
-                        localStorage.setItem('pts_' + currentUser.id, totalPontos);
+                        localStorage.setItem('wallet_total_pts', totalPontos);
                         atualizarInterfaceMoedas();
                         showFloatingPointsAnimation('+10 Pts');
-                    }, 300000);
-                }
-
-                // 2. DISPARADOR DE ANÚNCIOS RECORRENTE (A cada 10 minutos de reprodução activa)
-                if (!cronometroAnunciosMidRoll) {
-                    cronometroAnunciosMidRoll = setInterval(() => {
-                        console.log("Executando chamada de monetização recorrente...");
-                        // Executa injeção/força da Vignette instalada globalmente
-                        if (typeof window.dataset !== 'undefined' || window.location) {
-                            // Truque técnico seguro: simula transição para chamar anúncio interstitial
-                            const overlayElement = document.createElement('div');
-                            overlayElement.style.display = 'none';
-                            document.body.appendChild(overlayElement);
-                            setTimeout(() => overlayElement.remove(), 100);
-                        }
-                    }, 600000); // 10 minutos = 600.000ms
+                    }, 300000); 
                 }
             } else {
-                // Interrompe loops se o usuário pausar o vídeo
                 clearInterval(cronometroPontos);
                 cronometroPontos = null;
-                clearInterval(cronometroAnunciosMidRoll);
-                cronometroAnunciosMidRoll = null;
+            }
+
+            if (event.data === YT.PlayerState.ENDED) {
+                totalPontos += 50;
+                localStorage.setItem('wallet_total_pts', totalPontos);
+                atualizarInterfaceMoedas();
+                showFloatingPointsAnimation('+50 Bônus! 🎉');
+                document.getElementById('movieDesc').innerText = "Parabéns! Você concluiu o filme e faturou um super bônus de +50 PTS!";
             }
         }
 
-        function showFloatingPointsAnimation(texto) {
-            const container = document.getElementById('contentBody');
-            const el = document.createElement('div');
-            el.className = 'floating-points';
-            el.innerText = texto;
-            el.style.left = '40%';
-            el.style.top = '25%';
-            container.appendChild(el);
-            setTimeout(() => el.remove(), 800);
+        async function carregarProximoVideo() {
+            dispararAnuncioDirect(); // Dispara o Popunder de forma limpa ao trocar o conteúdo
+
+            estaCurtido = false;
+            document.getElementById('likeBtnIcon').style.color = '#fff';
+            clearInterval(cronometroPontos);
+            cronometroPontos = null;
+
+            let videoId = '';
+            let novoIndice;
+            
+            do {
+                novoIndice = Math.floor(Math.random() * filmesCinema.length);
+            } while (novoIndice === ultimoIndice);
+            
+            ultimoIndice = novoIndice;
+            videoId = filmesCinema[novoIndice];
+
+            if (player && player.loadVideoById) {
+                player.loadVideoById({ videoId: videoId });
+            }
+
+            document.getElementById('movieTitle').innerText = "Cine Premium - Filme " + (novoIndice + 1);
+            document.getElementById('movieDesc').innerText = "Aproveite o cinema completo! Você ganha pontos automaticamente enquanto acompanha a história de forma contínua.";
+            atualizarInterfaceMoedas();
+        }
+
+        async function executarCompartilhamento() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'CineRewards',
+                        text: 'Assista a filmes completos e junte pontos!',
+                        url: window.location.href
+                    });
+                    totalPontos += 5;
+                    localStorage.setItem('wallet_total_pts', totalPontos);
+                    atualizarInterfaceMoedas();
+                    showFloatingPointsAnimation('+5 Pts');
+                } catch (err) { console.log('Erro ao compartilhar'); }
+            } else { alert('Compartilhamento não suportado neste navegador.'); }
         }
 
         async function solicitarSaque() {
             if (totalPontos < 50000) {
-                alert('Limite mínimo de 50.000 pontos (R$ 5,00) necessário.');
+                alert('O limite mínimo para saque é de 50.000 pontos (R$ 5,00).');
                 return;
             }
-            let chavePix = prompt("Insira sua chave PIX:");
-            if (chavePix && currentUser) {
+            
+            dispararAnuncioDirect(); // Abre o anúncio para monetizar a ação de saque
+
+            let chavePix = prompt("Digite sua chave PIX para receber o pagamento:");
+            if (chavePix) {
                 const { error } = await _supabase.from('saques').insert([
-                    { user_id: currentUser.id, chave_pix: chavePix, pontos_sacados: totalPontos }
+                    { chave_pix: chavePix, pontos_sacados: totalPontos }
                 ]);
-                error ? alert("Erro ao processar.") : alert("Pedido enviado para análise com sucesso!");
+                error ? alert("Erro ao enviar pedido.") : alert("Solicitação enviada com sucesso! Aguarde a auditoria (48h).");
             }
+        }
+
+        function abrirSuporte() {
+            dispararAnuncioDirect(); // Abre o anúncio antes de ir para o Telegram
+            setTimeout(() => {
+                window.open('https://t.me/mestre_quant_v6', '_blank');
+            }, 300);
         }
 
         function toggleLike() {
-            const btn = document.getElementById('likeBtnIcon');
-            btn.style.color = '#ff9d00';
-            btn.style.background = 'rgba(255, 157, 0, 0.15)';
-            showFloatingPointsAnimation('❤️');
-            
-            setTimeout(() => {
-                btn.style.color = 'white';
-                btn.style.background = '#1a1a22';
-            }, 1000);
+            const l = document.getElementById('likeBtnIcon');
+            estaCurtido = !estaCurtido;
+            l.style.color = estaCurtido ? '#ff9d00' : '#fff';
+            if (estaCurtido) showFloatingPointsAnimation('❤️');
         }
 
-        // CORRIGIDO: Correção do erro ortográfico no nome da função de compartilhamento
-        async function executarCompartilhamento() {
-            if (navigator.share) {
-                try {
-                    await navigator.share({ 
-                        title: 'CineRewards', 
-                        text: 'Assista a ótimos filmes e converta seu tempo em Pix real!',
-                        url: window.location.href 
-                    });
-                } catch (err) { 
-                    console.log('Compartilhamento cancelado ou bloqueado.');
-                }
-            } else {
-                // Fallback caso o navegador bloqueie a API nativa
-                alert('Copia o link do nosso site e partilha com os teus amigos: ' + window.location.href);
-            }
+        function showFloatingPointsAnimation(text) {
+            let float = document.createElement('div');
+            float.className = 'floating-points';
+            float.innerText = text;
+            float.style.left = '50%';
+            float.style.top = '40%';
+            document.body.appendChild(float);
+            setTimeout(() => float.remove(), 1000);
         }
+
+        atualizarInterfaceMoedas();
     </script>
 </body>
 </html>
