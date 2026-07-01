@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="view_pro" content="width=device-width, initial-scale=1.0">
-<title>ViralRewards Pro </title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ViralRewards Pro - Painel Oficial</title>
 
 <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
@@ -12,7 +12,7 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+• { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 body {
 background: #000;
 color: #fff;
@@ -88,7 +88,7 @@ height: 100%;
 border: none;
 }
 
-/* MENU LATERAL EXPANSÍVEL (Com Rolagem para as Informações) */
+/* MENU LATERAL EXPANSÍVEL (Com Rolagem para as Informações) /
 .menu-drawer {
 position: absolute;
 top: 0;
@@ -105,7 +105,7 @@ display: flex;
 flex-direction: column;
 gap: 22px;
 backdrop-filter: blur(15px);
-overflow-y: auto; /* Permite rolar as informações dentro do menu */
+overflow-y: auto; / Permite rolar as informações dentro do menu */
 }
 
 .menu-drawer.active { left: 0; }
@@ -319,8 +319,10 @@ pointer-events: none;
 
 <div class="conversion-box">
 <h4>Conversão Comercial</h4>
-<p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>R$ 1,00</strong> em dinheiro real.</p> 
-<div style="margin-top: 10px; font-size: 14px; font-weight: bold;"> Saldo Estimado: <span id="realBalance" style="color: #00c853;">R$ 0,00</span></div>
+<p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>Rlatex
+ 1,00&lt;/strong&gt; em dinheiro real.&lt;/p&gt; &lt;div style="margin-top: 10px; font-size: 14px; font-weight: bold;"&gt; Saldo Estimado: &lt;span id="realBalance" style="color: #00c853;"&gt;R
+
+ 0,00</span></div>
 </div>
 
 <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
@@ -360,7 +362,8 @@ pointer-events: none;
 <h3><i class="fa-solid fa-headset"></i> Ajuda & Termos</h3>
 <div class="support-box">
 <p>Identificou falhas no saldo ou quer contestar uma auditoria? Fale diretamente com nossa equipe de suporte.</p>
-<a href="https://t.me/mestre_quant_v6" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
+<a href="https://t.me/mestre_quant_v6
+" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
 </div>
 </div>
 
@@ -429,7 +432,7 @@ document.getElementById('menuDrawer').classList.toggle('active');
 
 function extrairVideoID(url) {
 if (!url) return '';
-let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|&v=)([^#&?]*).*/;
+let regExp = /^.(youtu.be/|v/|u/\w/|embed/|shorts/|watch?v=|&v=)([^#&?]).*/;
 let match = url.match(regExp);
 return (match && match[2].length == 11) ? match[2] : url;
 }
