@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViralRewards Shorts</title>
+    <title>ViralRewards Pro</title>
     
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -23,7 +24,6 @@
             overflow: hidden; 
         }
 
-        /* Container Principal TikTok */
         .tiktok-container {
             position: relative;
             width: 100%;
@@ -34,30 +34,27 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: 2px solid #25f4ee; /* Neon Azul TikTok */
-            box-shadow: 0 0 20px rgba(37, 244, 238, 0.3), 0 0 40px rgba(254, 44, 85, 0.3);
         }
 
-        /* Placar de Pontos Superior Estilo Gamer */
+        /* Header Superior */
         .points-header {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
+            top: 25px;
+            left: 15px;
+            right: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 20;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 18px;
             border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
         }
 
         .logo-text {
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 800;
+            font-size: 15px;
             background: linear-gradient(90deg, #25f4ee, #fe2c55);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -66,35 +63,109 @@
         .score-box {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: linear-gradient(135deg, #ff9d00, #ffb700);
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             color: #000;
             font-weight: 800;
-            box-shadow: 0 0 10px rgba(255, 157, 0, 0.6);
-            animation: pulse 1.5s infinite alternate;
+            font-size: 13px;
         }
 
-        /* Player de Vídeo em Tela Cheia */
+        /* Player de Vídeo */
         .video-box {
             width: 100%;
-            height: 100vh;
+            height: 100%;
             overflow: hidden;
             background: #000;
         }
 
-        iframe {
+        #videoPlayer {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        /* Barra Lateral Super Interativa */
+        /* Menu Lateral Drawer */
+        .menu-drawer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.98);
+            border-right: 2px solid #25f4ee;
+            z-index: 40;
+            transition: left 0.3s ease;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            backdrop-filter: blur(15px);
+        }
+
+        .menu-drawer.active { left: 0; }
+
+        .menu-drawer h2 {
+            font-size: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            color: #25f4ee;
+        }
+
+        .data-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .data-card p { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
+
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            color: #fe2c55;
+            cursor: pointer;
+        }
+
+        /* Descrição VISÍVEL estilo TikTok no fundo do vídeo */
+        .video-footer {
+            position: absolute;
+            bottom: 40px;
+            left: 15px;
+            right: 85px;
+            z-index: 15;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            border-left: 3px solid #25f4ee;
+            pointer-events: none;
+        }
+
+        .video-footer h3 {
+            font-size: 14px;
+            color: #25f4ee;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .video-footer p {
+            font-size: 12px;
+            color: #ffffff;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        /* Controles Flutuantes da Direita */
         .side-bar {
             position: absolute;
-            right: 15px;
-            bottom: 10%;
+            right: 12px;
+            bottom: 12%;
             display: flex;
             flex-direction: column;
             gap: 18px;
@@ -102,83 +173,47 @@
             z-index: 10;
         }
 
-        .action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-        }
-
         .circle-btn {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(30, 30, 30, 0.7);
+            background: rgba(20, 20, 20, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
             backdrop-filter: blur(5px);
-            transition: all 0.2s ease;
+            transition: transform 0.1s ease;
         }
 
-        /* Botão Próximo Destacado com Neon */
         .circle-btn.btn-next {
             background: linear-gradient(45deg, #fe2c55, #25f4ee);
-            font-size: 22px;
-            box-shadow: 0 0 15px rgba(254, 44, 85, 0.6);
             border: none;
+            box-shadow: 0 0 15px rgba(254, 44, 85, 0.5);
         }
 
-        .circle-btn:active {
-            transform: scale(0.85);
-        }
+        .circle-btn:active { transform: scale(0.85); }
+        .btn-label { font-size: 11px; color: #fff; margin-top: 4px; font-weight: bold; text-shadow: 1px 1px 3px #000; }
+        .action-item { display: flex; flex-direction: column; align-items: center; }
 
-        .btn-label {
-            font-size: 11px;
-            color: #fff;
-            margin-top: 4px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,1);
-        }
-
-        /* Feedback visual quando ganha pontos */
         .floating-points {
             position: absolute;
             color: #ffb700;
             font-weight: 900;
-            font-size: 24px;
+            font-size: 26px;
             text-shadow: 0 0 8px #000;
-            animation: floatUp 1s ease-out forwards;
+            animation: floatUp 0.9s ease-out forwards;
             z-index: 30;
             pointer-events: none;
         }
 
-        /* Animações */
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.05); }
-        }
-
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-90px) scale(1.4); opacity: 0; }
         }
-
-        /* Legenda do vídeo no canto inferior */
-        .video-footer {
-            position: absolute;
-            bottom: 30px;
-            left: 15px;
-            right: 80px;
-            z-index: 10;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-        }
-
-        .video-footer h3 { font-size: 15px; margin-bottom: 5px; color: #25f4ee; }
-        .video-footer p { font-size: 13px; color: #ddd; }
     </style>
 </head>
 <body>
@@ -187,8 +222,31 @@
 
     <div class="tiktok-container" id="mainContainer">
         
+        <div class="menu-drawer" id="menuDrawer">
+            <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
+            <h2><i class="fa-solid fa-wallet"></i> Seu Saldo Técnico</h2>
+            
+            <div class="data-card">
+                <p>Pontos por Vídeos Completos</p>
+                <span id="ptsVideos">0</span> PTS
+            </div>
+            
+            <div class="data-card">
+                <p>Bônus por Compartilhar</p>
+                <span id="ptsBonus">0</span> PTS
+            </div>
+            
+            <div class="data-card" style="border-color: #25f4ee;">
+                <p style="color: #25f4ee;">Saldo Total Consolidado</p>
+                <span id="ptsTotal" style="color: #ffb700;">0</span> PTS
+            </div>
+        </div>
+        
         <div class="points-header">
-            <span class="logo-text"><i class="fa-solid fa-bolt"></i> VIRAL TOK</span>
+            <div class="circle-btn" style="width:35px; height:35px; font-size:14px; border:none;" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+            <span class="logo-text">VIRAL TOK</span>
             <div class="score-box">
                 <i class="fa-solid fa-coins"></i>
                 <span id="pointsBalance">0</span> PTS
@@ -196,33 +254,28 @@
         </div>
 
         <div class="video-box">
-            <iframe id="videoPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div id="videoPlayer"></div>
         </div>
 
         <div class="video-footer">
-            <h3>@viral_master</h3>
-            <p>Assista e ganhe pontos trocando de vídeo! 🚀 #viral #memes #fyp</p>
+            <h3 id="videoAuthor">@viral_master</h3>
+            <p id="videoDesc">Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp</p>
         </div>
 
         <div class="side-bar">
             <div class="action-item" onclick="toggleLike(this)">
                 <div class="circle-btn"><i class="fa-solid fa-heart"></i></div>
-                <span class="btn-label" id="likeCount">12.5K</span>
-            </div>
-            
-            <div class="action-item" onclick="alert('Pontos extras ativados para este vídeo!')">
-                <div class="circle-btn"><i class="fa-solid fa-comment-dots"></i></div>
-                <span class="btn-label">432</span>
+                <span class="btn-label" id="likeCount">15.4K</span>
             </div>
 
-            <div class="action-item" onclick="ganharBonusCompartilhar()">
+            <div class="action-item" onclick="executarCompartilhamento()">
                 <div class="circle-btn" style="color: #25f4ee;"><i class="fa-solid fa-share"></i></div>
                 <span class="btn-label">Compartilhar</span>
             </div>
 
             <div class="action-item">
                 <button class="circle-btn btn-next" onclick="carregarProximoVideo()"><i class="fa-solid fa-forward"></i></button>
-                <span class="btn-label" style="color: #fe2c55;">Avançar</span>
+                <span class="btn-label" style="color: #fe2c55; font-weight:800;">Avançar</span>
             </div>
         </div>
     </div>
@@ -232,15 +285,27 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        const videosLocais = [
-            'O4PWcIGL2SQ', 'SlwT1NL6NMs', '08nzHfJZlzY', 'l8aIEEA3i0g', 
-            'nkY5znKeKzE', 'P40Kl10pmQM', 'iiQyHa5osjI', '3LJJYgvXq58', '6cLJ6E7504Q'
-        ];
-
+        const videosLocais = ['O4PWcIGL2SQ', 'SlwT1NL6NMs', '08nzHfJZlzY', 'l8aIEEA3i0g', 'nkY5znKeKzE', 'P40Kl10pmQM', 'iiQyHa5osjI', '3LJJYgvXq58', '6cLJ6E7504Q'];
         let ultimoIndice = -1;
-        // Inicializa os pontos salvos no celular do usuário
-        let pontos = parseInt(localStorage.getItem('user_points')) || 0;
-        document.getElementById('pointsBalance').innerText = pontos;
+        let player;
+        let videoAtualCompleto = false;
+
+        let carteira = {
+            videos: parseInt(localStorage.getItem('wallet_videos')) || 0,
+            bonus: parseInt(localStorage.getItem('wallet_bonus')) || 0
+        };
+
+        function atualizarInterfaceMoedas() {
+            let total = carteira.videos + carteira.bonus;
+            document.getElementById('pointsBalance').innerText = total;
+            document.getElementById('ptsVideos').innerText = carteira.videos;
+            document.getElementById('ptsBonus').innerText = carteira.bonus;
+            document.getElementById('ptsTotal').innerText = total;
+        }
+
+        function toggleMenu() {
+            document.getElementById('menuDrawer').classList.toggle('active');
+        }
 
         function extrairVideoID(url) {
             if (!url) return '';
@@ -249,11 +314,45 @@
             return (match && match[2].length == 11) ? match[2] : url;
         }
 
+        // Inicializa a API do Player do YouTube
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('videoPlayer', {
+                height: '100%',
+                width: '100%',
+                videoId: videosLocais[0],
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 0,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'iv_load_policy': 3,
+                    'playsinline': 1
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // Monitor do estado do vídeo (Deteta quando chega ao FIM)
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                if (!videoAtualCompleto) {
+                    videoAtualCompleto = true;
+                    carteira.videos += 10;
+                    localStorage.setItem('wallet_videos', carteira.videos);
+                    atualizarInterfaceMoedas();
+                    showFloatingPointsAnimation('+10 Pts');
+                    
+                    // Atualiza a descrição avisando que ganhou
+                    document.getElementById('videoDesc').innerText = "Parabéns! Ganhou +10 PTS por assistir a este vídeo completo! 🎉";
+                }
+            }
+        }
+
         async function carregarProximoVideo() {
+            videoAtualCompleto = false; // Reseta a trava de segurança para o novo vídeo
             let videoId = '';
-            
-            // Computa pontos por assistir/mudar de vídeo
-            adicionarPontos(10);
 
             try {
                 const { data } = await _supabase.from('videos_virais').select('url_video');
@@ -267,11 +366,15 @@
                 videoId = obterVideoLocalAleatorio();
             }
 
-            // Otimizado: Carrega com autoplay e som ativado instantaneamente sem interrupção
-            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&controls=0&loop=1`;
-            
-            // Randomiza contadores para parecer dinâmico a cada vídeo
-            document.getElementById('likeCount').innerText = (Math.random() * 50 + 10).toFixed(1) + 'K';
+            // Altera o vídeo usando a API nativa
+            if (player && player.loadVideoById) {
+                player.loadVideoById({videoId: videoId});
+            }
+
+            // Atualiza dinamicamente as legendas e contadores
+            document.getElementById('videoDesc').innerText = "Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp";
+            document.getElementById('likeCount').innerText = (Math.random() * 40 + 10).toFixed(1) + 'K';
+            atualizarInterfaceMoedas();
         }
 
         function obterVideoLocalAleatorio() {
@@ -283,17 +386,28 @@
             return videosLocais[novoIndice];
         }
 
-        // Sistema de Recompensa (Pontos)
-        function adicionarPontos(qtd) {
-            pontos += qtd;
-            localStorage.setItem('user_points', pontos);
-            document.getElementById('pointsBalance').innerText = pontos;
-            showFloatingPointsAnimation(`+${qtd}`);
-        }
-
-        function ganharBonusCompartilhar() {
-            adicionarPontos(50);
-            alert('Você ganhou +50 pontos por compartilhar!');
+        async function executarCompartilhamento() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'ViralRewards',
+                        text: 'Assista a vídeos curtos e junte pontos!',
+                        url: window.location.href
+                    });
+                    carteira.bonus += 50;
+                    localStorage.setItem('wallet_bonus', carteira.bonus);
+                    atualizarInterfaceMoedas();
+                    showFloatingPointsAnimation('+50 Bônus');
+                } catch (err) {
+                    console.log('Cancelado.');
+                }
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                carteira.bonus += 50;
+                localStorage.setItem('wallet_bonus', carteira.bonus);
+                atualizarInterfaceMoedas();
+                showFloatingPointsAnimation('+50 Copiado');
+            }
         }
 
         function toggleLike(element) {
@@ -302,24 +416,22 @@
                 icon.style.color = '#fff';
             } else {
                 icon.style.color = '#fe2c55';
-                adicionarPontos(5); // curtir dá pontos!
             }
         }
 
-        // Animação de moedas subindo na tela
         function showFloatingPointsAnimation(text) {
             const container = document.getElementById('mainContainer');
             const el = document.createElement('div');
             el.className = 'floating-points';
             el.innerText = text;
-            el.style.left = '50%';
-            el.style.top = '40%';
+            el.style.left = '45%';
+            el.style.top = '45%';
             container.appendChild(el);
-            setTimeout(() => el.remove(), 1000);
+            setTimeout(() => el.remove(), 900);
         }
 
-        // Inicializa o primeiro vídeo automaticamente
-        carregarProximoVideo();
+        // Executa a inicialização de interface
+        atualizarInterfaceMoedas();
     </script>
 </body>
 </html>
