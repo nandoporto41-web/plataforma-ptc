@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViralTube Shorts</title>
+    <title>ViralRewards Shorts</title>
     
-    <!-- Script Monetag 1 (Vignette - Anúncios em tela cheia/segundo plano) -->
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
-    <!-- Conexão com o Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body { 
             background: #000; 
             color: #fff; 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -24,7 +23,7 @@
             overflow: hidden; 
         }
 
-        /* Container Principal estilo TikTok */
+        /* Container Principal TikTok */
         .tiktok-container {
             position: relative;
             width: 100%;
@@ -32,11 +31,52 @@
             height: 100vh;
             background: #000;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            border: 2px solid #25f4ee; /* Neon Azul TikTok */
+            box-shadow: 0 0 20px rgba(37, 244, 238, 0.3), 0 0 40px rgba(254, 44, 85, 0.3);
         }
 
-        /* Player de Vídeo Proporção Vertical de Shorts */
+        /* Placar de Pontos Superior Estilo Gamer */
+        .points-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 16px;
+            background: linear-gradient(90deg, #25f4ee, #fe2c55);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ff9d00, #ffb700);
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 0 10px rgba(255, 157, 0, 0.6);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        /* Player de Vídeo em Tela Cheia */
         .video-box {
             width: 100%;
             height: 100vh;
@@ -50,95 +90,158 @@
             border: none;
         }
 
-        /* Barra Lateral de Botões Estilo TikTok */
+        /* Barra Lateral Super Interativa */
         .side-bar {
             position: absolute;
             right: 15px;
-            bottom: 12%;
+            bottom: 10%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
             align-items: center;
             z-index: 10;
-        }
-
-        .btn-next {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: #fe2c55; /* Cor vermelha do TikTok */
-            border: none;
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(254, 44, 85, 0.4);
-            transition: transform 0.1s ease;
-        }
-
-        .btn-next:active {
-            transform: scale(0.9);
-        }
-
-        .btn-label {
-            font-size: 11px;
-            color: #fff;
-            margin-top: 5px;
-            font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,1);
         }
 
         .action-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            cursor: pointer;
         }
+
+        .circle-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+        }
+
+        /* Botão Próximo Destacado com Neon */
+        .circle-btn.btn-next {
+            background: linear-gradient(45deg, #fe2c55, #25f4ee);
+            font-size: 22px;
+            box-shadow: 0 0 15px rgba(254, 44, 85, 0.6);
+            border: none;
+        }
+
+        .circle-btn:active {
+            transform: scale(0.85);
+        }
+
+        .btn-label {
+            font-size: 11px;
+            color: #fff;
+            margin-top: 4px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,1);
+        }
+
+        /* Feedback visual quando ganha pontos */
+        .floating-points {
+            position: absolute;
+            color: #ffb700;
+            font-weight: 900;
+            font-size: 24px;
+            text-shadow: 0 0 8px #000;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        /* Animações */
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Legenda do vídeo no canto inferior */
+        .video-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 15px;
+            right: 80px;
+            z-index: 10;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .video-footer h3 { font-size: 15px; margin-bottom: 5px; color: #25f4ee; }
+        .video-footer p { font-size: 13px; color: #ddd; }
     </style>
 </head>
 <body>
 
-    <!-- Script Monetag 2 (Tag Principal de Cliques/Popunder) -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
 
-    <div class="tiktok-container">
-        <!-- Player tela cheia -->
+    <div class="tiktok-container" id="mainContainer">
+        
+        <div class="points-header">
+            <span class="logo-text"><i class="fa-solid fa-bolt"></i> VIRAL TOK</span>
+            <div class="score-box">
+                <i class="fa-solid fa-coins"></i>
+                <span id="pointsBalance">0</span> PTS
+            </div>
+        </div>
+
         <div class="video-box">
             <iframe id="videoPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
 
-        <!-- Botão Avançar Flutuante na Lateral -->
+        <div class="video-footer">
+            <h3>@viral_master</h3>
+            <p>Assista e ganhe pontos trocando de vídeo! 🚀 #viral #memes #fyp</p>
+        </div>
+
         <div class="side-bar">
+            <div class="action-item" onclick="toggleLike(this)">
+                <div class="circle-btn"><i class="fa-solid fa-heart"></i></div>
+                <span class="btn-label" id="likeCount">12.5K</span>
+            </div>
+            
+            <div class="action-item" onclick="alert('Pontos extras ativados para este vídeo!')">
+                <div class="circle-btn"><i class="fa-solid fa-comment-dots"></i></div>
+                <span class="btn-label">432</span>
+            </div>
+
+            <div class="action-item" onclick="ganharBonusCompartilhar()">
+                <div class="circle-btn" style="color: #25f4ee;"><i class="fa-solid fa-share"></i></div>
+                <span class="btn-label">Compartilhar</span>
+            </div>
+
             <div class="action-item">
-                <button class="btn-next" onclick="carregarProximoVideo()">⏭️</button>
-                <span class="btn-label">Próximo</span>
+                <button class="circle-btn btn-next" onclick="carregarProximoVideo()"><i class="fa-solid fa-forward"></i></button>
+                <span class="btn-label" style="color: #fe2c55;">Avançar</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuração do Supabase com as suas credenciais oficiais
         const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Backup de segurança com os IDs dos seus 9 vídeos criativos
         const videosLocais = [
-            'O4PWcIGL2SQ', // Motoboy
-            'SlwT1NL6NMs', // Memes Tente não rir 119
-            '08nzHfJZlzY', // Memes Ratoeira
-            'l8aIEEA3i0g', // Cachorro dançando
-            'nkY5znKeKzE', // Chute na garrafa
-            'P40Kl10pmQM', // Neymar
-            'iiQyHa5osjI', // Animação Vivian
-            '3LJJYgvXq58', // Memes sono
-            '6cLJ6E7504Q'  // Dogesh protein
+            'O4PWcIGL2SQ', 'SlwT1NL6NMs', '08nzHfJZlzY', 'l8aIEEA3i0g', 
+            'nkY5znKeKzE', 'P40Kl10pmQM', 'iiQyHa5osjI', '3LJJYgvXq58', '6cLJ6E7504Q'
         ];
 
         let ultimoIndice = -1;
+        // Inicializa os pontos salvos no celular do usuário
+        let pontos = parseInt(localStorage.getItem('user_points')) || 0;
+        document.getElementById('pointsBalance').innerText = pontos;
 
-        // Função para extrair apenas o ID puro do vídeo, mesmo se for inserido um link completo no banco
         function extrairVideoID(url) {
             if (!url) return '';
             let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -148,25 +251,27 @@
 
         async function carregarProximoVideo() {
             let videoId = '';
+            
+            // Computa pontos por assistir/mudar de vídeo
+            adicionarPontos(10);
 
             try {
-                // Tenta buscar direto do seu banco de dados Supabase
-                const { data, error } = await _supabase.from('videos_virais').select('url_video');
-                
+                const { data } = await _supabase.from('videos_virais').select('url_video');
                 if (data && data.length > 0) {
                     let random = Math.floor(Math.random() * data.length);
                     videoId = extrairVideoID(data[random].url_video);
                 } else {
-                    // Se o banco estiver vazio, usa a lista local de segurança
                     videoId = obterVideoLocalAleatorio();
                 }
             } catch (e) {
-                // Caso ocorra qualquer falha de autenticação/rede, usa os locais
                 videoId = obterVideoLocalAleatorio();
             }
 
-            // Altera o SRC do iframe convertendo para o formato embed que funciona sem tela preta
-            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&mute=0`;
+            // Otimizado: Carrega com autoplay e som ativado instantaneamente sem interrupção
+            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&controls=0&loop=1`;
+            
+            // Randomiza contadores para parecer dinâmico a cada vídeo
+            document.getElementById('likeCount').innerText = (Math.random() * 50 + 10).toFixed(1) + 'K';
         }
 
         function obterVideoLocalAleatorio() {
@@ -174,12 +279,46 @@
             do {
                 novoIndice = Math.floor(Math.random() * videosLocais.length);
             } while (novoIndice === ultimoIndice && videosLocais.length > 1);
-            
             ultimoIndice = novoIndice;
             return videosLocais[novoIndice];
         }
 
-        // Inicia o feed tocando o primeiro vídeo assim que entra no site
+        // Sistema de Recompensa (Pontos)
+        function adicionarPontos(qtd) {
+            pontos += qtd;
+            localStorage.setItem('user_points', pontos);
+            document.getElementById('pointsBalance').innerText = pontos;
+            showFloatingPointsAnimation(`+${qtd}`);
+        }
+
+        function ganharBonusCompartilhar() {
+            adicionarPontos(50);
+            alert('Você ganhou +50 pontos por compartilhar!');
+        }
+
+        function toggleLike(element) {
+            let icon = element.querySelector('i');
+            if(icon.style.color === 'rgb(254, 44, 85)') {
+                icon.style.color = '#fff';
+            } else {
+                icon.style.color = '#fe2c55';
+                adicionarPontos(5); // curtir dá pontos!
+            }
+        }
+
+        // Animação de moedas subindo na tela
+        function showFloatingPointsAnimation(text) {
+            const container = document.getElementById('mainContainer');
+            const el = document.createElement('div');
+            el.className = 'floating-points';
+            el.innerText = text;
+            el.style.left = '50%';
+            el.style.top = '40%';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        // Inicializa o primeiro vídeo automaticamente
         carregarProximoVideo();
     </script>
 </body>
