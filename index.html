@@ -216,11 +216,13 @@
             
             <div class="data-card" style="font-size: 11px; color:#bcbcc4; line-height:1.5;">
                 <h4 style="color:#ff9d00; margin-bottom:5px; font-size:12px;"><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                Somos uma plataforma de entretenimento financiada pela exibição de anúncios digitais de nossos parceiros (como redes de anúncios nativos e pop-unders). Dividimos parte da receita gerada por essas interações com você na forma de pontos de fidelidade. <br><br>
-                <strong>Importante:</strong> Para garantir a conformidade e legitimidade junto aos anunciantes, nosso sistema valida o engajamento orgânico na tela. O uso de robôs, bloqueadores de anúncios (AdBlockers) ou fraudes resultará na retenção automática dos resgates.
+                Somos uma plataforma de entretenimento financiada pela exibição de anúncios digitais de nossos parceiros comerciais. Dividimos parte do faturamento gerado por essas campanhas com você na forma de pontos de fidelidade resgatáveis.<br><br>
+                <strong>Termos de Uso:</strong> Para manter a idoneidade da nossa infraestrutura junto aos anunciantes, o sistema valida a execução orgânica dos conteúdos. O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
             </div>
 
-            <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#1a1a22; color:#fff; padding:10px; border-radius:8px; font-size:12px; font-weight:bold;">Suporte via Telegram</a>
+            <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px;">
+                <i class="fa-brands fa-telegram" style="font-size:16px;"></i> Suporte Oficial Telegram
+            </a>
         </div>
         
         <div class="points-header">
@@ -275,19 +277,32 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // BANCO DE DADOS CORRIGIDO - IDs associados aos títulos corretos vistos em tela
+        // BANCO DE DADOS INTEGRADO - Títulos e Vídeos Remapeados com base nos prints da UI
         const listaFilmes = [
-            { id: 'VwNAFqsxAVg', titulo: 'Faroeste - Sete Homens', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'kEuh6pZSQ9Q', titulo: 'A Noite dos Mortos Vivos', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'AyvlqWV9Hj0', titulo: 'Se Meu Fusca Falasse', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: '-tPux_s_qEY', titulo: 'O Último Comando', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'HR1kWqx1df4', titulo: 'Filme Gospel - Batismo de Fogo', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'e2dI2-smyLo', titulo: 'Terror na Floresta', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'x6KT_2a98YA', titulo: 'Guerra de Titãs', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'NAKch0sunUc', titulo: 'O Mistério da Floresta', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'KLK-9TaQi4g', titulo: 'Operação Resgate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'oQGjoPegDWM', titulo: 'Documentário Espacial', categoria: 'Documentário', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'K94IVy32wCo', titulo: 'Crônicas do Amanhã', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' }
+            { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'Hw_gWagWJRE', titulo: 'Filme Gospel - Restauração', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'Qqf8f-cVKto', titulo: 'Faroeste - Sete Homens', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'Y4odIuso4yc', titulo: 'Terror na Floresta', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'tW1Dbo1dVtA', titulo: 'Guerra de Titãs', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'AzGY83fKxik', titulo: 'O Mistério Clássico', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'Y7SKTDtNON0', titulo: 'Operação Resgate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'e2dI2-smyLo', titulo: 'Documentário Universo', categoria: 'Ciência', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: '-tPux_s_qEY', titulo: 'Crônicas do Espaço', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'oQGjoPegDWM', titulo: 'A Força do Destino', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'KLK-9TaQi4g', titulo: 'Impacto Profundo', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'Lvj4_ZrdL7s', titulo: 'Sussurros Obscuros', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'K94IVy32wCo', titulo: 'Linha de Combate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: '6KHpz3hvP6E', titulo: 'Horizonte Estelar', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'qmdRZTxX5L4', titulo: 'Ecossistema Vivo', categoria: 'Documentário', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'uQPbA530OP4', titulo: 'Fuga Estratégica', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'S3QBs1Do9-4', titulo: 'Laços Afetivos', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'Ru6u7Po53V8', titulo: 'Comédia Sem Limites', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'HeFGNV5Jj5k', titulo: 'Legado Sombrio', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'XQQmPddfYLE', titulo: 'Último Segundo', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'aMrZu0P9ikc', titulo: 'Gospel - Fé Inabalável', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'kOCEtpOa9gs', titulo: 'Faroeste da Vingança', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' }
         ];
         
         let player;
@@ -295,14 +310,18 @@
         let cronometroPontos = null;
         let totalPontos = 0;
 
-        // Renderiza catálogo dinâmico na UI
+        // Renderização dinâmica da lista combinada
         function renderizarCatalogo() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
             listaFilmes.forEach(filme => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                card.onclick = () => mudarFilme(filme.id, filme.titulo);
+                card.onclick = () => {
+                    mudarFilme(filme.id, filme.titulo);
+                    // Dispara a tag de publicidade nativa e abre abas pop
+                    if(typeof forcedAdTrigger === "function") forcedAdTrigger();
+                };
                 card.innerHTML = `
                     <img src="${filme.thumb}" alt="${filme.titulo}">
                     <div class="movie-card-info">
@@ -314,7 +333,7 @@
             });
         }
 
-        // Fluxo de Cadastro/Autenticação
+        // Fluxo de Cadastro e Autenticação Supabase
         async function handleAuth() {
             const email = document.getElementById('authEmail').value;
             const pass = document.getElementById('authPassword').value;
@@ -350,9 +369,11 @@
             document.getElementById('realBalance').innerText = valorEmReais;
         }
 
-        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
+        function toggleMenu() { 
+            document.getElementById('menuDrawer').classList.toggle('active'); 
+        }
 
-        // API do Player do YouTube
+        // Carrega Player do YouTube com o primeiro filme da lista nova
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
                 height: '100%', width: '100%',
@@ -381,7 +402,7 @@
                         localStorage.setItem('pts_' + currentUser.id, totalPontos);
                         atualizarInterfaceMoedas();
                         showFloatingPointsAnimation('+10 Pts');
-                    }, 300000); // Contador a cada 5 Minutos
+                    }, 300000); // Bonificação estável a cada 5 Minutos
                 }
             } else {
                 clearInterval(cronometroPontos);
@@ -426,7 +447,7 @@
             }, 1000);
         }
 
-        async function ejecutarCompartilhamento() {
+        async function executarCompartilhamento() {
             if (navigator.share) {
                 try {
                     await navigator.share({ title: 'CineRewards', url: window.location.href });
