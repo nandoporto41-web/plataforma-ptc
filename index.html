@@ -83,14 +83,14 @@
             flex-direction: column;
             gap: 20px;
             overflow-y: auto;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
         }
 
-        .movie-details h3 { font-size: 17px; color: #fff; margin-bottom: 4px; font-weight: 700; }
-        .movie-details p { font-size: 12px; color: #9c9ca4; line-height: 1.4; }
+        .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
+        .movie-details p { font-size: 11px; color: #9c9ca4; line-height: 1.4; }
 
-        /* Catálogo de Filmes em Grade Moderno */
-        .catalog-section h4 { font-size: 13px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        /* Catálogo de Filmes em Grade */
+        .catalog-section h4 { font-size: 12px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -131,20 +131,20 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* Menu Lateral Drawer */
+        /* Menu Lateral Drawer (Corrigido rolagem e cortes no mobile) */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
             z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 50px 20px 20px 20px; display: flex; flex-direction: column; gap: 18px;
+            padding: 60px 15px 30px 15px; display: flex; flex-direction: column; gap: 15px;
             overflow-y: auto;
         }
         .menu-drawer.active { left: 0; }
         .close-menu { position: absolute; top: 18px; right: 20px; font-size: 24px; color: #ff9d00; cursor: pointer; }
         
-        .data-card { background: #13131a; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
+        .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
         .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
-        .data-card span { font-size: 20px; font-weight: 700; color: #fff; }
+        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
 
         .btn-saque {
             background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
@@ -195,11 +195,11 @@
 
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
-            <h2 style="font-size: 18px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
+            <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
             
             <div class="data-card">
                 <p>Usuário Ativo</p>
-                <span id="userDisplay" style="font-size:12px; color:#ffb700; word-break: break-all;">Desconectado</span>
+                <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
             </div>
 
             <div class="data-card">
@@ -216,11 +216,11 @@
             
             <div class="data-card" style="font-size: 11px; color:#bcbcc4; line-height:1.5;">
                 <h4 style="color:#ff9d00; margin-bottom:5px; font-size:12px;"><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                Somos uma plataforma de entretenimento financiada pela exibição de anúncios digitais de nossos parceiros comerciais. Dividimos parte do faturamento gerado por essas campanhas com você na forma de pontos de fidelidade resgatáveis.<br><br>
+                Somos uma plataforma de entretenimento financiada pela exibição de anúncios digitais de nossos parceiros comerciais. Dividimos parte do faturamento gerado por essas campanhas publicitárias com você na forma de pontos de fidelidade resgatáveis.<br><br>
                 <strong>Termos de Uso:</strong> Para manter a idoneidade da nossa infraestrutura junto aos anunciantes, o sistema valida a execução orgânica dos conteúdos. O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
             </div>
 
-            <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px;">
+            <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
                 <i class="fa-brands fa-telegram" style="font-size:16px;"></i> Suporte Oficial Telegram
             </a>
         </div>
@@ -277,7 +277,7 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // BANCO DE DADOS INTEGRADO - Títulos e Vídeos Remapeados com base nos prints da UI
+        // BASE DE DADOS COMPLETA ATUALIZADA (Exatamente os 24 Filmes Mapeados)
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
@@ -310,7 +310,7 @@
         let cronometroPontos = null;
         let totalPontos = 0;
 
-        // Renderização dinâmica da lista combinada
+        // Renderização dinâmica estável
         function renderizarCatalogo() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
@@ -319,8 +319,6 @@
                 card.className = 'movie-card';
                 card.onclick = () => {
                     mudarFilme(filme.id, filme.titulo);
-                    // Dispara a tag de publicidade nativa e abre abas pop
-                    if(typeof forcedAdTrigger === "function") forcedAdTrigger();
                 };
                 card.innerHTML = `
                     <img src="${filme.thumb}" alt="${filme.titulo}">
@@ -373,7 +371,7 @@
             document.getElementById('menuDrawer').classList.toggle('active'); 
         }
 
-        // Carrega Player do YouTube com o primeiro filme da lista nova
+        // Configuração API YouTube Iframe
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
                 height: '100%', width: '100%',
@@ -402,7 +400,7 @@
                         localStorage.setItem('pts_' + currentUser.id, totalPontos);
                         atualizarInterfaceMoedas();
                         showFloatingPointsAnimation('+10 Pts');
-                    }, 300000); // Bonificação estável a cada 5 Minutos
+                    }, 300000); // 5 Minutos
                 }
             } else {
                 clearInterval(cronometroPontos);
