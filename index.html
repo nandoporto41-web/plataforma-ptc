@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ViralRewards Pro</title>
+    <title>ViralRewards Pro - Painel Oficial</title>
     
+    <!-- Script Monetag 1 (Vignette) -->
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
+    <!-- Dependências: Supabase, FontAwesome e API do YouTube -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -86,42 +88,72 @@
             border: none;
         }
 
-        /* Menu Lateral Drawer */
+        /* Menu Lateral Estilo Dashboard de Finanças */
         .menu-drawer {
             position: absolute;
             top: 0;
             left: -100%;
-            width: 80%;
+            width: 85%;
             height: 100%;
-            background: rgba(15, 15, 15, 0.98);
-            border-right: 2px solid #25f4ee;
+            background: rgba(10, 10, 10, 0.98);
+            border-right: 2px solid #ff9d00;
             z-index: 40;
             transition: left 0.3s ease;
-            padding: 40px 20px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
             backdrop-filter: blur(15px);
+            overflow-y: auto;
         }
 
         .menu-drawer.active { left: 0; }
 
         .menu-drawer h2 {
-            font-size: 20px;
+            font-size: 18px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 10px;
-            color: #25f4ee;
+            color: #ff9d00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .data-card {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
+            background: rgba(255,255,255,0.04);
+            padding: 12px 15px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .data-card p { font-size: 12px; color: #aaa; margin-bottom: 4px; }
-        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
+        .data-card p { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+        .data-card span { font-size: 16px; font-weight: 700; color: #fff; }
+
+        /* Seção de Conversão Monetária */
+        .conversion-box {
+            background: rgba(255, 157, 0, 0.08);
+            border: 1px dashed #ff9d00;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 5px;
+        }
+        .conversion-box h4 { font-size: 13px; color: #ffb700; margin-bottom: 5px; }
+        .conversion-box p { font-size: 12px; color: #ddd; line-height: 1.4; }
+
+        .btn-saque {
+            background: linear-gradient(90deg, #00bfa5, #00c853);
+            color: #000;
+            font-weight: 800;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 13px;
+            margin-top: 10px;
+            transition: transform 0.1s ease;
+        }
+        .btn-saque:active { transform: scale(0.95); }
 
         .close-menu {
             position: absolute;
@@ -132,14 +164,14 @@
             cursor: pointer;
         }
 
-        /* Descrição VISÍVEL estilo TikTok no fundo do vídeo */
+        /* Descrição VISÍVEL */
         .video-footer {
             position: absolute;
             bottom: 40px;
             left: 15px;
             right: 85px;
             z-index: 15;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             padding: 12px;
             border-radius: 10px;
             backdrop-filter: blur(4px);
@@ -147,21 +179,10 @@
             pointer-events: none;
         }
 
-        .video-footer h3 {
-            font-size: 14px;
-            color: #25f4ee;
-            margin-bottom: 4px;
-            font-weight: 700;
-        }
+        .video-footer h3 { font-size: 14px; color: #25f4ee; margin-bottom: 4px; font-weight: 700; }
+        .video-footer p { font-size: 12px; color: #ffffff; line-height: 1.4; }
 
-        .video-footer p {
-            font-size: 12px;
-            color: #ffffff;
-            line-height: 1.4;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-
-        /* Controles Flutuantes da Direita */
+        /* Barra Lateral Direita */
         .side-bar {
             position: absolute;
             right: 12px;
@@ -218,30 +239,38 @@
 </head>
 <body>
 
+    <!-- Script Monetag 2 -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="254770" async data-cfasync="false"></script>
 
     <div class="tiktok-container" id="mainContainer">
         
+        <!-- Menu Lateral Completo / Conversor de Reais -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
-            <h2><i class="fa-solid fa-wallet"></i> Seu Saldo Técnico</h2>
+            <h2><i class="fa-solid fa-wallet"></i> Painel de Recompensas</h2>
             
             <div class="data-card">
-                <p>Pontos por Vídeos Completos</p>
-                <span id="ptsVideos">0</span> PTS
+                <p>Pontos Acumulados</p>
+                <span id="ptsTotal">0</span> PTS
             </div>
             
-            <div class="data-card">
-                <p>Bônus por Compartilhar</p>
-                <span id="ptsBonus">0</span> PTS
+            <div class="conversion-box">
+                <h4>Taxa de Câmbio Real</h4>
+                <p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>R$ 1,00</strong> em dinheiro real.</p>
+                <div style="margin-top: 10px; font-size: 14px; font-weight: bold;">
+                    Seu Saldo Estimado: <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+                </div>
             </div>
-            
-            <div class="data-card" style="border-color: #25f4ee;">
-                <p style="color: #25f4ee;">Saldo Total Consolidado</p>
-                <span id="ptsTotal" style="color: #ffb700;">0</span> PTS
+
+            <div class="data-card" style="background: rgba(254, 44, 85, 0.05); border-color: rgba(254, 44, 85, 0.2);">
+                <p style="color: #fe2c55; font-weight: bold;"><i class="fa-solid fa-shield-halved"></i> Auditoria Antifraude</p>
+                <p style="font-size: 10px; color: #ccc; margin-top: 3px;">Para garantir a sustentabilidade, os saques passam por verificação para confirmar se as impressões de anúncios foram computadas.</p>
             </div>
+
+            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
         </div>
         
+        <!-- Header Principal -->
         <div class="points-header">
             <div class="circle-btn" style="width:35px; height:35px; font-size:14px; border:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars"></i>
@@ -253,26 +282,32 @@
             </div>
         </div>
 
+        <!-- Player de Vídeo -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
+        <!-- Descrição Visível -->
         <div class="video-footer">
             <h3 id="videoAuthor">@viral_master</h3>
             <p id="videoDesc">Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp</p>
         </div>
 
+        <!-- Controles Flutuantes -->
         <div class="side-bar">
+            <!-- Curtir Corrigido -->
             <div class="action-item" onclick="toggleLike(this)">
-                <div class="circle-btn"><i class="fa-solid fa-heart"></i></div>
+                <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
                 <span class="btn-label" id="likeCount">15.4K</span>
             </div>
 
+            <!-- Compartilhar -->
             <div class="action-item" onclick="executarCompartilhamento()">
                 <div class="circle-btn" style="color: #25f4ee;"><i class="fa-solid fa-share"></i></div>
                 <span class="btn-label">Compartilhar</span>
             </div>
 
+            <!-- Avançar Vídeo -->
             <div class="action-item">
                 <button class="circle-btn btn-next" onclick="carregarProximoVideo()"><i class="fa-solid fa-forward"></i></button>
                 <span class="btn-label" style="color: #fe2c55; font-weight:800;">Avançar</span>
@@ -290,17 +325,16 @@
         let player;
         let videoAtualCompleto = false;
 
-        let carteira = {
-            videos: parseInt(localStorage.getItem('wallet_videos')) || 0,
-            bonus: parseInt(localStorage.getItem('wallet_bonus')) || 0
-        };
+        // Recupera carteira única totalizada
+        let totalPontos = parseInt(localStorage.getItem('wallet_total_pts')) || 0;
 
         function atualizarInterfaceMoedas() {
-            let total = carteira.videos + carteira.bonus;
-            document.getElementById('pointsBalance').innerText = total;
-            document.getElementById('ptsVideos').innerText = carteira.videos;
-            document.getElementById('ptsBonus').innerText = carteira.bonus;
-            document.getElementById('ptsTotal').innerText = total;
+            document.getElementById('pointsBalance').innerText = totalPontos;
+            document.getElementById('ptsTotal').innerText = totalPontos;
+            
+            // Cálculo da conversão exata para Reais (10000 pts = 1 Real)
+            let valorEmReais = (totalPontos / 10000).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('realBalance').innerText = valorEmReais;
         }
 
         function toggleMenu() {
@@ -314,7 +348,6 @@
             return (match && match[2].length == 11) ? match[2] : url;
         }
 
-        // Inicializa a API do Player do YouTube
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
                 height: '100%',
@@ -334,24 +367,26 @@
             });
         }
 
-        // Monitor do estado do vídeo (Deteta quando chega ao FIM)
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
                 if (!videoAtualCompleto) {
                     videoAtualCompleto = true;
-                    carteira.videos += 10;
-                    localStorage.setItem('wallet_videos', carteira.videos);
+                    totalPontos += 10;
+                    localStorage.setItem('wallet_total_pts', totalPontos);
                     atualizarInterfaceMoedas();
                     showFloatingPointsAnimation('+10 Pts');
-                    
-                    // Atualiza a descrição avisando que ganhou
                     document.getElementById('videoDesc').innerText = "Parabéns! Ganhou +10 PTS por assistir a este vídeo completo! 🎉";
                 }
             }
         }
 
         async function carregarProximoVideo() {
-            videoAtualCompleto = false; // Reseta a trava de segurança para o novo vídeo
+            videoAtualCompleto = false; 
+            
+            // RESET do botão de curtir para o estado inicial branco no próximo vídeo
+            const likeBtn = document.getElementById('likeBtnIcon');
+            likeBtn.style.color = '#fff';
+
             let videoId = '';
 
             try {
@@ -366,12 +401,10 @@
                 videoId = obterVideoLocalAleatorio();
             }
 
-            // Altera o vídeo usando a API nativa
             if (player && player.loadVideoById) {
                 player.loadVideoById({videoId: videoId});
             }
 
-            // Atualiza dinamicamente as legendas e contadores
             document.getElementById('videoDesc').innerText = "Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp";
             document.getElementById('likeCount').innerText = (Math.random() * 40 + 10).toFixed(1) + 'K';
             atualizarInterfaceMoedas();
@@ -394,28 +427,40 @@
                         text: 'Assista a vídeos curtos e junte pontos!',
                         url: window.location.href
                     });
-                    carteira.bonus += 50;
-                    localStorage.setItem('wallet_bonus', carteira.bonus);
+                    totalPontos += 5; // Recompensa equilibrada e segura para compartilhamento concluído
+                    localStorage.setItem('wallet_total_pts', totalPontos);
                     atualizarInterfaceMoedas();
-                    showFloatingPointsAnimation('+50 Bônus');
+                    showFloatingPointsAnimation('+5 Pts');
                 } catch (err) {
                     console.log('Cancelado.');
                 }
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                carteira.bonus += 50;
-                localStorage.setItem('wallet_bonus', carteira.bonus);
+                totalPontos += 5;
+                localStorage.setItem('wallet_total_pts', totalPontos);
                 atualizarInterfaceMoedas();
-                showFloatingPointsAnimation('+50 Copiado');
+                showFloatingPointsAnimation('+5 Copiado');
             }
         }
 
         function toggleLike(element) {
             let icon = element.querySelector('i');
-            if(icon.style.color === 'rgb(254, 44, 85)') {
+            // Se já estiver vermelho, remove a curtida
+            if(element.style.color === 'rgb(254, 44, 85)' || icon.style.color === 'rgb(254, 44, 85)') {
                 icon.style.color = '#fff';
+                element.style.color = '#fff';
             } else {
+                // Ativa a curtida apenas para o vídeo atual
                 icon.style.color = '#fe2c55';
+                element.style.color = '#fe2c55';
+            }
+        }
+
+        function solicitarSaque() {
+            if (totalPontos < 50000) {
+                alert('O limite mínimo para processamento e conferência de segurança do Pix é de 50.000 pontos (R$ 5,00). Continue assistindo!');
+            } else {
+                alert('Solicitação recebida! Seu saldo entrou na fila de auditoria para checagem dos cliques nos anúncios da Monetag. O pagamento será enviado para o Pix cadastrado em até 48 horas.');
             }
         }
 
@@ -430,7 +475,6 @@
             setTimeout(() => el.remove(), 900);
         }
 
-        // Executa a inicialização de interface
         atualizarInterfaceMoedas();
     </script>
 </body>
