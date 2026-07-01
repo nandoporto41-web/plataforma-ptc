@@ -131,7 +131,7 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* Menu Lateral Drawer (Corrigido rolagem e cortes no mobile) */
+        /* Menu Lateral Drawer (Ajustado para Rolagem Perfeita no Telemóvel) */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -153,7 +153,7 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Janela de Autenticação / Login */
+        /* Janela de Autenticação */
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
@@ -216,8 +216,8 @@
             
             <div class="data-card" style="font-size: 11px; color:#bcbcc4; line-height:1.5;">
                 <h4 style="color:#ff9d00; margin-bottom:5px; font-size:12px;"><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                Somos uma plataforma de entretenimento financiada pela exibição de anúncios digitais de nossos parceiros comerciais. Dividimos parte do faturamento gerado por essas campanhas publicitárias com você na forma de pontos de fidelidade resgatáveis.<br><br>
-                <strong>Termos de Uso:</strong> Para manter a idoneidade da nossa infraestrutura junto aos anunciantes, o sistema valida a execução orgânica dos conteúdos. O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
+                Somos uma plataforma financiada por anúncios. Dividimos parte do faturamento gerado com você em pontos de fidelidade resgatáveis.<br><br>
+                <strong>Termos:</strong> O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
             </div>
 
             <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
@@ -277,32 +277,32 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // BASE DE DADOS COMPLETA ATUALIZADA (Exatamente os 24 Filmes Mapeados)
+        // MAPEAMENTO DOS 24 FILMES CORRIGIDOS CONFORME OS SEUS PRINTS REAIS
         const listaFilmes = [
-            { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'Hw_gWagWJRE', titulo: 'Filme Gospel - Restauração', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'Qqf8f-cVKto', titulo: 'Faroeste - Sete Homens', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'Y4odIuso4yc', titulo: 'Terror na Floresta', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'tW1Dbo1dVtA', titulo: 'Guerra de Titãs', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'AzGY83fKxik', titulo: 'O Mistério Clássico', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'Y7SKTDtNON0', titulo: 'Operação Resgate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'e2dI2-smyLo', titulo: 'Documentário Universo', categoria: 'Ciência', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: '-tPux_s_qEY', titulo: 'Crônicas do Espaço', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'oQGjoPegDWM', titulo: 'A Força do Destino', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'KLK-9TaQi4g', titulo: 'Impacto Profundo', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'Lvj4_ZrdL7s', titulo: 'Sussurros Obscuros', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'K94IVy32wCo', titulo: 'Linha de Combate', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '6KHpz3hvP6E', titulo: 'Horizonte Estelar', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'qmdRZTxX5L4', titulo: 'Ecossistema Vivo', categoria: 'Documentário', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'uQPbA530OP4', titulo: 'Fuga Estratégica', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'S3QBs1Do9-4', titulo: 'Laços Afetivos', categoria: 'Drama', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'Ru6u7Po53V8', titulo: 'Comédia Sem Limites', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'HeFGNV5Jj5k', titulo: 'Legado Sombrio', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'XQQmPddfYLE', titulo: 'Último Segundo', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'aMrZu0P9ikc', titulo: 'Gospel - Fé Inabalável', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'kOCEtpOa9gs', titulo: 'Faroeste da Vingança', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' }
+            { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse (Clássico)', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'Hw_gWagWJRE', titulo: 'Filme Gospel - O Casamento', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'Qqf8f-cVKto', titulo: 'Faroeste - Sete Homens e Um Destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos (1968)', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'Y4odIuso4yc', titulo: 'Mazaropi - Jeca Contra o Capeta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'tW1Dbo1dVtA', titulo: 'Django - O Vingador Clássico', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'AzGY83fKxik', titulo: 'Bruce Lee - A Fúria do Dragão', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'Y7SKTDtNON0', titulo: 'Faroeste - Três Homens em Conflito', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'e2dI2-smyLo', titulo: 'Filme Gospel - A Virada', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: '-tPux_s_qEY', titulo: 'A Vingança do Mascarado', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'oQGjoPegDWM', titulo: 'Kung Fu - Mestre Invencível', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'KLK-9TaQi4g', titulo: 'Mazaropi - O Coroinha', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'Lvj4_ZrdL7s', titulo: 'Faroeste - Por Um Punhado de Dólares', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'K94IVy32wCo', titulo: 'Filme Gospel - Cicatrizes', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: '6KHpz3hvP6E', titulo: 'Faroeste - Os Brutos Também Amam', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'qmdRZTxX5L4', titulo: 'Mazaropi - O Puritano da Rua Augusta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'uQPbA530OP4', titulo: 'A Noite do Terror Cego', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'S3QBs1Do9-4', titulo: 'Faroeste - O Dólar Furado', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'Ru6u7Po53V8', titulo: 'Filme Gospel - Em Seus Passos', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
+            { id: 'HeFGNV5Jj5k', titulo: 'Mazaropi - O Jeca e a Freira', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'XQQmPddfYLE', titulo: 'Faroeste - Sartana Vem Aí', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
+            { id: 'aMrZu0P9ikc', titulo: 'Filme Gospel - Decisões', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'kOCEtpOa9gs', titulo: 'Faroeste - Trinity é o Meu Nome', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' }
         ];
         
         let player;
@@ -310,7 +310,6 @@
         let cronometroPontos = null;
         let totalPontos = 0;
 
-        // Renderização dinâmica estável
         function renderizarCatalogo() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
@@ -331,7 +330,6 @@
             });
         }
 
-        // Fluxo de Cadastro e Autenticação Supabase
         async function handleAuth() {
             const email = document.getElementById('authEmail').value;
             const pass = document.getElementById('authPassword').value;
@@ -371,7 +369,6 @@
             document.getElementById('menuDrawer').classList.toggle('active'); 
         }
 
-        // Configuração API YouTube Iframe
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
                 height: '100%', width: '100%',
@@ -400,7 +397,7 @@
                         localStorage.setItem('pts_' + currentUser.id, totalPontos);
                         atualizarInterfaceMoedas();
                         showFloatingPointsAnimation('+10 Pts');
-                    }, 300000); // 5 Minutos
+                    }, 300000);
                 }
             } else {
                 clearInterval(cronometroPontos);
@@ -445,7 +442,7 @@
             }, 1000);
         }
 
-        async function executarCompartilhamento() {
+        async function ejecutarCompartilhamento() {
             if (navigator.share) {
                 try {
                     await navigator.share({ title: 'CineRewards', url: window.location.href });
