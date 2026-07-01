@@ -8,7 +8,7 @@
     <!-- Script Monetag 1 (Vignette) -->
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     
-    <!-- Dependências: Supabase, FontAwesome e API do YouTube -->
+    <!-- Dependências -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -20,12 +20,13 @@
             color: #fff; 
             font-family: 'Poppins', sans-serif; 
             display: flex; 
-            justify-content: center; 
+            justify-content: center;
             align-items: center; 
-            height: 100vh; 
-            overflow: hidden; 
+            min-height: 100vh; 
+            overflow: hidden;
         }
 
+        /* Container Principal Focado na Proporção Mobile (Tela Cheia) */
         .tiktok-container {
             position: relative;
             width: 100%;
@@ -36,6 +37,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         /* Header Superior */
@@ -88,27 +90,28 @@
             border: none;
         }
 
-        /* Menu Lateral Estilo Dashboard de Finanças */
+        /* MENU LATERAL EXPANSÍVEL (Com Rolagem para as Informações) */
         .menu-drawer {
             position: absolute;
             top: 0;
             left: -100%;
-            width: 85%;
+            width: 88%;
+            max-width: 380px;
             height: 100%;
             background: rgba(10, 10, 10, 0.98);
             border-right: 2px solid #ff9d00;
             z-index: 40;
             transition: left 0.3s ease;
-            padding: 30px 20px;
+            padding: 40px 20px 20px 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
             backdrop-filter: blur(15px);
-            overflow-y: auto;
+            overflow-y: auto; /* Permite rolar as informações dentro do menu */
         }
 
         .menu-drawer.active { left: 0; }
-
+        
         .menu-drawer h2 {
             font-size: 18px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -119,23 +122,29 @@
             gap: 8px;
         }
 
+        .menu-drawer h3 {
+            font-size: 15px;
+            color: #25f4ee;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .data-card {
             background: rgba(255,255,255,0.04);
             padding: 12px 15px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.05);
         }
-
         .data-card p { font-size: 11px; color: #aaa; margin-bottom: 2px; }
         .data-card span { font-size: 16px; font-weight: 700; color: #fff; }
 
-        /* Seção de Conversão Monetária */
         .conversion-box {
             background: rgba(255, 157, 0, 0.08);
             border: 1px dashed #ff9d00;
             padding: 15px;
             border-radius: 12px;
-            margin-top: 5px;
         }
         .conversion-box h4 { font-size: 13px; color: #ffb700; margin-bottom: 5px; }
         .conversion-box p { font-size: 12px; color: #ddd; line-height: 1.4; }
@@ -145,26 +154,87 @@
             color: #000;
             font-weight: 800;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
-            font-size: 13px;
-            margin-top: 10px;
-            transition: transform 0.1s ease;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.2);
         }
-        .btn-saque:active { transform: scale(0.95); }
 
         .close-menu {
             position: absolute;
-            top: 20px;
+            top: 15px;
             right: 20px;
-            font-size: 20px;
+            font-size: 22px;
             color: #fe2c55;
             cursor: pointer;
         }
 
-        /* Descrição VISÍVEL */
+        /* Área Informativa: Passo a Passo dentro do Menu */
+        .menu-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .menu-info-section > p {
+            font-size: 12px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .step-icon {
+            background: #ff9d00;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .step-text h4 { font-size: 13px; color: #fff; }
+        .step-text p { font-size: 11px; color: #aaa; line-height: 1.3; }
+
+        /* Central de Suporte dentro do Menu */
+        .support-box {
+            background: rgba(37, 244, 238, 0.04);
+            border: 1px solid rgba(37, 244, 238, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .support-box p { font-size: 11px; color: #ccc; margin-bottom: 10px; line-height: 1.4; }
+        
+        .btn-suporte {
+            display: block;
+            background: #25f4ee;
+            color: #000;
+            padding: 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Descrição do Vídeo */
         .video-footer {
             position: absolute;
             bottom: 40px;
@@ -178,9 +248,8 @@
             border-left: 3px solid #25f4ee;
             pointer-events: none;
         }
-
         .video-footer h3 { font-size: 14px; color: #25f4ee; margin-bottom: 4px; font-weight: 700; }
-        .video-footer p { font-size: 12px; color: #ffffff; line-height: 1.4; }
+        .video-footer p { font-size: 12px; color: #fff; line-height: 1.4; }
 
         /* Barra Lateral Direita */
         .side-bar {
@@ -209,13 +278,11 @@
             backdrop-filter: blur(5px);
             transition: transform 0.1s ease;
         }
-
         .circle-btn.btn-next {
             background: linear-gradient(45deg, #fe2c55, #25f4ee);
             border: none;
             box-shadow: 0 0 15px rgba(254, 44, 85, 0.5);
         }
-
         .circle-btn:active { transform: scale(0.85); }
         .btn-label { font-size: 11px; color: #fff; margin-top: 4px; font-weight: bold; text-shadow: 1px 1px 3px #000; }
         .action-item { display: flex; flex-direction: column; align-items: center; }
@@ -244,30 +311,67 @@
 
     <div class="tiktok-container" id="mainContainer">
         
-        <!-- Menu Lateral Completo / Conversor de Reais -->
+        <!-- MENU LATERAL EXPANSÍVEL REORGANIZADO -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
-            <h2><i class="fa-solid fa-wallet"></i> Painel de Recompensas</h2>
+            <h2><i class="fa-solid fa-wallet"></i> Seu Painel</h2>
             
+            <!-- Carteira e Saldo -->
             <div class="data-card">
                 <p>Pontos Acumulados</p>
                 <span id="ptsTotal">0</span> PTS
             </div>
             
             <div class="conversion-box">
-                <h4>Taxa de Câmbio Real</h4>
+                <h4>Conversão Comercial</h4>
                 <p>Cada <strong>10.000 Pontos</strong> equivalem a <strong>R$ 1,00</strong> em dinheiro real.</p>
                 <div style="margin-top: 10px; font-size: 14px; font-weight: bold;">
-                    Seu Saldo Estimado: <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+                    Saldo Estimado: <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
                 </div>
             </div>
 
-            <div class="data-card" style="background: rgba(254, 44, 85, 0.05); border-color: rgba(254, 44, 85, 0.2);">
-                <p style="color: #fe2c55; font-weight: bold;"><i class="fa-solid fa-shield-halved"></i> Auditoria Antifraude</p>
-                <p style="font-size: 10px; color: #ccc; margin-top: 3px;">Para garantir a sustentabilidade, os saques passam por verificação para confirmar se as impressões de anúncios foram computadas.</p>
+            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
+
+            <!-- Sistema Antifraude -->
+            <div class="data-card" style="background: rgba(254, 44, 85, 0.03); border-color: rgba(254, 44, 85, 0.15);">
+                <p style="color: #fe2c55; font-weight: bold; font-size: 12px;"><i class="fa-solid fa-shield-halved"></i> Auditoria de Segurança</p>
+                <p style="font-size: 11px; color: #bbb; margin-top: 3px; line-height: 1.4;">Para garantir a legitimidade dos pagamentos, os pedidos passam por checagem automática de impressões de anúncios e validação de retenção.</p>
             </div>
 
-            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-money-bill-transfer"></i> Sacar via Pix</button>
+            <!-- NOVA SEÇÃO INFORMATIVA (Transferida para cá) -->
+            <h3><i class="fa-solid fa-circle-info"></i> Como Funciona?</h3>
+            <div class="menu-info-section">
+                <p>Somos uma plataforma de recompensas financiada por publicidade. Dividimos o faturamento dos anúncios exibidos com quem consome os conteúdos!</p>
+                
+                <div class="step-item">
+                    <div class="step-icon">1</div>
+                    <div class="step-text">
+                        <h4>Assista até o Final</h4>
+                        <p>Cada reprodução completa contabiliza os pontos automaticamente na carteira.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">2</div>
+                    <div class="step-text">
+                        <h4>Gere Faturamento</h4>
+                        <p>Os anúncios gerados durante o uso validam a receita convertida em reais.</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-icon">3</div>
+                    <div class="step-text">
+                        <h4>Receba via Pix</h4>
+                        <p>Atingindo o valor mínimo, o saldo é enviado direto para sua conta bancária.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUPORTE (Transferido para cá) -->
+            <h3><i class="fa-solid fa-headset"></i> Ajuda & Termos</h3>
+            <div class="support-box">
+                <p>Identificou falhas no saldo ou quer contestar uma auditoria? Fale diretamente com nossa equipe de suporte.</p>
+                <a href="https://t.me/seu_grupo_suporte" target="_blank" class="btn-suporte">Abrir Chamado no Telegram</a>
+            </div>
         </div>
         
         <!-- Header Principal -->
@@ -287,17 +391,17 @@
             <div id="videoPlayer"></div>
         </div>
 
-        <!-- Descrição Visível -->
+        <!-- Descrição do Conteúdo -->
         <div class="video-footer">
             <h3 id="videoAuthor">@viral_master</h3>
             <p id="videoDesc">Assista a este vídeo até ao fim para validar e ganhar os seus pontos! 🚀 #viral #shorts #fyp</p>
         </div>
 
-        <!-- Controles Flutuantes -->
+        <!-- Controles Flutuantes Laterais -->
         <div class="side-bar">
             <!-- Curtir Corrigido -->
-            <div class="action-item" onclick="toggleLike(this)">
-                <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
+            <div class="action-item">
+                <div class="circle-btn" id="likeBtnIcon" onclick="toggleLike()"><i class="fa-solid fa-heart"></i></div>
                 <span class="btn-label" id="likeCount">15.4K</span>
             </div>
 
@@ -324,15 +428,14 @@
         let ultimoIndice = -1;
         let player;
         let videoAtualCompleto = false;
+        let estaCurtido = false; 
 
-        // Recupera carteira única totalizada
         let totalPontos = parseInt(localStorage.getItem('wallet_total_pts')) || 0;
 
         function atualizarInterfaceMoedas() {
             document.getElementById('pointsBalance').innerText = totalPontos;
             document.getElementById('ptsTotal').innerText = totalPontos;
             
-            // Cálculo da conversão exata para Reais (10000 pts = 1 Real)
             let valorEmReais = (totalPontos / 10000).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('realBalance').innerText = valorEmReais;
         }
@@ -382,10 +485,8 @@
 
         async function carregarProximoVideo() {
             videoAtualCompleto = false; 
-            
-            // RESET do botão de curtir para o estado inicial branco no próximo vídeo
-            const likeBtn = document.getElementById('likeBtnIcon');
-            likeBtn.style.color = '#fff';
+            estaCurtido = false;
+            document.getElementById('likeBtnIcon').style.color = '#fff';
 
             let videoId = '';
 
@@ -427,7 +528,7 @@
                         text: 'Assista a vídeos curtos e junte pontos!',
                         url: window.location.href
                     });
-                    totalPontos += 5; // Recompensa equilibrada e segura para compartilhamento concluído
+                    totalPontos += 5;
                     localStorage.setItem('wallet_total_pts', totalPontos);
                     atualizarInterfaceMoedas();
                     showFloatingPointsAnimation('+5 Pts');
@@ -443,16 +544,14 @@
             }
         }
 
-        function toggleLike(element) {
-            let icon = element.querySelector('i');
-            // Se já estiver vermelho, remove a curtida
-            if(element.style.color === 'rgb(254, 44, 85)' || icon.style.color === 'rgb(254, 44, 85)') {
-                icon.style.color = '#fff';
-                element.style.color = '#fff';
+        function toggleLike() {
+            const likeIcon = document.getElementById('likeBtnIcon');
+            if(!estaCurtido) {
+                likeIcon.style.color = '#fe2c55';
+                estaCurtido = true;
             } else {
-                // Ativa a curtida apenas para o vídeo atual
-                icon.style.color = '#fe2c55';
-                element.style.color = '#fe2c55';
+                likeIcon.style.color = '#fff';
+                estaCurtido = false;
             }
         }
 
