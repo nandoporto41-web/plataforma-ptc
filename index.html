@@ -131,7 +131,7 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* Menu Lateral Drawer (Ajustado para Rolagem Perfeita no Telemóvel) */
+        /* Menu Lateral Drawer */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -309,6 +309,16 @@
         let currentUser = null;
         let cronometroPontos = null;
         let totalPontos = 0;
+
+        // Forçar reinicialização do script de anúncios Monetag se falhar no ciclo inicial
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof window.dataset === 'undefined' || !document.querySelector('script[src*="vignette"]')) {
+                const s = document.createElement('script');
+                s.dataset.zone = '11218300';
+                s.src = 'https://n6wxm.com/vignette.min.js';
+                document.head.appendChild(s);
+            }
+        });
 
         function renderizarCatalogo() {
             const grid = document.getElementById('catalogGrid');
