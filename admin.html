@@ -8,374 +8,94 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #09090b;
-            --bg-panel: #18181b;
-            --border-color: #27272a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-gold: #fbbf24;
-            --accent-gold-hover: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --info: #3b82f6;
-        }
-
+        :root { --bg-dark: #09090b; --bg-panel: #18181b; --border-color: #27272a; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-gold: #fbbf24; --accent-gold-hover: #f59e0b; --success: #10b981; --danger: #ef4444; --info: #3b82f6; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-        /* Scrollbar customizada */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
-
-        /* Header / Navbar */
-        .navbar { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .brand { font-size: 20px; font-weight: 800; background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px; }
-        .brand i { color: #fbbf24; -webkit-text-fill-color: initial; }
-        .status-badge { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--success); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .pulse { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulsing 2s infinite; }
-
-        .container { padding: 24px; max-width: 1400px; margin: 0 auto; width: 100%; flex: 1; }
-
-        /* System Messages */
-        #sys-message { display: none; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-        .msg-loading { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: var(--info); }
-        .msg-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--danger); }
-        .msg-warning { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); color: var(--accent-gold); }
-
-        /* Dashboard Cards */
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; }
+        .navbar { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 20px; font-weight: 800; color: var(--accent-gold); }
+        .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .stat-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; transition: transform 0.2s; position: relative; overflow: hidden; }
-        .stat-card:hover { transform: translateY(-2px); border-color: #3f3f46; }
-        .stat-icon { position: absolute; right: -10px; bottom: -10px; font-size: 80px; opacity: 0.03; color: #fff; }
-        .stat-title { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-        .stat-value { font-size: 32px; font-weight: 800; color: var(--text-main); }
-        .text-gold { color: var(--accent-gold); }
-        .text-green { color: var(--success); }
-
-        /* Search & Action Bar */
-        .toolbar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; background: var(--bg-panel); padding: 16px; border-radius: 16px; border: 1px solid var(--border-color); }
-        .search-group { display: flex; flex: 1; min-width: 280px; position: relative; }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .input-search { flex: 1; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 12px 16px 12px 44px; border-radius: 12px 0 0 12px; color: #fff; font-size: 14px; outline: none; transition: all 0.2s; }
-        .input-search:focus { border-color: var(--accent-gold); }
-        .btn-search { background: var(--accent-gold); color: #000; border: none; padding: 0 24px; border-radius: 0 12px 12px 0; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; }
-        .btn-search:hover { background: var(--accent-gold-hover); }
-        .btn-refresh { background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); padding: 0 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-        .btn-refresh:hover { background: #27272a; }
-
-        /* Tables */
+        .stat-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
+        .stat-value { font-size: 32px; font-weight: 800; }
         .panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
-        .panel-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01); }
-        .panel-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .panel-title i { color: var(--accent-gold); }
-        
-        .table-wrapper { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 700px; }
-        th { background: rgba(0,0,0,0.2); padding: 16px 20px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-size: 14px; vertical-align: middle; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-        tr:last-child td { border-bottom: none; }
-
-        .user-email { font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 32px; height: 32px; background: #27272a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: var(--accent-gold); }
-        
-        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
-        .bg-green-soft { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-        .bg-red-soft { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-        .bg-gold-soft { background: rgba(251, 191, 36, 0.15); color: var(--accent-gold); }
-
-        /* Action Buttons */
-        .actions { display: flex; gap: 8px; }
-        .btn-action { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
+        .panel-header { padding: 20px; border-bottom: 1px solid var(--border-color); font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(0,0,0,0.2); padding: 16px; text-align: left; font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+        td { padding: 16px; border-bottom: 1px solid var(--border-color); }
+        .btn-action { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; margin-right: 5px; }
         .btn-add { background: rgba(59, 130, 246, 0.1); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .btn-add:hover { background: var(--info); color: #fff; }
-        .btn-check { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .btn-check:hover { background: var(--success); color: #000; }
         .btn-del { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-        .btn-del:hover { background: var(--danger); color: #fff; }
-
-        @keyframes pulsing {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .toolbar { flex-direction: column; }
-            .search-group { width: 100%; }
-            .btn-refresh { padding: 12px; justify-content: center; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        #sys-message { padding: 15px; margin-bottom: 20px; border-radius: 12px; display: none; }
     </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="brand"><i class="fa-solid fa-crown"></i> CineRewards PRO</div>
-        <div class="status-badge"><div class="pulse"></div> Conectado</div>
-    </nav>
-
+    <nav class="navbar"><div class="brand">CineRewards Master</div></nav>
     <div class="container">
-        
-        <!-- Sistema de Avisos -->
-        <div id="sys-message" class="msg-loading" style="display: flex;">
-            <i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando com o banco de dados Supabase...
+        <div id="sys-message"></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div>Total Usuários</div><div class="stat-value" id="valUsers">0</div></div>
+            <div class="stat-card"><div>Total Pontos</div><div class="stat-value" id="valPoints">0</div></div>
+            <div class="stat-card"><div>Saques Pendentes</div><div class="stat-value" id="valPending">0</div></div>
         </div>
-
-        <div id="dashboard-content" style="display: none;">
-            
-            <!-- Cards de Estatísticas -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fa-solid fa-users stat-icon"></i>
-                    <div class="stat-title">Total de Usuários</div>
-                    <div class="stat-value" id="valUsers">0</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-wallet stat-icon"></i>
-                    <div class="stat-title">Saques Pendentes</div>
-                    <div class="stat-value text-gold" id="valPending">0</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-brazilian-real-sign stat-icon"></i>
-                    <div class="stat-title">Total Pago</div>
-                    <div class="stat-value text-green" id="valPaid">R$ 0,00</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-coins stat-icon"></i>
-                    <div class="stat-title">Pontos no Sistema</div>
-                    <div class="stat-value" id="valPoints">0</div>
-                </div>
-            </div>
-
-            <!-- Barra de Ferramentas -->
-            <div class="toolbar">
-                <div class="search-group">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="inputBusca" class="input-search" placeholder="Buscar usuário por e-mail..." onkeypress="if(event.key === 'Enter') filtrarUsuarios()">
-                    <button class="btn-search" onclick="filtrarUsuarios()">Buscar</button>
-                </div>
-                <button class="btn-refresh" onclick="carregarDadosBase()"><i class="fa-solid fa-rotate-right"></i> Atualizar</button>
-            </div>
-
-            <!-- Tabela de Controle de Usuários -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title"><i class="fa-solid fa-user-shield"></i> Gerenciamento de Contas e Saldos</div>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Usuário / E-mail</th>
-                                <th>Saldo em Pontos</th>
-                                <th>Saldo Monetário</th>
-                                <th>Status de Retenção</th>
-                                <th>Ações Administrativas</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbUsuarios">
-                            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Aguardando dados...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tabela de Saques -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title"><i class="fa-solid fa-money-bill-transfer"></i> Fila de Saques Pendentes</div>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>E-mail do Solicitante</th>
-                                <th>Chave PIX</th>
-                                <th>Valor Solicitado</th>
-                                <th>Aprovar / Recusar</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbSaques">
-                            <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Nenhuma solicitação pendente.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+        <div class="panel">
+            <div class="panel-header">Gerenciamento de Contas</div>
+            <table>
+                <thead><tr><th>E-mail</th><th>Pontos</th><th>Ações</th></tr></thead>
+                <tbody id="tbUsuarios"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g';
-        
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let dadosPerfis = [];
 
-        function mostrarAviso(msg, tipo) {
-            const el = document.getElementById('sys-message');
-            el.className = `msg-${tipo}`;
-            el.style.display = 'flex';
-            if(tipo === 'loading') {
-                el.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${msg}`;
-            } else if(tipo === 'error') {
-                el.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${msg}`;
-            } else {
-                el.innerHTML = `<i class="fa-solid fa-circle-info"></i> ${msg}`;
-            }
-        }
-
-        async function carregarDadosBase() {
-            mostrarAviso("Sincronizando com o banco de dados...", "loading");
-            document.getElementById('dashboard-content').style.display = 'block';
-
+        async function carregarDados() {
             try {
-                // Busca perfis
-                const { data: perfis, error: errPerfis } = await db.from('perfis').select('*');
-                if (errPerfis) throw new Error("Erro na tabela 'perfis': " + errPerfis.message);
+                const { data: perfis } = await db.from('perfis').select('*');
+                const { data: saques } = await db.from('saques').select('*');
                 
-                // Busca saques
-                let { data: saques, error: errSaques } = await db.from('saques').select('*');
-                if (errSaques) saques = [];
-
-                dadosPerfis = perfis || [];
-
-                // Atualiza Cards
-                document.getElementById('valUsers').innerText = dadosPerfis.length;
-                const totalPts = dadosPerfis.reduce((a, b) => a + (parseInt(b.pontos) || 0), 0);
-                document.getElementById('valPoints').innerText = totalPts.toLocaleString();
+                document.getElementById('valUsers').innerText = perfis ? perfis.length : 0;
+                document.getElementById('valPoints').innerText = perfis ? perfis.reduce((a, b) => a + (parseInt(b.pontos) || 0), 0).toLocaleString() : 0;
+                document.getElementById('valPending').innerText = saques ? saques.filter(s => s.status === 'pendente').length : 0;
                 
-                const pendentes = saques.filter(s => s.status === 'pendente');
-                document.getElementById('valPending').innerText = pendentes.length;
-                
-                const totalPago = saques.filter(s => s.status === 'pago').reduce((a, c) => a + parseFloat(c.valor), 0);
-                document.getElementById('valPaid').innerText = `R$ ${totalPago.toFixed(2).replace('.', ',')}`;
-
-                renderTabelas(dadosPerfis, pendentes);
-
-                if (dadosPerfis.length === 0) {
-                    mostrarAviso("A tabela está VAZIA. Ninguém se cadastrou ainda.", "warning");
-                } else {
-                    document.getElementById('sys-message').style.display = 'none';
-                }
-
-            } catch (error) {
-                mostrarAviso(error.message, "error");
-            }
-        }
-
-        function renderTabelas(usuarios, saques) {
-            const tbU = document.getElementById('tbUsuarios');
-            tbU.innerHTML = '';
-            if (usuarios.length === 0) {
-                tbU.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Nenhum usuário encontrado na base de dados.</td></tr>';
-            } else {
-                usuarios.forEach(u => {
-                    let inicial = u.email ? u.email.charAt(0).toUpperCase() : '?';
-                    let badge = u.primeiro_video_assistido 
-                        ? `<span class="badge bg-green-soft"><i class="fa-solid fa-check"></i> Verificado</span>` 
-                        : `<span class="badge bg-gold-soft"><i class="fa-solid fa-clock"></i> Pendente</span>`;
-                    
-                    // Cálculo visual do dinheiro (Exemplo: 100 pontos = R$ 1,00)
-                    let saldoVisualReais = (u.pontos || 0) / 100; 
-                    
-                    tbU.innerHTML += `
-                        <tr>
-                            <td>
-                                <div class="user-email">
-                                    <div class="user-avatar">${inicial}</div>
-                                    ${u.email}
-                                </div>
-                            </td>
-                            <td style="font-weight: 600;">${(u.pontos || 0).toLocaleString()} pts</td>
-                            <td style="color: var(--success); font-weight: 700;">R$ ${saldoVisualReais.toFixed(2).replace('.', ',')}</td>
-                            <td>${badge}</td>
-                            <td>
-                                <div class="actions">
-                                    <button class="btn-action btn-add" title="Editar Pontos" onclick="editPontos('${u.id}', ${u.pontos || 0})"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-action btn-del" title="Banir / Excluir" onclick="deletarConta('${u.id}', '${u.email}')"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
+                const tbody = document.getElementById('tbUsuarios');
+                tbody.innerHTML = '';
+                perfis.forEach(u => {
+                    tbody.innerHTML += `<tr>
+                        <td>${u.email}</td>
+                        <td>${(u.pontos || 0).toLocaleString()}</td>
+                        <td>
+                            <button class="btn-action btn-add" onclick="editPontos('${u.id}', ${u.pontos || 0})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-action btn-del" onclick="deletar('${u.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
                 });
-            }
+            } catch (e) { console.error(e); }
+        }
 
-            const tbS = document.getElementById('tbSaques');
-            tbS.innerHTML = '';
-            if (saques.length === 0) {
-                tbS.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">A fila de saques está limpa.</td></tr>';
-            } else {
-                saques.forEach(s => {
-                    tbS.innerHTML += `
-                        <tr>
-                            <td style="font-weight: 500; color: #fff;">${s.email}</td>
-                            <td style="color: var(--text-muted); font-family: monospace;">${s.chave_pix}</td>
-                            <td style="color: var(--success); font-weight: 700;">R$ ${parseFloat(s.valor).toFixed(2).replace('.', ',')}</td>
-                            <td>
-                                <div class="actions">
-                                    <button class="btn-action btn-check" title="Aprovar Pagamento" onclick="resolverSaque(${s.id}, 'pago')"><i class="fa-solid fa-check-double"></i></button>
-                                    <button class="btn-action btn-del" title="Recusar Saque" onclick="resolverSaque(${s.id}, 'recusado')"><i class="fa-solid fa-xmark"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
+        async function editPontos(id, atual) {
+            const novo = prompt("Digite o novo saldo de pontos:", atual);
+            if(novo !== null) {
+                const { error } = await db.from('perfis').update({ pontos: parseInt(novo) }).eq('id', id);
+                if(error) alert("Erro: " + error.message);
+                else alert("Saldo atualizado!");
             }
         }
 
-        function filtrarUsuarios() {
-            const termo = document.getElementById('inputBusca').value.toLowerCase();
-            const filtrados = dadosPerfis.filter(u => u.email && u.email.toLowerCase().includes(termo));
-            carregarDadosBase().then(() => {
-                renderTabelas(filtrados, []); 
-            });
-        }
-
-        async function editPontos(id, pontosAtuais) {
-            const v = prompt(`EDITAR PONTOS DO USUÁRIO\n\nSaldo atual: ${pontosAtuais} pontos.\n\nDigite o NOVO SALDO TOTAL DE PONTOS que este usuário deve ter:`);
-            
-            if(v === null || v.trim() === "") return; 
-            
-            const novosPontos = parseInt(v);
-            if(isNaN(novosPontos)) {
-                alert("❌ Erro: Digite apenas números.");
-                return;
-            }
-
-            mostrarAviso("Salvando novo saldo...", "loading");
-
-            const { error } = await db.from('perfis').update({ pontos: novosPontos }).eq('id', id);
-            
-            if (error) {
-                alert("❌ Erro ao salvar no banco de dados: " + error.message);
-                mostrarAviso("Falha ao atualizar dados.", "error");
-            } else {
-                alert("✅ Saldo atualizado com sucesso!");
-                carregarDadosBase(); 
+        async function deletar(id) {
+            if(confirm("Excluir usuário?")) {
+                await db.from('perfis').delete().eq('id', id);
             }
         }
 
-        async function deletarConta(id, email) {
-            if(!confirm(`⚠️ ATENÇÃO!\nTem certeza que deseja BANIR e apagar a conta de ${email} permanentemente?`)) return;
-            await db.from('perfis').delete().eq('id', id);
-            carregarDadosBase();
-        }
+        // Configuração de Tempo Real
+        db.channel('public:perfis')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'perfis' }, () => carregarDados())
+          .subscribe();
 
-        async function resolverSaque(id, status) {
-            const acao = status === 'pago' ? "APROVAR" : "RECUSAR";
-            if(!confirm(`Deseja ${acao} esta solicitação de saque?`)) return;
-            await db.from('saques').update({ status: status }).eq('id', id);
-            carregarDadosBase();
-        }
-
-        window.onload = carregarDadosBase;
+        window.onload = carregarDados;
     </script>
 </body>
 </html>
