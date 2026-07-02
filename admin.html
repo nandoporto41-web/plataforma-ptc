@@ -91,10 +91,10 @@
         /* Action Buttons */
         .actions { display: flex; gap: 8px; }
         .btn-action { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s; }
-        .btn-add { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .btn-add:hover { background: var(--success); color: #000; }
-        .btn-edit { background: rgba(59, 130, 246, 0.1); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .btn-edit:hover { background: var(--info); color: #fff; }
+        .btn-add { background: rgba(59, 130, 246, 0.1); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .btn-add:hover { background: var(--info); color: #fff; }
+        .btn-check { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .btn-check:hover { background: var(--success); color: #000; }
         .btn-del { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
         .btn-del:hover { background: var(--danger); color: #fff; }
 
@@ -122,12 +122,14 @@
 
     <div class="container">
         
+        <!-- Sistema de Avisos -->
         <div id="sys-message" class="msg-loading" style="display: flex;">
             <i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando com o banco de dados Supabase...
         </div>
 
         <div id="dashboard-content" style="display: none;">
             
+            <!-- Cards de Estatísticas -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fa-solid fa-users stat-icon"></i>
@@ -151,6 +153,7 @@
                 </div>
             </div>
 
+            <!-- Barra de Ferramentas -->
             <div class="toolbar">
                 <div class="search-group">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -160,6 +163,7 @@
                 <button class="btn-refresh" onclick="carregarDadosBase()"><i class="fa-solid fa-rotate-right"></i> Atualizar</button>
             </div>
 
+            <!-- Tabela de Controle de Usuários -->
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title"><i class="fa-solid fa-user-shield"></i> Gerenciamento de Contas e Saldos</div>
@@ -182,6 +186,7 @@
                 </div>
             </div>
 
+            <!-- Tabela de Saques -->
             <div class="panel">
                 <div class="panel-header">
                     <div class="panel-title"><i class="fa-solid fa-money-bill-transfer"></i> Fila de Saques Pendentes</div>
@@ -237,7 +242,7 @@
                 
                 // Busca saques
                 let { data: saques, error: errSaques } = await db.from('saques').select('*');
-                if (errSaques) saques = []; // Se não existir tabela saques ainda, previne quebrar a tela
+                if (errSaques) saques = [];
 
                 dadosPerfis = perfis || [];
 
@@ -255,7 +260,7 @@
                 renderTabelas(dadosPerfis, pendentes);
 
                 if (dadosPerfis.length === 0) {
-                    mostrarAviso("Conexão bem sucedida, mas a tabela de usuários está VAZIA. Ninguém se cadastrou ainda.", "warning");
+                    mostrarAviso("A tabela está VAZIA. Ninguém se cadastrou ainda.", "warning");
                 } else {
                     document.getElementById('sys-message').style.display = 'none';
                 }
@@ -266,7 +271,6 @@
         }
 
         function renderTabelas(usuarios, saques) {
-            // Renderiza Usuários
             const tbU = document.getElementById('tbUsuarios');
             tbU.innerHTML = '';
             if (usuarios.length === 0) {
@@ -278,6 +282,9 @@
                         ? `<span class="badge bg-green-soft"><i class="fa-solid fa-check"></i> Verificado</span>` 
                         : `<span class="badge bg-gold-soft"><i class="fa-solid fa-clock"></i> Pendente</span>`;
                     
+                    // Cálculo visual do dinheiro (Exemplo: 100 pontos = R$ 1,00)
+                    let saldoVisualReais = (u.pontos || 0) / 100; 
+                    
                     tbU.innerHTML += `
                         <tr>
                             <td>
@@ -287,12 +294,11 @@
                                 </div>
                             </td>
                             <td style="font-weight: 600;">${(u.pontos || 0).toLocaleString()} pts</td>
-                            <td style="color: var(--success); font-weight: 700;">R$ ${parseFloat(u.saldo_reais || 0).toFixed(2)}</td>
+                            <td style="color: var(--success); font-weight: 700;">R$ ${saldoVisualReais.toFixed(2).replace('.', ',')}</td>
                             <td>${badge}</td>
                             <td>
                                 <div class="actions">
-                                    <button class="btn-action btn-add" title="Adicionar Pontos" onclick="addPontos('${u.id}', ${u.pontos || 0})"><i class="fa-solid fa-plus"></i></button>
-                                    <button class="btn-action btn-edit" title="Editar Saldo em R$" onclick="editReais('${u.id}')"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-action btn-add" title="Editar Pontos" onclick="editPontos('${u.id}', ${u.pontos || 0})"><i class="fa-solid fa-pen"></i></button>
                                     <button class="btn-action btn-del" title="Banir / Excluir" onclick="deletarConta('${u.id}', '${u.email}')"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </td>
@@ -301,7 +307,6 @@
                 });
             }
 
-            // Renderiza Saques
             const tbS = document.getElementById('tbSaques');
             tbS.innerHTML = '';
             if (saques.length === 0) {
@@ -312,10 +317,10 @@
                         <tr>
                             <td style="font-weight: 500; color: #fff;">${s.email}</td>
                             <td style="color: var(--text-muted); font-family: monospace;">${s.chave_pix}</td>
-                            <td style="color: var(--success); font-weight: 700;">R$ ${parseFloat(s.valor).toFixed(2)}</td>
+                            <td style="color: var(--success); font-weight: 700;">R$ ${parseFloat(s.valor).toFixed(2).replace('.', ',')}</td>
                             <td>
                                 <div class="actions">
-                                    <button class="btn-action btn-add" title="Aprovar Pagamento" onclick="resolverSaque(${s.id}, 'pago')"><i class="fa-solid fa-check-double"></i></button>
+                                    <button class="btn-action btn-check" title="Aprovar Pagamento" onclick="resolverSaque(${s.id}, 'pago')"><i class="fa-solid fa-check-double"></i></button>
                                     <button class="btn-action btn-del" title="Recusar Saque" onclick="resolverSaque(${s.id}, 'recusado')"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </td>
@@ -328,30 +333,33 @@
         function filtrarUsuarios() {
             const termo = document.getElementById('inputBusca').value.toLowerCase();
             const filtrados = dadosPerfis.filter(u => u.email && u.email.toLowerCase().includes(termo));
-            
-            // Re-renderiza apenas a tabela de usuários com os filtrados
-            // (Para não perder os saques pendentes da tela, passamos os saques originais)
-            const pendentes = dadosPerfis.length ? [] : []; // gambiarra leve, recarregamos dados reais
             carregarDadosBase().then(() => {
-                const pendentesAtuais = document.getElementById('valPending').innerText;
-                renderTabelas(filtrados, []); // Foca na busca
+                renderTabelas(filtrados, []); 
             });
         }
 
-        async function addPontos(id, pontosAtuais) {
-            const v = prompt(`ADICIONAR PONTOS\n\nQuantos pontos você deseja SOMAR ao saldo atual de ${pontosAtuais}?`);
-            if(!v || isNaN(v)) return;
-            const novo = parseInt(pontosAtuais) + parseInt(v);
-            await db.from('perfis').update({ pontos: novo, saldo_reais: (novo/100).toFixed(2) }).eq('id', id);
-            carregarDadosBase();
-        }
+        async function editPontos(id, pontosAtuais) {
+            const v = prompt(`EDITAR PONTOS DO USUÁRIO\n\nSaldo atual: ${pontosAtuais} pontos.\n\nDigite o NOVO SALDO TOTAL DE PONTOS que este usuário deve ter:`);
+            
+            if(v === null || v.trim() === "") return; 
+            
+            const novosPontos = parseInt(v);
+            if(isNaN(novosPontos)) {
+                alert("❌ Erro: Digite apenas números.");
+                return;
+            }
 
-        async function editReais(id) {
-            const v = prompt(`EDITAR SALDO (R$)\n\nDigite o NOVO SALDO EXATO em Reais (ex: 50.00):`);
-            if(!v || isNaN(v)) return;
-            const pts = Math.round(parseFloat(v) * 100);
-            await db.from('perfis').update({ pontos: pts, saldo_reais: parseFloat(v).toFixed(2) }).eq('id', id);
-            carregarDadosBase();
+            mostrarAviso("Salvando novo saldo...", "loading");
+
+            const { error } = await db.from('perfis').update({ pontos: novosPontos }).eq('id', id);
+            
+            if (error) {
+                alert("❌ Erro ao salvar no banco de dados: " + error.message);
+                mostrarAviso("Falha ao atualizar dados.", "error");
+            } else {
+                alert("✅ Saldo atualizado com sucesso!");
+                carregarDadosBase(); 
+            }
         }
 
         async function deletarConta(id, email) {
@@ -367,7 +375,6 @@
             carregarDadosBase();
         }
 
-        // Inicia
         window.onload = carregarDadosBase;
     </script>
 </body>
