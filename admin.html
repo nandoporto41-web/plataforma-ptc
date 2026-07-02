@@ -2,108 +2,69 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Master | Control Center</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg-dark: #09090b; --bg-panel: #18181b; --border-color: #27272a; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-gold: #fbbf24; --success: #10b981; --danger: #ef4444; --info: #3b82f6; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); padding: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--bg-panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
-        .stat-value { font-size: 28px; font-weight: 800; color: var(--accent-gold); }
-        .panel { background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; padding: 10px; text-align: left; }
-        td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); }
-        .btn-action { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; margin-right: 5px; color: white; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Painel de Controle</title>
 </head>
-<body>
+<body class="bg-black text-white p-5">
 
-    <div style="font-size: 22px; font-weight: 800; color: var(--accent-gold); margin-bottom: 20px;">
-        <i class="fa-solid fa-crown"></i> CineRewards PRO | Painel ADM
-    </div>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold text-amber-500 mb-6">Painel de Gerenciamento</h1>
 
-    <div class="stats-grid">
-        <div class="stat-card"><div>Total Usuários</div><div class="stat-value" id="valUsers">0</div></div>
-        <div class="stat-card"><div>Total Pago</div><div class="stat-value" id="valPaid">R$ 0,00</div></div>
-    </div>
+        <!-- Abas -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="renderizar('perfis')" class="bg-zinc-800 px-4 py-2 rounded">Usuários</button>
+            <button onclick="renderizar('videos_virais')" class="bg-zinc-800 px-4 py-2 rounded">Filmes</button>
+            <button onclick="renderizar('saques')" class="bg-zinc-800 px-4 py-2 rounded">Saques</button>
+        </div>
 
-    <div class="panel">
-        <div style="margin-bottom: 15px; font-weight: 700;">Gestão de Clientes</div>
-        <table id="tbUsuarios">
-            <thead><tr><th>E-mail</th><th>Saldo (Pts)</th><th>Ações</th></tr></thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <div class="panel">
-        <div style="margin-bottom: 15px; font-weight: 700;">Saques Pendentes</div>
-        <table id="tbSaques">
-            <thead><tr><th>E-mail</th><th>Valor</th><th>Ações</th></tr></thead>
-            <tbody></tbody>
-        </table>
+        <div id="content" class="bg-zinc-900 p-6 rounded-lg min-h-[300px]">
+            <p>Selecione uma aba para carregar os dados.</p>
+        </div>
     </div>
 
     <script>
-        const db = supabase.createClient('https://hvivrmdygytttdlapjbi.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g');
+        // Configuração com dados fornecidos
+        const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6Imhub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
+        
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function carregarDados() {
-            const { data: perfis } = await db.from('perfis').select('*');
-            const { data: saques } = await db.from('saques').select('*');
+        async function renderizar(tabela) {
+            const { data } = await db.from(tabela).select('*');
+            const content = document.getElementById('content');
             
-            document.getElementById('valUsers').innerText = perfis ? perfis.length : 0;
-            const pago = saques ? saques.filter(s => s.status === 'pago').reduce((a, c) => a + parseFloat(c.valor || 0), 0) : 0;
-            document.getElementById('valPaid').innerText = `R$ ${pago.toFixed(2)}`;
-
-            const tbU = document.querySelector('#tbUsuarios tbody');
-            tbU.innerHTML = '';
-            perfis.forEach(u => {
-                tbU.innerHTML += `<tr>
-                    <td>${u.email}</td>
-                    <td>${u.pontos}</td>
-                    <td>
-                        <button class="btn-action" style="background:#3b82f6" onclick="editarSaldo('${u.id}', ${u.pontos})"><i class="fa-solid fa-pen"></i></button>
-                        <button class="btn-action" style="background:#ef4444" onclick="deletar('${u.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
-            });
-
-            const tbS = document.querySelector('#tbSaques tbody');
-            tbS.innerHTML = '';
-            saques.filter(s => s.status === 'pendente').forEach(s => {
-                tbS.innerHTML += `<tr>
-                    <td>${s.email}</td>
-                    <td>R$ ${s.valor}</td>
-                    <td>
-                        <button class="btn-action" style="background:#10b981" onclick="atualizarSaque('${s.id}', 'pago')">Pagar</button>
-                        <button class="btn-action" style="background:#6b7280" onclick="atualizarSaque('${s.id}', 'recusado')">Negar</button>
-                    </td>
-                </tr>`;
-            });
+            content.innerHTML = `
+                <h2 class="capitalize font-bold mb-4">${tabela}</h2>
+                <div class="space-y-2">
+                    ${data.map(item => `
+                        <div class="flex justify-between bg-zinc-800 p-3 rounded">
+                            <span>${item.email || item.titulo || item.id}</span>
+                            <div class="flex gap-2">
+                                <button onclick="editar('${tabela}', '${item.id}')" class="text-blue-400">Editar</button>
+                                <button onclick="excluir('${tabela}', '${item.id}')" class="text-red-400">Excluir</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
-        async function editarSaldo(id, atual) {
-            const novo = prompt("Novo saldo de pontos:", atual);
-            if(novo) { await db.from('perfis').update({ pontos: parseInt(novo) }).eq('id', id); }
+        async function editar(tabela, id) {
+            const campo = prompt("Nome do campo para editar (ex: saldo, status):");
+            const valor = prompt("Novo valor:");
+            if (campo && valor) {
+                await db.from(tabela).update({ [campo]: valor }).eq('id', id);
+                renderizar(tabela);
+            }
         }
 
-        async function atualizarSaque(id, status) {
-            await db.from('saques').update({ status: status }).eq('id', id);
+        async function excluir(tabela, id) {
+            if (confirm("Confirmar exclusão?")) {
+                await db.from(tabela).delete().eq('id', id);
+                renderizar(tabela);
+            }
         }
-
-        async function deletar(id) {
-            if(confirm("Excluir usuário permanentemente?")) await db.from('perfis').delete().eq('id', id);
-        }
-
-        // Tempo Real: O painel ouve qualquer mudança no Supabase
-        db.channel('mudancas').on('postgres_changes', { event: '*', schema: 'public', table: 'perfis' }, carregarDados).subscribe();
-        db.channel('mudancas_saques').on('postgres_changes', { event: '*', schema: 'public', table: 'saques' }, carregarDados).subscribe();
-
-        window.onload = carregarDados;
     </script>
 </body>
 </html>
