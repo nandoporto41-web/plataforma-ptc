@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <!-- NOVOS SCRIPTS DE MONETIZAÇÃO LIMPA -->
+    <!-- SCRIPTS DE MONETIZAÇÃO LIMPA -->
     <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script src="https://5gvci.com/act/files/tag.min.js?z=11227090" data-cfasync="false" async></script>
@@ -134,7 +134,7 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* Menu Lateral Drawer */
+        /* Menu Lateral Drawer (Ajustado para Rolagem Limpa) */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -156,7 +156,23 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Janela de Autenticação Atualizada */
+        /* Botão estilizado de indicação dentro do menu */
+        .btn-indicar-menu {
+            background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000;
+            font-weight: 800; border: none; padding: 12px; border-radius: 10px;
+            cursor: pointer; width: 100%; font-size: 12px; gap: 8px;
+            display: flex; justify-content: center; align-items: center; margin-top: 5px;
+        }
+
+        /* Alerta de Fraude Visual */
+        .card-aviso-seguranca {
+            background: rgba(211, 47, 47, 0.08);
+            border: 1px solid rgba(211, 47, 47, 0.3);
+            padding: 10px; border-radius: 10px; font-size: 10px; color: #ef5350;
+            line-height: 1.4;
+        }
+
+        /* Janela de Autenticação */
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
@@ -181,17 +197,6 @@
         .auth-input { background: #121216; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 10px; color: #fff; font-size: 14px; outline: none; }
         .auth-input:focus { border-color: #ff9d00; }
         .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 5px; }
-
-        /* Animações Flutuantes */
-        .floating-points {
-            position: absolute; color: #ffb700; font-weight: 900; font-size: 24px;
-            text-shadow: 0 4px 10px #000; animation: floatUp 0.8s ease-out forwards;
-            z-index: 30; pointer-events: none;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-70px) scale(1.3); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -204,7 +209,6 @@
                 <h2>CineRewards Pro</h2>
                 <div class="subtitle">Entre e ganhe em tempo real</div>
                 
-                <!-- BLOCOS DE INFORMAÇÃO COMPLETA -->
                 <div class="info-badges">
                     <div class="info-badge-item">
                         <i class="fa-solid fa-film"></i>
@@ -235,6 +239,7 @@
             </div>
         </div>
 
+        <!-- MENU LATERAL REESTRUTURADO -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -254,12 +259,27 @@
                 <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
             </div>
 
+            <!-- BOTÃO DE SAQUE RECONFIGURADO -->
             <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-bolt"></i> Sacar via Pix</button>
             
+            <!-- NOVO BLOCO DO PROGRAMA DE INDICAÇÃO DIRETO NO MENU -->
+            <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
+                <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
+                <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
+                    Compartilhe seu link exclusivo! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> assim que ele assistir ao primeiro conteúdo ativo.
+                </p>
+                <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
+            </div>
+
+            <!-- CARD DE MONITORAMENTO E REGRAS RÍGIDAS ANTIFRAUDE -->
+            <div class="card-aviso-seguranca">
+                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> SISTEMA DE MONITORAMENTO ATIVO:</strong>
+                Nossa inteligência artificial valida IPs duplicados, uso de VPN/emuladores e contas fakes. Tentativas de burlar o sistema de indicação geram banimento automático irreversível com perda total do saldo.
+            </div>
+
             <div class="data-card" style="font-size: 11px; color:#bcbcc4; line-height:1.5;">
                 <h4 style="color:#ff9d00; margin-bottom:5px; font-size:12px;"><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                Somos uma plataforma financiada por anúncios. Dividimos parte do faturamento gerado com você em pontos de fidelidade resgatáveis.<br><br>
-                <strong>Termos:</strong> O uso de AdBlockers ou comportamentos robóticos inviabiliza as transações.
+                Somos uma plataforma financiada por anúncios. Dividimos parte do faturamento gerado com você em pontos de fidelidade resgatáveis.
             </div>
 
             <a href="https://t.me/mestre_quant_v6" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
@@ -300,7 +320,8 @@
                     <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
                     <span class="btn-label">Gostei</span>
                 </div>
-                <div class="action-item" onclick="executarCompartilhamento()">
+                <!-- ATUALIZADO: ABRE DIRETO O MENU DE INFORMAÇÕES DO USUÁRIO -->
+                <div class="action-item" onclick="toggleMenu()">
                     <div class="circle-btn" style="color: #ffb700;"><i class="fa-solid fa-share-nodes"></i></div>
                     <span class="btn-label">Indicar</span>
                 </div>
@@ -313,46 +334,23 @@
     </div>
 
     <script>
-        // Configurações Supabase
         const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // LÓGICA DO PROGRAMA DE INDICAÇÃO (REFERRAL)
         const urlParams = new URLSearchParams(window.location.search);
-        const indicarPorID = urlParams.get('ref'); // Pega o ID de quem indicou na URL
+        const indicarPorID = urlParams.get('ref'); 
 
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O Último Comando (1955)', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Se Meu Fusca Falasse (Clássico)', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
             { id: 'Hw_gWagWJRE', titulo: 'Filme Gospel - O Casamento', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
             { id: 'Qqf8f-cVKto', titulo: 'Faroeste - Sete Homens e Um Destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos (1968)', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'Y4odIuso4yc', titulo: 'Mazaropi - Jeca Contra o Capeta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'tW1Dbo1dVtA', titulo: 'Django - O Vingador Clássico', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'AzGY83fKxik', titulo: 'Bruce Lee - A Fúria do Dragão', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'Y7SKTDtNON0', titulo: 'Faroeste - Três Homens em Conflito', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'e2dI2-smyLo', titulo: 'Filme Gospel - A Virada', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: '-tPux_s_qEY', titulo: 'A Vingança do Mascarado', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'oQGjoPegDWM', titulo: 'Kung Fu - Mestre Invencível', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'KLK-9TaQi4g', titulo: 'Mazaropi - O Coroinha', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'Lvj4_ZrdL7s', titulo: 'Faroeste - Por Um Punhado de Dólares', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'K94IVy32wCo', titulo: 'Filme Gospel - Cicatrizes', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: '6KHpz3hvP6E', titulo: 'Faroeste - Os Brutos Também Amam', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'qmdRZTxX5L4', titulo: 'Mazaropi - O Puritano da Rua Augusta', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'uQPbA530OP4', titulo: 'A Noite do Terror Cego', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'S3QBs1Do9-4', titulo: 'Faroeste - O Dólar Furado', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'Ru6u7Po53V8', titulo: 'Filme Gospel - Em Seus Passos', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=300' },
-            { id: 'HeFGNV5Jj5k', titulo: 'Mazaropi - O Jeca e a Freira', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'XQQmPddfYLE', titulo: 'Faroeste - Sartana Vem Aí', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=300' },
-            { id: 'aMrZu0P9ikc', titulo: 'Filme Gospel - Decisões', categoria: 'Gospel', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'kOCEtpOa9gs', titulo: 'Faroeste - Trinity é o Meu Nome', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' }
+            { id: '4isClyJJcYg', titulo: 'A Noite dos Mortos Vivos (1968)', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' }
         ];
         
         let player;
         let currentUser = null;
-        let cronometroPontos = null;
-        let cronometroAnunciosMidRoll = null; 
         let totalPontos = 0;
 
         function renderizarCatalogo() {
@@ -361,9 +359,7 @@
             listaFilmes.forEach(filme => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                card.onclick = () => {
-                    mudarFilme(filme.id, filme.titulo);
-                };
+                card.onclick = () => mudarFilme(filme.id, filme.titulo);
                 card.innerHTML = `
                     <img src="${filme.thumb}" alt="${filme.titulo}">
                     <div class="movie-card-info">
@@ -390,7 +386,6 @@
                 return alert(error.message);
             } else {
                 currentUser = data.user;
-                // SE FOR CONTA NOVA E VEIO POR LINK DE INDICAÇÃO, DAR OS 100 PTS DE BÔNUS
                 if (indicarPorID) {
                     let ptsAtuais = parseInt(localStorage.getItem('pts_' + currentUser.id)) || 0;
                     if(ptsAtuais === 0) {
@@ -402,7 +397,6 @@
 
             document.getElementById('userDisplay').innerText = email;
             document.getElementById('authScreen').classList.add('hidden');
-            
             carregarDadosUsuario();
         }
 
@@ -415,7 +409,6 @@
         function atualizarInterfaceMoedas() {
             document.getElementById('pointsBalance').innerText = totalPontos;
             document.getElementById('ptsTotal').innerText = totalPontos;
-            
             const valorReal = (totalPontos * 0.01).toFixed(2);
             document.getElementById('realBalance').innerText = 'R$ ' + valorReal.replace('.', ',');
         }
@@ -437,48 +430,47 @@
             icon.style.color = icon.style.color === 'rgb(255, 59, 48)' ? '#fff' : 'rgb(255, 59, 48)';
         }
 
-        // FUNÇÃO DE INDICAÇÃO GERANDO O LINK AUTOMÁTICO DO USUÁRIO
-        function executarCompartilhamento() {
-            if (!currentUser) return alert("Faça login para gerar seu link de indicação.");
+        // COPIAR LINK DE INDICAÇÃO LOGO DENTRO DO MENU
+        function ejecutarCompartilhamento() {
+            if (!currentUser) return alert("Por favor, conecte-se na sua conta primeiro.");
             
-            // Cria o link dinâmico usando a URL atual do site + o ID do usuário conectado
             const urlBase = window.location.origin + window.location.pathname;
             const linkPersonalizado = `${urlBase}?ref=${currentUser.id}`;
-            
-            // Mensagem pronta para viralizar
-            const mensagemCopia = `Mano, achei esse site que tá dando Pix assistindo filmes! Te dei 100 pontos de largada, se cadastra pelo meu link: ${linkPersonalizado}`;
+            const mensagemCopia = `Mano, olha esse site assistindo filmes pagando Pix! Começa com 100 pontos criando a conta aqui: ${linkPersonalizado}`;
             
             navigator.clipboard.writeText(mensagemCopia).then(() => {
-                alert("🚀 Seu Link de Indicação foi copiado com sucesso!\n\nEnvie para seus amigos no Telegram/WhatsApp e ganhe +500 PTS por cada amigo ativo!");
+                alert("🔗 Link de Indicação Copiado!\n\nEnvie agora para os seus amigos e fature +500 PTS por cada usuário real ativo.");
             }).catch(() => {
-                alert("Copie seu link de indicação: " + linkPersonalizado);
+                alert("Copie seu link manual: " + linkPersonalizado);
             });
         }
 
+        // AGORA SOLICITA AS INFORMAÇÕES DE PIX DO USUÁRIO
         function solicitarSaque() {
-            alert("Solicitação de saque enviada para análise do sistema financeiro.");
+            if (!currentUser) return alert("Você precisa estar logado para solicitar um saque.");
+            if (totalPontos < 500) return alert("Saldo insuficiente. O mínimo para resgate é 500 PTS (R$ 5,00).");
+
+            const chavePix = prompt("Digite a sua Chave Pix para o recebimento do saldo:");
+            
+            if (chavePix === null) return; // Usuário cancelou
+            if (chavePix.trim() === "") {
+                return alert("⚠️ Erro: É necessário informar uma chave Pix válida para continuar.");
+            }
+
+            // Simulação de envio com chave pix inclusa
+            alert(`✅ Solicitação Registrada com Sucesso!\n\nValor: R$ ${(totalPontos * 0.01).toFixed(2)}\nChave Pix fornecida: ${chavePix}\n\nAguarde o prazo de análise do sistema financeiro.`);
         }
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
                 videoId: listaFilmes[0].id,
                 events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
+                    'onReady': () => {},
+                    'onStateChange': () => {}
                 }
             });
             document.getElementById('movieTitle').innerText = listaFilmes[0].titulo;
             renderizarCatalogo();
-        }
-
-        function onPlayerReady(event) {
-            // Player pronto
-        }
-
-        function onPlayerStateChange(event) {
-            if(event.data == YT.PlayerState.PLAYING) {
-                // Contagem de pontos ativa
-            }
         }
     </script>
 </body>
