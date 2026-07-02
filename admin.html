@@ -6,94 +6,102 @@
     <title>CineRewards Master | Control Center</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #09090b; --bg-panel: #18181b; --border-color: #27272a; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-gold: #fbbf24; --accent-gold-hover: #f59e0b; --success: #10b981; --danger: #ef4444; --info: #3b82f6; }
+        :root { --bg-dark: #09090b; --bg-panel: #18181b; --border-color: #27272a; --text-main: #f8fafc; --text-muted: #94a3b8; --accent-gold: #fbbf24; --success: #10b981; --danger: #ef4444; --info: #3b82f6; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; }
-        .navbar { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .brand { font-size: 20px; font-weight: 800; color: var(--accent-gold); }
-        .container { padding: 24px; max-width: 1400px; margin: 0 auto; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .stat-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; }
-        .stat-value { font-size: 32px; font-weight: 800; }
-        .panel { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
-        .panel-header { padding: 20px; border-bottom: 1px solid var(--border-color); font-weight: 700; }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--bg-panel); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .stat-value { font-size: 28px; font-weight: 800; color: var(--accent-gold); }
+        .panel { background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: rgba(0,0,0,0.2); padding: 16px; text-align: left; font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
-        td { padding: 16px; border-bottom: 1px solid var(--border-color); }
-        .btn-action { width: 36px; height: 36px; border-radius: 10px; border: none; cursor: pointer; margin-right: 5px; }
-        .btn-add { background: rgba(59, 130, 246, 0.1); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .btn-del { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-        #sys-message { padding: 15px; margin-bottom: 20px; border-radius: 12px; display: none; }
+        th { color: var(--text-muted); font-size: 11px; text-transform: uppercase; padding: 10px; text-align: left; }
+        td { padding: 12px 10px; border-bottom: 1px solid var(--border-color); }
+        .btn-action { padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; margin-right: 5px; color: white; }
     </style>
 </head>
 <body>
-    <nav class="navbar"><div class="brand">CineRewards Master</div></nav>
-    <div class="container">
-        <div id="sys-message"></div>
-        <div class="stats-grid">
-            <div class="stat-card"><div>Total Usuários</div><div class="stat-value" id="valUsers">0</div></div>
-            <div class="stat-card"><div>Total Pontos</div><div class="stat-value" id="valPoints">0</div></div>
-            <div class="stat-card"><div>Saques Pendentes</div><div class="stat-value" id="valPending">0</div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header">Gerenciamento de Contas</div>
-            <table>
-                <thead><tr><th>E-mail</th><th>Pontos</th><th>Ações</th></tr></thead>
-                <tbody id="tbUsuarios"></tbody>
-            </table>
-        </div>
+
+    <div style="font-size: 22px; font-weight: 800; color: var(--accent-gold); margin-bottom: 20px;">
+        <i class="fa-solid fa-crown"></i> CineRewards PRO | Painel ADM
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div>Total Usuários</div><div class="stat-value" id="valUsers">0</div></div>
+        <div class="stat-card"><div>Total Pago</div><div class="stat-value" id="valPaid">R$ 0,00</div></div>
+    </div>
+
+    <div class="panel">
+        <div style="margin-bottom: 15px; font-weight: 700;">Gestão de Clientes</div>
+        <table id="tbUsuarios">
+            <thead><tr><th>E-mail</th><th>Saldo (Pts)</th><th>Ações</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="panel">
+        <div style="margin-bottom: 15px; font-weight: 700;">Saques Pendentes</div>
+        <table id="tbSaques">
+            <thead><tr><th>E-mail</th><th>Valor</th><th>Ações</th></tr></thead>
+            <tbody></tbody>
+        </table>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g';
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const db = supabase.createClient('https://hvivrmdygytttdlapjbi.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g');
 
         async function carregarDados() {
-            try {
-                const { data: perfis } = await db.from('perfis').select('*');
-                const { data: saques } = await db.from('saques').select('*');
-                
-                document.getElementById('valUsers').innerText = perfis ? perfis.length : 0;
-                document.getElementById('valPoints').innerText = perfis ? perfis.reduce((a, b) => a + (parseInt(b.pontos) || 0), 0).toLocaleString() : 0;
-                document.getElementById('valPending').innerText = saques ? saques.filter(s => s.status === 'pendente').length : 0;
-                
-                const tbody = document.getElementById('tbUsuarios');
-                tbody.innerHTML = '';
-                perfis.forEach(u => {
-                    tbody.innerHTML += `<tr>
-                        <td>${u.email}</td>
-                        <td>${(u.pontos || 0).toLocaleString()}</td>
-                        <td>
-                            <button class="btn-action btn-add" onclick="editPontos('${u.id}', ${u.pontos || 0})"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-action btn-del" onclick="deletar('${u.id}')"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>`;
-                });
-            } catch (e) { console.error(e); }
+            const { data: perfis } = await db.from('perfis').select('*');
+            const { data: saques } = await db.from('saques').select('*');
+            
+            document.getElementById('valUsers').innerText = perfis ? perfis.length : 0;
+            const pago = saques ? saques.filter(s => s.status === 'pago').reduce((a, c) => a + parseFloat(c.valor || 0), 0) : 0;
+            document.getElementById('valPaid').innerText = `R$ ${pago.toFixed(2)}`;
+
+            const tbU = document.querySelector('#tbUsuarios tbody');
+            tbU.innerHTML = '';
+            perfis.forEach(u => {
+                tbU.innerHTML += `<tr>
+                    <td>${u.email}</td>
+                    <td>${u.pontos}</td>
+                    <td>
+                        <button class="btn-action" style="background:#3b82f6" onclick="editarSaldo('${u.id}', ${u.pontos})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-action" style="background:#ef4444" onclick="deletar('${u.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+
+            const tbS = document.querySelector('#tbSaques tbody');
+            tbS.innerHTML = '';
+            saques.filter(s => s.status === 'pendente').forEach(s => {
+                tbS.innerHTML += `<tr>
+                    <td>${s.email}</td>
+                    <td>R$ ${s.valor}</td>
+                    <td>
+                        <button class="btn-action" style="background:#10b981" onclick="atualizarSaque('${s.id}', 'pago')">Pagar</button>
+                        <button class="btn-action" style="background:#6b7280" onclick="atualizarSaque('${s.id}', 'recusado')">Negar</button>
+                    </td>
+                </tr>`;
+            });
         }
 
-        async function editPontos(id, atual) {
-            const novo = prompt("Digite o novo saldo de pontos:", atual);
-            if(novo !== null) {
-                const { error } = await db.from('perfis').update({ pontos: parseInt(novo) }).eq('id', id);
-                if(error) alert("Erro: " + error.message);
-                else alert("Saldo atualizado!");
-            }
+        async function editarSaldo(id, atual) {
+            const novo = prompt("Novo saldo de pontos:", atual);
+            if(novo) { await db.from('perfis').update({ pontos: parseInt(novo) }).eq('id', id); }
+        }
+
+        async function atualizarSaque(id, status) {
+            await db.from('saques').update({ status: status }).eq('id', id);
         }
 
         async function deletar(id) {
-            if(confirm("Excluir usuário?")) {
-                await db.from('perfis').delete().eq('id', id);
-            }
+            if(confirm("Excluir usuário permanentemente?")) await db.from('perfis').delete().eq('id', id);
         }
 
-        // Configuração de Tempo Real
-        db.channel('public:perfis')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'perfis' }, () => carregarDados())
-          .subscribe();
+        // Tempo Real: O painel ouve qualquer mudança no Supabase
+        db.channel('mudancas').on('postgres_changes', { event: '*', schema: 'public', table: 'perfis' }, carregarDados).subscribe();
+        db.channel('mudancas_saques').on('postgres_changes', { event: '*', schema: 'public', table: 'saques' }, carregarDados).subscribe();
 
         window.onload = carregarDados;
     </script>
