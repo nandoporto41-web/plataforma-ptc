@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Pro - Painel Admin</title>
+    <title>CineRewards Pro - Painel Admin Global</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,7 +11,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background: #0a0a0e; color: #e2e8f0; display: flex; flex-direction: column; min-height: 100vh; }
         
-        /* Topbar adaptada para Mobile/Desktop */
         .topbar { background: #111116; border-bottom: 1px solid #1f1f2e; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
         .topbar h2 { color: #ff9d00; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         
@@ -19,54 +18,51 @@
         
         #status-global { background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; font-size: 13px; }
 
-        /* Grid de cards corrigido para caber no telemóvel */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
         .stat-card { background: #111116; border: 1px solid #1f1f2e; padding: 15px; border-radius: 12px; }
         .stat-card p { color: #94a3b8; font-size: 11px; text-transform: uppercase; }
         .stat-card h3 { font-size: 20px; color: #fff; margin-top: 5px; font-weight: 600; }
 
-        /* Ferramentas do Sistema profissional */
-        .tools-section { background: #111116; border: 1px solid #1f1f2e; border-radius: 12px; padding: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .search-box { width: 100%; background: #1f1f2e; border: 1px solid #333; padding: 10px; border-radius: 8px; color: #fff; font-size: 14px; }
+        .tools-section { background: #111116; border: 1px solid #1f1f2e; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .search-box { width: 100%; background: #1f1f2e; border: 1px solid #333; padding: 10px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
+        .search-box:focus { border-color: #ff9d00; }
 
-        /* Containers de tabelas com scroll horizontal para não quebrar no telemóvel */
         .table-container { background: #111116; border: 1px solid #1f1f2e; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
         .table-container h3 { margin-bottom: 12px; font-size: 14px; color: #ff9d00; display: flex; align-items: center; gap: 8px; }
         .responsive-table { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 500px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 580px; }
         th { padding: 10px; color: #94a3b8; border-bottom: 2px solid #1f1f2e; background: #111116; }
-        td { padding: 10px; border-bottom: 1px solid #1f1f2e; color: #cbd5e1; }
+        td { padding: 12px 10px; border-bottom: 1px solid #1f1f2e; color: #cbd5e1; }
         
-        /* Botões operacionais em lista */
-        .btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-group { display: flex; gap: 6px; }
         .btn { padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
-        .btn-success { background: #10b981; color: #000; }
+        .btn-edit { background: #ff9d00; color: #000; }
+        .btn-add { background: #10b981; color: #000; }
         .btn-danger { background: #ef4444; color: #fff; }
         
-        .badge-suspect { background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
-        .badge-normal { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        .badge-video { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        .badge-novideo { background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
     </style>
 </head>
 <body>
 
     <div class="topbar">
-        <h2><i class="fa-solid fa-clapperboard"></i> CineRewards Admin</h2>
-        <span style="font-size: 11px; color: #94a3b8;"><i class="fa-solid fa-circle text-success" style="color:#10b981;"></i> Modo Online</span>
+        <h2><i class="fa-solid fa-sliders"></i> Painel Master Admin</h2>
+        <span style="font-size: 11px; color: #94a3b8;"><i class="fa-solid fa-circle" style="color:#10b981;"></i> Conectado</span>
     </div>
 
     <div class="main-content">
-        <div id="status-global">Verificando credenciais de administrador...</div>
+        <div id="status-global"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando banco de dados...</div>
 
         <div id="conteudo-painel" style="display: none;">
-            <!-- Indicadores Rápidos -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <p>Usuários</p>
+                    <p>Total Usuários</p>
                     <h3 id="totalUsers">0</h3>
                 </div>
                 <div class="stat-card">
-                    <p>Pendentes</p>
+                    <p>Saques Pendentes</p>
                     <h3 id="pendingWithdraws" style="color: #f59e0b;">0</h3>
                 </div>
                 <div class="stat-card">
@@ -75,14 +71,32 @@
                 </div>
             </div>
 
-            <!-- Caixa de Busca Operacional -->
             <div class="tools-section">
-                <input type="text" id="inputBusca" class="search-box" placeholder="🔍 Buscar usuário por e-mail..." oninput="filtrarUsuarios()">
+                <input type="text" id="inputBusca" class="search-box" placeholder="🔍 Digite o e-mail para buscar qualquer usuário..." oninput="filtrarUsuarios()">
             </div>
 
-            <!-- Tabela de Saques -->
             <div class="table-container">
-                <h3><i class="fa-solid fa-money-bill-wave"></i> Saques Pendentes</h3>
+                <h3><i class="fa-solid fa-users-gear"></i> Controle de Usuários e Saldos</h3>
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>E-mail do Usuário</th>
+                                <th>Pontos</th>
+                                <th>Saldo (R$)</th>
+                                <th>Assistiu Vídeo?</th>
+                                <th>Ações Disponíveis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <tr><td colspan="5" style="text-align:center; color:#94a3b8;">Buscando registros...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <h3><i class="fa-solid fa-money-bill-transfer"></i> Solicitações de Saques</h3>
                 <div class="responsive-table">
                     <table>
                         <thead>
@@ -90,33 +104,11 @@
                                 <th>E-mail</th>
                                 <th>Chave Pix</th>
                                 <th>Valor</th>
-                                <th>Antifraude</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="saquesTableBody">
-                            <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Tabela de Usuários -->
-            <div class="table-container">
-                <h3><i class="fa-solid fa-users-gear"></i> Gerenciar Usuários</h3>
-                <div class="responsive-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>E-mail</th>
-                                <th>Pontos</th>
-                                <th>Saldo</th>
-                                <th>Assistiu Vídeo?</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usuariosTableBody">
-                            <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
+                            <tr><td colspan="4" style="text-align:center; color:#94a3b8;">Nenhum saque pendente.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -128,6 +120,7 @@
         const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g';
         
+        // Inicializa o cliente forçando o desvio de políticas restritivas do RLS
         const _adminSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let listaPerfisLocal = [];
 
@@ -135,14 +128,14 @@
             try {
                 const { data: { user }, error: authError } = await _adminSupabase.auth.getUser();
                 if (authError || !user || user.email !== 'nandoporto41@gmail.com') {
-                    exibirErroGlobal("Acesso estritamente negado.");
+                    exibirErroGlobal("Acesso não autorizado para esta conta.");
                 } else {
                     document.getElementById('status-global').style.display = 'none';
                     document.getElementById('conteudo-painel').style.display = 'block';
                     carregarDadosDashboard();
                 }
             } catch (err) {
-                exibirErroGlobal("Erro de inicialização: " + err.message);
+                exibirErroGlobal("Erro de conexão: " + err.message);
             }
         }
 
@@ -155,13 +148,19 @@
         }
 
         async function carregarDadosDashboard() {
-            const { data: perfis } = await _adminSupabase.from('perfis').select('*');
+            // Busca explícita na tabela perfis e saques
+            const { data: perfis, error: errorPerfis } = await _adminSupabase.from('perfis').select('*');
             let { data: saques } = await _adminSupabase.from('saques').select('*');
             if (!saques) saques = [];
             
-            listaPerfisLocal = perfis || [];
+            if (errorPerfis) {
+                exibirErroGlobal("Erro ao ler tabela 'perfis'. Verifique o nome da tabela no Supabase. Erro: " + errorPerfis.message);
+                return;
+            }
 
+            listaPerfisLocal = perfis || [];
             document.getElementById('totalUsers').innerText = listaPerfisLocal.length;
+            
             const pendentes = saques.filter(s => s.status === 'pendente');
             document.getElementById('pendingWithdraws').innerText = pendentes.length;
             
@@ -172,21 +171,18 @@
             const sBody = document.getElementById('saquesTableBody');
             sBody.innerHTML = '';
             if(pendentes.length === 0) {
-                sBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;">Nenhum saque pendente.</td></tr>';
+                sBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;">Nenhum saque pendente.</td></tr>';
             } else {
                 pendentes.forEach(s => {
-                    let userRef = listaPerfisLocal.find(p => p.id === s.usuario_id);
-                    let analise = (userRef && !userRef.primeiro_video_assistido) ? `<span class="badge-suspect">Suspeito</span>` : `<span class="badge-normal">OK</span>`;
                     sBody.innerHTML += `
                         <tr>
                             <td>${s.email}</td>
                             <td>${s.chave_pix}</td>
-                            <td style="color:#10b981;">R$ ${parseFloat(s.valor).toFixed(2)}</td>
-                            <td>${analise}</td>
+                            <td style="color:#10b981; font-weight:600;">R$ ${parseFloat(s.valor).toFixed(2)}</td>
                             <td>
                                 <div class="btn-group">
-                                    <button class="btn btn-success" onclick="processarSaque(${s.id}, 'pago')">✔</button>
-                                    <button class="btn btn-danger" onclick="processarSaque(${s.id}, 'recusado')">✖</button>
+                                    <button class="btn btn-add" onclick="processarSaque(${s.id}, 'pago')">Aprovar</button>
+                                    <button class="btn btn-danger" onclick="processarSaque(${s.id}, 'recusado')">Recusar</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -198,17 +194,22 @@
         function renderizarUsuarios(dados) {
             const uBody = document.getElementById('usuariosTableBody');
             uBody.innerHTML = '';
+            if (dados.length === 0) {
+                uBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;">Nenhum usuário encontrado.</td></tr>';
+                return;
+            }
             dados.forEach(p => {
+                let statusVideo = p.primeiro_video_assistido ? `<span class="badge-video">Sim</span>` : `<span class="badge-novideo">Não</span>`;
                 uBody.innerHTML += `
                     <tr>
-                        <td>${p.email}</td>
-                        <td>${p.pontos || 0}</td>
-                        <td style="color:#10b981;">R$ ${parseFloat(p.saldo_reais || 0).toFixed(2)}</td>
-                        <td>${p.primeiro_video_assistido ? 'Sim' : 'Não'}</td>
+                        <td><strong>${p.email}</strong></td>
+                        <td>${p.pontos || 0} pts</td>
+                        <td style="color:#10b981; font-weight:600;">R$ ${parseFloat(p.saldo_reais || 0).toFixed(2)}</td>
+                        <td>${statusVideo}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-success" onclick="modificarSaldoManual('${p.id}', ${p.pontos || 0})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-danger" onclick="banirUsuario('${p.id}', '${p.email}')"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-add" onclick="adicionarPontosRapido('${p.id}', ${p.pontos || 0})" title="Adicionar pontos">+ Pontos</button>
+                                <button class="btn btn-edit" onclick="editarSaldoManual('${p.id}')" title="Substituir saldo diretamente"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                             </div>
                         </td>
                     </tr>`;
@@ -217,27 +218,46 @@
 
         function filtrarUsuarios() {
             const busca = document.getElementById('inputBusca').value.toLowerCase();
-            const filtrados = listaPerfisLocal.filter(u => u.email.toLowerCase().includes(busca));
+            const filtrados = listaPerfisLocal.filter(u => u.email && u.email.toLowerCase().includes(busca));
             renderizarUsuarios(filtrados);
         }
 
-        async function processarSaque(id, status) {
-            if(!confirm("Confirmar alteração do saque?")) return;
-            await _adminSupabase.from('saques').update({ status: status }).eq('id', id);
-            carregarDadosDashboard();
-        }
-
-        async function modificarSaldoManual(id, atual) {
-            const valor = prompt(`Adicione pontos (Atual: ${atual}):`);
+        // Opção 1: Somar Pontos ao Saldo Atual
+        async function adicionarPontosRapido(id, atual) {
+            const valor = prompt(`Digite a quantidade de PONTOS que deseja SOMAR ao usuário (Ex: 500):`);
             if(!valor || isNaN(valor)) return;
-            let novo = parseInt(atual) + parseInt(valor);
-            await _adminSupabase.from('perfis').update({ pontos: novo, saldo_reais: (novo/100).toFixed(2) }).eq('id', id);
+            let novoTotal = parseInt(atual) + parseInt(valor);
+            if(novoTotal < 0) novoTotal = 0;
+            
+            await _adminSupabase.from('perfis').update({ 
+                pontos: novoTotal, 
+                saldo_reais: (novoTotal / 100).toFixed(2) 
+            }).eq('id', id);
+            
+            alert("Pontos adicionados!");
             carregarDadosDashboard();
         }
 
-        async function banirUsuario(id, email) {
-            if(!confirm(`Deseja deletar permanentemente ${email}?`)) return;
-            await _adminSupabase.from('perfis').delete().eq('id', id);
+        // Opção 2: Editar e Definir um valor de Saldo fixo em Reais diretamente
+        async function editarSaldoManual(id) {
+            const novoSaldoReais = prompt(`Defina o novo Saldo em REAIS diretamente para este usuário (Ex: 25.50):`);
+            if(!novoSaldoReais || isNaN(novoSaldoReais)) return;
+            
+            // Reverte o cálculo para atualizar os pontos proporcionalmente (R$ 1,00 = 100 pontos)
+            let novosPontos = Math.round(parseFloat(novoSaldoReais) * 100);
+            
+            await _adminSupabase.from('perfis').update({ 
+                pontos: novosPontos, 
+                saldo_reais: parseFloat(novoSaldoReais).toFixed(2) 
+            }).eq('id', id);
+            
+            alert("Saldo atualizado com sucesso!");
+            carregarDadosDashboard();
+        }
+
+        async function processarSaque(id, status) {
+            if(!confirm("Confirmar alteração desta solicitação de saque?")) return;
+            await _adminSupabase.from('saques').update({ status: status }).eq('id', id);
             carregarDadosDashboard();
         }
 
