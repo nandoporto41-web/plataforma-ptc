@@ -2,60 +2,68 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Admin Pro</title>
+    <title>Painel Admin - PlataformaPTC</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background: #0a0a0e; color: #fff; font-family: sans-serif; padding: 20px; }
+        body { background: #0a0a0e; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #333; text-align: left; }
-        .btn { padding: 5px 10px; cursor: pointer; }
+        th, td { padding: 12px; border: 1px solid #333; text-align: left; }
+        .btn-add { background: #28a745; color: white; border: none; padding: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>Painel de Administração</h1>
-    <div id="painel" style="display:none;">
-        <table>
-            <thead><tr><th>E-mail</th><th>Saldo</th><th>Ações</th></tr></thead>
-            <tbody id="tabelaUsuarios"></tbody>
-        </table>
-    </div>
+    <div id="status">Verificando acesso...</div>
+    <table id="painel" style="display:none;">
+        <thead><tr><th>E-mail</th><th>Saldo (R$)</th><th>Ação</th></tr></thead>
+        <tbody id="tabelaUsuarios"></tbody>
+    </table>
 
     <script>
-        const supabase = supabase.createClient('https://hvivrmdygytttdlapjbi.supabase.co/rest/v1/', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g');
+        // Configuração com seus dados reais
+        const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function verificarAdmin() {
+        async function init() {
             const { data: { user } } = await supabase.auth.getUser();
-            // SUBSTITUA ABAIXO PELO SEU E-MAIL
+            
+            // Validação de acesso (apenas o seu e-mail entra)
             if (!user || user.email !== 'nandoporto41@gmail.com') {
-                alert("Acesso Negado!");
-                window.location.href = 'index.html';
+                document.getElementById('status').innerText = "Acesso Negado: Apenas nandoporto41@gmail.com pode acessar.";
             } else {
-                document.getElementById('painel').style.display = 'block';
+                document.getElementById('status').style.display = 'none';
+                document.getElementById('painel').style.display = 'table';
                 carregarUsuarios();
             }
         }
 
         async function carregarUsuarios() {
-            const { data } = await supabase.from('perfis').select('*');
-            const tbody = document.getElementById('tabelaUsuarios');
-            tbody.innerHTML = data.map(u => `
+            // Nota: Se sua tabela não se chamar 'perfis', troque 'perfis' pelo nome correto no seu banco
+            const { data, error } = await supabase.from('perfis').select('*');
+            if (error) {
+                document.getElementById('status').innerText = "Erro ao carregar usuários: " + error.message;
+                return;
+            }
+            document.getElementById('tabelaUsuarios').innerHTML = data.map(u => `
                 <tr>
                     <td>${u.email}</td>
-                    <td>R$ ${u.saldo_reais}</td>
-                    <td><button class="btn" onclick="addSaldo('${u.id}')">Add $</button></td>
+                    <td>${u.saldo_reais || 0}</td>
+                    <td><button class="btn-add" onclick="adicionarSaldo('${u.id}')">+ Saldo</button></td>
                 </tr>
             `).join('');
         }
 
-        async function addSaldo(id) {
-            const valor = prompt("Quanto adicionar?");
-            if (valor) {
-                await supabase.from('perfis').update({ saldo_reais: valor }).eq('id', id);
+        async function adicionarSaldo(userId) {
+            const novoValor = prompt("Digite o novo saldo em Reais:");
+            if (novoValor) {
+                await supabase.from('perfis').update({ saldo_reais: novoValor }).eq('id', userId);
                 carregarUsuarios();
             }
         }
 
-        window.onload = verificarAdmin;
+        init();
     </script>
 </body>
 </html>
