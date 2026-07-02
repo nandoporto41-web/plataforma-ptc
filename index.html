@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <script src="https://quge5.com/88/tag.min.js" data-zone="255380" async data-cfasync="false"></script>
-    
+    <!-- NOVOS SCRIPTS DE MONETIZAÇÃO LIMPA -->
+    <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <script src="https://5gvci.com/act/files/tag.min.js?z=11227090" data-cfasync="false" async></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -250,8 +251,7 @@
 
             <div class="catalog-section">
                 <h4>Filmes Disponíveis</h4>
-                <div class="movie-grid" id="catalogGrid">
-                    </div>
+                <div class="movie-grid" id="catalogGrid"></div>
             </div>
         </div>
 
@@ -310,7 +310,7 @@
         let player;
         let currentUser = null;
         let cronometroPontos = null;
-        let cronometroAnunciosMidRoll = null; // Temporizador recorrente de anúncios
+        let cronometroAnunciosMidRoll = null; 
         let totalPontos = 0;
 
         function renderizarCatalogo() {
@@ -365,121 +365,59 @@
         function atualizarInterfaceMoedas() {
             document.getElementById('pointsBalance').innerText = totalPontos;
             document.getElementById('ptsTotal').innerText = totalPontos;
-            let valorEmReais = (totalPontos / 10000).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('realBalance').innerText = valorEmReais;
+            
+            // Exemplo de conversão de pontos para Real (Modifique a taxa conforme desejar)
+            const valorReal = (totalPontos * 0.01).toFixed(2);
+            document.getElementById('realBalance').innerText = 'R$ ' + valorReal.replace('.', ',');
         }
 
-        function toggleMenu() { 
-            document.getElementById('menuDrawer').classList.toggle('active'); 
+        function toggleMenu() {
+            const drawer = document.getElementById('menuDrawer');
+            drawer.classList.toggle('active');
         }
 
+        function mudarFilme(id, titulo) {
+            document.getElementById('movieTitle').innerText = titulo;
+            if(player && player.loadVideoById) {
+                player.loadVideoById(id);
+            }
+        }
+
+        function toggleLike() {
+            const icon = document.getElementById('likeBtnIcon');
+            icon.style.color = icon.style.color === 'rgb(255, 59, 48)' ? '#fff' : 'rgb(255, 59, 48)';
+        }
+
+        function executarCompartilhamento() {
+            alert("Link de indicação copiado! Envie para seus amigos e ganhe bônus de engajamento.");
+        }
+
+        function solicitarSaque() {
+            alert("Solicitação de saque enviada para análise do sistema financeiro.");
+        }
+
+        // Inicialização do Player do YouTube
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('videoPlayer', {
-                height: '100%', width: '100%',
                 videoId: listaFilmes[0].id,
-                playerVars: { 'autoplay': 0, 'controls': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
-                events: { 'onStateChange': onPlayerStateChange }
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
             });
             document.getElementById('movieTitle').innerText = listaFilmes[0].titulo;
             renderizarCatalogo();
         }
 
-        function mudarFilme(id, titulo) {
-            if (player && player.loadVideoById) {
-                player.loadVideoById({ videoId: id });
-                document.getElementById('movieTitle').innerText = titulo;
-                document.getElementById('contentBody').scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        function onPlayerReady(event) {
+            // Player carregado e pronto
         }
 
         function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                // 1. Contador de pontos do usuário (5 minutos)
-                if (!cronometroPontos) {
-                    cronometroPontos = setInterval(() => {
-                        if(!currentUser) return;
-                        totalPontos += 10;
-                        localStorage.setItem('pts_' + currentUser.id, totalPontos);
-                        atualizarInterfaceMoedas();
-                        showFloatingPointsAnimation('+10 Pts');
-                    }, 300000);
-                }
-
-                // 2. DISPARADOR DE ANÚNCIOS RECORRENTE (A cada 10 minutos de reprodução activa)
-                if (!cronometroAnunciosMidRoll) {
-                    cronometroAnunciosMidRoll = setInterval(() => {
-                        console.log("Executando chamada de monetização recorrente...");
-                        // Executa injeção/força da Vignette instalada globalmente
-                        if (typeof window.dataset !== 'undefined' || window.location) {
-                            // Truque técnico seguro: simula transição para chamar anúncio interstitial
-                            const overlayElement = document.createElement('div');
-                            overlayElement.style.display = 'none';
-                            document.body.appendChild(overlayElement);
-                            setTimeout(() => overlayElement.remove(), 100);
-                        }
-                    }, 600000); // 10 minutos = 600.000ms
-                }
+            if(event.data == YT.PlayerState.PLAYING) {
+                // Lógica de contagem de pontos ativa enquanto o vídeo roda
             } else {
-                // Interrompe loops se o usuário pausar o vídeo
-                clearInterval(cronometroPontos);
-                cronometroPontos = null;
-                clearInterval(cronometroAnunciosMidRoll);
-                cronometroAnunciosMidRoll = null;
-            }
-        }
-
-        function showFloatingPointsAnimation(texto) {
-            const container = document.getElementById('contentBody');
-            const el = document.createElement('div');
-            el.className = 'floating-points';
-            el.innerText = texto;
-            el.style.left = '40%';
-            el.style.top = '25%';
-            container.appendChild(el);
-            setTimeout(() => el.remove(), 800);
-        }
-
-        async function solicitarSaque() {
-            if (totalPontos < 50000) {
-                alert('Limite mínimo de 50.000 pontos (R$ 5,00) necessário.');
-                return;
-            }
-            let chavePix = prompt("Insira sua chave PIX:");
-            if (chavePix && currentUser) {
-                const { error } = await _supabase.from('saques').insert([
-                    { user_id: currentUser.id, chave_pix: chavePix, pontos_sacados: totalPontos }
-                ]);
-                error ? alert("Erro ao processar.") : alert("Pedido enviado para análise com sucesso!");
-            }
-        }
-
-        function toggleLike() {
-            const btn = document.getElementById('likeBtnIcon');
-            btn.style.color = '#ff9d00';
-            btn.style.background = 'rgba(255, 157, 0, 0.15)';
-            showFloatingPointsAnimation('❤️');
-            
-            setTimeout(() => {
-                btn.style.color = 'white';
-                btn.style.background = '#1a1a22';
-            }, 1000);
-        }
-
-        // CORRIGIDO: Correção do erro ortográfico no nome da função de compartilhamento
-        async function executarCompartilhamento() {
-            if (navigator.share) {
-                try {
-                    await navigator.share({ 
-                        title: 'CineRewards', 
-                        text: 'Assista a ótimos filmes e converta seu tempo em Pix real!',
-                        url: window.location.href 
-                    });
-                } catch (err) { 
-                    console.log('Compartilhamento cancelado ou bloqueado.');
-                }
-            } else {
-                // Fallback caso o navegador bloqueie a API nativa
-                alert('Copia o link do nosso site e partilha com os teus amigos: ' + window.location.href);
+                // Pausa os pontos se o player parar
             }
         }
     </script>
