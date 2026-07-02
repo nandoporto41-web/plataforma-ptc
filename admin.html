@@ -2,68 +2,277 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Admin - PlataformaPTC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineRewards Pro - Painel de Controle Admin</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #0a0a0e; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #333; text-align: left; }
-        .btn-add { background: #28a745; color: white; border: none; padding: 8px; cursor: pointer; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #0a0a0e; color: #e2e8f0; display: flex; min-height: 100vh; }
+        
+        .sidebar { width: 260px; background: #111116; border-right: 1px solid #1f1f2e; padding: 25px 15px; }
+        .sidebar h2 { color: #ff9d00; font-size: 18px; font-weight: 700; margin-bottom: 30px; text-align: center; }
+        .menu-item { padding: 12px 15px; border-radius: 8px; color: #94a3b8; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px; }
+        .menu-item.active { background: #1f1f2e; color: #fff; border-left: 4px solid #ff9d00; }
+
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 24px; color: #fff; }
+        
+        #status-global { background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; text-align: center; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #111116; border: 1px solid #1f1f2e; padding: 20px; border-radius: 12px; }
+        .stat-card p { color: #94a3b8; font-size: 12px; text-transform: uppercase; }
+        .stat-card h3 { font-size: 28px; color: #fff; margin-top: 5px; }
+
+        .table-container { background: #111116; border: 1px solid #1f1f2e; border-radius: 12px; padding: 20px; margin-bottom: 30px; }
+        .table-container h3 { margin-bottom: 15px; font-size: 16px; color: #ff9d00; display: flex; align-items: center; gap: 8px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { padding: 12px; color: #94a3b8; border-bottom: 2px solid #1f1f2e; }
+        td { padding: 12px; border-bottom: 1px solid #1f1f2e; color: #cbd5e1; }
+        
+        .btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: 600; margin-right: 5px; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-success { background: #10b981; color: #000; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-warning { background: #f59e0b; color: #000; }
+        
+        .badge-suspect { background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .badge-normal { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Painel de Administração</h1>
-    <div id="status">Verificando acesso...</div>
-    <table id="painel" style="display:none;">
-        <thead><tr><th>E-mail</th><th>Saldo (R$)</th><th>Ação</th></tr></thead>
-        <tbody id="tabelaUsuarios"></tbody>
-    </table>
+
+    <div class="sidebar">
+        <h2>CineRewards Admin</h2>
+        <div class="menu-item active"><i class="fa-solid fa-chart-line"></i> Dashboard Geral</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Monitoramento do Sistema</h1>
+        </div>
+
+        <div id="status-global">Verificando credenciais de administrador...</div>
+
+        <div id="conteudo-painel" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p>Total de Usuários</p>
+                    <h3 id="totalUsers">0</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Saques Pendentes</p>
+                    <h3 id="pendingWithdraws" style="color: #f59e0b;">0</h3>
+                </div>
+                <div class="stat-card">
+                    <p>Total Pago (Histórico)</p>
+                    <h3 id="totalPaid" style="color: #10b981;">R$ 0,00</h3>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3><i class="fa-solid fa-money-bill-wave"></i> Pedidos de Saques Pendentes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>E-mail</th>
+                            <th>Chave Pix</th>
+                            <th>Valor</th>
+                            <th>Análise Antifraude</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saquesTableBody">
+                        <tr><td colspan="5" style="text-align:center;">Carregando saques...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-container">
+                <h3><i class="fa-solid fa-users-gear"></i> Controle de Usuários & Saldo</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>E-mail</th>
+                            <th>Pontos Totais</th>
+                            <th>Saldo (R$)</th>
+                            <th>Minuto Assistido?</th>
+                            <th>Ações de Gerenciamento</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTableBody">
+                        <tr><td colspan="5" style="text-align:center;">Carregando usuários...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Configuração com seus dados reais
+        // Dados do seu banco de dados injetados diretamente
         const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MjY4Nzg0MywiZXhwIjoyMDk4MjYzODQzfQ.k5ofLY9j4N_INM0hg7poKKP6dq8FRG3qHntKoiFW83g';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _adminSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function init() {
-            const { data: { user } } = await supabase.auth.getUser();
-            
-            // Validação de acesso (apenas o seu e-mail entra)
-            if (!user || user.email !== 'nandoporto41@gmail.com') {
-                document.getElementById('status').innerText = "Acesso Negado: Apenas nandoporto41@gmail.com pode acessar.";
-            } else {
-                document.getElementById('status').style.display = 'none';
-                document.getElementById('painel').style.display = 'table';
-                carregarUsuarios();
+        async function verificarAcessoAdmin() {
+            try {
+                const { data: { user }, error: authError } = await _adminSupabase.auth.getUser();
+                
+                if (authError) {
+                    exibirErroGlobal("Erro na sessão: " + authError.message);
+                    return;
+                }
+
+                if (!user) {
+                    exibirErroGlobal("Nenhum usuário detectado. Acesse a página inicial, faça login com sua conta e retorne aqui.");
+                    return;
+                }
+
+                if (user.email !== 'nandoporto41@gmail.com') {
+                    exibirErroGlobal("Acesso estritamente negado para o e-mail: " + user.email);
+                } else {
+                    document.getElementById('status-global').style.display = 'none';
+                    document.getElementById('conteudo-painel').style.display = 'block';
+                    carregarDadosDashboard();
+                }
+            } catch (err) {
+                exibirErroGlobal("Falha crítica ao inicializar: " + err.message);
             }
         }
 
-        async function carregarUsuarios() {
-            // Nota: Se sua tabela não se chamar 'perfis', troque 'perfis' pelo nome correto no seu banco
-            const { data, error } = await supabase.from('perfis').select('*');
-            if (error) {
-                document.getElementById('status').innerText = "Erro ao carregar usuários: " + error.message;
+        function exibirErroGlobal(mensagem) {
+            const statusEl = document.getElementById('status-global');
+            statusEl.style.background = "rgba(239, 68, 68, 0.1)";
+            statusEl.style.border = "1px solid #ef4444";
+            statusEl.style.color = "#ef4444";
+            statusEl.innerText = mensagem;
+        }
+
+        async function carregarDadosDashboard() {
+            // Puxar tabelas do Supabase
+            const { data: perfis, error: errPerfis } = await _adminSupabase.from('perfis').select('*');
+            
+            // Tratamento preventivo caso a tabela 'saques' ainda esteja vazia ou em criação
+            let { data: saques, error: errSaques } = await _adminSupabase.from('saques').select('*');
+            if (errSaques) saques = []; 
+
+            if (errPerfis) {
+                alert("Erro ao ler tabela 'perfis': " + errPerfis.message);
                 return;
             }
-            document.getElementById('tabelaUsuarios').innerHTML = data.map(u => `
-                <tr>
-                    <td>${u.email}</td>
-                    <td>${u.saldo_reais || 0}</td>
-                    <td><button class="btn-add" onclick="adicionarSaldo('${u.id}')">+ Saldo</button></td>
-                </tr>
-            `).join('');
+
+            // Atualizar os contadores estatísticos
+            document.getElementById('totalUsers').innerText = perfis.length;
+            
+            const saquesPendentes = saques.filter(s => s.status === 'pendente');
+            document.getElementById('pendingWithdraws').innerText = saquesPendentes.length;
+
+            const totalPagoSum = saques.filter(s => s.status === 'pago').reduce((acc, curr) => acc + parseFloat(curr.valor), 0);
+            document.getElementById('totalPaid').innerText = `R$ ${totalPagoSum.toFixed(2).replace('.', ',')}`;
+
+            // Renderizar a lista de saques pendentes
+            const saquesBody = document.getElementById('saquesTableBody');
+            saquesBody.innerHTML = '';
+            if (saquesPendentes.length === 0) {
+                saquesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8;">Nenhum pedido de saque pendente no momento.</td></tr>';
+            } else {
+                saquesPendentes.forEach(s => {
+                    let perfilRelacionado = perfis.find(p => p.id === s.usuario_id);
+                    let statusFraude = `<span class="badge-normal">Seguro</span>`;
+                    
+                    // Alerta de fraude inteligente
+                    if (perfilRelacionado && !perfilRelacionado.primeiro_video_assistido && (perfilRelacionado.pontos > 0 || perfilRelacionado.saldo_reais > 0)) {
+                        statusFraude = `<span class="badge-suspect"><i class="fa-solid fa-triangle-exclamation"></i> Suspeito (Sem assistir vídeos)</span>`;
+                    }
+
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${s.email}</td>
+                        <td><strong>(${s.tipo_chave})</strong> ${s.chave_pix}</td>
+                        <td style="color:#10b981; font-weight:600;">R$ ${parseFloat(s.valor).toFixed(2)}</td>
+                        <td>${statusFraude}</td>
+                        <td>
+                            <button class="btn btn-success" onclick="processarSaque(${s.id}, 'pago')"><i class="fa-solid fa-check"></i> Aprovar</button>
+                            <button class="btn btn-danger" onclick="processarSaque(${s.id}, 'recusado')"><i class="fa-solid fa-xmark"></i> Negar</button>
+                        </td>
+                    `;
+                    saquesBody.appendChild(tr);
+                });
+            }
+
+            // Renderizar a lista de gerenciamento de usuários
+            const usuariosBody = document.getElementById('usuariosTableBody');
+            usuariosBody.innerHTML = '';
+            perfis.forEach(p => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.email}</td>
+                    <td>${p.pontos || 0} PTS</td>
+                    <td style="color:#10b981; font-weight:500;">R$ ${parseFloat(p.saldo_reais || 0).toFixed(2)}</td>
+                    <td>${p.primeiro_video_assistido ? 'Sim' : 'Não (Alerta)'}</td>
+                    <td>
+                        <button class="btn btn-success" onclick="modificarSaldoManual('${p.id}', ${p.pontos || 0})"><i class="fa-solid fa-coins"></i> Ajustar Saldo</button>
+                        <button class="btn btn-danger" onclick="banirEBloquearUsuario('${p.id}', '${p.email}')"><i class="fa-solid fa-ban"></i> Banir</button>
+                    </td>
+                `;
+                usuariosBody.appendChild(tr);
+            });
         }
 
-        async function adicionarSaldo(userId) {
-            const novoValor = prompt("Digite o novo saldo em Reais:");
-            if (novoValor) {
-                await supabase.from('perfis').update({ saldo_reais: novoValor }).eq('id', userId);
-                carregarUsuarios();
+        async function processarSaque(saqueId, novoStatus) {
+            if (!confirm(`Deseja alterar o estado deste saque para: ${novoStatus.toUpperCase()}?`)) return;
+            const { error } = await _adminSupabase.from('saques').update({ status: novoStatus }).eq('id', saqueId);
+            if (!error) {
+                alert("Status do saque atualizado com sucesso!");
+                carregarDadosDashboard();
             }
         }
 
-        init();
+        async function modificarSaldoManual(userId, pontosAtuais) {
+            const pontosParaAdicionar = prompt(`O usuário possui atualmente ${pontosAtuais} pontos. Digite quantos pontos você deseja SOMAR (Ex: 500) ou SUBTRAIR (Ex: -200):`);
+            if (!pontosParaAdicionar || isNaN(pontosParaAdicionar)) return;
+
+            let novoTotalPontos = parseInt(pontosAtuais) + parseInt(pontosParaAdicionar);
+            if (novoTotalPontos < 0) novoTotalPontos = 0;
+            
+            let novoSaldoReais = (novoTotalPontos / 100).toFixed(2); // Ajuste a taxa de conversão conforme sua regra de negócio
+
+            const { error } = await _adminSupabase.from('perfis').update({
+                pontos: novoTotalPontos,
+                saldo_reais: novoSaldoReais
+            }).eq('id', userId);
+
+            if (!error) {
+                alert("Saldo modificado e convertido com sucesso!");
+                carregarDadosDashboard();
+            } else {
+                alert("Erro ao atualizar o saldo: " + error.message);
+            }
+        }
+
+        async function banEBloquearUsuario(userId, email) {
+            if (!confirm(`ATENÇÃO: Deseja BANIR e DELETAR permanentemente o usuário ${email}? Esta ação não pode ser desfeita.`)) return;
+
+            // 1. Inserir na blacklist
+            await _adminSupabase.from('blacklist').insert([{ email: email, motivo: 'Fraude/Abuso de pontos' }]);
+            // 2. Deletar tabelas públicas
+            await _adminSupabase.from('perfis').delete().eq('id', userId);
+            
+            // 3. Deletar do Authentication Core
+            const { error } = await _adminSupabase.auth.admin.deleteUser(userId);
+
+            if (!error) {
+                alert(`O usuário ${email} foi completamente expulso do sistema.`);
+                carregarDadosDashboard();
+            } else {
+                alert("Erro ao remover credenciais de autenticação: " + error.message);
+            }
+        }
+
+        window.onload = verificarAcessoAdmin;
     </script>
 </body>
 </html>
