@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards | Admin Premium</title>
     
-    <!-- Bibliotecas Externas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Estilos Customizados -->
     <style>
         body { background-color: #0b0c10; color: #e5e7eb; }
         ::-webkit-scrollbar { width: 4px; }
@@ -24,7 +22,6 @@
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden font-sans">
 
-    <!-- Navegação -->
     <nav class="glass-panel md:w-64 w-full p-4 flex md:flex-col justify-between md:justify-start gap-4 overflow-x-auto shrink-0 border-b md:border-r border-zinc-800 z-10">
         <div class="hidden md:block mb-8 mt-4">
             <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
@@ -36,23 +33,22 @@
             <button onclick="changeTab('dashboard')" id="btn-dashboard" class="nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all">📊 Dashboard</button>
             <button onclick="changeTab('filmes')" id="btn-filmes" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">🎬 Filmes</button>
             <button onclick="changeTab('saques')" id="btn-saques" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">💸 Auditoria</button>
+            <button onclick="changeTab('config')" id="btn-config" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">⚙️ Setup</button>
         </div>
     </nav>
 
-    <!-- Área de Conteúdo -->
     <main class="flex-1 overflow-y-auto p-4 md:p-8 relative">
         
-        <!-- ABA: DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active max-w-5xl mx-auto">
             <h2 class="text-2xl font-black mb-6">Visão Geral</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <div class="glass-panel p-5 rounded-2xl">
                     <p class="text-zinc-500 text-xs font-bold uppercase">Usuários Ativos</p>
-                    <p class="text-3xl font-black text-white mt-1" id="metric-users">0</p>
+                    <p class="text-3xl font-black text-white mt-1" id="metric-users">...</p>
                 </div>
                 <div class="glass-panel p-5 rounded-2xl">
                     <p class="text-zinc-500 text-xs font-bold uppercase">Saques Pendentes</p>
-                    <p class="text-3xl font-black text-amber-500 mt-1" id="metric-saques">0</p>
+                    <p class="text-3xl font-black text-amber-500 mt-1" id="metric-saques">...</p>
                 </div>
                 <div class="glass-panel p-5 rounded-2xl col-span-2 md:col-span-2 bg-gradient-to-br from-purple-900/40 to-black">
                     <p class="text-purple-300 text-xs font-bold uppercase">Regras Atuais do Sistema</p>
@@ -63,19 +59,28 @@
             </div>
         </div>
 
-        <!-- ABA: FILMES -->
         <div id="tab-filmes" class="tab-content max-w-5xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-black">Gestão de Filmes</h2>
                 <button onclick="addFilme()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-blue-600/30 transition-all">+ Novo Filme</button>
             </div>
-            <div class="grid gap-3" id="list-filmes"></div>
+            <div class="grid gap-3" id="list-filmes">
+                <p class="text-zinc-500">Carregando filmes...</p>
+            </div>
         </div>
 
-        <!-- ABA: AUDITORIA DE SAQUES -->
         <div id="tab-saques" class="tab-content max-w-5xl mx-auto">
             <h2 class="text-2xl font-black mb-6">Auditoria Financeira</h2>
-            <div class="grid gap-4" id="list-saques"></div>
+            <div class="grid gap-4" id="list-saques">
+                <p class="text-zinc-500">Verificando banco de dados...</p>
+            </div>
+        </div>
+
+        <div id="tab-config" class="tab-content max-w-3xl mx-auto">
+            <h2 class="text-2xl font-black mb-6">Configurações Globais</h2>
+            <div class="glass-panel p-6 rounded-2xl space-y-4" id="form-config">
+                <p class="text-zinc-500">Carregando parâmetros...</p>
+            </div>
         </div>
 
     </main>
@@ -86,7 +91,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let regras = { min_saque: 50, min_indicacoes: 5 };
+        let regras = { min_saque: 0, min_indicacoes: 0 };
 
         // --- 2. SISTEMA DE NAVEGAÇÃO ---
         function changeTab(tabId) {
@@ -96,83 +101,76 @@
             });
             
             document.getElementById(`tab-${tabId}`).classList.add('active');
-            document.getElementById(`btn-${tabId}`).className = 'nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all';
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.className = 'nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all';
             
             if(tabId === 'dashboard') loadDashboard();
             if(tabId === 'filmes') loadFilmes();
             if(tabId === 'saques') loadSaques();
+            if(tabId === 'config') loadConfig();
         }
 
-        // --- 3. FUNÇÕES DE DADOS (COM TRATAMENTO DE ERRO) ---
+        // --- 3. FUNÇÕES DE DADOS (CRUD) ---
 
+        // Carregar Dashboard
         async function loadDashboard() {
-            try {
-                const { count: users, error: err1 } = await supabase.from('perfis_premium').select('*', { count: 'exact', head: true });
-                const { count: saquesP, error: err2 } = await supabase.from('solicitacoes_saque').select('*', { count: 'exact', head: true }).eq('status', 'Pendente');
-                const { data: config, error: err3 } = await supabase.from('configuracoes').select('*').limit(1).single();
+            const [{ count: users }, { count: saquesP }, { data: config }] = await Promise.all([
+                supabase.from('perfis_premium').select('*', { count: 'exact', head: true }),
+                supabase.from('solicitacoes_saque').select('*', { count: 'exact', head: true }).eq('status', 'Pendente'),
+                supabase.from('configuracoes').select('*').limit(1).single()
+            ]);
 
-                if (err1 || err2) console.error("Erro ao buscar contagens", err1, err2);
-
-                document.getElementById('metric-users').innerText = users || 0;
-                document.getElementById('metric-saques').innerText = saquesP || 0;
-                
-                if(config) {
-                    regras = config;
-                    document.getElementById('metric-regras').innerHTML = `
-                        <div class="bg-black/30 p-2 rounded border border-purple-500/20">💰 Min. Saque: R$ ${config.min_saque}</div>
-                        <div class="bg-black/30 p-2 rounded border border-purple-500/20">👥 Indicar: ${config.min_indicacoes} ativos</div>
-                    `;
-                }
-            } catch (error) {
-                console.error("Erro no Dashboard:", error);
-                Swal.fire('Aviso', 'Erro ao carregar Dashboard. Verifique o banco.', 'warning');
+            document.getElementById('metric-users').innerText = users || 0;
+            document.getElementById('metric-saques').innerText = saquesP || 0;
+            
+            if(config) {
+                regras = config;
+                document.getElementById('metric-regras').innerHTML = `
+                    <div class="bg-black/30 p-2 rounded border border-purple-500/20">💰 Min. Saque: R$ ${config.min_saque}</div>
+                    <div class="bg-black/30 p-2 rounded border border-purple-500/20">👥 Indicar: ${config.min_indicacoes} ativos</div>
+                `;
             }
         }
 
+        // Carregar Filmes
         async function loadFilmes() {
-            try {
-                const { data, error } = await supabase.from('filmes').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
-                
-                const list = document.getElementById('list-filmes');
-                if(!data || data.length === 0) {
-                    list.innerHTML = '<p class="text-zinc-500">Nenhum filme cadastrado.</p>';
-                    return;
-                }
+            const { data } = await supabase.from('filmes').select('*').order('created_at', { ascending: false });
+            const list = document.getElementById('list-filmes');
+            
+            if(!data || data.length === 0) return list.innerHTML = '<p class="text-zinc-500">Nenhum filme cadastrado.</p>';
 
-                list.innerHTML = data.map(f => `
-                    <div class="glass-panel p-4 rounded-xl flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-white text-lg">${f.titulo}</h3>
-                        </div>
-                        <button onclick="delFilme('${f.id}')" class="bg-red-900/30 text-red-400 p-2 rounded hover:bg-red-600 hover:text-white transition">🗑️ Excluir</button>
+            list.innerHTML = data.map(f => `
+                <div class="glass-panel p-4 rounded-xl flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-white text-lg">${f.titulo}</h3>
+                        <p class="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-md">${f.url_video}</p>
                     </div>
-                `).join('');
-            } catch (error) {
-                Swal.fire('Erro', 'Não foi possível carregar os filmes: ' + error.message, 'error');
-            }
+                    <button onclick="delFilme('${f.id}')" class="bg-red-900/30 text-red-400 p-2 rounded hover:bg-red-600 hover:text-white transition">🗑️</button>
+                </div>
+            `).join('');
         }
 
         async function addFilme() {
             const { value: formValues } = await Swal.fire({
                 title: 'Adicionar Filme',
-                html: `<input id="swal-titulo" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="Título do Filme">
-                       <input id="swal-url" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="URL do Vídeo">`,
+                html: `
+                    <input id="swal-titulo" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="Título do Filme">
+                    <input id="swal-url" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="URL do Vídeo">
+                `,
                 background: '#18181b', color: '#fff',
                 focusConfirm: false,
                 preConfirm: () => {
-                    return { titulo: document.getElementById('swal-titulo').value, url_video: document.getElementById('swal-url').value }
+                    return {
+                        titulo: document.getElementById('swal-titulo').value,
+                        url_video: document.getElementById('swal-url').value
+                    }
                 }
             });
 
             if (formValues && formValues.titulo) {
-                const { error } = await supabase.from('filmes').insert(formValues);
-                if (error) {
-                    Swal.fire('Erro!', error.message, 'error');
-                } else {
-                    Swal.fire({icon: 'success', title: 'Adicionado!', background: '#18181b', color: '#fff', timer: 1500});
-                    loadFilmes();
-                }
+                await supabase.from('filmes').insert(formValues);
+                Swal.fire({icon: 'success', title: 'Adicionado!', background: '#18181b', color: '#fff', timer: 1500});
+                loadFilmes();
             }
         }
 
@@ -184,31 +182,59 @@
             }
         }
 
+        // Carregar Saques (Sistema de Auditoria)
         async function loadSaques() {
-            try {
-                const { data: saques, error } = await supabase.from('solicitacoes_saque').select('*, perfis_premium(*)').eq('status', 'Pendente');
-                if (error) throw error;
-                
-                const list = document.getElementById('list-saques');
-                if(!saques || saques.length === 0) {
-                    list.innerHTML = '<div class="glass-panel p-8 text-center rounded-xl"><p class="text-emerald-400 font-bold text-xl">Tudo limpo! ✅</p></div>';
-                    return;
-                }
+            const { data: saques } = await supabase.from('solicitacoes_saque').select('*, perfis_premium(*)').eq('status', 'Pendente');
+            const list = document.getElementById('list-saques');
 
-                list.innerHTML = saques.map(s => {
-                    const user = s.perfis_premium || {};
-                    return `
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row gap-6 border-l-4 border-l-amber-500">
-                        <div class="flex-1">
-                            <h3 class="text-xl font-bold mt-1">${user.email || 'Usuário'}</h3>
-                            <p class="text-emerald-400 font-black text-3xl my-2">R$ ${s.valor.toFixed(2)}</p>
-                            <p class="text-sm"><span class="text-purple-400 font-bold">PIX:</span> ${s.chave_pix}</p>
-                        </div>
-                    </div>`
-                }).join('');
-            } catch (error) {
-                Swal.fire('Erro', 'Não foi possível carregar os saques.', 'error');
+            if(!saques || saques.length === 0) return list.innerHTML = '<div class="glass-panel p-8 text-center rounded-xl"><p class="text-emerald-400 font-bold text-xl">Tudo limpo! ✅</p><p class="text-zinc-500 text-sm">Nenhum saque pendente de auditoria.</p></div>';
+
+            list.innerHTML = saques.map(s => {
+                const user = s.perfis_premium || {};
+                const passTempo = user.tempo_assistido >= 60;
+                const passIndica = user.indicacoes_ativas >= regras.min_indicacoes;
+                
+                return `
+                <div class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row gap-6 border-l-4 border-l-amber-500">
+                    <div class="flex-1">
+                        <p class="text-zinc-400 text-xs">Solicitação #${s.id.substring(0,8)}</p>
+                        <h3 class="text-xl font-bold mt-1">${user.email || 'Usuário Desconhecido'}</h3>
+                        <p class="text-emerald-400 font-black text-3xl my-2">R$ ${s.valor.toFixed(2)}</p>
+                        <p class="text-sm"><span class="text-purple-400 font-bold">PIX:</span> ${s.chave_pix}</p>
+                    </div>
+                    
+                    <div class="flex-1 bg-black/40 p-4 rounded-xl border border-zinc-800">
+                        <p class="text-xs font-bold text-zinc-500 uppercase mb-3">Checklist do Sistema</p>
+                        <ul class="space-y-2 text-sm">
+                            <li class="${passTempo ? 'text-emerald-400' : 'text-red-400'}">
+                                ${passTempo ? '✅' : '❌'} Assistiu min. 60m (Tem ${user.tempo_assistido || 0}m)
+                            </li>
+                            <li class="${passIndica ? 'text-emerald-400' : 'text-red-400'}">
+                                ${passIndica ? '✅' : '❌'} Atingiu Indicações (Tem ${user.indicacoes_ativas || 0}/${regras.min_indicacoes})
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-col gap-2 justify-center">
+                        <button onclick="auditarSaque('${s.id}', 'Aprovado')" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-emerald-500 transition">Aprovar Pagamento</button>
+                        <button onclick="auditarSaque('${s.id}', 'Recusado')" class="bg-zinc-800 text-red-400 font-bold py-3 px-6 rounded-xl border border-red-500/20 hover:bg-red-900/30 transition">Recusar / Estornar</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        async function auditarSaque(id, status) {
+            let motivo = null;
+            if(status === 'Recusado') {
+                const { value } = await Swal.fire({
+                    title: 'Motivo da Recusa', input: 'text', background: '#18181b', color: '#fff'
+                });
+                if(!value) return;
+                motivo = value;
             }
+            await supabase.from('solicitacoes_saque').update({ status, motivo_recusa: motivo }).eq('id', id);
+            Swal.fire({icon: 'success', title: `Saque ${status}`, background: '#18181b', color: '#fff', timer: 1500});
+            loadSaques();
         }
 
         // Iniciar
