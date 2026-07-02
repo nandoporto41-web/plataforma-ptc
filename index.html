@@ -343,7 +343,9 @@
 
         let isSignUpMode = false;
         let currentUser = null;
+        let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
         let player = null;
+        let pontuacaoInterval = null;
 
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
@@ -402,13 +404,51 @@
 
             if (response.error) {
                 alert('Erro na autenticação: ' + response.error.message);
-            } else {
-                currentUser = response.data.user;
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('userDisplay').innerText = currentUser.email;
-                carregarCatalogo();
-                alert(isSignUpMode ? 'Cadastro realizado com sucesso!' : 'Login efetuado com sucesso!');
+                return;
             }
+
+            currentUser = response.data.user;
+
+            if (isSignUpMode) {
+                // Criar Perfil Inicial no Banco de Dados
+                let pontosIniciais = indicarPorID ? 100 : 0; // Ganha 100 PTS iniciais se foi indicado
+                const { error: profileError } = await _supabase.from('perfis').insert([{
+                    id: currentUser.id,
+                    email: currentUser.email,
+                    pontos: pontosIniciais,
+                    saldo_reais: (pontosIniciais / 100).toFixed(2),
+                    indicado_por: indicarPorID || null
+                }]);
+
+                if (indicarPorID) {
+                    // Registrar a indicação pendente na tabela dedicada
+                    await _supabase.from('indicacoes').insert([{
+                        indicador_id: indicarPorID,
+                        indicado_id: currentUser.id,
+                        status: 'pendente'
+                    }]);
+                }
+            }
+
+            await puxarDadosPerfil();
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('userDisplay').innerText = currentUser.email;
+            carregarCatalogo();
+        }
+
+        async function puxarDadosPerfil() {
+            if (!currentUser) return;
+            const { data, error } = await _supabase.from('perfis').select('*').eq('id', currentUser.id).single();
+            if (data) {
+                userData = data;
+                atualizarPlacarVisual();
+            }
+        }
+
+        function atualizarPlacarVisual() {
+            document.getElementById('pointsBalance').innerText = userData.pontos;
+            document.getElementById('ptsTotal').innerText = userData.pontos;
+            document.getElementById('realBalance').innerText = `R$ ${parseFloat(userData.saldo_reais).toFixed(2).replace('.', ',')}`;
         }
 
         function toggleMenu() {
@@ -427,7 +467,7 @@
                     <img src="${filme.thumb}" alt="${filme.titulo}">
                     <div class="movie-card-info">
                         <h5>${filme.titulo}</h5>
-                        <span>${filme.categoria || filme.status || 'Cinema'}</span>
+                        <span>${filme.categoria || 'Cinema'}</span>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -439,7 +479,7 @@
         function iniciarFilme(index) {
             const filme = listaFilmes[index];
             document.getElementById('movieTitle').innerText = filme.titulo;
-            document.getElementById('movieDesc').innerText = `Gênero: ${filme.categoria || filme.status || 'Geral'}. Assistindo a este conteúdo você acumula pontos na sua carteira a cada minuto de reprodução ativa.`;
+            document.getElementById('movieDesc').innerText = `Gênero: ${filme.categoria || 'Geral'}. Assistindo a este conteúdo você acumula pontos na sua carteira a cada minuto de reprodução ativa.`;
             
             if (player) {
                 player.loadVideoById(filme.id);
@@ -453,7 +493,70 @@
         }
 
         function onPlayerStateChange(event) {
-            // Lógica para contagem de pontos pode ser implementada aqui se necessário
+            // Se o vídeo estiver rodando (Estado = 1)
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (!pontuacaoInterval) {
+                    pontuacaoInterval = setInterval(processarMinutoAssistido, 60000); // Executa a cada 60 segundos
+                }
+            } else {
+                // Se pausar ou parar, encerra o temporizador temporariamente
+                clearInterval(pontuacaoInterval);
+                pontuacaoInterval = null;
+            }
+        }
+
+        async function processarMinutoAssistido() {
+            if (!currentUser) return;
+
+            let pontosGanhos = 10; // 10 pontos por minuto assistido
+            let novosPontos = userData.pontos + pontosGanhos;
+            let novoSaldoReais = (novosPontos / 100).toFixed(2); // Ajuste a conversão como preferir
+
+            let updates = {
+                pontos: novosPontos,
+                saldo_reais: novoSaldoReais
+            };
+
+            // SE FOR O PRIMEIRO MINUTO ASSISTIDO DE UM USUÁRIO INDICADO
+            if (!userData.primeiro_video_assistido && userData.indicado_por) {
+                updates.primeiro_video_assistido = true;
+                
+                // Procurar se existe a indicação pendente para pagar o indicador
+                const { data: ind } = await _supabase.from('indicacoes')
+                    .select('*')
+                    .eq('indicado_id', currentUser.id)
+                    .eq('status', 'pendente')
+                    .single();
+
+                if (ind) {
+                    // 1. Marcar indicação como paga
+                    await _supabase.from('indicacoes').update({ status: 'pago' }).eq('id', ind.id);
+
+                    // 2. Buscar pontos atuais do indicador para somar o bônus
+                    const { data: indPerfil } = await _supabase.from('perfis').select('pontos').eq('id', ind.indicador_id).single();
+                    if (indPerfil) {
+                        let indicadorNovosPts = indPerfil.pontos + 500; // 500 PTS de bônus por indicação ativa
+                        let indicadorNovoSaldo = (indicadorNovosPts / 100).toFixed(2);
+                        
+                        await _supabase.from('perfis').update({
+                            pontos: indicadorNovosPts,
+                            saldo_reais: indicadorNovoSaldo
+                        }).eq('id', ind.indicador_id);
+                    }
+                }
+            } else if (!userData.primeiro_video_assistido) {
+                updates.primeiro_video_assistido = true;
+            }
+
+            // Atualizar os dados do próprio usuário logado no Supabase
+            const { error } = await _supabase.from('perfis').update(updates).eq('id', currentUser.id);
+            
+            if (!error) {
+                userData.pontos = novosPontos;
+                userData.saldo_reais = novoSaldoReais;
+                userData.primeiro_video_assistido = true;
+                atualizarPlacarVisual();
+            }
         }
 
         function toggleLike() {
@@ -465,18 +568,18 @@
             alert('Pontuação insuficiente para realizar o saque mínimo.');
         }
 
-        function executarCompartilhamento() {
+        function ejecutarCompartilhamento() {
             if (!currentUser) return alert('Faça login para obter seu link de indicação.');
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link);
             alert('Link de indicação copiado para a área de transferência!');
         }
 
-        // Verifica se há uma sessão ativa no Supabase ao carregar a página
         async function checkSession() {
             const { data } = await _supabase.auth.getSession();
             if (data.session) {
                 currentUser = data.session.user;
+                await puxarDadosPerfil();
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('userDisplay').innerText = currentUser.email;
                 carregarCatalogo();
