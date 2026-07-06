@@ -164,6 +164,13 @@
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
         }
 
+        .btn-info-extra {
+            background: #1c1c24; color: #fff; border: 1px solid rgba(255,255,255,0.08);
+            padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 600;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-info-extra:active { background: #252530; }
+
         .card-aviso-seguranca {
             background: rgba(211, 47, 47, 0.08);
             border: 1px solid rgba(211, 47, 47, 0.3);
@@ -171,16 +178,17 @@
             line-height: 1.4;
         }
 
-        .auth-screen {
+        .auth-screen, .info-modal-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
             justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease;
             overflow-y: auto;
         }
-        .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
+        .auth-screen.hidden, .info-modal-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
+        
         .auth-box { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .auth-box h2 { font-size: 26px; color: #ff9d00; font-weight: 800; text-align: center; margin-bottom: 2px; }
-        .auth-box .subtitle { font-size: 11px; color: #8e8e93; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .auth-box h2, .info-modal-screen h2 { font-size: 26px; color: #ff9d00; font-weight: 800; text-align: center; margin-bottom: 2px; }
+        .auth-box .subtitle, .info-modal-screen .subtitle { font-size: 11px; color: #8e8e93; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         
         .info-badges { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
         .info-badge-item { 
@@ -196,6 +204,14 @@
         .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 5px; }
         
         .auth-toggle-link { text-align: center; font-size: 12px; color: #ff9d00; cursor: pointer; margin-top: 10px; text-decoration: underline; }
+
+        .texto-longo-render {
+            font-size: 11px; color: #d1d1d6; line-height: 1.6; display: flex; flex-direction: column; gap: 14px; text-align: justify;
+            user-select: text !important;
+        }
+        .texto-longo-render h4 { color: #ff9d00; font-size: 13px; font-weight: 700; margin-top: 5px; border-left: 3px solid #ffb700; padding-left: 6px; }
+        .texto-longo-render ul { padding-left: 15px; display: flex; flex-direction: column; gap: 4px; }
+        .texto-longo-render strong { color: #fff; }
     </style>
 </head>
 <body>
@@ -237,6 +253,90 @@
             </div>
         </div>
 
+        <div class="info-modal-screen hidden" id="modalComoFunciona">
+            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
+                <h2 style="font-size:20px; text-align:left;">Como Funciona</h2>
+                <i class="fa-solid fa-xmark" style="font-size:24px; color:#ff9d00; cursor:pointer;" onclick="fecharModaisInfo()"></i>
+            </div>
+            <div class="texto-longo-render">
+                <p>Bem-vindo ao <strong>CineRewards Pro</strong>, a plataforma oficial onde o seu entretenimento digital se transforma em saldo real direto na sua carteira! Criamos este guia detalhado para que você entenda exatamente como funciona o nosso ecossistema de recompensas por fidelidade e saiba como maximizar os seus ganhos todos os dias.</p>
+                
+                <h4>1. Como eu começo a ganhar pontos?</h4>
+                <p>O funcionamento é extremamente simples e automatizado:</p>
+                <ul>
+                    <li><strong>Escolha e Assista:</strong> Navegue pelo nosso catálogo exclusivo de filmes, séries e transmissões diretamente na tela inicial. Clique no título que mais lhe agrada.</li>
+                    <li><strong>Dê o Play:</strong> Assim que a exibição começar, o nosso sistema inteligente de monitoramento em tempo real passa a contabilizar a sua atividade.</li>
+                    <li><strong>A Regra de Ouro dos Pontos:</strong> Você ganha exatamente <strong>5 Pontos (PTS) a cada 1 minuto</strong> de exibição ativa e contínua.</li>
+                </ul>
+                <p><em>Nota importante:</em> Para que os pontos sejam validados e creditados no seu perfil, o vídeo precisa estar em execução. Se você pausar ou fechar a janela, o cronômetro para de contar imediatamente.</p>
+
+                <h4>2. Quanto valem os meus pontos em dinheiro?</h4>
+                <p>Toda a pontuação acumulada é convertida automaticamente pelo aplicativo na moeda local (Real - R$):</p>
+                <ul>
+                    <li><strong>Taxa de Conversão:</strong> Cada ciclo de 1 minuto assistido rende <strong>5 PTS</strong>, o que equivale diretamente a <strong>R$ 0,05</strong> adicionados ao seu Saldo Convertido.</li>
+                    <li><strong>10 minutos</strong> assistidos = 50 PTS = <strong>R$ 0,50</strong></li>
+                    <li><strong>1 hora (60 minutos)</strong> assistido = 300 PTS = <strong>R$ 3,00</strong></li>
+                    <li><strong>2 horas (120 minutos)</strong> assistidos = 600 PTS = <strong>R$ 6,00</strong></li>
+                </ul>
+
+                <h4>3. Turbine seus Ganhos: Programa Indique & Ganhe</h4>
+                <p>Quer acelerar seus resultados? Você pode convidar seus amigos, familiares e seguidores usando o seu <strong>Link de Indicação Exclusivo</strong>.</p>
+                <ul>
+                    <li><strong>Vantagem para o Convidado:</strong> Quem se cadastrar pelo seu link personalizado já inicia na plataforma com um bônus de boas-vindas de <strong>100 PTS</strong>.</li>
+                    <li><strong>Vantagem para Você:</strong> Assim que o seu amigo se tornar um membro ativo (ou seja, assistir aos conteúdos e atingir seus primeiros 1.000 PTS acumulados), o sistema credita automaticamente <strong>500 PTS</strong> extras na sua conta!</li>
+                </ul>
+
+                <h4>4. Como realizar o Saque?</h4>
+                <p>Assim que o seu "Saldo Convertido" atingir o valor mínimo exigido de <strong>R$ 20,00</strong>, a opção de retirada será desbloqueada no seu painel.</p>
+                <ul>
+                    <li><strong>Método de Pagamento:</strong> Os pagamentos são processados via <strong>Pix</strong>, garantindo que o dinheiro caia na sua conta bancária de forma rápida e segura.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-modal-screen hidden" id="modalTermosUso">
+            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
+                <h2 style="font-size:20px; text-align:left;">Termos de Serviço</h2>
+                <i class="fa-solid fa-xmark" style="font-size:24px; color:#ff9d00; cursor:pointer;" onclick="fecharModaisInfo()"></i>
+            </div>
+            <div class="texto-longo-render">
+                <p><em>Última atualização: Julho de 2026.</em></p>
+                <p>Ao criar uma conta, efetuar login ou utilizar quaisquer funcionalidades em nosso site ou aplicativo, você concorda integralmente com os termos, regras e políticas de segurança descritos a seguir.</p>
+
+                <h4>1. Elegibilidade e Cadastro de Conta</h4>
+                <p>1.1. Para utilizar a plataforma e estar apto a receber recompensas financeiras, o usuário deve fornecer um endereço de e-mail válido e ativo no momento do cadastro.<br>
+                1.2. Cada usuário tem direito a registrar e operar <strong>apenas uma única conta</strong>. É expressamente proibida a criação de múltiplas contas associadas ao mesmo indivíduo.<br>
+                1.3. O usuário é o único responsável por manter a confidencialidade de suas credenciais de acesso.</p>
+
+                <h4>2. Mecanismo de Recompensa por Fidelidade</h4>
+                <p>2.1. O CineRewards Pro opera sob um modelo de incentivo à fidelidade baseado no tempo de engajamento. A taxa padrão estipula o ganho de 5 pontos e R$ 0,05 a cada 60 segundos de reprodução contínua e validada.<br>
+                2.2. A administração reserva-se o direito de alterar as taxas de conversão de pontos a qualquer momento.<br>
+                2.3. Os pontos e saldos acumulados são intransferíveis e não possuem valor comercial fora da plataforma.</p>
+
+                <h4>3. Política de Segurança e Combate a Fraudes</h4>
+                <p>3.1. A integridade da nossa plataforma é protegida por sistemas automatizados. Implementamos uma <strong>política de tolerância zero</strong> contra condutas fraudulentas.<br>
+                3.2. Configuram violações gravíssimas sujeitas a penalidades imediatas:</p>
+                <ul>
+                    <li>O uso de Redes Privadas Virtuais (<strong>VPNs</strong>), proxies ou mecanismos que mascarem o IP real.</li>
+                    <li>A execução do aplicativo ou site em ambientes emulados (emuladores de Android/iOS) ou máquinas virtuais.</li>
+                    <li>A utilização de robôs, scripts de automação, ferramentas de autoclick, macros ou softwares de terceiros.</li>
+                    <li>A tentativa de exploração de falhas técnicas ou engenharia reversa do código-fonte.</li>
+                </ul>
+
+                <h4>4. Penalidades e Banimento Autónomo</h4>
+                <p>4.1. Qualquer indício detectado que aponte para violações das regras resultará no <strong>bloqueio e banimento automático</strong> da conta infratora.<br>
+                4.2. O banimento por fraude implica na perda irrevogável de toda a pontuação acumulada e saldos pendentes, sem qualquer direito a reembolso ou suporte.</p>
+
+                <h4>5. Regras do Programa de Indicação</h4>
+                <p>5.1. O bônus do indicador (500 PTS) só será validado após o usuário indicado acumular organicamente seus primeiros 1.000 pontos.<br>
+                5.2. A prática de "autoindicação" (criar contas secundárias usando o próprio link) gera a exclusão imediata de todas as contas envolvidas.</p>
+
+                <h4>6. Processamento de Resgates e Pagamentos</h4>
+                <p>6.1. O valor mínimo estipulado para saque é de R$ 20,00 (vinte reais) via Pix.<br>
+                6.2. Cada solicitação passa por uma auditoria de tráfego que pode levar de 1 a 7 dias úteis para verificar a conformidade com as regras de segurança.</p>
+            </div>
+        </div>
+
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             
@@ -269,6 +369,9 @@
                 </p>
                 <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
             </div>
+
+            <button class="btn-info-extra" onclick="abrirModalInfo('como-funciona')"><i class="fa-solid fa-circle-info"></i> Como Funciona Tudo</button>
+            <button class="btn-info-extra" onclick="abrirModalInfo('termos')"><i class="fa-solid fa-file-shield"></i> Termos de Uso e Segurança</button>
 
             <div class="card-aviso-seguranca">
                 <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO ATIVO:</strong>
@@ -397,15 +500,21 @@
                 document.getElementById('authScreen').classList.add('hidden');
                 await carregarDadosUsuario();
             } else {
-                currentUser = null;
-                pararContagemPontos();
-                document.getElementById('authScreen').classList.remove('hidden');
-                document.getElementById('userDisplay').innerText = "Desconectado";
-                document.getElementById('pointsBalance').innerText = "0";
-                document.getElementById('ptsTotal').innerText = "0";
-                document.getElementById('realBalance').innerText = "R$ 0,00";
+                limparEstadoLocal();
             }
         });
+
+        function limparEstadoLocal() {
+            currentUser = null;
+            pararContagemPontos();
+            userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('userDisplay').innerText = "Desconectado";
+            document.getElementById('pointsBalance').innerText = "0";
+            document.getElementById('ptsTotal').innerText = "0";
+            document.getElementById('realBalance').innerText = "R$ 0,00";
+            fecharModaisInfo();
+        }
 
         async function handleAuth() {
             const email = document.getElementById('authEmail').value.trim();
@@ -449,9 +558,8 @@
                 if(error) {
                     alert("Erro ao deslogar: " + error.message);
                 } else {
-                    currentUser = null;
-                    document.getElementById('authScreen').classList.remove('hidden');
-                    toggleMenu();
+                    limparEstadoLocal();
+                    document.getElementById('menuDrawer').classList.remove('active');
                 }
             }
         }
@@ -547,7 +655,6 @@
 
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
-            // Alterado de 10000 para 60000 para rodar de 1 em 1 minuto
             pontuacaoInterval = setInterval(async () => {
                 if (currentUser) {
                     userData.pontos += 5;
@@ -565,6 +672,21 @@
 
         function toggleMenu() {
             document.getElementById('menuDrawer').classList.toggle('active');
+        }
+
+        // Funções para gerenciar as novas telas de termos e informações
+        function abrirModalInfo(tipo) {
+            document.getElementById('menuDrawer').classList.remove('active'); // Fecha o menu lateral
+            if(tipo === 'como-funciona') {
+                document.getElementById('modalComoFunciona').classList.remove('hidden');
+            } else if(tipo === 'termos') {
+                document.getElementById('modalTermosUso').classList.remove('hidden');
+            }
+        }
+
+        function fecharModaisInfo() {
+            document.getElementById('modalComoFunciona').classList.add('hidden');
+            document.getElementById('modalTermosUso').classList.add('hidden');
         }
 
         function executarCompartilhamento() {
