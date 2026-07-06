@@ -164,6 +164,20 @@
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
         }
 
+        .btn-ganhar-mais-bonus {
+            background: linear-gradient(135deg, #7c4dff, #e040fb); color: #fff;
+            font-weight: 800; border: none; padding: 14px; border-radius: 10px;
+            cursor: pointer; width: 100%; font-size: 13px; gap: 8px;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.4);
+            animation: pulse-purple 2s infinite;
+        }
+        @keyframes pulse-purple {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
         .btn-info-extra {
             background: #1c1c24; color: #fff; border: 1px solid rgba(255,255,255,0.08);
             padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 600;
@@ -178,14 +192,18 @@
             line-height: 1.4;
         }
 
-        .auth-screen, .info-modal-screen {
+        .auth-screen, .info-modal-screen, .ads-overlay-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
             justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease;
             overflow-y: auto;
         }
-        .auth-screen.hidden, .info-modal-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
+        .auth-screen.hidden, .info-modal-screen.hidden, .ads-overlay-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
         
+        .ads-overlay-screen {
+            justify-content: center; align-items: center; text-align: center; background: rgba(6, 6, 8, 0.98); z-index: 100;
+        }
+
         .auth-box { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
         .auth-box h2, .info-modal-screen h2 { font-size: 26px; color: #ff9d00; font-weight: 800; text-align: center; margin-bottom: 2px; }
         .auth-box .subtitle, .info-modal-screen .subtitle { font-size: 11px; color: #8e8e93; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
@@ -217,6 +235,7 @@
 <body>
 
     <div class="cinema-container">
+        <!-- TELA DE AUTENTICAÇÃO -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -253,90 +272,70 @@
             </div>
         </div>
 
+        <!-- RECOMPENSA DE ANÚNCIO: TELA DOS 30 SEGUNDOS -->
+        <div class="ads-overlay-screen hidden" id="adsOverlayScreen">
+            <div id="containerScriptOculto"></div>
+            <i class="fa-solid fa-rectangle-ad" style="font-size: 50px; color: #e040fb; margin-bottom: 15px;"></i>
+            <h3 style="font-size: 18px; margin-bottom: 5px;">Carregando Anúncio Premiado...</h3>
+            <p style="font-size: 12px; color: #a0a0ab; max-width: 280px; margin-bottom: 25px;" id="adsStatusText">Aguarde o anúncio processar na tela por 30 segundos para receber seus pontos.</p>
+            
+            <div id="countdownBox" style="font-size: 32px; font-weight: 800; color: #ff9d00; margin-bottom: 25px;">30s</div>
+            
+            <button class="btn-auth hidden" id="btnCloseAdReward" onclick="finalizarAnuncioPremiado()" style="width: 180px; padding: 12px; background: #00c853; color: #000;">Fechar Anúncio</button>
+        </div>
+
+        <!-- TELA MODAL: COMO FUNCIONA -->
         <div class="info-modal-screen hidden" id="modalComoFunciona">
             <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
                 <h2 style="font-size:20px; text-align:left;">Como Funciona</h2>
                 <i class="fa-solid fa-xmark" style="font-size:24px; color:#ff9d00; cursor:pointer;" onclick="fecharModaisInfo()"></i>
             </div>
             <div class="texto-longo-render">
-                <p>Bem-vindo ao <strong>CineRewards Pro</strong>, a plataforma oficial onde o seu entretenimento digital se transforma em saldo real direto na sua carteira! Criamos este guia detalhado para que você entenda exatamente como funciona o nosso ecossistema de recompensas por fidelidade e saiba como maximizar os seus ganhos todos os dias.</p>
+                <p>Bem-vindo ao <strong>CineRewards Pro</strong>, a plataforma oficial onde o seu entretenimento digital se transforma em saldo real direto na sua carteira!</p>
                 
                 <h4>1. Como eu começo a ganhar pontos?</h4>
-                <p>O funcionamento é extremamente simples e automatizado:</p>
                 <ul>
-                    <li><strong>Escolha e Assista:</strong> Navegue pelo nosso catálogo exclusivo de filmes, séries e transmissões diretamente na tela inicial. Clique no título que mais lhe agrada.</li>
-                    <li><strong>Dê o Play:</strong> Assim que a exibição começar, o nosso sistema inteligente de monitoramento em tempo real passa a contabilizar a sua atividade.</li>
-                    <li><strong>A Regra de Ouro dos Pontos:</strong> Você ganha exatamente <strong>5 Pontos (PTS) a cada 1 minuto</strong> de exibição ativa e contínua.</li>
+                    <li><strong>Escolha e Assista:</strong> Navegue pelo nosso catálogo exclusivo de filmes e séries na tela inicial.</li>
+                    <li><strong>A Regra dos Pontos:</strong> Você ganha exatamente <strong>1 Ponto (PTS) a cada 1 minuto</strong> de exibição ativa e contínua.</li>
                 </ul>
-                <p><em>Nota importante:</em> Para que os pontos sejam validados e creditados no seu perfil, o vídeo precisa estar em execução. Se você pausar ou fechar a janela, o cronômetro para de contar imediatamente.</p>
 
                 <h4>2. Quanto valem os meus pontos em dinheiro?</h4>
-                <p>Toda a pontuação acumulada é convertida automaticamente pelo aplicativo na moeda local (Real - R$):</p>
                 <ul>
-                    <li><strong>Taxa de Conversão:</strong> Cada ciclo de 1 minuto assistido rende <strong>5 PTS</strong>, o que equivale diretamente a <strong>R$ 0,05</strong> adicionados ao seu Saldo Convertido.</li>
-                    <li><strong>10 minutos</strong> assistidos = 50 PTS = <strong>R$ 0,50</strong></li>
-                    <li><strong>1 hora (60 minutos)</strong> assistido = 300 PTS = <strong>R$ 3,00</strong></li>
-                    <li><strong>2 horas (120 minutos)</strong> assistidos = 600 PTS = <strong>R$ 6,00</strong></li>
+                    <li><strong>Taxa de Conversão:</strong> Cada ciclo de 1 minuto assistido rende <strong>1 PTS</strong>, o que equivale a <strong>R$ 0,01</strong> adicionados ao seu Saldo.</li>
+                    <li><strong>1 hora (60 minutos)</strong> assistida = 60 PTS = <strong>R$ 0,60</strong></li>
                 </ul>
 
-                <h4>3. Turbine seus Ganhos: Programa Indique & Ganhe</h4>
-                <p>Quer acelerar seus resultados? Você pode convidar seus amigos, familiares e seguidores usando o seu <strong>Link de Indicação Exclusivo</strong>.</p>
+                <h4>3. Turbine seus Ganhos: Anúncios Premiados & Indicações</h4>
                 <ul>
-                    <li><strong>Vantagem para o Convidado:</strong> Quem se cadastrar pelo seu link personalizado já inicia na plataforma com um bônus de boas-vindas de <strong>100 PTS</strong>.</li>
-                    <li><strong>Vantagem para Você:</strong> Assim que o seu amigo se tornar um membro ativo (ou seja, assistir aos conteúdos e atingir seus primeiros 1.000 PTS acumulados), o sistema credita automaticamente <strong>500 PTS</strong> extras na sua conta!</li>
-                </ul>
-
-                <h4>4. Como realizar o Saque?</h4>
-                <p>Assim que o seu "Saldo Convertido" atingir o valor mínimo exigido de <strong>R$ 20,00</strong>, a opção de retirada será desbloqueada no seu painel.</p>
-                <ul>
-                    <li><strong>Método de Pagamento:</strong> Os pagamentos são processados via <strong>Pix</strong>, garantindo que o dinheiro caia na sua conta bancária de forma rápida e segura.</li>
+                    <li><strong>Multiplicador de Anúncios:</strong> Use o painel lateral para assistir anúncios extras rápidos e ganhe 50 pontos de uma vez só!</li>
+                    <li><strong>Indique amigos:</strong> Seu amigo começa com 100 pontos e você fatura 500 pontos quando ele acumular os primeiros 1.000 pontos.</li>
                 </ul>
             </div>
         </div>
 
+        <!-- TELA MODAL: TERMOS DE USO -->
         <div class="info-modal-screen hidden" id="modalTermosUso">
             <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
                 <h2 style="font-size:20px; text-align:left;">Termos de Serviço</h2>
                 <i class="fa-solid fa-xmark" style="font-size:24px; color:#ff9d00; cursor:pointer;" onclick="fecharModaisInfo()"></i>
             </div>
             <div class="texto-longo-render">
-                <p><em>Última atualização: Julho de 2026.</em></p>
                 <p>Ao criar uma conta, efetuar login ou utilizar quaisquer funcionalidades em nosso site ou aplicativo, você concorda integralmente com os termos, regras e políticas de segurança descritos a seguir.</p>
 
                 <h4>1. Elegibilidade e Cadastro de Conta</h4>
-                <p>1.1. Para utilizar a plataforma e estar apto a receber recompensas financeiras, o usuário deve fornecer um endereço de e-mail válido e ativo no momento do cadastro.<br>
-                1.2. Cada usuário tem direito a registrar e operar <strong>apenas uma única conta</strong>. É expressamente proibida a criação de múltiplas contas associadas ao mesmo indivíduo.<br>
-                1.3. O usuário é o único responsável por manter a confidencialidade de suas credenciais de acesso.</p>
+                <p>1.1. Cada usuário tem direito a registrar e operar <strong>apenas uma única conta</strong>.<br>
+                1.2. É expressamente proibida a criação de múltiplas contas associadas ao mesmo indivíduo.</p>
 
-                <h4>2. Mecanismo de Recompensa por Fidelidade</h4>
-                <p>2.1. O CineRewards Pro opera sob um modelo de incentivo à fidelidade baseado no tempo de engajamento. A taxa padrão estipula o ganho de 5 pontos e R$ 0,05 a cada 60 segundos de reprodução contínua e validada.<br>
-                2.2. A administração reserva-se o direito de alterar as taxas de conversão de pontos a qualquer momento.<br>
-                2.3. Os pontos e saldos acumulados são intransferíveis e não possuem valor comercial fora da plataforma.</p>
+                <h4>2. Política de Segurança e Combate a Fraudes</h4>
+                <p>2.1. Implementamos uma <strong>política de tolerância zero</strong> contra condutas fraudulentas.<br>
+                2.2. Configuram violações sujeitas a penalidades imediatas: Uso de Redes Privadas Virtuais (<strong>VPNs</strong>), emuladores, macros ou autoclicks.</p>
 
-                <h4>3. Política de Segurança e Combate a Fraudes</h4>
-                <p>3.1. A integridade da nossa plataforma é protegida por sistemas automatizados. Implementamos uma <strong>política de tolerância zero</strong> contra condutas fraudulentas.<br>
-                3.2. Configuram violações gravíssimas sujeitas a penalidades imediatas:</p>
-                <ul>
-                    <li>O uso de Redes Privadas Virtuais (<strong>VPNs</strong>), proxies ou mecanismos que mascarem o IP real.</li>
-                    <li>A execução do aplicativo ou site em ambientes emulados (emuladores de Android/iOS) ou máquinas virtuais.</li>
-                    <li>A utilização de robôs, scripts de automação, ferramentas de autoclick, macros ou softwares de terceiros.</li>
-                    <li>A tentativa de exploração de falhas técnicas ou engenharia reversa do código-fonte.</li>
-                </ul>
-
-                <h4>4. Penalidades e Banimento Autónomo</h4>
-                <p>4.1. Qualquer indício detectado que aponte para violações das regras resultará no <strong>bloqueio e banimento automático</strong> da conta infratora.<br>
-                4.2. O banimento por fraude implica na perda irrevogável de toda a pontuação acumulada e saldos pendentes, sem qualquer direito a reembolso ou suporte.</p>
-
-                <h4>5. Regras do Programa de Indicação</h4>
-                <p>5.1. O bônus do indicador (500 PTS) só será validado após o usuário indicado acumular organicamente seus primeiros 1.000 pontos.<br>
-                5.2. A prática de "autoindicação" (criar contas secundárias usando o próprio link) gera a exclusão imediata de todas as contas envolvidas.</p>
-
-                <h4>6. Processamento de Resgates e Pagamentos</h4>
-                <p>6.1. O valor mínimo estipulado para saque é de R$ 20,00 (vinte reais) via Pix.<br>
-                6.2. Cada solicitação passa por uma auditoria de tráfego que pode levar de 1 a 7 dias úteis para verificar a conformidade com as regras de segurança.</p>
+                <h4>3. Penalidades e Banimento Autónomo</h4>
+                <p>3.1. Qualquer indício detectado resultará no <strong>bloqueio e banimento automático</strong> da conta infratora com perda irrevogável do saldo.</p>
             </div>
         </div>
 
+        <!-- MENU LATERAL DRAWER -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             
@@ -349,6 +348,9 @@
                 <p>Usuário Ativo</p>
                 <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
             </div>
+
+            <!-- NOVO BOTÃO: GANHE MAIS COM O ANÚNCIO DE 30 SEGUNDOS -->
+            <button class="btn-ganhar-mais-bonus" onclick="iniciarAnuncioPremiado()"><i class="fa-solid fa-circle-dollar-to-slot"></i> GANHAR +50 PTS (Anúncio)</button>
 
             <div class="data-card">
                 <p>Pontos Acumulados</p>
@@ -365,7 +367,7 @@
             <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
                 <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
                 <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
-                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo (assistir e acumular seus primeiros 1.000 PTS).
+                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo (acumular 1.000 PTS).
                 </p>
                 <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
             </div>
@@ -383,6 +385,7 @@
             </a>
         </div>
         
+        <!-- HEADER PRINCIPAL -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -394,10 +397,12 @@
             </div>
         </div>
 
+        <!-- PLAYER DE VÍDEO -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
+        <!-- CORPO DO CATÁLOGO -->
         <div class="content-body" id="contentBody">
             <div class="movie-details">
                 <h3 id="movieTitle">Carregando...</h3>
@@ -410,6 +415,7 @@
             </div>
         </div>
 
+        <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
         <div class="bottom-nav">
             <div class="control-bar">
                 <div class="action-item" onclick="toggleLike()">
@@ -441,6 +447,8 @@
         let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
         let player = null;
         let pontuacaoInterval = null;
+        let adsTimer = null;
+        let tempoRestanteAds = 30;
 
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
@@ -618,7 +626,7 @@
                     <img src="${filme.thumb}" alt="${filme.titulo}">
                     <div class="movie-card-info">
                         <h5>${filme.titulo}</h5>
-                        <span><i class="fa-solid fa-star"></i> +5 PTS/min</span>
+                        <span><i class="fa-solid fa-star"></i> +1 PTS/min</span>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -653,12 +661,13 @@
             }
         }
 
+        // ALTERAÇÃO MATEMÁTICA DE SEGURANÇA: 1 MINUTO = 1 PONTO = R$ 0,01
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
             pontuacaoInterval = setInterval(async () => {
                 if (currentUser) {
-                    userData.pontos += 5;
-                    userData.saldo_reais += 0.05; 
+                    userData.pontos += 1;
+                    userData.saldo_reais += 0.01; 
                     atualizarInterface();
                     await salvarDadosBanco();
                 }
@@ -674,9 +683,8 @@
             document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        // Funções para gerenciar as novas telas de termos e informações
         function abrirModalInfo(tipo) {
-            document.getElementById('menuDrawer').classList.remove('active'); // Fecha o menu lateral
+            document.getElementById('menuDrawer').classList.remove('active'); 
             if(tipo === 'como-funciona') {
                 document.getElementById('modalComoFunciona').classList.remove('hidden');
             } else if(tipo === 'termos') {
@@ -687,6 +695,52 @@
         function fecharModaisInfo() {
             document.getElementById('modalComoFunciona').classList.add('hidden');
             document.getElementById('modalTermosUso').classList.add('hidden');
+        }
+
+        // FUNÇÕES DO SISTEMA DE ANÚNCIO DE 30 SEGUNDOS (GANHE MAIS)
+        function iniciarAnuncioPremiado() {
+            document.getElementById('menuDrawer').classList.remove('active');
+            
+            // Prepara a tela de contagem
+            tempoRestanteAds = 30;
+            document.getElementById('countdownBox').innerText = tempoRestanteAds + "s";
+            document.getElementById('btnCloseAdReward').classList.add('hidden');
+            document.getElementById('adsStatusText').innerText = "Aguarde o anúncio processar na tela por 30 segundos para receber seus pontos.";
+            document.getElementById('adsOverlayScreen').classList.remove('hidden');
+
+            // Injeta o seu script de anúncio de forma ativa e dinâmica para rodar em segundo plano
+            const containerScript = document.getElementById('containerScriptOculto');
+            containerScript.innerHTML = ""; 
+            const scriptTag = document.createElement('script');
+            scriptTag.dataset.zone = '11245969';
+            scriptTag.src = 'https://al5sm.com/tag.min.js';
+            containerScript.appendChild(scriptTag);
+
+            // Dispara o cronômetro visual de 30 segundos
+            adsTimer = setInterval(() => {
+                tempoRestanteAds--;
+                document.getElementById('countdownBox').innerText = tempoRestanteAds + "s";
+                
+                if (tempoRestanteAds <= 0) {
+                    clearInterval(adsTimer);
+                    document.getElementById('countdownBox').innerText = "Pronto!";
+                    document.getElementById('adsStatusText').innerText = "Anúncio validado com sucesso! Você recebeu +50 Pontos.";
+                    document.getElementById('btnCloseAdReward').classList.remove('hidden'); // Botão de fechar aparece
+                }
+            }, 1000);
+        }
+
+        async function finalizarAnuncioPremiado() {
+            // Entrega os 50 pontos e R$ 0,50 de saldo
+            if (currentUser) {
+                userData.pontos += 50;
+                userData.saldo_reais += 0.50;
+                atualizarInterface();
+                await salvarDadosBanco();
+            }
+            // Fecha a tela do anúncio
+            document.getElementById('adsOverlayScreen').classList.add('hidden');
+            document.getElementById('containerScriptOculto').innerHTML = ""; 
         }
 
         function executarCompartilhamento() {
