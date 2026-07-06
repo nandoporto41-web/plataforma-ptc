@@ -323,7 +323,7 @@
 
         let isSignUpMode = false;
         let currentUser = null;
-        let userData = { pontos: 0, saldo_reais: 0.00, bônus_indicação_pago: false, indicado_por: null };
+        let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
         let player = null;
         let pontuacaoInterval = null;
         let adRefreshInterval = null;
@@ -377,29 +377,32 @@
 
             if (isSignUpMode) {
                 let pontosIniciais = indicarPorID ? 100 : 0; 
-                let saldoInicial = (pontosIniciais / 1000).toFixed(4);
+                let saldoInicial = pontosIniciais / 1000;
 
-                // Alimenta a variável local para refletir os 100 pontos imediatamente na interface gráfica
                 userData = {
                     pontos: pontosIniciais,
                     saldo_reais: saldoInicial,
-                    indicado_por: indicarPorID || null,
-                    bonus_indicacao_pago: false
+                    primeiro_video_assistido: false,
+                    indicado_por: indicarPorID || null
                 };
 
-                await _supabase.from('perfis').insert([{
+                const { error: dbError } = await _supabase.from('perfis').upsert({
                     id: currentUser.id,
                     email: currentUser.email,
                     pontos: pontosIniciais,
                     saldo_reais: saldoInicial,
-                    indicado_por: indicarPorID || null,
-                    bonus_indicacao_pago: false
-                }]);
+                    primeiro_video_assistido: false,
+                    indicado_por: indicarPorID || null
+                }, { onConflict: 'id' });
+
+                if (dbError) {
+                    console.error("Erro ao salvar bônus de cadastro no banco:", dbError);
+                }
 
                 if (indicarPorID) {
                     await _supabase.from('indicacoes').insert([{
                         indicador_id: indicarPorID,
-                        indicado_id: currentUser.id,
+                        indicated_id: currentUser.id,
                         status: 'pendente'
                     }]);
                 }
@@ -417,10 +420,15 @@
 
         async function puxarDadosPerfil() {
             if (!currentUser) return;
-            const { data } = await _supabase.from('perfis').select('*').eq('id', currentUser.id).single();
+            const { data, error } = await _supabase.from('perfis').select('*').eq('id', currentUser.id).maybeSingle();
             if (data) {
-                userData = data;
+                userData.pontos = parseInt(data.pontos) || 0;
+                userData.saldo_reais = parseFloat(data.saldo_reais) || 0.00;
+                userData.primeiro_video_assistido = data.primeiro_video_assistido;
+                userData.indicado_por = data.indicado_por;
                 atualizarPlacarVisual();
+            } else if (error) {
+                console.error("Erro ao puxar dados do perfil:", error);
             }
         }
 
@@ -487,24 +495,23 @@
 
             let pontosGanhos = 1; 
             let novosPontos = userData.pontos + pontosGanhos;
-            let novoSaldoReais = (novosPontos / 1000).toFixed(4); 
+            let novoSaldoReais = novosPontos / 1000; 
 
             let updates = { pontos: novosPontos, saldo_reais: novoSaldoReais };
 
-            // CORREÇÃO DA INDICAÇÃO: buscando pela coluna correta 'indicado_id'
-            if (!userData.bonus_indicacao_pago && userData.indicado_por && novosPontos >= 1000) {
-                updates.bonus_indicacao_pago = true;
+            if (!userData.primeiro_video_assistido && userData.indicado_por && novosPontos >= 1000) {
+                updates.primeiro_video_assistido = true;
                 
                 const { data: ind } = await _supabase.from('indicacoes')
-                    .select('*').eq('indicado_id', currentUser.id).eq('status', 'pendente').single();
+                    .select('*').eq('indicated_id', currentUser.id).eq('status', 'pendente').maybeSingle();
 
                 if (ind) {
                     await _supabase.from('indicacoes').update({ status: 'pago' }).eq('id', ind.id);
-                    const { data: indPerfil } = await _supabase.from('perfis').select('pontos').eq('id', ind.indicador_id).single();
+                    const { data: indPerfil } = await _supabase.from('perfis').select('pontos').eq('id', ind.indicador_id).maybeSingle();
                     
                     if (indPerfil) {
-                        let indicadorNovosPts = indPerfil.pontos + 500; 
-                        let indicadorNovoSaldo = (indicadorNovosPts / 1000).toFixed(4);
+                        let indicadorNovosPts = (parseInt(indPerfil.pontos) || 0) + 500; 
+                        let indicadorNovoSaldo = indicadorNovosPts / 1000;
                         await _supabase.from('perfis').update({ pontos: indicadorNovosPts, saldo_reais: indicadorNovoSaldo }).eq('id', ind.indicador_id);
                     }
                 }
