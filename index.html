@@ -328,7 +328,6 @@
         let pontuacaoInterval = null;
         let adRefreshInterval = null;
 
-        // Lista de Filmes Expandida e Otimizada
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
@@ -342,7 +341,7 @@
             { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
-            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
+            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
             { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' }
         ];
 
@@ -363,201 +362,182 @@
             }
         }
 
+        // Monitoramento inteligente do Login e Logout para sincronia em tempo real
+        _supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                document.getElementById('userDisplay').innerText = currentUser.email;
+                document.getElementById('authScreen').classList.add('hidden');
+                await carregarDadosUsuario();
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('userDisplay').innerText = "Desconectado";
+            }
+        });
+
         async function handleAuth() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
 
-            if (!email || !password) return alert('Por favor, preencha todos os campos.');
-
-            let response = isSignUpMode ? await _supabase.auth.signUp({ email, password }) : await _supabase.auth.signInWithPassword({ email, password });
-
-            if (response.error) return alert('Erro: ' + response.error.message);
-
-            currentUser = response.data.user;
+            if (!email || !password) {
+                alert('Preencha todos os campos!');
+                return;
+            }
 
             if (isSignUpMode) {
-                let pontosIniciais = indicarPorID ? 100 : 0; 
-                let saldoInicial = pontosIniciais / 1000;
-
-                userData = {
-                    pontos: pontosIniciais,
-                    saldo_reais: saldoInicial,
-                    primeiro_video_assistido: false,
-                    indicado_por: indicarPorID || null
-                };
-
-                const { error: dbError } = await _supabase.from('perfis').upsert({
-                    id: currentUser.id,
-                    email: currentUser.email,
-                    pontos: pontosIniciais,
-                    saldo_reais: saldoInicial,
-                    primeiro_video_assistido: false,
-                    indicado_por: indicarPorID || null
-                }, { onConflict: 'id' });
-
-                if (dbError) {
-                    console.error("Erro ao salvar bônus de cadastro no banco:", dbError);
+                const { data, error } = await _supabase.auth.signUp({ email, password });
+                if (error) {
+                    alert('Erro no cadastro: ' + error.message);
+                    return;
                 }
-
-                if (indicarPorID) {
-                    await _supabase.from('indicacoes').insert([{
-                        indicador_id: indicarPorID,
-                        indicated_id: currentUser.id,
-                        status: 'pendente'
+                if (data?.user) {
+                    const { error: dbError } = await _supabase.from('perfis').insert([{
+                        id: data.user.id,
+                        email: email,
+                        pontos: 100, 
+                        saldo_reais: 0.00,
+                        primeiro_video_assistido: false,
+                        indicado_por: indicarPorID || null
                     }]);
+                    
+                    if (dbError) console.error('Erro ao criar perfil:', dbError.message);
+                    alert('Cadastro realizado com sucesso! Faça o login.');
+                    toggleAuthMode();
                 }
             } else {
-                await puxarDadosPerfil();
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) alert('Erro no login: ' + error.message);
             }
-
-            atualizarPlacarVisual();
-
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('userDisplay').innerText = currentUser.email;
-            carregarCatalogo();
-            ativarLoopAnuncios();
         }
 
-        async function puxarDadosPerfil() {
+        async function carregarDadosUsuario() {
             if (!currentUser) return;
-            const { data, error } = await _supabase.from('perfis').select('*').eq('id', currentUser.id).maybeSingle();
+            const { data, error } = await _supabase
+                .from('perfis')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
             if (data) {
-                userData.pontos = parseInt(data.pontos) || 0;
-                userData.saldo_reais = parseFloat(data.saldo_reais) || 0.00;
-                userData.primeiro_video_assistido = data.primeiro_video_assistido;
-                userData.indicado_por = data.indicado_por;
-                atualizarPlacarVisual();
+                userData = data;
+                atualizarInterface();
             } else if (error) {
-                console.error("Erro ao puxar dados do perfil:", error);
+                console.error('Erro ao carregar perfil do banco:', error.message);
             }
         }
 
-        function atualizarPlacarVisual() {
+        function atualizarInterface() {
             document.getElementById('pointsBalance').innerText = userData.pontos;
             document.getElementById('ptsTotal').innerText = userData.pontos;
-            document.getElementById('realBalance').innerText = `R$ ${parseFloat(userData.saldo_reais).toFixed(2).replace('.', ',')}`;
+            document.getElementById('realBalance').innerText = `R$ ${Number(userData.saldo_reais).toFixed(2).replace('.', ',')}`;
         }
 
-        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
+        async function salvarDadosBanco() {
+            if (!currentUser) return;
+            
+            // Corrige o envio de dados limpos (inteiros e decimais sem aspas ou strings formatadas)
+            const { error } = await _supabase
+                .from('perfis')
+                .upsert({
+                    id: currentUser.id,
+                    pontos: parseInt(userData.pontos),
+                    saldo_reais: parseFloat(userData.saldo_reais),
+                    primeiro_video_assistido: userData.primeiro_video_assistido,
+                    indicado_por: userData.indicado_por
+                });
 
-        function carregarCatalogo() {
+            if (error) console.error('Erro ao persistir dados na nuvem:', error.message);
+        }
+
+        function renderCatalogo() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
-            listaFilmes.forEach((filme, index) => {
+            listaFilmes.forEach(filme => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
-                card.onclick = () => { triggerMonetagPop(); iniciarFilme(index); };
-                card.innerHTML = `<img src="${filme.thumb}"><div class="movie-card-info"><h5>${filme.titulo}</h5><span>${filme.categoria}</span></div>`;
+                card.onclick = () => mudarVideo(filme.id, filme.titulo);
+                card.innerHTML = `
+                    <img src="${filme.thumb}" alt="${filme.titulo}">
+                    <div class="movie-card-info">
+                        <h5>${filme.titulo}</h5>
+                        <span><i class="fa-solid fa-star"></i> +5 PTS/min</span>
+                    </div>
+                `;
                 grid.appendChild(card);
             });
-            if (listaFilmes.length > 0) iniciarFilme(0);
         }
 
-        function triggerMonetagPop() {
-            if(window.ymorner || window.open) { console.log('Gatilho monetag ativado'); }
-        }
-
-        function activarLoopAnuncios() {
-            if (adRefreshInterval) clearInterval(adRefreshInterval);
-            adRefreshInterval = setInterval(() => {
-                console.log("Atualizando inventário de impressões...");
-                const tags = document.querySelectorAll('script[src*="tag.min.js"], script[src*="vignette.min.js"]');
-                tags.forEach(t => { const src = t.src; t.src = ''; t.src = src; });
-            }, 40000);
-        }
-
-        function iniciarFilme(index) {
-            const filme = listaFilmes[index];
-            document.getElementById('movieTitle').innerText = filme.titulo;
-            document.getElementById('movieDesc').innerText = `Gênero: ${filme.categoria}. Assista e acumule pontos de fidelidade resgatáveis por minuto ativo.`;
-            
-            if (player) { player.loadVideoById(filme.id); } 
-            else {
+        function onYouTubeIframeAPIReady() {
+            if (listaFilmes.length > 0) {
+                const primeiro = listaFilmes[0];
+                document.getElementById('movieTitle').innerText = primeiro.titulo;
                 player = new YT.Player('videoPlayer', {
-                    videoId: filme.id,
-                    playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0 },
+                    videoId: primeiro.id,
+                    playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'playsinline': 1 },
                     events: { 'onStateChange': onPlayerStateChange }
                 });
+            }
+            renderCatalogo();
+        }
+
+        function mudarVideo(id, titulo) {
+            document.getElementById('movieTitle').innerText = titulo;
+            if (player) {
+                player.loadVideoById(id);
             }
         }
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                if (!pontuacaoInterval) pontuacaoInterval = setInterval(processarMinutoAssistido, 60000);
+                iniciarContagemPontos();
             } else {
-                clearInterval(pontuacaoInterval);
-                pontuacaoInterval = null;
+                pararContagemPontos();
             }
         }
 
-        async function processarMinutoAssistido() {
-            if (!currentUser) return;
-
-            let pontosGanhos = 1; 
-            let novosPontos = userData.pontos + pontosGanhos;
-            let novoSaldoReais = novosPontos / 1000; 
-
-            let updates = { pontos: novosPontos, saldo_reais: novoSaldoReais };
-
-            if (!userData.primeiro_video_assistido && userData.indicado_por && novosPontos >= 1000) {
-                updates.primeiro_video_assistido = true;
-                
-                const { data: ind } = await _supabase.from('indicacoes')
-                    .select('*').eq('indicated_id', currentUser.id).eq('status', 'pendente').maybeSingle();
-
-                if (ind) {
-                    await _supabase.from('indicacoes').update({ status: 'pago' }).eq('id', ind.id);
-                    const { data: indPerfil } = await _supabase.from('perfis').select('pontos').eq('id', ind.indicador_id).maybeSingle();
-                    
-                    if (indPerfil) {
-                        let indicadorNovosPts = (parseInt(indPerfil.pontos) || 0) + 500; 
-                        let indicadorNovoSaldo = indicadorNovosPts / 1000;
-                        await _supabase.from('perfis').update({ pontos: indicadorNovosPts, saldo_reais: indicadorNovoSaldo }).eq('id', ind.indicador_id);
-                    }
+        function iniciarContagemPontos() {
+            if (pontuacaoInterval) return;
+            pontuacaoInterval = setInterval(async () => {
+                if (currentUser) {
+                    userData.pontos += 5;
+                    userData.saldo_reais += 0.05; 
+                    atualizarInterface();
+                    await salvarDadosBanco();
                 }
-            }
-
-            const { error } = await _supabase.from('perfis').update(updates).eq('id', currentUser.id);
-            if (!error) {
-                userData.pontos = novosPontos;
-                userData.saldo_reais = novoSaldoReais;
-                atualizarPlacarVisual();
-            }
+            }, 60000); 
         }
 
-        function toggleLike() {
-            const icon = document.getElementById('likeBtnIcon');
-            icon.style.color = icon.style.color === 'rgb(255, 61, 0)' ? '#fff' : '#ff3d00';
+        function pararContagemPontos() {
+            clearInterval(pontuacaoInterval);
+            pontuacaoInterval = null;
         }
 
-        function solicitarSaque() {
-            if(parseFloat(userData.saldo_reais) >= 20.00) {
-                alert('Pedido de resgate enviado! Nossa auditoria analisará seu tráfego em até 48h.');
-            } else {
-                alert('Limite mínimo de resgate profissional é de R$ 20,00 (20.000 PTS). Continue assistindo!');
-            }
+        function toggleMenu() {
+            document.getElementById('menuDrawer').classList.toggle('active');
         }
 
         function executarCompartilhamento() {
-            if (!currentUser) return alert('Faça login primeiro.');
+            if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
-            navigator.clipboard.writeText(link);
-            alert('Link de indicação gerado com sucesso!');
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link de indicação copiado com sucesso!');
+            });
         }
 
-        async function checkSession() {
-            const { data } = await _supabase.auth.getSession();
-            if (data.session) {
-                currentUser = data.session.user;
-                await puxarDadosPerfil();
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('userDisplay').innerText = currentUser.email;
-                carregarCatalogo();
-                ativarLoopAnuncios();
+        function solicitarSaque() {
+            if (userData.saldo_reais < 20) {
+                alert('Saldo insuficiente. O mínimo para saque é R$ 20,00.');
+                return;
             }
+            alert('Solicitação enviada para processamento!');
         }
 
-        window.onload = checkSession;
+        function toggleLike() {
+            const icon = document.querySelector('#likeBtnIcon i');
+            icon.classList.toggle('fa-solid');
+            icon.style.color = icon.classList.contains('fa-solid') ? '#ef5350' : 'white';
+        }
     </script>
 </body>
 </html>
