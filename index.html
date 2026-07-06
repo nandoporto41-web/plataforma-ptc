@@ -273,8 +273,8 @@
 
         <div class="ads-overlay-screen hidden" id="adsOverlayScreen">
             <i class="fa-solid fa-rectangle-ad" style="font-size: 50px; color: #e040fb; margin-bottom: 15px;"></i>
-            <h3 style="font-size: 18px; margin-bottom: 5px;">Anúncio Premiado</h3>
-            <p style="font-size: 12px; color: #a0a0ab; max-width: 280px; margin-bottom: 25px;" id="adsStatusText">O anúncio abriu. Aguarde os 30 segundos terminarem para liberar o botão de fechar e coletar seus pontos.</p>
+            <h3 style="font-size: 18px; margin-bottom: 5px;">Anúncio Premiado em Exibição</h3>
+            <p style="font-size: 12px; color: #a0a0ab; max-width: 280px; margin-bottom: 25px;" id="adsStatusText">O anúncio está sendo exibido. Interaja com ele e aguarde o cronômetro para coletar a sua recompensa.</p>
             
             <div id="countdownBox" style="font-size: 32px; font-weight: 800; color: #ff9d00; margin-bottom: 25px;">30s</div>
 
@@ -288,19 +288,16 @@
             </div>
             <div class="texto-longo-render">
                 <p>Bem-vindo ao <strong>CineRewards Pro</strong>, a plataforma oficial onde o seu entretenimento digital se transforma em saldo real direto na sua carteira!</p>
-                
                 <h4>1. Como eu começo a ganhar pontos?</h4>
                 <ul>
                     <li><strong>Escolha e Assista:</strong> Navegue pelo nosso catálogo exclusivo de filmes e séries na tela inicial.</li>
                     <li><strong>A Regra dos Pontos:</strong> Você ganha exatamente <strong>1 Ponto (PTS) a cada 1 minuto</strong> de exibição ativa e contínua.</li>
                 </ul>
-
                 <h4>2. Quanto valem os meus pontos em dinheiro?</h4>
                 <ul>
                     <li><strong>Taxa de Conversão:</strong> Cada ciclo de 1 minuto assistido rende <strong>1 PTS</strong>, o que equivale a <strong>R$ 0,01</strong> adicionados ao seu Saldo.</li>
                     <li><strong>1 hora (60 minutos)</strong> assistida = 60 PTS = <strong>R$ 0,60</strong></li>
                 </ul>
-
                 <h4>3. Turbine seus Ganhos: Anúncios Premiados & Indicações</h4>
                 <ul>
                     <li><strong>Multiplicador de Anúncios:</strong> Use o painel lateral para assistir anúncios extras rápidos e ganhe 50 pontos de uma vez só!</li>
@@ -316,15 +313,12 @@
             </div>
             <div class="texto-longo-render">
                 <p>Ao criar uma conta, efetuar login ou utilizar quaisquer funcionalidades em nosso site ou aplicativo, você concorda integralmente com os termos, regras e políticas de segurança descritos a seguir.</p>
-
                 <h4>1. Elegibilidade e Cadastro de Conta</h4>
                 <p>1.1. Cada usuário tem direito a registrar e operar <strong>apenas uma única conta</strong>.<br>
                 1.2. É expressamente proibida a criação de múltiplas contas associadas ao mesmo indivíduo.</p>
-
                 <h4>2. Política de Segurança e Combate a Fraudes</h4>
                 <p>2.1. Implementamos uma <strong>política de tolerância zero</strong> contra condutas fraudulentas.<br>
                 2.2. Configuram violações sujeitas a penalidades imediatas: Uso de Redes Privadas Virtuais (<strong>VPNs</strong>), emuladores, macros ou autoclicks.</p>
-
                 <h4>3. Penalidades e Banimento Autónomo</h4>
                 <p>3.1. Qualquer indício detectado resultará no <strong>bloqueio e banimento automático</strong> da conta infratora com perda irrevogável do saldo.</p>
             </div>
@@ -694,22 +688,22 @@
             document.getElementById('modalTermosUso').classList.add('hidden');
         }
 
-        // CORREÇÃO: ABRE O ANÚNCIO, CONTA 30 SEG E LIBERA O BOTÃO SÓ NO FINAL
+        // LÓGICA ATUALIZADA: IGUAL DO KWAI
         function iniciarAnuncioPremiado() {
             document.getElementById('menuDrawer').classList.remove('active');
             
-            // 1. Abre o link do anúncio em uma nova janela de fato
+            // 1. CHAMA O ANÚNCIO REAL PRIMEIRO! A rede intercepta e exibe.
             dispararAnuncioMonetagReal();
 
-            // 2. Prepara e exibe a tela protetora com o cronômetro ativo
+            // 2. Trava a tela com a contagem obrigatória simultaneamente
             tempoRestanteAds = 30;
             document.getElementById('countdownBox').style.display = "block";
             document.getElementById('countdownBox').innerText = tempoRestanteAds + "s";
-            document.getElementById('adsStatusText').innerText = "O anúncio abriu. Aguarde os 30 segundos terminarem para liberar o botão de fechar e coletar seus pontos.";
-            document.getElementById('btnCloseAdReward').style.display = "none"; // Garante que o botão comece oculto
+            document.getElementById('adsStatusText').innerText = "O anúncio foi aberto! Interaja e assista o tempo obrigatório para liberar os pontos.";
+            document.getElementById('btnCloseAdReward').style.display = "none"; 
             document.getElementById('adsOverlayScreen').classList.remove('hidden');
 
-            // 3. Inicia o cronômetro regressivo
+            // 3. O cronômetro local valida o tempo de interação de forma segura
             if (adsTimer) clearInterval(adsTimer);
             adsTimer = setInterval(() => {
                 tempoRestanteAds--;
@@ -717,26 +711,26 @@
                 
                 if (tempoRestanteAds <= 0) {
                     clearInterval(adsTimer);
-                    document.getElementById('countdownBox').style.display = "none"; // Esconde o texto do contador
-                    document.getElementById('adsStatusText').innerText = "Tempo obrigatório concluído com sucesso!";
-                    document.getElementById('btnCloseAdReward').style.display = "inline-block"; // Torna o botão visível
+                    document.getElementById('countdownBox').style.display = "none"; 
+                    document.getElementById('adsStatusText').innerText = "Anúncio validado com sucesso! Recompensa disponível.";
+                    document.getElementById('btnCloseAdReward').style.display = "inline-block"; // Só aqui o botão de fechar surge!
                 }
             }, 1000);
         }
 
         async function finalizarAnuncioPremiado() {
-            // 4. Salva a recompensa do usuário de forma segura no banco
+            // Entrega os pontos e sincroniza com o banco de dados
             if (currentUser) {
                 userData.pontos += 50;
                 userData.saldo_reais += 0.50;
                 atualizarInterface();
                 await salvarDadosBanco();
             }
-            // 5. Esconde a tela de anúncio e volta para a navegação do site
+            // Destrava o app e limpa o estado
             document.getElementById('adsOverlayScreen').classList.add('hidden');
         }
 
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link).then(() => {
