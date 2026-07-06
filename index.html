@@ -235,7 +235,6 @@
 <body>
 
     <div class="cinema-container">
-        <!-- TELA DE AUTENTICAÇÃO -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -272,19 +271,16 @@
             </div>
         </div>
 
-        <!-- RECOMPENSA DE ANÚNCIO: TELA DOS 30 SEGUNDOS -->
         <div class="ads-overlay-screen hidden" id="adsOverlayScreen">
-            <div id="containerScriptOculto"></div>
             <i class="fa-solid fa-rectangle-ad" style="font-size: 50px; color: #e040fb; margin-bottom: 15px;"></i>
-            <h3 style="font-size: 18px; margin-bottom: 5px;">Carregando Anúncio Premiado...</h3>
-            <p style="font-size: 12px; color: #a0a0ab; max-width: 280px; margin-bottom: 25px;" id="adsStatusText">Aguarde o anúncio processar na tela por 30 segundos para receber seus pontos.</p>
+            <h3 style="font-size: 18px; margin-bottom: 5px;">Anúncio Premiado</h3>
+            <p style="font-size: 12px; color: #a0a0ab; max-width: 280px; margin-bottom: 25px;" id="adsStatusText">O anúncio abriu. Aguarde os 30 segundos terminarem para liberar o botão de fechar e coletar seus pontos.</p>
             
             <div id="countdownBox" style="font-size: 32px; font-weight: 800; color: #ff9d00; margin-bottom: 25px;">30s</div>
-            
-            <button class="btn-auth hidden" id="btnCloseAdReward" onclick="finalizarAnuncioPremiado()" style="width: 180px; padding: 12px; background: #00c853; color: #000;">Fechar Anúncio</button>
+
+            <button class="btn-auth" id="btnCloseAdReward" onclick="finalizarAnuncioPremiado()" style="width: 240px; padding: 14px; background: #00c853; color: #000; font-weight: 800; display: none;">Fechar e Resgatar Pontos</button>
         </div>
 
-        <!-- TELA MODAL: COMO FUNCIONA -->
         <div class="info-modal-screen hidden" id="modalComoFunciona">
             <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
                 <h2 style="font-size:20px; text-align:left;">Como Funciona</h2>
@@ -313,7 +309,6 @@
             </div>
         </div>
 
-        <!-- TELA MODAL: TERMOS DE USO -->
         <div class="info-modal-screen hidden" id="modalTermosUso">
             <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:15px;">
                 <h2 style="font-size:20px; text-align:left;">Termos de Serviço</h2>
@@ -335,7 +330,6 @@
             </div>
         </div>
 
-        <!-- MENU LATERAL DRAWER -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             
@@ -349,7 +343,6 @@
                 <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
             </div>
 
-            <!-- NOVO BOTÃO: GANHE MAIS COM O ANÚNCIO DE 30 SEGUNDOS -->
             <button class="btn-ganhar-mais-bonus" onclick="iniciarAnuncioPremiado()"><i class="fa-solid fa-circle-dollar-to-slot"></i> GANHAR +50 PTS (Anúncio)</button>
 
             <div class="data-card">
@@ -385,7 +378,6 @@
             </a>
         </div>
         
-        <!-- HEADER PRINCIPAL -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -397,12 +389,10 @@
             </div>
         </div>
 
-        <!-- PLAYER DE VÍDEO -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
-        <!-- CORPO DO CATÁLOGO -->
         <div class="content-body" id="contentBody">
             <div class="movie-details">
                 <h3 id="movieTitle">Carregando...</h3>
@@ -415,7 +405,6 @@
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
         <div class="bottom-nav">
             <div class="control-bar">
                 <div class="action-item" onclick="toggleLike()">
@@ -433,6 +422,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function dispararAnuncioMonetagReal() {
+            (function(s){
+                s.dataset.zone='11245969';
+                s.src='https://al5sm.com/tag.min.js';
+            })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+        }
+    </script>
 
     <script>
         const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
@@ -463,7 +461,7 @@
             { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
-            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
+            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Aão', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
             { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' },
             { id: '8hjzlHw9aVI', titulo: 'Dois policiais rivais caem na pior armadilha', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '_yuTpvmJ-vY', titulo: 'Alvo Incontrolável - Redenção Brutal', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
@@ -661,7 +659,6 @@
             }
         }
 
-        // ALTERAÇÃO MATEMÁTICA DE SEGURANÇA: 1 MINUTO = 1 PONTO = R$ 0,01
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
             pontuacaoInterval = setInterval(async () => {
@@ -697,53 +694,49 @@
             document.getElementById('modalTermosUso').classList.add('hidden');
         }
 
-        // FUNÇÕES DO SISTEMA DE ANÚNCIO DE 30 SEGUNDOS (GANHE MAIS)
+        // CORREÇÃO: ABRE O ANÚNCIO, CONTA 30 SEG E LIBERA O BOTÃO SÓ NO FINAL
         function iniciarAnuncioPremiado() {
             document.getElementById('menuDrawer').classList.remove('active');
             
-            // Prepara a tela de contagem
+            // 1. Abre o link do anúncio em uma nova janela de fato
+            dispararAnuncioMonetagReal();
+
+            // 2. Prepara e exibe a tela protetora com o cronômetro ativo
             tempoRestanteAds = 30;
+            document.getElementById('countdownBox').style.display = "block";
             document.getElementById('countdownBox').innerText = tempoRestanteAds + "s";
-            document.getElementById('btnCloseAdReward').classList.add('hidden');
-            document.getElementById('adsStatusText').innerText = "Aguarde o anúncio processar na tela por 30 segundos para receber seus pontos.";
+            document.getElementById('adsStatusText').innerText = "O anúncio abriu. Aguarde os 30 segundos terminarem para liberar o botão de fechar e coletar seus pontos.";
+            document.getElementById('btnCloseAdReward').style.display = "none"; // Garante que o botão comece oculto
             document.getElementById('adsOverlayScreen').classList.remove('hidden');
 
-            // Injeta o seu script de anúncio de forma ativa e dinâmica para rodar em segundo plano
-            const containerScript = document.getElementById('containerScriptOculto');
-            containerScript.innerHTML = ""; 
-            const scriptTag = document.createElement('script');
-            scriptTag.dataset.zone = '11245969';
-            scriptTag.src = 'https://al5sm.com/tag.min.js';
-            containerScript.appendChild(scriptTag);
-
-            // Dispara o cronômetro visual de 30 segundos
+            // 3. Inicia o cronômetro regressivo
+            if (adsTimer) clearInterval(adsTimer);
             adsTimer = setInterval(() => {
                 tempoRestanteAds--;
                 document.getElementById('countdownBox').innerText = tempoRestanteAds + "s";
                 
                 if (tempoRestanteAds <= 0) {
                     clearInterval(adsTimer);
-                    document.getElementById('countdownBox').innerText = "Pronto!";
-                    document.getElementById('adsStatusText').innerText = "Anúncio validado com sucesso! Você recebeu +50 Pontos.";
-                    document.getElementById('btnCloseAdReward').classList.remove('hidden'); // Botão de fechar aparece
+                    document.getElementById('countdownBox').style.display = "none"; // Esconde o texto do contador
+                    document.getElementById('adsStatusText').innerText = "Tempo obrigatório concluído com sucesso!";
+                    document.getElementById('btnCloseAdReward').style.display = "inline-block"; // Torna o botão visível
                 }
             }, 1000);
         }
 
         async function finalizarAnuncioPremiado() {
-            // Entrega os 50 pontos e R$ 0,50 de saldo
+            // 4. Salva a recompensa do usuário de forma segura no banco
             if (currentUser) {
                 userData.pontos += 50;
                 userData.saldo_reais += 0.50;
                 atualizarInterface();
                 await salvarDadosBanco();
             }
-            // Fecha a tela do anúncio
+            // 5. Esconde a tela de anúncio e volta para a navegação do site
             document.getElementById('adsOverlayScreen').classList.add('hidden');
-            document.getElementById('containerScriptOculto').innerHTML = ""; 
         }
 
-        function executarCompartilhamento() {
+        function ejecutarCompartilhamento() {
             if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link).then(() => {
