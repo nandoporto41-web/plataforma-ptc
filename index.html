@@ -209,7 +209,7 @@
                     <div class="info-badge-item">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                         <div class="info-badge-text">
-                            <h4>Converta Tudo em Pix</h4>
+                            <h4>Conversta Tudo em Pix</h4>
                             <p>Resgate seus fundos direto na carteira via Pix.</p>
                         </div>
                     </div>
@@ -326,12 +326,11 @@
         let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
         let player = null;
         let pontuacaoInterval = null;
-        let adRefreshInterval = null;
 
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', category: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '4isClyJJcYg', titulo: 'Proteção à testemunhas', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
             { id: '-tPux_s_qEY', titulo: 'O último comando', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
@@ -362,7 +361,6 @@
             }
         }
 
-        // Monitoramento inteligente do Login e Logout para sincronia em tempo real
         _supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 currentUser = session.user;
@@ -395,7 +393,7 @@
                     const { error: dbError } = await _supabase.from('perfis').insert([{
                         id: data.user.id,
                         email: email,
-                        pontos: 100, 
+                        pontos: 0, 
                         saldo_reais: 0.00,
                         primeiro_video_assistido: false,
                         indicado_por: indicarPorID || null
@@ -420,34 +418,39 @@
                 .single();
 
             if (data) {
-                userData = data;
+                userData = {
+                    pontos: parseInt(data.pontos) || 0,
+                    saldo_reais: parseFloat(data.saldo_reais) || 0.00,
+                    primeiro_video_assistido: data.primeiro_video_assistido || false,
+                    indicado_por: data.indicado_por || null
+                };
                 atualizarInterface();
             } else if (error) {
-                console.error('Erro ao carregar perfil do banco:', error.message);
+                console.error('Erro ao carregar perfil:', error.message);
             }
         }
 
         function atualizarInterface() {
             document.getElementById('pointsBalance').innerText = userData.pontos;
             document.getElementById('ptsTotal').innerText = userData.pontos;
-            document.getElementById('realBalance').innerText = `R$ ${Number(userData.saldo_reais).toFixed(2).replace('.', ',')}`;
+            document.getElementById('realBalance').innerText = `R$ ${userData.saldo_reais.toFixed(2).replace('.', ',')}`;
         }
 
         async function salvarDadosBanco() {
             if (!currentUser) return;
             
-            // Corrige o envio de dados limpos (inteiros e decimais sem aspas ou strings formatadas)
+            // Correção estrutural crucial para a tipagem NUMERIC do Supabase não rejeitar a gravação
             const { error } = await _supabase
                 .from('perfis')
                 .upsert({
                     id: currentUser.id,
                     pontos: parseInt(userData.pontos),
-                    saldo_reais: parseFloat(userData.saldo_reais),
+                    saldo_reais: parseFloat(userData.saldo_reais.toFixed(2)),
                     primeiro_video_assistido: userData.primeiro_video_assistido,
                     indicado_por: userData.indicado_por
                 });
 
-            if (error) console.error('Erro ao persistir dados na nuvem:', error.message);
+            if (error) console.error('Erro ao persistir dados:', error.message);
         }
 
         function renderCatalogo() {
@@ -517,7 +520,7 @@
             document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        function executarCompartilhamento() {
+        function ejecutarCompartilhamento() {
             if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link).then(() => {
