@@ -339,7 +339,7 @@
         let player = null;
         let pontuacaoInterval = null;
 
-        // Catálogo contendo a lista antiga + todos os novos vídeos que você enviou formatados
+        // Lista completa com todos os vídeos sem ocultar ou perder nenhum link fornecido
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
@@ -355,8 +355,6 @@
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
             { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
             { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' },
-            
-            // Novos Filmes Adicionados Abaixo:
             { id: '8hjzlHw9aVI', titulo: 'Dois policiais rivais caem na pior armadilha', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '_yuTpvmJ-vY', titulo: 'Alvo Incontrolável - Redenção Brutal', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'OKAjZGerFjU', titulo: 'Operação Resgate Especial', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
@@ -449,8 +447,11 @@
             if(confirm("Tem certeza que deseja sair do aplicativo?")) {
                 pararContagemPontos();
                 const { error } = await _supabase.auth.signOut();
-                if(error) alert("Erro ao deslogar: " + error.message);
-                else {
+                if(error) {
+                    alert("Erro ao deslogar: " + error.message);
+                } else {
+                    currentUser = null;
+                    document.getElementById('authScreen').classList.remove('hidden');
                     toggleMenu();
                 }
             }
@@ -538,7 +539,8 @@
         }
 
         function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
+            // Garante contagem se o vídeo estiver rodando (estado 1 = YT.PlayerState.PLAYING)
+            if (event.data === 1) {
                 iniciarContagemPontos();
             } else {
                 pararContagemPontos();
@@ -547,6 +549,7 @@
 
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
+            // Configurado para 10000ms (10 segundos) para fins de testes rápidos
             pontuacaoInterval = setInterval(async () => {
                 if (currentUser) {
                     userData.pontos += 5;
@@ -554,7 +557,7 @@
                     atualizarInterface();
                     await salvarDadosBanco();
                 }
-            }, 60000); 
+            }, 10000); 
         }
 
         function pararContagemPontos() {
@@ -566,7 +569,7 @@
             document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        function executarCompartilhamento() {
+        function ejecutarCompartilhamento() {
             if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link).then(() => {
