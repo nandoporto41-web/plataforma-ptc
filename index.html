@@ -471,7 +471,6 @@
                     primeiro_video_assistido: data.primeiro_video_assistido || false,
                     indicado_por: data.indicado_por || null
                 };
-                // Força a exibição imediata do saldo recuperado na tela
                 atualizarInterface();
             } else if (error) {
                 console.error('Erro ao carregar perfil:', error.message);
@@ -548,6 +547,7 @@
 
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
+            // Alterado de 10000 para 60000 para rodar de 1 em 1 minuto
             pontuacaoInterval = setInterval(async () => {
                 if (currentUser) {
                     userData.pontos += 5;
@@ -555,7 +555,7 @@
                     atualizarInterface();
                     await salvarDadosBanco();
                 }
-            }, 10000); 
+            }, 60000); 
         }
 
         function pararContagemPontos() {
@@ -567,7 +567,7 @@
             document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             if (!currentUser) return;
             const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
             navigator.clipboard.writeText(link).then(() => {
