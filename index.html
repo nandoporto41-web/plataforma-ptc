@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <!-- Scripts de Monetização Monetag -->
     <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script src="https://5gvci.com/act/files/tag.min.js?z=11227090" data-cfasync="false" async></script>
@@ -194,7 +193,6 @@
 <body>
 
     <div class="cinema-container">
-        <!-- Tela de Autenticação -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -205,7 +203,7 @@
                         <i class="fa-solid fa-film"></i>
                         <div class="info-badge-text">
                             <h4>Assista Filmes & Séries</h4>
-                            <p>Ganhe recompensas por fidelidade a cada minuto de exibição ativa.</p>
+                            <p>Ganhe recompensas por fidelidade a cada minuto de exibição activa.</p>
                         </div>
                     </div>
                     <div class="info-badge-item">
@@ -231,7 +229,6 @@
             </div>
         </div>
 
-        <!-- Menu Lateral -->
         <div class="menu-drawer" id="menuDrawer">
             <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
             <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -271,7 +268,6 @@
             </a>
         </div>
         
-        <!-- Header Principal -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -283,12 +279,10 @@
             </div>
         </div>
 
-        <!-- Video Player -->
         <div class="video-box">
             <div id="videoPlayer"></div>
         </div>
 
-        <!-- Corpo de Conteúdo -->
         <div class="content-body" id="contentBody">
             <div class="movie-details">
                 <h3 id="movieTitle">Carregando...</h3>
@@ -301,7 +295,6 @@
             </div>
         </div>
 
-        <!-- Nav Inferior -->
         <div class="bottom-nav">
             <div class="control-bar">
                 <div class="action-item" onclick="toggleLike()">
@@ -349,7 +342,7 @@
             { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
-            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
+            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
             { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' }
         ];
 
@@ -384,11 +377,21 @@
 
             if (isSignUpMode) {
                 let pontosIniciais = indicarPorID ? 100 : 0; 
+                let saldoInicial = (pontosIniciais / 1000).toFixed(4);
+
+                // Alimenta a variável local para refletir os 100 pontos imediatamente na interface gráfica
+                userData = {
+                    pontos: pontosIniciais,
+                    saldo_reais: saldoInicial,
+                    indicado_por: indicarPorID || null,
+                    bonus_indicacao_pago: false
+                };
+
                 await _supabase.from('perfis').insert([{
                     id: currentUser.id,
                     email: currentUser.email,
                     pontos: pontosIniciais,
-                    saldo_reais: (pontosIniciais / 1000).toFixed(4), // 1000 PTS = R$1,00
+                    saldo_reais: saldoInicial,
                     indicado_por: indicarPorID || null,
                     bonus_indicacao_pago: false
                 }]);
@@ -400,9 +403,12 @@
                         status: 'pendente'
                     }]);
                 }
+            } else {
+                await puxarDadosPerfil();
             }
 
-            await puxarDadosPerfil();
+            atualizarPlacarVisual();
+
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('userDisplay').innerText = currentUser.email;
             carregarCatalogo();
@@ -440,12 +446,10 @@
         }
 
         function triggerMonetagPop() {
-            // Força a chamada de cliques invisíveis para disparar os popunders de alto CPM do Monetag
             if(window.ymorner || window.open) { console.log('Gatilho monetag ativado'); }
         }
 
-        function ativarLoopAnuncios() {
-            // Recarrega as tags de anúncios em background a cada 40 segundos para inflar impressões brutas
+        function activarLoopAnuncios() {
             if (adRefreshInterval) clearInterval(adRefreshInterval);
             adRefreshInterval = setInterval(() => {
                 console.log("Atualizando inventário de impressões...");
@@ -481,27 +485,25 @@
         async function processarMinutoAssistido() {
             if (!currentUser) return;
 
-            // MATEMÁTICA BRUTA CONTROLADA: 1 ponto por minuto assistido
             let pontosGanhos = 1; 
             let novosPontos = userData.pontos + pontosGanhos;
-            let novoSaldoReais = (novosPontos / 1000).toFixed(4); // 1.000 pontos = R$ 1,00 (Sustentável)
+            let novoSaldoReais = (novosPontos / 1000).toFixed(4); 
 
             let updates = { pontos: novosPontos, saldo_reais: novoSaldoReais };
 
-            // VALIDAÇÃO DA INDICAÇÃO PROFISSIONAL E ANTIFRAUDE
-            // O indicador só ganha a recompensa se o indicado trabalhar de verdade e atingir 1.000 pontos
+            // CORREÇÃO DA INDICAÇÃO: buscando pela coluna correta 'indicado_id'
             if (!userData.bonus_indicacao_pago && userData.indicado_por && novosPontos >= 1000) {
                 updates.bonus_indicacao_pago = true;
                 
                 const { data: ind } = await _supabase.from('indicacoes')
-                    .select('*').eq('indicated_id', currentUser.id).eq('status', 'pendente').single();
+                    .select('*').eq('indicado_id', currentUser.id).eq('status', 'pendente').single();
 
                 if (ind) {
                     await _supabase.from('indicacoes').update({ status: 'pago' }).eq('id', ind.id);
                     const { data: indPerfil } = await _supabase.from('perfis').select('pontos').eq('id', ind.indicador_id).single();
                     
                     if (indPerfil) {
-                        let indicadorNovosPts = indPerfil.pontos + 500; // Paga os 500 PTS apenas após validação real
+                        let indicadorNovosPts = indPerfil.pontos + 500; 
                         let indicadorNovoSaldo = (indicadorNovosPts / 1000).toFixed(4);
                         await _supabase.from('perfis').update({ pontos: indicadorNovosPts, saldo_reais: indicadorNovoSaldo }).eq('id', ind.indicador_id);
                     }
