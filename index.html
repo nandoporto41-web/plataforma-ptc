@@ -339,7 +339,6 @@
         let player = null;
         let pontuacaoInterval = null;
 
-        // Lista completa com todos os vídeos sem ocultar ou perder nenhum link fornecido
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
@@ -472,6 +471,7 @@
                     primeiro_video_assistido: data.primeiro_video_assistido || false,
                     indicado_por: data.indicado_por || null
                 };
+                // Força a exibição imediata do saldo recuperado na tela
                 atualizarInterface();
             } else if (error) {
                 console.error('Erro ao carregar perfil:', error.message);
@@ -539,7 +539,6 @@
         }
 
         function onPlayerStateChange(event) {
-            // Garante contagem se o vídeo estiver rodando (estado 1 = YT.PlayerState.PLAYING)
             if (event.data === 1) {
                 iniciarContagemPontos();
             } else {
@@ -549,7 +548,6 @@
 
         function iniciarContagemPontos() {
             if (pontuacaoInterval) return;
-            // Configurado para 10000ms (10 segundos) para fins de testes rápidos
             pontuacaoInterval = setInterval(async () => {
                 if (currentUser) {
                     userData.pontos += 5;
