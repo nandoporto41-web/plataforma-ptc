@@ -1,920 +1,546 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="dark">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CineRewards Premium Pro - Hub de Entretenimento e Fidelidade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <!-- ==========================================
-       MONETIZAÇÃO & ANÚNCIOS (PRESERVADOS EXATAMENTE)
-       ========================================== -->
     <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script src="https://5gvci.com/act/files/tag.min.js?z=11227090" data-cfasync="false" async></script>
     
-    <!-- INFRAESTRUTURA EXTERNA E FONTES -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
-
-    <!-- ==========================================
-       ESTILOS CSS (DESIGN SYSTEM PREMIUM NATIVO)
-       ========================================== -->
+    
     <style>
-        :root {
-            --bg-pure: #030303;
-            --bg-main: #0a0a0f;
-            --bg-card: rgba(22, 22, 34, 0.45);
-            --bg-glass: rgba(10, 10, 15, 0.75);
-            --border-glass: rgba(255, 255, 255, 0.06);
-            --border-focus: rgba(255, 157, 0, 0.4);
-            
-            --primary: #ff9d00;
-            --primary-rgb: 255, 157, 0;
-            --secondary: #ffc400;
-            --success: #00e676;
-            --danger: #ff5252;
-            --info: #00b0ff;
-            
-            --text-main: #ffffff;
-            --text-muted: #8e8e9a;
-            --text-dark: #050508;
-            
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.5);
-            --shadow-md: 0 8px 32px rgba(0,0,0,0.7);
-            --shadow-lg: 0 16px 48px rgba(0,0,0,0.9);
-            --shadow-glow: 0 0 24px rgba(255, 157, 0, 0.3);
-            
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 28px;
-            --radius-full: 9999px;
-            
-            --transition-native: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* VARIAÇÃO TEMA CLARO */
-        html.light {
-            --bg-pure: #f4f4f7;
-            --bg-main: #ffffff;
-            --bg-card: rgba(240, 240, 245, 0.7);
-            --bg-glass: rgba(255, 255, 255, 0.85);
-            --border-glass: rgba(0, 0, 0, 0.08);
-            --border-focus: rgba(255, 157, 0, 0.6);
-            --text-main: #121214;
-            --text-muted: #6c6c7d;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-pure);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Poppins', sans-serif; }
+        body { 
+            background: #060608; 
+            color: #fff; 
+            display: flex; 
             justify-content: center;
-            align-items: center;
+            align-items: center; 
+            min-height: 100vh; 
             overflow: hidden;
-            transition: background-color 0.3s ease;
         }
 
-        /* CONTAINER DE DISPOSITIVO MÓVEL */
-        .app-container {
+        .cinema-container {
             position: relative;
             width: 100%;
-            max-width: 460px;
+            max-width: 450px;
             height: 100vh;
-            height: -webkit-fill-available;
-            background: var(--bg-main);
+            background: #0c0c0f;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: var(--shadow-lg);
         }
 
-        .scrollable {
-            overflow-y: auto;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        .scrollable::-webkit-scrollbar { display: none; }
-
-        /* RIPPLE EFFECT */
-        .ripple-btn {
-            position: relative;
-            overflow: hidden;
-        }
-        .ripple-span {
+        .points-header {
             position: absolute;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple-anima 0.55s linear;
-            pointer-events: none;
-        }
-        @keyframes ripple-anima {
-            to { transform: scale(4); opacity: 0; }
-        }
-
-        /* GLASSMORPHISM E INTERFACES BASE */
-        .glass-panel {
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-md);
+            top: 15px; left: 15px; right: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 20;
+            background: rgba(12, 12, 15, 0.75);
+            padding: 12px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .btn-gradient {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text-dark);
-            font-weight: 700;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition-bounce);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: var(--shadow-sm);
-        }
-        .btn-gradient:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-        .btn-gradient:active { transform: scale(0.96); }
-
-        /* BARRA DE PROGRESSO GLOBAL */
-        .global-progress-bar {
-            position: absolute;
-            top: 0; left: 0; width: 0%; height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--success));
-            z-index: 1000;
-            transition: width 0.2s ease, opacity 0.4s ease;
+        .logo-text {
+            font-weight: 800; font-size: 15px;
+            background: linear-gradient(90deg, #ff9d00, #ffb700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
         }
 
-        /* CABEÇALHO PRINCIPAL */
-        .app-header {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 75px;
-            padding: 0 20px;
+        .score-box {
+            display: flex; align-items: center; gap: 6px;
+            background: linear-gradient(135deg, #ff9d00, #ffb700);
+            padding: 6px 14px; border-radius: 20px;
+            color: #000; font-weight: 800; font-size: 11px;
+            box-shadow: 0 4px 15px rgba(255, 157, 0, 0.3);
+        }
+
+        .video-box {
+            width: 100%;
+            height: 56.25vw;
+            max-height: 253px;
+            background: #000;
+            margin-top: 85px;
+            border-bottom: 2px solid rgba(255,255,255,0.03);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        #videoPlayer { width: 100%; height: 100%; border: none; }
+
+        .content-body {
+            flex: 1;
+            padding: 20px 15px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 90;
-            background: linear-gradient(to bottom, var(--bg-pure) 50%, transparent);
-            padding-top: env(safe-area-inset-top);
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            padding-bottom: 95px;
         }
-        .header-brand { display: flex; align-items: center; gap: 14px; }
-        .menu-toggle-btn {
-            width: 44px; height: 44px; border-radius: var(--radius-md);
-            background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass);
-            color: var(--text-main); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition-native);
-        }
-        .menu-toggle-btn:hover { background: rgba(255,255,255,0.12); color: var(--primary); }
-        .app-logo { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, var(--text-main), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .pts-tracker {
-            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
-            border-radius: var(--radius-full); background: rgba(255, 157, 0, 0.12);
-            border: 1px solid rgba(255, 157, 0, 0.25); color: var(--primary);
-            font-weight: 800; font-size: 13px; cursor: pointer; transition: var(--transition-bounce);
-        }
-        .pts-tracker i { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
-        /* PLAYER DE MÍDIA NATIVO */
-        .media-container {
-            width: 100%; aspect-ratio: 16 / 9; background: #000;
-            margin-top: 75px; position: relative; z-index: 85;
-            box-shadow: var(--shadow-md); overflow: hidden;
+        .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
+        .movie-details p { font-size: 11px; color: #9c9ca4; line-height: 1.4; }
+
+        .catalog-section h4 { font-size: 12px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
-        #videoPlayerFrame { width: 100%; height: 100%; border: none; }
-        
-        .player-custom-ui {
+        .movie-card {
+            background: #141419;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.03);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .movie-card:active { transform: scale(0.97); }
+        .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
+        .movie-card-info { padding: 8px; }
+        .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; }
+
+        .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 12px 16px; display: flex; flex-direction: column; gap: 8px;
-            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 87;
+            background: linear-gradient(to top, #060608 80%, transparent);
+            padding: 20px 15px; z-index: 10;
         }
-        .media-container:hover .player-custom-ui { opacity: 1; pointer-events: auto; }
+        .control-bar {
+            display: flex; justify-content: space-around; align-items: center;
+            background: #121216; padding: 12px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
+        .circle-btn {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #1a1a22; border: 1px solid rgba(255, 255, 255, 0.05);
+            color: white; font-size: 16px; display: flex; justify-content: center; align-items: center;
+            transition: all 0.2s ease;
+        }
+        .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
+        .btn-label { font-size: 10px; color: #a0a0ab; }
+
+        .menu-drawer {
+            position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
+            background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
+            z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 60px 15px 30px 15px; display: flex; flex-direction: column; gap: 15px;
+            overflow-y: auto;
+        }
+        .menu-drawer.active { left: 0; }
+        .close-menu { position: absolute; top: 18px; right: 20px; font-size: 24px; color: #ff9d00; cursor: pointer; }
         
-        .pbar-container { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: var(--radius-full); cursor: pointer; }
-        .pbar-fill { height: 100%; width: 0%; background: var(--primary); border-radius: var(--radius-full); }
-        .player-controls-row { display: flex; justify-content: space-between; align-items: center; color: #fff; font-size: 13px; }
-        .p-btn { cursor: pointer; transition: var(--transition-native); }
-        .p-btn:hover { color: var(--primary); transform: scale(1.1); }
+        .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
+        .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
+        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
 
-        /* VIEWPORT E TRANSIÇÕES DE TELA NATIVAS */
-        .app-view-port { flex: 1; padding: 20px 16px 110px 16px; display: flex; flex-direction: column; }
-        .app-view {
-            display: none; flex-direction: column; gap: 24px;
-            animation: slideLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            will-change: transform, opacity;
-        }
-        .app-view.active { display: flex; }
-        @keyframes slideLeft {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+        .btn-saque {
+            background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
+            font-weight: 800; border: none; padding: 14px; border-radius: 10px;
+            cursor: pointer; width: 100%; font-size: 13px; gap: 8px;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* PRATELEIRAS E CARDS */
-        .shelf-container { display: flex; flex-direction: column; gap: 14px; }
-        .shelf-title { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .horizontal-shelf { display: flex; gap: 14px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
-        .horizontal-shelf::-webkit-scrollbar { display: none; }
+        .btn-indicar-menu {
+            background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000;
+            font-weight: 800; border: none; padding: 12px; border-radius: 10px;
+            cursor: pointer; width: 100%; font-size: 12px; gap: 8px;
+            display: flex; justify-content: center; align-items: center; margin-top: 5px;
+        }
+
+        .card-aviso-seguranca {
+            background: rgba(211, 47, 47, 0.08);
+            border: 1px solid rgba(211, 47, 47, 0.3);
+            padding: 10px; border-radius: 10px; font-size: 10px; color: #ef5350;
+            line-height: 1.4;
+        }
+
+        .auth-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #060608; z-index: 50; display: flex; flex-direction: column;
+            justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease;
+            overflow-y: auto;
+        }
+        .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
+        .auth-box { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .auth-box h2 { font-size: 26px; color: #ff9d00; font-weight: 800; text-align: center; margin-bottom: 2px; }
+        .auth-box .subtitle { font-size: 11px; color: #8e8e93; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         
-        .media-card-premium {
-            flex: 0 0 145px; width: 145px; background: var(--bg-card);
-            border: 1px solid var(--border-glass); border-radius: var(--radius-md);
-            overflow: hidden; cursor: pointer; position: relative; transition: var(--transition-bounce);
+        .info-badges { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .info-badge-item { 
+            background: #121216; padding: 12px; border-radius: 12px; 
+            border: 1px solid rgba(255,157,0,0.08); display: flex; align-items: center; gap: 12px;
         }
-        .media-card-premium:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.15); }
-        .card-cover-container { width: 100%; height: 195px; position: relative; background: #12121a; }
-        .card-cover-container img { width: 100%; height: 100%; object-fit: cover; }
-        .card-fav-btn {
-            position: absolute; top: 8px; right: 8px; width: 32px; height: 32px;
-            border-radius: var(--radius-full); background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1); color: #fff; display: flex;
-            align-items: center; justify-content: center; font-size: 13px; z-index: 5;
-        }
-        .card-fav-btn.favorited { color: var(--danger); }
+        .info-badge-item i { font-size: 18px; color: #ff9d00; width: 24px; text-align: center; }
+        .info-badge-text h4 { font-size: 12px; color: #fff; font-weight: 600; }
+        .info-badge-text p { font-size: 10px; color: #a0a0ab; }
 
-        /* SKELETON LOADING */
-        .skeleton-box {
-            width: 145px; height: 250px; border-radius: var(--radius-md);
-            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
-            background-size: 200% 100%; animation: loading-skel 1.5s infinite ease-in-out;
-        }
-        @keyframes loading-skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-        /* INFRA E MENU DRAWER */
-        .menu-drawer-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 200; display: none; opacity: 0; transition: var(--transition-native); }
-        .menu-drawer-overlay.active { display: block; opacity: 1; }
-        .menu-drawer-panel {
-            position: absolute; top: 0; left: -100%; width: 80%; height: 100%;
-            background: var(--bg-glass); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
-            border-right: 1px solid var(--border-glass); z-index: 210; transition: var(--transition-native);
-            padding: 40px 20px; display: flex; flex-direction: column; gap: 20px;
-        }
-        .menu-drawer-panel.active { left: 0; }
-
-        /* COMPONENTE DOCK INFERIOR */
-        .bottom-nav-dock { position: absolute; bottom: 0; left: 0; right: 0; height: 85px; background: linear-gradient(to top, var(--bg-pure) 70%, transparent); padding: 10px 20px 20px 20px; z-index: 90; display: flex; align-items: center; }
-        .dock-bar-inner { width: 100%; height: 56px; background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: var(--radius-full); display: flex; justify-content: space-around; align-items: center; box-shadow: var(--shadow-md); }
-        .dock-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; color: var(--text-muted); transition: var(--transition-native); width: 60px; height: 100%; }
-        .dock-item.active { color: var(--primary); }
-        .dock-item i { font-size: 18px; }
-        .dock-item span { font-size: 10px; font-weight: 600; }
-
-        /* PERFIL & CONFIGURAÇÕES */
-        .profile-card { padding: 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center; }
-        .profile-avatar-wrapper { position: relative; width: 84px; height: 84px; }
-        .profile-avatar { width: 100%; height: 100%; border-radius: var(--radius-full); background: linear-gradient(135deg, var(--primary), var(--info)); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--text-dark); font-weight: 800; }
+        .auth-input { background: #121216; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 10px; color: #fff; font-size: 14px; outline: none; }
+        .auth-input:focus { border-color: #ff9d00; }
+        .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 5px; }
         
-        .xp-container { width: 100%; }
-        .xp-bar-outer { width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: var(--radius-full); overflow: hidden; margin-top: 6px; }
-        .xp-bar-inner { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 0.4s ease; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
-        .stat-item { padding: 14px; text-align: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: var(--radius-md); }
-        .stat-item h3 { font-size: 18px; font-weight: 800; color: var(--primary); }
-        .stat-item p { font-size: 11px; color: var(--text-muted); }
-
-        /* OVERLAY E EMISSÕES GERAIS */
-        .fullscreen-overlay { position: absolute; inset: 0; background: var(--bg-pure); z-index: 500; display: flex; flex-direction: column; padding: 40px 20px; transition: var(--transition-native); }
-        .fullscreen-overlay.hidden { opacity: 0; pointer-events: none; transform: translateY(30px); }
-        
-        .toast-box { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(30px); padding: 12px 24px; border-radius: var(--radius-full); background: rgba(10,10,15,0.95); border: 1px solid var(--border-glass); color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-lg); z-index: 1000; opacity: 0; pointer-events: none; transition: var(--transition-bounce); }
-        .toast-box.active { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-
-        .floating-pts { position: absolute; color: var(--secondary); font-weight: 800; font-size: 18px; pointer-events: none; animation: floatUp 1.2s ease-out forwards; z-index: 600; text-shadow: 0 0 8px rgba(255,157,0,0.5); }
-        @keyframes floatUp { 0% { opacity: 0; transform: translateY(0) scale(0.8); } 20% { opacity: 1; transform: translateY(-15px) scale(1.1); } 100% { opacity: 0; transform: translateY(-70px) scale(0.9); } }
+        .auth-toggle-link { text-align: center; font-size: 12px; color: #ff9d00; cursor: pointer; margin-top: 10px; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- GLOBAL PROGRESS BAR -->
-        <div class="global-progress-bar" id="globalProgressBar"></div>
-
-        <!-- TOAST SYSTEM -->
-        <div class="toast-box" id="appGlobalToast">
-            <i class="fa-solid fa-circle-check" style="color:var(--success);" id="appToastIcon"></i>
-            <span id="appToastText">Ação concluída</span>
-        </div>
-
-        <!-- ==========================================
-           GATEWAY DE AUTENTICAÇÃO (SUPABASE NATIVO)
-           ========================================== -->
-        <div class="fullscreen-overlay" id="authGateway">
-            <div style="text-align:center; margin-bottom:40px; margin-top: auto;">
-                <h1 style="font-size:32px; font-weight:800; letter-spacing:-1px;">CineRewards <span style="color:var(--primary);">Pro</span></h1>
-                <p style="color:var(--text-muted); font-size:14px; margin-top:4px;">Acesso ao ecossistema premium de streaming</p>
-            </div>
-            
-            <div style="display:flex; flex-direction:column; gap:16px; margin-bottom: auto; width:100%;">
-                <input type="email" id="authEmail" class="glass-panel" placeholder="Seu e-mail" style="padding:16px; color:#fff; outline:none; font-size:14px;">
-                <input type="password" id="authPassword" class="glass-panel" placeholder="Sua senha" style="padding:16px; color:#fff; outline:none; font-size:14px;">
-                <button class="btn-gradient ripple-btn" style="padding:16px;" onclick="Modules.Auth.handleAuthAction()">
-                    <span id="authBtnText">Entrar na Plataforma</span>
-                </button>
-                <p id="authToggleMode" style="text-align:center; font-size:13px; color:var(--primary); cursor:pointer; font-weight:600;" onclick="Modules.Auth.toggleMode()">Não possui conta? Cadastre-se</p>
-            </div>
-        </div>
-
-        <!-- ==========================================
-           MENU LATERAL NATIVO (DRAWER)
-           ========================================== -->
-        <div class="menu-drawer-overlay" id="drawerOverlay" onclick="Modules.UI.toggleDrawer(false)"></div>
-        <div class="menu-drawer-panel" id="drawerPanel">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-                <div class="profile-avatar" id="drawerAvatar" style="width:44px; height:44px; font-size:18px;">U</div>
-                <div>
-                    <h4 id="drawerUserEmail" style="font-size:14px; font-weight:700;">usuario@cine.com</h4>
-                    <p style="font-size:11px; color:var(--text-muted);">Assinante Premium</p>
-                </div>
-            </div>
-            <div class="scrollable" style="flex:1; display:flex; flex-direction:column; gap:8px;">
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('home')"><i class="fa-solid fa-house"></i> <span>Início</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('explore')"><i class="fa-solid fa-compass"></i> <span>Explorar</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('favorites')"><i class="fa-solid fa-heart"></i> <span>Favoritos</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('history')"><i class="fa-solid fa-clock-rotate-left"></i> <span>Histórico</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('profile')"><i class="fa-solid fa-user"></i> <span>Perfil</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('wallet')"><i class="fa-solid fa-wallet"></i> <span>Carteira</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('referral')"><i class="fa-solid fa-user-plus"></i> <span>Indique e Ganhe</span></div>
-                <div class="dock-item" style="flex-direction:row; justify-content:flex-start; gap:12px; width:100%; padding:12px;" onclick="Modules.UI.navigate('settings')"><i class="fa-solid fa-gear"></i> <span>Configurações</span></div>
-            </div>
-        </div>
-
-        <!-- ==========================================
-           HEADER DO APP
-           ========================================== -->
-        <header class="app-header">
-            <div class="header-brand">
-                <div class="menu-toggle-btn ripple-btn" onclick="Modules.UI.toggleDrawer(true)">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                </div>
-                <div class="app-logo">CineRewards</div>
-            </div>
-            <div class="pts-tracker ripple-btn" onclick="Modules.UI.navigate('wallet')">
-                <i class="fa-solid fa-coins"></i>
-                <span id="globalPointsHeader">0</span> PTS
-            </div>
-        </header>
-
-        <!-- ==========================================
-           PLAYER DE VÍDEO PREMIUM UNIFICADO
-           ========================================== -->
-        <section class="media-container" id="playerRoot">
-            <div id="videoPlayerFrame"></div>
-            <div class="player-custom-ui">
-                <div class="pbar-container" onclick="Modules.Player.handleProgressBarProgress(event)">
-                    <div class="pbar-fill" id="playerProgressBarFill"></div>
-                </div>
-                <div class="player-controls-row">
-                    <div style="display:flex; align-items:center; gap:14px;">
-                        <i class="fa-solid fa-play p-btn" id="playerPlayBtn" onclick="Modules.Player.togglePlay()"></i>
-                        <span id="playerTimeDisplay">00:00 / 00:00</span>
-                    </div>
-                    <i class="fa-solid fa-expand p-btn" onclick="Modules.Player.toggleFullscreen()"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==========================================
-           VIEWPORTS DA SPA DE FLUXO CONTÍNUO
-           ========================================== -->
-        <main class="app-view-port scrollable" id="mainViewport">
-            
-            <!-- VIEW: HOME / CATÁLOGO -->
-            <div class="app-view active" id="view-home">
-                <div class="glass-panel" style="padding:16px;">
-                    <h2 id="currentMediaTitle" style="font-size:18px; font-weight:800;">Carregando Mídia Principal...</h2>
-                    <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Ganhe assistindo ativamente conteúdos licenciados.</p>
-                </div>
-
-                <div style="position:relative; width:100%;">
-                    <input type="text" id="catalogSearchInput" class="glass-panel" placeholder="Buscar por títulos ou categorias..." style="width:100%; padding:14px 14px 14px 44px; color:#fff; outline:none; font-size:13px;" oninput="Modules.Catalog.handleSearch(event)">
-                    <i class="fa-solid fa-magnifying-glass" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                </div>
-
-                <div class="horizontal-shelf" id="categoryChipsRow"></div>
-
-                <!-- PRATELEIRA: EM ALTA -->
-                <div class="shelf-container">
-                    <div class="shelf-title"><i class="fa-solid fa-fire"></i> Conteúdos Em Alta</div>
-                    <div class="horizontal-shelf" id="shelfPopular">
-                        <div class="skeleton-box"></div>
-                        <div class="skeleton-box"></div>
-                    </div>
-                </div>
-
-                <!-- PRATELEIRA: LANÇAMENTOS -->
-                <div class="shelf-container">
-                    <div class="shelf-title"><i class="fa-solid fa-bolt"></i> Novos Lançamentos</div>
-                    <div class="horizontal-shelf" id="shelfNew"></div>
-                </div>
-            </div>
-
-            <!-- VIEW: EXPLORAR -->
-            <div class="app-view" id="view-explore">
-                <div class="shelf-title"><i class="fa-solid fa-compass"></i> Explorar Todo o Catálogo</div>
-                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;" id="exploreGrid"></div>
-            </div>
-
-            <!-- VIEW: FAVORITOS -->
-            <div class="app-view" id="view-favorites">
-                <div class="shelf-title"><i class="fa-solid fa-heart"></i> Seus Favoritos</div>
-                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;" id="favoritesGrid"></div>
-            </div>
-
-            <!-- VIEW: HISTÓRICO -->
-            <div class="app-view" id="view-history">
-                <div class="shelf-title"><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Exibição</div>
-                <div style="display:flex; flex-direction:column; gap:10px;" id="historyList"></div>
-            </div>
-
-            <!-- VIEW: PERFIL -->
-            <div class="app-view" id="view-profile">
-                <div class="glass-panel profile-card">
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar" id="profileBigAvatar">U</div>
-                    </div>
-                    <div>
-                        <h2 id="profileEmail" style="font-size:18px; font-weight:800;">user@cine.com</h2>
-                        <p id="profileUserRank" style="font-size:12px; color:var(--primary); font-weight:700; margin-top:2px;">Rank Bronze</p>
-                    </div>
-                    <div class="xp-container">
-                        <div style="display:flex; justify-content:between; font-size:11px; font-weight:600;">
-                            <span id="profileLvlText">Nível 1</span>
-                            <span id="profileXpText" style="margin-left:auto;">0 / 100 XP</span>
+    <div class="cinema-container">
+        <div class="auth-screen" id="authScreen">
+            <div class="auth-box">
+                <h2>CineRewards Pro</h2>
+                <div class="subtitle" id="authSubtitle">Entre e ganhe em tempo real</div>
+                
+                <div class="info-badges">
+                    <div class="info-badge-item">
+                        <i class="fa-solid fa-film"></i>
+                        <div class="info-badge-text">
+                            <h4>Assista Filmes & Séries</h4>
+                            <p>Ganhe recompensas por fidelidade a cada minuto de exibição activa.</p>
                         </div>
-                        <div class="xp-bar-outer"><div class="xp-bar-inner" id="profileXpBarFill"></div></div>
+                    </div>
+                    <div class="info-badge-item">
+                        <i class="fa-solid fa-money-bill-transfer"></i>
+                        <div class="info-badge-text">
+                            <h4>Conversta Tudo em Pix</h4>
+                            <p>Resgate seus fundos direto na carteira via Pix.</p>
+                        </div>
+                    </div>
+                    <div class="info-badge-item" style="background: rgba(255, 157, 0, 0.03); border-color: rgba(255, 157, 0, 0.2);">
+                        <i class="fa-solid fa-gift" style="color: #00c853;"></i>
+                        <div class="info-badge-text">
+                            <h4>Programa Indique & Ganhe</h4>
+                            <p>Convide amigos e turbine sua carteira com tráfego qualificado.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="stats-grid">
-                    <div class="stat-item glass-panel">
-                        <h3 id="statPoints">0</h3>
-                        <p>Pontos Ganhos</p>
-                    </div>
-                    <div class="stat-item glass-panel">
-                        <h3 id="statStreak">0 Dias</h3>
-                        <p>Sequência Diária</p>
-                    </div>
+                <input type="email" id="authEmail" class="auth-input" placeholder="Seu melhor e-mail">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha segura">
+                <button class="btn-auth" id="authButton" onclick="handleAuth()">Entrar no Cinema</button>
+                <div class="auth-toggle-link" id="authToggle" onclick="toggleAuthMode()">Não tem uma conta? Cadastre-se aqui</div>
+            </div>
+        </div>
+
+        <div class="menu-drawer" id="menuDrawer">
+            <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
+            <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
+            
+            <div class="data-card">
+                <p>Usuário Ativo</p>
+                <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
+            </div>
+
+            <div class="data-card">
+                <p>Pontos Acumulados</p>
+                <span id="ptsTotal">0</span> PTS
+            </div>
+            
+            <div class="data-card" style="background: rgba(255, 157, 0, 0.04);">
+                <p>Saldo Convertido</p>
+                <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+            </div>
+
+            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
+            
+            <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
+                <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
+                <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
+                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo (assistir e acumular seus primeiros 1.000 PTS).
+                </p>
+                <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
+            </div>
+
+            <div class="card-aviso-seguranca">
+                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO ATIVO:</strong>
+                IPs duplicados, uso de VPN/emuladores e fraudes geram banimento automático sem direito a saque.
+            </div>
+
+            <a href="https://t.me/+90Iak2TuoW8wYjEx" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
+                <i class="fa-brands fa-telegram" style="font-size:16px;"></i> Suporte Oficial Telegram
+            </a>
+        </div>
+        
+        <div class="points-header">
+            <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
+            </div>
+            <span class="logo-text">CINE REWARDS</span>
+            <div class="score-box">
+                <i class="fa-solid fa-wallet"></i>
+                <span id="pointsBalance">0</span> PTS
+            </div>
+        </div>
+
+        <div class="video-box">
+            <div id="videoPlayer"></div>
+        </div>
+
+        <div class="content-body" id="contentBody">
+            <div class="movie-details">
+                <h3 id="movieTitle">Carregando...</h3>
+                <p id="movieDesc">Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
+            </div>
+
+            <div class="catalog-section">
+                <h4>Filmes Disponíveis</h4>
+                <div class="movie-grid" id="catalogGrid"></div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="control-bar">
+                <div class="action-item" onclick="toggleLike()">
+                    <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
+                    <span class="btn-label">Gostei</span>
+                </div>
+                <div class="action-item" onclick="toggleMenu()">
+                    <div class="circle-btn" style="color: #ffb700;"><i class="fa-solid fa-share-nodes"></i></div>
+                    <span class="btn-label">Indicar</span>
+                </div>
+                <div class="action-item" onclick="toggleMenu()">
+                    <div class="circle-btn btn-main"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Carteira</span>
                 </div>
             </div>
-
-            <!-- VIEW: CARTEIRA -->
-            <div class="app-view" id="view-wallet">
-                <div class="shelf-title"><i class="fa-solid fa-wallet"></i> Saldo Monetário Monetizado</div>
-                <div class="glass-panel" style="padding:24px; text-align:center; display:flex; flex-direction:column; gap:4px;">
-                    <p style="font-size:12px; color:var(--text-muted); text-transform:uppercase;">Saldo Disponível</p>
-                    <span style="font-size:36px; font-weight:800; color:var(--success);" id="walletBalance">R$ 0,00</span>
-                    <p style="font-size:11px; color:var(--text-muted);">Conversão automatizada baseada em visualização</p>
-                </div>
-                <button class="btn-gradient ripple-btn" style="padding:16px; font-size:14px;" onclick="Modules.Wallet.requestWithdrawal()">Solicitar Saque via Pix Instantâneo</button>
-            </div>
-
-            <!-- VIEW: INDICAÇÃO -->
-            <div class="app-view" id="view-referral">
-                <div class="shelf-title"><i class="fa-solid fa-user-plus"></i> Sistema de Indicações Lucrativas</div>
-                <div class="glass-panel" style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-                    <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">Indique novos usuários premium para a plataforma e ganhe 10% de comissão direta sobre todos os pontos acumulados por sua rede de convidados.</p>
-                    <input type="text" id="referralLinkInput" class="glass-panel" readonly style="padding:12px; color:var(--primary); font-size:12px; font-weight:600;" value="Gerando seu link premiado...">
-                    <button class="btn-gradient ripple-btn" style="padding:12px; font-size:13px;" onclick="Modules.Referral.copyLink()">Copiar Link de Convite</button>
-                </div>
-            </div>
-
-            <!-- VIEW: CONFIGURAÇÕES -->
-            <div class="app-view" id="view-settings">
-                <div class="shelf-title"><i class="fa-solid fa-gear"></i> Ajustes da Conta</div>
-                <div class="glass-panel" style="display:flex; flex-direction:column; padding:8px;">
-                    <div class="dock-item" style="flex-direction:row; justify-content:space-between; width:100%; padding:14px;" onclick="Modules.UI.toggleTheme()">
-                        <div style="display:flex; align-items:center; gap:12px;"><i class="fa-solid fa-moon"></i> <span>Alternar Tema Visual</span></div>
-                        <i class="fa-solid fa-circle-half-stroke" style="color:var(--primary);"></i>
-                    </div>
-                    <div class="dock-item" style="flex-direction:row; justify-content:space-between; width:100%; padding:14px;" onclick="Modules.UI.clearCache()">
-                        <div style="display:flex; align-items:center; gap:12px;"><i class="fa-solid fa-trash-can"></i> <span>Limpar Cache de Retenção</span></div>
-                    </div>
-                    <div class="dock-item" style="flex-direction:row; justify-content:space-between; width:100%; padding:14px; color:var(--danger);" onclick="Modules.Auth.signOut()">
-                        <div style="display:flex; align-items:center; gap:12px;"><i class="fa-solid fa-power-off"></i> <span>Desconectar Sessão</span></div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <!-- ==========================================
-           DOCK DE NAVEGAÇÃO INFERIOR CENTRAL
-           ========================================== -->
-        <nav class="bottom-nav-dock">
-            <div class="dock-bar-inner">
-                <div class="dock-item active" id="dock-home" onclick="Modules.UI.navigate('home')"><i class="fa-solid fa-house"></i><span>Início</span></div>
-                <div class="dock-item" id="dock-explore" onclick="Modules.UI.navigate('explore')"><i class="fa-solid fa-compass"></i><span>Explorar</span></div>
-                <div class="dock-item" id="dock-profile" onclick="Modules.UI.navigate('profile')"><i class="fa-solid fa-user"></i><span>Perfil</span></div>
-            </div>
-        </nav>
+        </div>
     </div>
 
-    <!-- ==========================================
-       NÚCLEO DE PROGRAMAÇÃO MODULAR ES2024
-       ========================================== -->
     <script>
-        // CONFIGURAÇÕES DA INSTÂNCIA DO SUPABASE
-        const SUPABASE_URL = "https://zsedgqmbpypuzatfkvrr.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZWRncW1icHlwdXphdGZrdnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU5NjU2MDMsImV4cCI6MjAzMTU0MTYwM30.your-real-key-here";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // DATASTORE INTERNO DO ACERVO DE STREAMING
-        const ACERVO = [
-            { id: "v1", title: "Interestelar: Fronteiras Cósmicas", category: "Sci-Fi", yt: "zSWdZVtXT7E", pts: 15, tag: "popular", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=300" },
-            { id: "v2", title: "Mad Max: Fury Road Action", category: "Ação", yt: "hEJnMQG9eDc", pts: 18, tag: "popular", thumb: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=300" },
-            { id: "v3", title: "Blade Runner 2049 Cinematic", category: "Sci-Fi", yt: "gCcx85zbxz4", pts: 12, tag: "new", thumb: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=300" },
-            { id: "v4", title: "Avatar: Nature Overhaul", category: "Aventura", yt: "d9MyW72ELq0", pts: 14, tag: "new", thumb: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=300" }
+        const urlParams = new URLSearchParams(window.location.search);
+        const indicarPorID = urlParams.get('ref'); 
+
+        let isSignUpMode = false;
+        let currentUser = null;
+        let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+        let player = null;
+        let pontuacaoInterval = null;
+
+        const listaFilmes = [
+            { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
+            { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', category: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: '4isClyJJcYg', titulo: 'Proteção à testemunhas', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: '-tPux_s_qEY', titulo: 'O último comando', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'x6KT_2a98YA', titulo: 'Tempestade planeta em fúria', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'bBPKTYCYnc4', titulo: 'Corações de ferro', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
+            { id: 'Hw_gWagWJRE', titulo: 'Policial em ação', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
+            { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
+            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
+            { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' }
         ];
 
-        // ARQUITETURA DE ESTADO DE MEMÓRIA VOLÁTIL (SPA SEGURO)
-        const State = {
-            user: null,
-            dbData: { pts: 0, saldo: 0, xp: 0, streak: 1 },
-            favorites: new Set(),
-            history: [],
-            currentMedia: ACERVO[0],
-            activeCategory: "Todos",
-            searchQuery: ""
-        };
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            const subtitle = document.getElementById('authSubtitle');
+            const button = document.getElementById('authButton');
+            const toggle = document.getElementById('authToggle');
 
-        // INTERCEPTADOR DE EVENTOS NATIVOS E FEEDBACK VISUAL
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('.ripple-btn');
-            if (!btn) return;
-            
-            // Dispara feedback tátil nativo
-            if (navigator.vibrate) navigator.vibrate(10);
-
-            // Injeção de Ripple Effect Dinâmico
-            const circle = document.createElement('span');
-            const diameter = Math.max(btn.clientWidth, btn.clientHeight);
-            const radius = diameter / 2;
-            const rect = btn.getBoundingClientRect();
-
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${e.clientX - rect.left - radius}px`;
-            circle.style.top = `${e.clientY - rect.top - radius}px`;
-            circle.className = 'ripple-span';
-
-            btn.appendChild(circle);
-            setTimeout(() => circle.remove(), 600);
-        });
-
-        // CENTRALIZAÇÃO DOS MÓDULOS OPERACIONAIS DO SISTEMA
-        const Modules = {
-            Auth: {
-                isSignup: false,
-                async init() {
-                    const cached = localStorage.getItem("cine_premium_session");
-                    if (cached) {
-                        State.user = JSON.parse(cached);
-                        document.getElementById("authGateway").classList.add("hidden");
-                        this.syncProfile();
-                    }
-                },
-                toggleMode() {
-                    this.isSignup = !this.isSignup;
-                    document.getElementById("authBtnText").innerText = this.isSignup ? "Criar Cadastro Premium" : "Entrar na Plataforma";
-                    document.getElementById("authToggleMode").innerText = this.isSignup ? "Já tem conta? Faça Login" : "Não possui conta? Cadastre-se";
-                },
-                async handleAuthAction() {
-                    const email = document.getElementById("authEmail").value.trim();
-                    const password = document.getElementById("authPassword").value.trim();
-                    if(!email || !password) return Modules.UI.toast("Preencha todos os dados", true);
-
-                    Modules.UI.setProgress(40);
-                    try {
-                        let res;
-                        if(this.isSignup) {
-                            res = await _supabase.auth.signUp({ email, password });
-                        } else {
-                            res = await _supabase.auth.signInWithPassword({ email, password });
-                        }
-                        if(res.error) throw res.error;
-
-                        State.user = res.data.user;
-                        localStorage.setItem("cine_premium_session", JSON.stringify(State.user));
-                        document.getElementById("authGateway").classList.add("hidden");
-                        this.syncProfile();
-                        Modules.UI.toast("Autenticação validada com sucesso!");
-                    } catch(err) {
-                        Modules.UI.toast(err.message, true);
-                    } finally {
-                        Modules.UI.setProgress(100);
-                    }
-                },
-                async syncProfile() {
-                    try {
-                        let { data: prof } = await _supabase.from('profiles').select('*').eq('id', State.user.id).maybeSingle();
-                        if (!prof) {
-                            const initial = { id: State.user.id, pts: 100, saldo: 1.0, xp: 10, streak_count: 1 };
-                            await _supabase.from('profiles').insert([initial]);
-                            prof = initial;
-                        }
-                        State.dbData = { pts: prof.pts, saldo: prof.saldo, xp: prof.xp, streak: prof.streak_count || 1 };
-                        Modules.UI.updateReactiveUI();
-                        Modules.Catalog.init();
-                    } catch(e) { console.error("Sincronização abortada, operando via cache local em memória."); }
-                },
-                signOut() {
-                    _supabase.auth.signOut();
-                    localStorage.removeItem("cine_premium_session");
-                    location.reload();
-                }
-            },
-
-            Catalog: {
-                init() {
-                    this.renderCategories();
-                    this.renderShelves();
-                },
-                renderCategories() {
-                    const cats = ["Todos", "Sci-Fi", "Ação", "Aventura"];
-                    const box = document.getElementById("categoryChipsRow");
-                    box.innerHTML = cats.map(c => `
-                        <div class="filter-chip ${State.activeCategory === c ? 'active' : ''}" 
-                             style="padding:8px 16px; background:rgba(255,255,255,0.04); border:1px solid var(--border-glass); border-radius:var(--radius-full); cursor:pointer; font-size:12px; white-space:nowrap; color:${State.activeCategory === c ? 'var(--primary)' : 'inherit'}" 
-                             onclick="Modules.Catalog.filterCat('${c}')">${c}</div>
-                    `).join('');
-                },
-                filterCat(cat) {
-                    State.activeCategory = cat;
-                    this.renderCategories();
-                    this.renderShelves();
-                },
-                handleSearch(e) {
-                    State.searchQuery = e.target.value.toLowerCase().trim();
-                    this.renderShelves();
-                },
-                renderShelves() {
-                    const filtered = ACERVO.filter(m => {
-                        const mCat = State.activeCategory === "Todos" || m.category === State.activeCategory;
-                        const mSrc = m.title.toLowerCase().includes(State.searchQuery);
-                        return mCat && mSrc;
-                    });
-
-                    this.populate(document.getElementById("shelfPopular"), filtered.filter(m => m.tag === "popular"));
-                    this.populate(document.getElementById("shelfNew"), filtered.filter(m => m.tag === "new"));
-                    this.populate(document.getElementById("exploreGrid"), filtered);
-                    this.populate(document.getElementById("favoritesGrid"), filtered.filter(m => State.favorites.has(m.id)));
-                },
-                populate(element, items) {
-                    if(!element) return;
-                    if(items.length === 0) {
-                        element.innerHTML = `<p style="font-size:12px; color:var(--text-muted); padding:10px;">Nenhum conteúdo listado</p>`;
-                        return;
-                    }
-                    element.innerHTML = items.map(m => {
-                        const isFav = State.favorites.has(m.id);
-                        return `
-                            <div class="media-card-premium" onclick="Modules.Player.load('${m.id}')">
-                                <div class="card-cover-container">
-                                    <button class="card-fav-btn ${isFav ? 'favorited' : ''}" onclick="event.stopPropagation(); Modules.Catalog.fav('${m.id}')">
-                                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                                    </button>
-                                    <img src="${m.thumb}" loading="lazy">
-                                </div>
-                                <div style="padding:10px; display:flex; flex-direction:column; gap:2px;">
-                                    <div style="font-size:12px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.title}</div>
-                                    <div style="font-size:10px; color:var(--text-muted);">${m.category} • +${m.pts} PTS</div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                },
-                fav(id) {
-                    if(State.favorites.has(id)) State.favorites.delete(id);
-                    else State.favorites.add(id);
-                    this.renderShelves();
-                    Modules.UI.toast("Lista de favoritos atualizada.");
-                }
-            },
-
-            Player: {
-                instance: null,
-                timer: null,
-                isReady: false,
-                init() {
-                    this.instance = new YT.Player('videoPlayerFrame', {
-                        height: '100%', width: '100%',
-                        videoId: State.currentMedia.yt,
-                        playerVars: { 'playsinline': 1, 'controls': 0, 'rel': 0 },
-                        events: {
-                            'onReady': () => { this.isReady = true; },
-                            'onStateChange': (e) => this.stateChange(e)
-                        }
-                    });
-                    document.getElementById("currentMediaTitle").innerText = State.currentMedia.title;
-                    this.loop();
-                },
-                load(id) {
-                    const media = ACERVO.find(m => m.id === id);
-                    if(!media || !this.isReady) return;
-                    
-                    // Adiciona ao histórico do usuário em memória
-                    if(!State.history.includes(media)) State.history.unshift(media);
-                    this.renderHistoryUI();
-
-                    State.currentMedia = media;
-                    document.getElementById("currentMediaTitle").innerText = media.title;
-                    this.instance.loadVideoById(media.yt, 0);
-                    Modules.UI.scrollToTop();
-                },
-                stateChange(e) {
-                    const playBtn = document.getElementById("playerPlayBtn");
-                    if(e.data === YT.PlayerState.PLAYING) {
-                        playBtn.className = "fa-solid fa-pause p-btn";
-                        this.startGains();
-                    } else {
-                        playBtn.className = "fa-solid fa-play p-btn";
-                        this.stopGains();
-                    }
-                    if(e.data === YT.PlayerState.ENDED) {
-                        // Ciclo automático para o próximo vídeo da lista
-                        const idx = ACERVO.findIndex(m => m.id === State.currentMedia.id);
-                        const next = ACERVO[(idx + 1) % ACERVO.length];
-                        this.load(next.id);
-                    }
-                },
-                togglePlay() {
-                    if(!this.isReady) return;
-                    if(this.instance.getPlayerState() === YT.PlayerState.PLAYING) this.instance.pauseVideo();
-                    else this.instance.playVideo();
-                },
-                startGains() {
-                    if(this.timer) clearInterval(this.timer);
-                    this.timer = setInterval(() => {
-                        const ganhou = State.currentMedia.pts;
-                        State.dbData.pts += ganhou;
-                        State.dbData.saldo += (ganhou / 100);
-                        State.dbData.xp += 15;
-
-                        Modules.UI.spawnPointsFloating();
-                        Modules.UI.updateReactiveUI();
-
-                        _supabase.from('profiles').update({
-                            pts: State.dbData.pts, saldo: State.dbData.saldo, xp: State.dbData.xp
-                        }).eq('id', State.user.id).then();
-                    }, 20000); // Bonificação creditada a cada 20 segundos ativos de retenção
-                },
-                stopGains() { clearInterval(this.timer); },
-                toggleFullscreen() {
-                    const container = document.getElementById("playerRoot");
-                    if(document.fullscreenElement) document.exitFullscreen();
-                    else container.requestFullscreen?.() || container.webkitRequestFullscreen?.();
-                },
-                handleProgressBarProgress(e) {
-                    if(!this.isReady) return;
-                    const pct = e.offsetX / e.currentTarget.clientWidth;
-                    this.instance.seekTo(this.instance.getDuration() * pct, true);
-                },
-                loop() {
-                    if(this.isReady && this.instance.getPlayerState?.() === YT.PlayerState.PLAYING) {
-                        const cur = this.instance.getCurrentTime() || 0;
-                        const dur = this.instance.getDuration() || 0;
-                        if(dur > 0) {
-                            document.getElementById("playerProgressBarFill").style.width = `${(cur/dur)*100}%`;
-                            document.getElementById("playerTimeDisplay").innerText = `${Modules.UI.formatTime(cur)} / ${Modules.UI.formatTime(dur)}`;
-                        }
-                    }
-                    requestAnimationFrame(() => this.loop());
-                },
-                renderHistoryUI() {
-                    const box = document.getElementById("historyList");
-                    box.innerHTML = State.history.map(m => `
-                        <div class="stat-item glass-panel" style="display:flex; justify-content:space-between; align-items:center; text-align:left; padding:10px 14px;">
-                            <div>
-                                <h4 style="font-size:12px; font-weight:700;">${m.title}</h4>
-                                <p style="font-size:10px; color:var(--text-muted);">Assistido recentemente</p>
-                            </div>
-                            <i class="fa-solid fa-circle-play" style="color:var(--primary); cursor:pointer;" onclick="Modules.Player.load('${m.id}')"></i>
-                        </div>
-                    `).join('');
-                }
-            },
-
-            Wallet: {
-                async requestWithdrawal() {
-                    if(State.dbData.saldo < 20.0) return Modules.UI.toast("Saldo mínimo para saque de R$ 20,00 não atingido.", true);
-                    Modules.UI.toast("Processando resgate Pix junto ao servidor central...");
-                }
-            },
-
-            Referral: {
-                getLink() { return `https://cinerewards.pro/join?ref=${State.user?.id || 'premium'}`; },
-                copyLink() {
-                    navigator.clipboard.writeText(this.getLink());
-                    Modules.UI.toast("Link de indicação copiado com sucesso!");
-                }
-            },
-
-            UI: {
-                navigate(viewId) {
-                    document.querySelectorAll(".app-view").forEach(v => v.classList.remove("active"));
-                    document.getElementById(`view-${viewId}`).classList.add("active");
-                    
-                    document.querySelectorAll(".dock-item").forEach(d => d.classList.remove("active"));
-                    const activeDock = document.getElementById(`dock-${viewId}`);
-                    if(activeDock) activeDock.classList.add("active");
-
-                    if(viewId === 'referral') document.getElementById("referralLinkInput").value = Modules.Referral.getLink();
-                    this.toggleDrawer(false);
-                    this.scrollToTop();
-                },
-                toggleDrawer(state) {
-                    document.getElementById("drawerOverlay").classList.toggle("active", state);
-                    document.getElementById("drawerPanel").classList.toggle("active", state);
-                },
-                toggleTheme() {
-                    const html = document.documentElement;
-                    html.classList.toggle("light");
-                    this.toast(`Modo ${html.classList.contains("light") ? 'Claro' : 'Escuro'} ativado`);
-                },
-                clearCache() {
-                    localStorage.clear();
-                    this.toast("Cache esvaziado com sucesso!");
-                    setTimeout(() => location.reload(), 1000);
-                },
-                updateReactiveUI() {
-                    document.getElementById("globalPointsHeader").innerText = State.dbData.pts;
-                    document.getElementById("drawerUserEmail").innerText = State.user.email;
-                    document.getElementById("drawerAvatar").innerText = State.user.email.charAt(0).toUpperCase();
-                    
-                    // Elementos internos do perfil do usuário
-                    document.getElementById("profileEmail").innerText = State.user.email;
-                    document.getElementById("profileBigAvatar").innerText = State.user.email.charAt(0).toUpperCase();
-                    document.getElementById("statPoints").innerText = State.dbData.pts;
-                    document.getElementById("statStreak").innerText = `${State.dbData.streak} Dias`;
-                    document.getElementById("walletBalance").innerText = State.dbData.saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-                    const lvl = Math.floor(State.dbData.xp / 100) + 1;
-                    document.getElementById("profileLvlText").innerText = `Nível ${lvl}`;
-                    document.getElementById("profileXpText").innerText = `${State.dbData.xp % 100} / 100 XP`;
-                    document.getElementById("profileXpBarFill").style.width = `${State.dbData.xp % 100}%`;
-                },
-                toast(msg, isErr = false) {
-                    const box = document.getElementById("appGlobalToast");
-                    const icon = document.getElementById("appToastIcon");
-                    document.getElementById("appToastText").innerText = msg;
-                    icon.className = isErr ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
-                    icon.style.color = isErr ? "var(--danger)" : "var(--success)";
-                    box.classList.add("active");
-                    setTimeout(() => box.classList.remove("active"), 3000);
-                },
-                setProgress(pct) {
-                    const bar = document.getElementById("globalProgressBar");
-                    bar.style.width = `${pct}%`;
-                    bar.style.opacity = pct === 100 ? 0 : 1;
-                },
-                spawnPointsFloating() {
-                    const root = document.getElementById("playerRoot");
-                    const node = document.createElement("div");
-                    node.className = "floating-pts";
-                    node.innerText = `+${State.currentMedia.pts} PTS`;
-                    node.style.left = `${Math.random() * 60 + 20}%`;
-                    node.style.top = `${Math.random() * 40 + 30}%`;
-                    root.appendChild(node);
-                    setTimeout(() => node.remove(), 1200);
-                },
-                formatTime(secs) {
-                    const m = Math.floor(secs / 60); const s = Math.floor(secs % 60);
-                    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                },
-                scrollToTop() {
-                    document.getElementById("mainViewport").scrollTo({ top: 0, behavior: 'smooth' });
-                }
+            if (isSignUpMode) {
+                subtitle.innerText = "Crie sua conta e comece a ganhar";
+                button.innerText = "Cadastrar no Cinema";
+                toggle.innerText = "Já tem uma conta? Entre aqui";
+            } else {
+                subtitle.innerText = "Entre e ganhe em tempo real";
+                button.innerText = "Entrar no Cinema";
+                toggle.innerText = "Não tem uma conta? Cadastre-se aqui";
             }
-        };
+        }
 
-        // LOOP DE ENGENHARIA COMPILADO NO LOADING DA WINDOW
-        window.addEventListener("DOMContentLoaded", () => {
-            Modules.Auth.init();
-            Modules.Player.init();
+        _supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                document.getElementById('userDisplay').innerText = currentUser.email;
+                document.getElementById('authScreen').classList.add('hidden');
+                await carregarDadosUsuario();
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('userDisplay').innerText = "Desconectado";
+            }
         });
-        function onYouTubeIframeAPIReady() { /* Abstraído internamente pela infra */ }
+
+        async function handleAuth() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+
+            if (!email || !password) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if (isSignUpMode) {
+                const { data, error } = await _supabase.auth.signUp({ email, password });
+                if (error) {
+                    alert('Erro no cadastro: ' + error.message);
+                    return;
+                }
+                if (data?.user) {
+                    const { error: dbError } = await _supabase.from('perfis').insert([{
+                        id: data.user.id,
+                        email: email,
+                        pontos: 0, 
+                        saldo_reais: 0.00,
+                        primeiro_video_assistido: false,
+                        indicado_por: indicarPorID || null
+                    }]);
+                    
+                    if (dbError) console.error('Erro ao criar perfil:', dbError.message);
+                    alert('Cadastro realizado com sucesso! Faça o login.');
+                    toggleAuthMode();
+                }
+            } else {
+                const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                if (error) alert('Erro no login: ' + error.message);
+            }
+        }
+
+        async function carregarDadosUsuario() {
+            if (!currentUser) return;
+            const { data, error } = await _supabase
+                .from('perfis')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (data) {
+                userData = {
+                    pontos: parseInt(data.pontos) || 0,
+                    saldo_reais: parseFloat(data.saldo_reais) || 0.00,
+                    primeiro_video_assistido: data.primeiro_video_assistido || false,
+                    indicado_por: data.indicado_por || null
+                };
+                atualizarInterface();
+            } else if (error) {
+                console.error('Erro ao carregar perfil:', error.message);
+            }
+        }
+
+        function atualizarInterface() {
+            document.getElementById('pointsBalance').innerText = userData.pontos;
+            document.getElementById('ptsTotal').innerText = userData.pontos;
+            document.getElementById('realBalance').innerText = `R$ ${userData.saldo_reais.toFixed(2).replace('.', ',')}`;
+        }
+
+        async function salvarDadosBanco() {
+            if (!currentUser) return;
+            
+            // Correção estrutural crucial para a tipagem NUMERIC do Supabase não rejeitar a gravação
+            const { error } = await _supabase
+                .from('perfis')
+                .upsert({
+                    id: currentUser.id,
+                    pontos: parseInt(userData.pontos),
+                    saldo_reais: parseFloat(userData.saldo_reais.toFixed(2)),
+                    primeiro_video_assistido: userData.primeiro_video_assistido,
+                    indicado_por: userData.indicado_por
+                });
+
+            if (error) console.error('Erro ao persistir dados:', error.message);
+        }
+
+        function renderCatalogo() {
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+            listaFilmes.forEach(filme => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.onclick = () => mudarVideo(filme.id, filme.titulo);
+                card.innerHTML = `
+                    <img src="${filme.thumb}" alt="${filme.titulo}">
+                    <div class="movie-card-info">
+                        <h5>${filme.titulo}</h5>
+                        <span><i class="fa-solid fa-star"></i> +5 PTS/min</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function onYouTubeIframeAPIReady() {
+            if (listaFilmes.length > 0) {
+                const primeiro = listaFilmes[0];
+                document.getElementById('movieTitle').innerText = primeiro.titulo;
+                player = new YT.Player('videoPlayer', {
+                    videoId: primeiro.id,
+                    playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'playsinline': 1 },
+                    events: { 'onStateChange': onPlayerStateChange }
+                });
+            }
+            renderCatalogo();
+        }
+
+        function mudarVideo(id, titulo) {
+            document.getElementById('movieTitle').innerText = titulo;
+            if (player) {
+                player.loadVideoById(id);
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                iniciarContagemPontos();
+            } else {
+                pararContagemPontos();
+            }
+        }
+
+        function iniciarContagemPontos() {
+            if (pontuacaoInterval) return;
+            pontuacaoInterval = setInterval(async () => {
+                if (currentUser) {
+                    userData.pontos += 5;
+                    userData.saldo_reais += 0.05; 
+                    atualizarInterface();
+                    await salvarDadosBanco();
+                }
+            }, 60000); 
+        }
+
+        function pararContagemPontos() {
+            clearInterval(pontuacaoInterval);
+            pontuacaoInterval = null;
+        }
+
+        function toggleMenu() {
+            document.getElementById('menuDrawer').classList.toggle('active');
+        }
+
+        function ejecutarCompartilhamento() {
+            if (!currentUser) return;
+            const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link de indicação copiado com sucesso!');
+            });
+        }
+
+        function solicitarSaque() {
+            if (userData.saldo_reais < 20) {
+                alert('Saldo insuficiente. O mínimo para saque é R$ 20,00.');
+                return;
+            }
+            alert('Solicitação enviada para processamento!');
+        }
+
+        function toggleLike() {
+            const icon = document.querySelector('#likeBtnIcon i');
+            icon.classList.toggle('fa-solid');
+            icon.style.color = icon.classList.contains('fa-solid') ? '#ef5350' : 'white';
+        }
     </script>
 </body>
 </html>
