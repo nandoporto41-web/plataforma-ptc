@@ -33,7 +33,6 @@
             overflow: hidden;
         }
 
-        /* CORRIGIDO: Agora fica acima da barra de navegação (bottom: 110px) e com z-index alto */
         .live-withdrawal {
             position: absolute;
             bottom: 110px; left: 15px; right: 15px;
@@ -55,7 +54,6 @@
         .live-withdrawal.active { transform: translateY(0); }
         .live-withdrawal i { color: #10b981; font-size: 15px; }
 
-        /* CORRIGIDO: Layout do topo expandido para mostrar Pontos E Reais */
         .points-header {
             position: absolute;
             top: 15px; left: 15px; right: 15px;
@@ -190,7 +188,6 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* CORRIGIDO: Cabeçalho do menu com botão visível para Fechar */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -240,7 +237,6 @@
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
         }
 
-        /* CORRIGIDO: Botão de Logout adicionado */
         .btn-logout {
             background: #221515;
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -293,7 +289,6 @@
 
     <div class="cinema-container">
         
-        <!-- CORRIGIDO: Z-index e posição recalculados para ficar acima do rodapé -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
@@ -335,7 +330,6 @@
             </div>
         </div>
 
-        <!-- CORRIGIDO: Cabeçalho com o botão de fechar e botão de deslogar inserido -->
         <div class="menu-drawer" id="menuDrawer">
             <div class="menu-header-box">
                 <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -390,7 +384,6 @@
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
         </div>
         
-        <!-- CORRIGIDO: Cabeçalho principal agora exibe Pontos E Reais -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -586,8 +579,6 @@
             
             const saldoFormatted = userData.saldo_reais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('realBalance').innerText = saldoFormatted;
-            
-            // CORRIGIDO: Vincula o saldo em reais na tela principal (header)
             document.getElementById('realBalanceMain').innerText = saldoFormatted;
 
             const rankSpan = document.getElementById('userRank');
@@ -660,13 +651,17 @@
             alert(`🎡 A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
         }
 
+        // CORRIGIDO: Forçando o tratamento de erros no console para monitoramento do banco
         async function sincronizarSupabase() {
             if (!currentUser) return;
-            await _supabase.from('profiles').upsert({
+            const { error } = await _supabase.from('profiles').upsert({
                 id: currentUser.id,
                 pontos: userData.pontos,
                 saldo_reais: userData.saldo_reais
             });
+            if(error) {
+                console.error("Erro ao salvar no banco. Verifique as regras RLS:", error.message);
+            }
         }
 
         function toggleLike() {
@@ -726,32 +721,37 @@
             }
         }
 
-        // CORRIGIDO: Função para deslogar do Supabase de forma nativa
         async function handleLogout() {
             if(confirm('Tem certeza que deseja sair do aplicativo?')) {
                 const { error } = await _supabase.auth.signOut();
                 if(error) {
                     alert('Erro ao sair: ' + error.message);
                 } else {
-                    toggleMenu(); // Fecha o menu lateral
-                    // Limpa estados visuais básicos locais
+                    toggleMenu();
                     userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
                     atualizarPainelVisual();
                 }
             }
         }
 
+        // CORRIGIDO: Resgate dinâmico síncrono e instantâneo no evento de login/sessão ativa
         _supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 currentUser = session.user;
                 document.getElementById('userDisplay').innerText = currentUser.email;
                 document.getElementById('authScreen').classList.add('hidden');
                 
-                const { data } = await _supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+                // Busca direta na tabela profiles com fallback para 0 caso o registro seja novo
+                const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', currentUser.id).maybeSingle();
+                
                 if(data) {
                     userData.pontos = data.pontos || 0;
                     userData.saldo_reais = data.saldo_reais || 0.00;
+                } else {
+                    userData.pontos = 0;
+                    userData.saldo_reais = 0.00;
                 }
+                
                 atualizarPainelVisual();
                 
                 const hoje = new Date().toDateString();
