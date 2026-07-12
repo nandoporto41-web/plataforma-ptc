@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Enterprise v5 — Plataforma Oficial</title>
+    <title>CineRewards Premium Pro — Dashboard de Ganhos</title>
     
-    <!-- CDN de Recursos Premium -->
+    <!-- CDNs de Alta Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,442 +13,501 @@
     
     <style>
         :root {
-            --bg-main: #060609;
-            --bg-surface: #0f0f15;
-            --bg-card: #141420;
+            --bg-main: #06060c;
+            --bg-surface: #0c0d14;
+            --bg-card: #131522;
             --primary: #ff9d00;
-            --secondary: #ffb700;
+            --secondary: #ffbe1a;
             --success: #10b981;
             --danger: #f43f5e;
             --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: rgba(255, 255, 255, 0.05);
-            --glass: rgba(15, 15, 21, 0.75);
+            --text-muted: #6b7280;
+            --border: rgba(255, 255, 255, 0.04);
+            --glass: rgba(12, 13, 20, 0.85);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
 
         .app-shell {
-            position: relative;
             width: 100%;
-            max-width: 450px;
-            height: 100vh;
+            max-width: 480px;
             background: var(--bg-surface);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            position: relative;
             border-left: 1px solid var(--border);
             border-right: 1px solid var(--border);
-            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+            padding-bottom: 90px;
         }
 
-        /* Toast Component */
+        /* Toast Profissional */
         .toast-system {
-            position: absolute;
-            top: 85px; left: 15px; right: 15px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 12px 16px; border-radius: 14px;
-            z-index: 3000; backdrop-filter: blur(20px);
-            font-size: 12px; display: flex; align-items: center; gap: 10px;
-            transform: translateY(-200%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150%);
+            width: calc(100% - 40px); max-width: 440px; background: var(--bg-card);
+            border: 1px solid var(--border); padding: 14px 18px; border-radius: 14px;
+            z-index: 5000; backdrop-filter: blur(20px); font-size: 13px; display: flex; align-items: center; gap: 12px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .toast-system.active { transform: translateY(0); }
+        .toast-system.active { transform: translateX(-50%) translateY(0); }
         .toast-system.success { border-color: var(--success); color: var(--success); }
         .toast-system.danger { border-color: var(--danger); color: var(--danger); }
 
-        /* Navbar */
-        .app-bar {
-            position: absolute; top: 0; left: 0; right: 0; height: 70px;
+        /* Global Header */
+        .app-header {
             background: var(--glass); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;
+            padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); sticky: top; top: 0; z-index: 1000;
         }
-        .app-bar .logo { font-weight: 800; font-size: 15px; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .wallet-pill {
-            display: flex; align-items: center; gap: 6px; background: var(--bg-card);
-            padding: 6px 14px; border-radius: 30px; border: 1px solid var(--border); cursor: pointer;
-        }
-        .wallet-pill span { font-size: 11px; font-weight: 700; color: var(--primary); }
+        .app-header .logo-area h1 { font-size: 18px; font-weight: 800; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .app-header .logo-area p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Media Viewport */
-        .media-box { width: 100%; height: 253px; background: #000; margin-top: 70px; position: relative; z-index: 900; }
+        /* Media Player Box */
+        .video-viewport { width: 100%; height: 260px; background: #000; position: relative; }
         #ytPlayerFrame { width: 100%; height: 100%; border: none; }
 
-        /* Main Screen Container */
-        .screen-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; gap: 20px; }
-        
-        .card-premium { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-        .card-row { display: flex; justify-content: space-between; align-items: center; }
-        .card-title { font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .card-subtitle { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        /* Main Container */
+        .content-body { padding: 20px; display: flex; flex-direction: column; gap: 24px; }
 
-        /* Grid de Vídeos */
-        .grid-videos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .video-thumbnail-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
-        .video-thumbnail-card img { width: 100%; height: 95px; object-fit: cover; }
-        .video-info-wrapper { padding: 10px; }
-        .video-info-wrapper h5 { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .video-info-wrapper span { font-size: 9px; color: var(--primary); display: block; margin-top: 4px; }
+        /* Grid Estatísticas Financeiras */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; position: relative; overflow: hidden; }
+        .stat-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+        .stat-card h3 { font-size: 20px; font-weight: 800; color: #fff; }
+        .stat-card h3.green { color: var(--success); }
+        .stat-badge { position: absolute; top: 12px; right: 12px; font-size: 12px; color: rgba(255,157,0,0.2); }
 
-        /* Bottom Nav */
-        .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, #060609 80%, transparent); padding: 0 15px; display: flex; align-items: center; z-index: 1000; }
-        .nav-dock { width: 100%; height: 56px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; }
-        .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 60px; transition: color 0.2s; }
-        .nav-tab.active { color: var(--primary); }
-        .nav-tab i { font-size: 15px; }
-        .nav-tab span { font-size: 9px; font-weight: 600; }
+        /* Seções e Títulos */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-header h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .section-header h2 i { color: var(--primary); }
 
-        /* Drawer Overlay */
-        .overlay-drawer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .overlay-drawer.active { opacity: 1; pointer-events: auto; }
-        .drawer-box { position: absolute; bottom: -100%; left: 0; right: 0; max-height: 75%; background: var(--bg-surface); border-top: 1px solid var(--border); border-radius: 24px 24px 0 0; z-index: 2100; padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .drawer-box.active { bottom: 0; }
+        /* Lista / Cards de Oportunidades */
+        .opportunity-list { display: flex; flex-direction: column; gap: 10px; }
+        .opportunity-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.2s; }
+        .opportunity-item:hover { border-color: rgba(255,157,0,0.3); }
+        .opp-details { display: flex; align-items: center; gap: 14px; }
+        .opp-icon { width: 40px; height: 40px; background: rgba(255,157,0,0.06); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 16px; }
+        .opp-text h4 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .opp-text p { font-size: 11px; color: var(--text-muted); }
+        .opp-payout { text-align: right; }
+        .opp-payout span { display: block; font-size: 12px; font-weight: 700; color: var(--primary); }
+        .opp-payout small { font-size: 9px; color: var(--success); text-transform: uppercase; font-weight: bold; }
 
-        /* Inputs e Botões */
-        .input-premium { background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
-        .input-premium:focus { border-color: var(--primary); }
-        .btn-premium { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #000; font-weight: 700; font-size: 12px; border: none; padding: 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        /* Grid de Vídeos do Catálogo */
+        .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .video-card { background: var(--bg-card); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s; }
+        .video-card.active { border-color: var(--primary); }
+        .video-thumb { position: relative; width: 100%; height: 100px; background: #1a1c2e; }
+        .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .video-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.75); padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--primary); font-weight: 700; }
+        .video-meta { padding: 10px; }
+        .video-meta h4 { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-meta p { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-        /* Auth Screen */
-        .auth-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: flex; flex-direction: column; padding: 40px 24px; }
-        .auth-canvas.hidden { display: none !important; }
+        /* Box de Saque Estruturado */
+        .payout-box { background: linear-gradient(135deg, #131522, #181126); border: 1px solid var(--border); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+        .input-wrapper { display: flex; flex-direction: column; gap: 6px; }
+        .input-wrapper label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+        .premium-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
+        .premium-input:focus { border-color: var(--primary); }
+        .btn-action { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #000; font-weight: 700; font-size: 13px; border: none; padding: 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(255,157,0,0.2); }
+
+        /* Sistema de Afiliados */
+        .referral-box { background: rgba(255,157,0,0.03); border: 1px dashed rgba(255,157,0,0.2); border-radius: 14px; padding: 14px; }
+        .referral-link-row { display: flex; gap: 8px; margin-top: 8px; }
+        .referral-link-row input { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text-muted); font-size: 11px; outline: none; }
+
+        /* Bottom Menu */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 75px; background: linear-gradient(to top, #06060c 70%, transparent); padding: 0 16px; display: flex; align-items: center; z-index: 2000; }
+        .dock-bar { width: 100%; height: 54px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 18px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.6); }
+        .dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--text-muted); width: 55px; }
+        .dock-item.active { color: var(--primary); }
+        .dock-item i { font-size: 14px; }
+        .dock-item span { font-size: 10px; font-weight: 600; }
+
+        /* Auth Canvas Gate */
+        .auth-gate { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 100vh; background: var(--bg-main); z-index: 9000; display: flex; flex-direction: column; padding: 40px 24px; justify-content: center; }
+        .auth-gate.hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div class="app-shell">
         
-        <!-- Alertas do Sistema -->
-        <div class="toast-system" id="appToast">
-            <i class="fa-solid fa-circle-info"></i>
-            <span id="appToastText">Mensagem Administrativa</span>
+        <!-- Toast System Message -->
+        <div class="toast-system" id="globalToast">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="globalToastText">Mensagem Administrativa</span>
         </div>
 
-        <!-- Portão de Autenticação Real -->
-        <div class="auth-canvas" id="authGate">
-            <div style="text-align: center; margin-bottom: 40px; margin-top: 30px;">
-                <h1 style="font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">CineRewards</h1>
-                <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px;">Enterprise Security Ecosystem</p>
+        <!-- Tela de Autenticação Segura -->
+        <div class="auth-gate" id="authScreen">
+            <div style="text-align: center; margin-bottom: 35px;">
+                <h1 style="font-size: 34px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">CineRewards</h1>
+                <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">Premium Monetization Hub</p>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
-                <input type="email" id="emailInput" class="input-premium" placeholder="Endereço de e-mail">
-                <input type="password" id="passwordInput" class="input-premium" placeholder="Senha de acesso">
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <input type="email" id="authEmail" class="premium-input" placeholder="Seu e-mail profissional">
+                <input type="password" id="authPassword" class="premium-input" placeholder="Sua senha de segurança">
             </div>
-            <button class="btn-premium" style="padding: 14px;" onclick="CoreEngine.Auth.execute()">Conectar com Segurança</button>
-            <p id="toggleAuthLabel" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer; text-decoration:underline;" onclick="CoreEngine.Auth.toggleMode()">Não tem conta? Cadastre-se</p>
+            <button class="btn-action" onclick="AppEngine.Auth.submit()">Acessar Plataforma</button>
+            <p id="authToggleBtn" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer;" onclick="AppEngine.Auth.toggle()">Novo por aqui? Crie uma conta</p>
         </div>
 
-        <!-- App Bar -->
-        <header class="app-bar">
-            <span class="logo">CINE REWARDS</span>
-            <div class="wallet-pill" onclick="CoreEngine.UI.openDrawer('walletDrawer')">
-                <i class="fa-solid fa-wallet" style="color: var(--primary); font-size: 11px;"></i>
-                <span id="topBarPoints">0 PTS</span>
+        <!-- App Header Bar -->
+        <header class="app-header">
+            <div class="logo-area">
+                <h1>CINE REWARDS</h1>
+                <p id="userRankLabel">NÍVEL BRONZE</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 10px; color: var(--text-muted); display:block;">ID Usuário</span>
+                <span id="userIdBadge" style="font-size: 11px; font-weight:700; color:#fff;">#0000</span>
             </div>
         </header>
 
-        <!-- Player Viewport -->
-        <div class="media-box">
+        <!-- Dynamic YouTube Viewport View -->
+        <div class="video-viewport">
             <div id="ytPlayerFrame"></div>
         </div>
 
-        <!-- Dynamic Container (SPA) -->
-        <main class="screen-container" id="screenViewPort">
-            <!-- Injetado dinamicamente via CoreEngine.UI -->
-        </main>
+        <!-- SPA Body Content -->
+        <div class="content-body" id="spaContent">
+            <!-- As visualizações serão injetadas dinamicamente via AppEngine.UI.render -->
+        </div>
 
-        <!-- Tab Bar Inferior -->
-        <nav class="bottom-bar">
-            <div class="nav-dock">
-                <div class="nav-tab active" id="tab-cinema" onclick="CoreEngine.UI.navigate('cinema')">
-                    <i class="fa-solid fa-play"></i><span>Cinema</span>
+        <!-- Bottom Navigation Dock -->
+        <nav class="bottom-nav">
+            <div class="dock-bar">
+                <div class="dock-item active" id="nav-dashboard" onclick="AppEngine.UI.switchTab('dashboard')">
+                    <i class="fa-solid fa-chart-pie"></i><span>Painel</span>
                 </div>
-                <div class="nav-tab" id="tab-missions" onclick="CoreEngine.UI.navigate('missions')">
-                    <i class="fa-solid fa-bolt"></i><span>Missões</span>
+                <div class="dock-item" id="nav-cinema" onclick="AppEngine.UI.switchTab('cinema')">
+                    <i class="fa-solid fa-clapperboard"></i><span>Cinema</span>
                 </div>
-                <div class="nav-tab" id="tab-ranking" onclick="CoreEngine.UI.navigate('ranking')">
-                    <i class="fa-solid fa-trophy"></i><span>Ranking</span>
+                <div class="dock-item" id="nav-tasks" onclick="AppEngine.UI.switchTab('tasks')">
+                    <i class="fa-solid fa-list-check"></i><span>Tarefas</span>
                 </div>
-                <div class="nav-tab" id="tab-profile" onclick="CoreEngine.UI.navigate('profile')">
-                    <i class="fa-solid fa-user"></i><span>Perfil</span>
+                <div class="dock-item" id="nav-finance" onclick="AppEngine.UI.switchTab('finance')">
+                    <i class="fa-solid fa-wallet"></i><span>Sacar</span>
                 </div>
             </div>
         </nav>
 
-        <!-- Drawer Carteira/Saques -->
-        <div class="overlay-drawer" id="appOverlay" onclick="CoreEngine.UI.closeDrawer()"></div>
-        <div class="drawer-box" id="walletDrawer">
-            <div class="card-row">
-                <h3 class="card-title"><i class="fa-solid fa-building-columns" style="color:var(--primary)"></i> Solicitar Faturamento</h3>
-                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="CoreEngine.UI.closeDrawer()"></i>
-            </div>
-            <div class="card-premium" style="background:var(--bg-main)">
-                <span class="card-subtitle">Saldo Disponível Convertido</span>
-                <h2 style="font-size:28px; color:var(--success); font-weight:800;" id="drawerBalanceCash">R$ 0,00</h2>
-                <span class="card-subtitle" id="drawerBalancePoints">0 pontos no balanço estável</span>
-            </div>
-            <input type="text" id="pixKey" class="input-premium" placeholder="Chave PIX (CPF, E-mail ou Telefone)">
-            <button class="btn-premium" onclick="CoreEngine.Economy.withdraw()">Efetuar Saque via PIX</button>
-        </div>
-
     </div>
 
-    <!-- Core Engine Engine -->
     <script>
-        const Supabase = supabase.createClient(
+        // Inicialização do Client Supabase Real
+        const SupabaseClient = supabase.createClient(
             'https://hvivrmdygytttdlapjbi.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'
         );
 
-        let isSignUp = false;
-        let ytPlayer = null;
-        let isPlayerReady = false;
-        let watchSyncInterval = null;
+        let signupMode = false;
+        let playerInstance = null;
+        let tickTimer = null;
 
-        const catalogData = [
-            { id: 'ykxV5I2PQCE', titulo: 'O Maior Ladrão do Mundo', cat: 'Suspense' },
-            { id: 'KIZ5crgHkPY', titulo: 'Até que a Sorte nos Separe', cat: 'Comédia' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete Homens e um Destino', cat: 'Ação' }
+        // Dados Fixos do Ecossistema Profissional
+        const videoCatalog = [
+            { id: 'ykxV5I2PQCE', titulo: 'O Maior Ladrão do Mundo', categoria: 'Suspense', pts: '+16 pts/min' },
+            { id: 'KIZ5crgHkPY', titulo: 'Até que a Sorte nos Separe', categoria: 'Comédia', pts: '+16 pts/min' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete Homens e um Destino', categoria: 'Ação', pts: '+16 pts/min' }
         ];
 
-        const CoreEngine = {
-            User: null,
-            Data: { pontos: 0, saldo_reais: 0.00, nivel: 'Bronze' },
-            ActiveVideoId: 'ykxV5I2PQCE',
+        const ptcAds = [
+            { id: 1, title: 'Ganhar Criptomoedas Jogando', desc: 'Visite por 15 segundos e ganhe pontos', reward: '45 PTS', time: '15s' },
+            { id: 2, title: 'Nova Carteira Digital MEI', desc: 'Veja a proposta da fintech parceira', reward: '60 PTS', time: '30s' }
+        ];
+
+        const AppEngine = {
+            SessionUser: null,
+            WalletData: { pontos: 0, saldo_reais: 0.00, nivel: 'Bronze' },
+            CurrentVideoId: 'ykxV5I2PQCE',
+            CurrentTab: 'dashboard',
 
             Init: function() {
-                this.Auth.listener();
+                this.Auth.watch();
             },
 
             Auth: {
-                toggleMode: function() {
-                    isSignUp = !isSignUp;
-                    document.getElementById('toggleAuthLabel').innerText = isSignUp ? "Já possui conta? Entre aqui" : "Não tem conta? Cadastre-se";
-                    document.querySelector('#authGate .btn-premium').innerText = isSignUp ? "Registrar Nova Conta" : "Conectar com Segurança";
+                toggle: function() {
+                    signupMode = !signupMode;
+                    document.getElementById('authToggleBtn').innerText = signupMode ? "Já tem conta? Faça Login" : "Novo por aqui? Crie uma conta";
+                    document.querySelector('#authScreen .btn-action').innerText = signupMode ? "Criar Conta Real" : "Acessar Plataforma";
                 },
-                execute: async function() {
-                    const email = document.getElementById('emailInput').value;
-                    const pass = document.getElementById('passwordInput').value;
-                    if(!email || !pass) return;
+                submit: async function() {
+                    const e = document.getElementById('authEmail').value;
+                    const p = document.getElementById('authPassword').value;
+                    if(!e || !p) return;
 
-                    if(isSignUp) {
-                        const { error } = await Supabase.auth.signUp({ email, password: pass });
-                        if(error) CoreEngine.UI.toast(error.message, 'danger');
-                        else { CoreEngine.UI.toast('Cadastro realizado! Faça o login.', 'success'); this.toggleMode(); }
+                    if(signupMode) {
+                        const { error } = await SupabaseClient.auth.signUp({ email: e, password: p });
+                        if(error) AppEngine.UI.msg(error.message, 'danger');
+                        else { AppEngine.UI.msg('Conta criada com sucesso! Faça login.', 'success'); this.toggle(); }
                     } else {
-                        const { error } = await Supabase.auth.signInWithPassword({ email, password: pass });
-                        if(error) CoreEngine.UI.toast(error.message, 'danger');
+                        const { error } = await SupabaseClient.auth.signInWithPassword({ email: e, password: p });
+                        if(error) AppEngine.UI.msg(error.message, 'danger');
                     }
                 },
-                listener: function() {
-                    Supabase.auth.onAuthStateChange(async (event, session) => {
+                watch: function() {
+                    SupabaseClient.auth.onAuthStateChange(async (event, session) => {
                         if(session) {
-                            CoreEngine.User = session.user;
-                            document.getElementById('authGate').classList.add('hidden');
-                            await CoreEngine.Backend.sync();
-                            CoreEngine.UI.navigate('cinema');
+                            AppEngine.SessionUser = session.user;
+                            document.getElementById('authScreen').classList.add('hidden');
+                            document.getElementById('userIdBadge').innerText = `#${session.user.id.slice(0,5).toUpperCase()}`;
+                            await AppEngine.Backend.refresh();
+                            AppEngine.UI.switchTab('dashboard');
                         } else {
-                            CoreEngine.User = null;
-                            document.getElementById('authGate').classList.remove('hidden');
-                            clearInterval(watchSyncInterval);
+                            AppEngine.SessionUser = null;
+                            document.getElementById('authScreen').classList.remove('hidden');
+                            clearInterval(tickTimer);
                         }
                     });
                 }
             },
 
             Backend: {
-                sync: async function() {
-                    if(!CoreEngine.User) return;
-                    
-                    // Coleta dados em tempo real direto da carteira protegida por RLS
-                    const { data: wallet } = await Supabase.from('wallets').select('*').eq('id', CoreEngine.User.id).maybeSingle();
-                    const { data: profile } = await Supabase.from('profiles').select('*').eq('id', CoreEngine.User.id).maybeSingle();
+                refresh: async function() {
+                    if(!AppEngine.SessionUser) return;
+                    const { data: wallet } = await SupabaseClient.from('wallets').select('*').eq('id', AppEngine.SessionUser.id).maybeSingle();
+                    const { data: profile } = await SupabaseClient.from('profiles').select('*').eq('id', AppEngine.SessionUser.id).maybeSingle();
 
                     if(wallet) {
-                        CoreEngine.Data.pontos = wallet.pontos;
-                        CoreEngine.Data.saldo_reais = wallet.saldo_reais;
+                        AppEngine.WalletData.pontos = wallet.pontos;
+                        AppEngine.WalletData.saldo_reais = wallet.saldo_reais;
                     }
                     if(profile) {
-                        CoreEngine.Data.nivel = profile.nivel;
+                        AppEngine.WalletData.nivel = profile.nivel;
+                        document.getElementById('userRankLabel').innerText = `NÍVEL ${profile.nivel.toUpperCase()}`;
                     }
-                    CoreEngine.UI.updateDOMBalances();
                 },
-
-                sendWatchTick: async function() {
-                    if(!CoreEngine.User) return;
-
-                    // CHAMADA RPC REAL: Invoca a função compilada no Servidor PostgreSQL
-                    const { data, error } = await Supabase.rpc('registrar_tempo_assistido', {
-                        p_video_id: CoreEngine.ActiveVideoId,
-                        p_fingerprint: 'hw_fingerprint_v5_prod'
+                triggerTick: async function() {
+                    if(!AppEngine.SessionUser) return;
+                    
+                    const { data, error } = await SupabaseClient.rpc('registrar_tempo_assistido', {
+                        p_video_id: AppEngine.CurrentVideoId,
+                        p_fingerprint: 'client_v5_pro_secure'
                     });
 
-                    if(error) {
-                        console.error(error.message);
-                        return;
-                    }
-
-                    if(data && data.sucesso) {
-                        CoreEngine.Data.pontos = data.total_pontos;
-                        CoreEngine.Data.saldo_reais = data.total_reais;
-                        CoreEngine.UI.updateDOMBalances();
-                        CoreEngine.UI.toast(`+${data.pontos_adicionados} PTS processados pelo Servidor.`, 'success');
-                    } else if(data && data.erro) {
-                        CoreEngine.UI.toast(data.erro, 'danger');
-                    }
-                }
-            },
-
-            Economy: {
-                withdraw: async function() {
-                    const key = document.getElementById('pixKey').value;
-                    if(!key) return;
-
-                    if(CoreEngine.Data.pontos < 200000) {
-                        CoreEngine.UI.toast('Saldo insuficiente para faturamento (Mínimo R$20,00).', 'danger');
-                        return;
-                    }
-
-                    const { error } = await Supabase.from('withdrawals').insert([{
-                        user_id: CoreEngine.User.id,
-                        chave_pix: key,
-                        valor: 20.00
-                    }]);
-
-                    if(!error) {
-                        CoreEngine.UI.toast('Saque registrado! Processando auditoria na Blockchain/PIX.', 'success');
-                        CoreEngine.UI.closeDrawer();
-                        await CoreEngine.Backend.sync();
+                    if(!error && data) {
+                        if(data.sucesso) {
+                            AppEngine.WalletData.pontos = data.total_pontos;
+                            AppEngine.WalletData.saldo_reais = data.total_reais;
+                            AppEngine.UI.msg(`+${data.pontos_adicionados} Pontos auditados em Servidor.`, 'success');
+                            if(AppEngine.CurrentTab === 'dashboard' || AppEngine.CurrentTab === 'finance') {
+                                AppEngine.UI.switchTab(AppEngine.CurrentTab); 
+                            }
+                        } else {
+                            AppEngine.UI.msg(data.erro, 'danger');
+                        }
                     }
                 }
             },
 
             UI: {
-                navigate: function(screen) {
-                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                    const targetTab = document.getElementById(`tab-${screen}`);
-                    if(targetTab) targetTab.classList.add('active');
-
-                    const container = document.getElementById('screenViewPort');
-                    container.innerHTML = Screens[screen] ? Screens[screen]() : '';
-
-                    if(screen === 'cinema') this.renderVideos();
+                msg: function(text, type = 'success') {
+                    const t = document.getElementById('globalToast');
+                    t.className = `toast-system ${type} active`;
+                    document.getElementById('globalToastText').innerText = text;
+                    setTimeout(() => t.classList.remove('active'), 3000);
                 },
-                renderVideos: function() {
-                    const grid = document.getElementById('catalogGridContainer');
-                    if(!grid) return;
-                    grid.innerHTML = '';
-                    catalogData.forEach(v => {
-                        const card = document.createElement('div');
-                        card.className = 'video-thumbnail-card';
-                        card.onclick = () => {
-                            CoreEngine.ActiveVideoId = v.id;
-                            if(ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(v.id);
-                        };
-                        card.innerHTML = `
-                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300" alt="Cover">
-                            <div class="video-info-wrapper">
-                                <h5>${v.titulo}</h5>
-                                <span>${v.cat} • Servidor Ativo</span>
+                switchTab: async function(tabName) {
+                    AppEngine.CurrentTab = tabName;
+                    document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+                    const targetDock = document.getElementById(`nav-${tabName}`);
+                    if(targetDock) targetDock.classList.add('active');
+
+                    await AppEngine.Backend.refresh();
+                    const view = document.getElementById('spaContent');
+                    
+                    if(tabName === 'dashboard') {
+                        view.innerHTML = `
+                            <!-- Painel Estatístico Real de Mercado -->
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <p>Balanço Estável</p>
+                                    <h3>${AppEngine.WalletData.pontos} <span style="font-size:11px; color:var(--primary)">PTS</span></h3>
+                                    <i class="fa-solid fa-coins stat-badge"></i>
+                                </div>
+                                <div class="stat-card">
+                                    <p>Saldo Convertido</p>
+                                    <h3 class="green">${parseFloat(AppEngine.WalletData.saldo_reais).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</h3>
+                                    <i class="fa-solid fa-money-bill-trend-up stat-badge"></i>
+                                </div>
+                            </div>
+
+                            <!-- Oportunidades Rápidas -->
+                            <div>
+                                <div class="section-header">
+                                    <h2><i class="fa-solid fa-bolt"></i> Ganhos Rápidos</h2>
+                                </div>
+                                <div class="opportunity-list">
+                                    <div class="opportunity-item" onclick="AppEngine.UI.switchTab('tasks')">
+                                        <div class="opp-details">
+                                            <div class="opp-icon"><i class="fa-solid fa-rectangle-ad"></i></div>
+                                            <div class="opp-text">
+                                                <h4>Visualizar Anúncios PTC</h4>
+                                                <p>Anúncios disponíveis para clique hoje</p>
+                                            </div>
+                                        </div>
+                                        <div class="opp-payout"><span>+105 PTS</span><small>Imediato</small></div>
+                                    </div>
+                                    <div class="opportunity-item">
+                                        <div class="opp-details">
+                                            <div class="opp-icon"><i class="fa-solid fa-layer-group"></i></div>
+                                            <div class="opp-text">
+                                                <h4>Mural de Ofertas (Offerwall)</h4>
+                                                <p>Responda pesquisas corporativas</p>
+                                            </div>
+                                        </div>
+                                        <div class="opp-payout"><span>+1.500 PTS</span><small>Auditoria</small></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Convite de Afiliados -->
+                            <div class="referral-box">
+                                <h4 style="font-size:12px; font-weight:700; color:#fff;"><i class="fa-solid fa-users" style="color:var(--primary); margin-right:6px;"></i> Programa de Afiliados Pro</h4>
+                                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Receba 10% de comissão sobre todos os cliques e execuções de mídia dos seus indicados diretamente na sua Wallet.</p>
+                                <div class="referral-link-row">
+                                    <input type="text" readonly value="https://cinerewards-ptc.vercel.app/join?ref=${AppEngine.SessionUser ? AppEngine.SessionUser.id.slice(0,6) : 'user'}">
+                                    <button style="padding:0 12px; background:var(--bg-card); border:1px solid var(--border); color:var(--primary); font-size:11px; border-radius:8px; cursor:pointer;" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); AppEngine.UI.msg('Link copiado para a área de transferência!')">Copiar</button>
+                                </div>
                             </div>
                         `;
-                        grid.appendChild(card);
-                    });
-                },
-                openDrawer: function(id) {
-                    document.getElementById('appOverlay').classList.add('active');
-                    document.getElementById(id).classList.add('active');
-                },
-                closeDrawer: function() {
-                    document.getElementById('appOverlay').classList.remove('active');
-                    document.querySelectorAll('.drawer-box').forEach(d => d.classList.remove('active'));
-                },
-                toast: function(txt, type = 'success') {
-                    const t = document.getElementById('appToast');
-                    t.className = `toast-system ${type} active`;
-                    document.getElementById('appToastText').innerText = txt;
-                    setTimeout(() => t.classList.remove('active'), 3500);
-                },
-                updateDOMBalances: function() {
-                    const pts = CoreEngine.Data.pontos;
-                    const cash = parseFloat(CoreEngine.Data.saldo_reais).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    } 
                     
-                    document.getElementById('topBarPoints').innerText = `${pts} PTS`;
-                    if(document.getElementById('drawerBalanceCash')) {
-                        document.getElementById('drawerBalanceCash').innerText = cash;
-                        document.getElementById('drawerBalancePoints').innerText = `${pts} pontos validados pelo Ledger.`;
+                    else if(tabName === 'cinema') {
+                        view.innerHTML = `
+                            <div class="section-header">
+                                <h2><i class="fa-solid fa-photo-film"></i> Catálogo de Transmissão Ativa</h2>
+                            </div>
+                            <div class="catalog-grid" id="catalogInjection"></div>
+                        `;
+                        const grid = document.getElementById('catalogInjection');
+                        videoCatalog.forEach(v => {
+                            const activeClass = v.id === AppEngine.CurrentVideoId ? 'active' : '';
+                            const card = document.createElement('div');
+                            card.className = `video-card ${activeClass}`;
+                            card.onclick = () => {
+                                AppEngine.CurrentVideoId = v.id;
+                                if(playerInstance && playerInstance.loadVideoById) playerInstance.loadVideoById(v.id);
+                                AppEngine.UI.switchTab('cinema');
+                            };
+                            card.innerHTML = `
+                                <div class="video-thumb">
+                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300" alt="Cover">
+                                    <span class="video-badge">${v.pts}</span>
+                                </div>
+                                <div class="video-meta">
+                                    <h4>${v.titulo}</h4>
+                                    <p>${v.categoria}</p>
+                                </div>
+                            `;
+                            grid.appendChild(card);
+                        });
+                    }
+
+                    else if(tabName === 'tasks') {
+                        view.innerHTML = `
+                            <div class="section-header">
+                                <h2><i class="fa-solid fa-bullseye"></i> Paid-To-Click (PTC Links)</h2>
+                            </div>
+                            <div class="opportunity-list">
+                                ${ptcAds.map(ad => `
+                                    <div class="opportunity-item" onclick="AppEngine.UI.msg('Aguarde o carregamento do anúncio por ${ad.time}...', 'success')">
+                                        <div class="opp-details">
+                                            <div class="opp-icon"><i class="fa-solid fa-arrow-pointer"></i></div>
+                                            <div class="opp-text">
+                                                <h4>${ad.title}</h4>
+                                                <p>${ad.desc} • <b>Tempo: ${ad.time}</b></p>
+                                            </div>
+                                        </div>
+                                        <div class="opp-payout"><span>${ad.reward}</span><small>PTC Link</small></div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    else if(tabName === 'finance') {
+                        view.innerHTML = `
+                            <div class="payout-box">
+                                <h3 style="font-size:14px; font-weight:700; color:#fff;"><i class="fa-solid fa-money-bill-transfer" style="color:var(--primary); margin-right:8px;"></i> Solicitar Liquidação de Saldo</h3>
+                                <p style="font-size:11px; color:var(--text-muted);">As transferências passam por uma auditoria direta de concorrência antes do envio ao gateway de pagamento (PIX).</p>
+                                
+                                <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:10px; margin:5px 0;">
+                                    <span style="font-size:10px; color:var(--text-muted); display:block; text-transform:uppercase;">Disponível Para Saque</span>
+                                    <h2 style="color:var(--success); font-weight:800; font-size:24px;">${parseFloat(AppEngine.WalletData.saldo_reais).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</h2>
+                                </div>
+
+                                <div class="input-wrapper">
+                                    <label>Tipo de Chave PIX</label>
+                                    <select class="premium-input" style="background:var(--bg-main);">
+                                        <option>CPF / CNPJ</option>
+                                        <option>E-mail</option>
+                                        <option>Telefone Celular</option>
+                                    </select>
+                                </div>
+
+                                <div class="input-wrapper">
+                                    <label>Dados do Favorecido (Sua Chave)</label>
+                                    <input type="text" id="targetPixInput" class="premium-input" placeholder="Insira a sua chave pix aqui">
+                                </div>
+
+                                <button class="btn-action" onclick="AppEngine.UI.executeCashout()">Processar Retirada Imediata</button>
+                            </div>
+                        `;
+                    }
+                },
+                executeCashout: async function() {
+                    const key = document.getElementById('targetPixInput').value;
+                    if(!key) { this.msg('Por favor, informe a sua chave PIX.', 'danger'); return; }
+                    
+                    if(AppEngine.WalletData.pontos < 200000) {
+                        this.msg('Limite mínimo de faturamento corporativo não atingido (R$ 20,00 / 200k PTS).', 'danger');
+                        return;
+                    }
+
+                    const { error } = await SupabaseClient.from('withdrawals').insert([{
+                        user_id: AppEngine.SessionUser.id,
+                        chave_pix: key,
+                        valor: 20.00
+                    }]);
+
+                    if(!error) {
+                        this.msg('Ordem de pagamento enviada para o ledger de concorrência.', 'success');
+                        await AppEngine.Backend.refresh();
+                        this.switchTab('finance');
                     }
                 }
             }
         };
 
-        // Escutador Universal da API do YouTube Player
+        // Manipulação da API IFrame do YouTube com Callbacks Seguros
         function onYouTubeIframeAPIReady() {
-            ytPlayer = new YT.Player('ytPlayerFrame', {
-                videoId: CoreEngine.ActiveVideoId,
-                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1 },
-                events: { 'onStateChange': (e) => {
-                    if(e.data === YT.PlayerState.PLAYING) {
-                        // Dispara a validação a cada 30 segundos exatos de retenção física
-                        if(!watchSyncInterval) {
-                            watchSyncInterval = setInterval(() => { CoreEngine.Backend.sendWatchTick(); }, 30000);
+            playerInstance = new YT.Player('ytPlayerFrame', {
+                videoId: AppEngine.CurrentVideoId,
+                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'origin': window.location.origin },
+                events: { 'onStateChange': (event) => {
+                    if(event.data === YT.PlayerState.PLAYING) {
+                        if(!tickTimer) {
+                            // Envia pulsações atômicas de segurança a cada 30 segundos de reprodução física real
+                            tickTimer = setInterval(() => { AppEngine.Backend.triggerTick(); }, 30000);
                         }
                     } else {
-                        clearInterval(watchSyncInterval);
-                        watchSyncInterval = null;
+                        clearInterval(tickTimer);
+                        tickTimer = null;
                     }
                 }}
             });
         }
 
-        // Dicionário de Telas SPA (View Rendering)
-        const Screens = {
-            cinema: () => `
-                <div class="card-premium">
-                    <span class="card-title"><i class="fa-solid fa-satellite-dish" style="color:var(--primary)"></i> Transmissão Criptografada</span>
-                    <span class="card-subtitle">O balanço de auditoria monitora esta sessão. Mantenha a janela visível e ativa para pontuar.</span>
-                </div>
-                <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--primary)">Coleção de Mídia</h4>
-                <div class="grid-videos" id="catalogGridContainer"></div>
-            `,
-            missions: () => `
-                <h3 style="font-size:16px; font-weight:800;">Pool de Missões</h3>
-                <div class="card-premium">
-                    <div class="card-row">
-                        <span class="card-title">Fidelidade Diária</span>
-                        <span style="color:var(--primary); font-weight:700; font-size:11px;">+100 PTS</span>
-                    </div>
-                    <span class="card-subtitle">Assista 10 minutos de conteúdo hoje para desbloquear o gatilho da wallet.</span>
-                </div>
-            `,
-            ranking: () => `
-                <h3 style="font-size:16px; font-weight:800;">Conselho de Líderes</h3>
-                <div class="card-premium">
-                    <div class="card-row" style="padding:4px 0; border-bottom:1px solid var(--border)">
-                        <span style="font-size:12px;">1. Diretor_Geral</span>
-                        <span style="font-size:12px; color:var(--primary); font-weight:700;">854.000 PTS</span>
-                    </div>
-                    <div class="card-row" style="padding:4px 0;">
-                        <span style="font-size:12px;">2. Você (${CoreEngine.Data.nivel})</span>
-                        <span style="font-size:12px; color:var(--primary); font-weight:700;">${CoreEngine.Data.pontos} PTS</span>
-                    </div>
-                </div>
-            `,
-            profile: () => `
-                <div class="card-premium" style="text-align:center; align-items:center;">
-                    <div style="width:60px; height:60px; background:var(--primary); color:#000; font-weight:800; font-size:22px; border-radius:50%; display:flex; justify-content:center; align-items:center;">U</div>
-                    <h4 style="margin-top:10px;">Membro Autenticado</h4>
-                    <span style="font-size:10px; background:rgba(255,157,0,0.15); color:var(--primary); padding:2px 8px; border-radius:6px; font-weight:700; margin-top:4px;">Nível ${CoreEngine.Data.nivel}</span>
-                </div>
-                <button class="btn-premium" style="background:var(--bg-card); border:1px solid var(--border); color:var(--danger);" onclick="Supabase.auth.signOut()">Destruir Sessão (Logout)</button>
-            `
-        };
-
-        // Boot
-        CoreEngine.Init();
+        // Execução do Boot do Ecossistema
+        AppEngine.Init();
     </script>
 </body>
 </html>
