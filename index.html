@@ -33,52 +33,69 @@
             overflow: hidden;
         }
 
-        /* AJUSTADO: Prova Social movida para baixo para não tampar o Header nem o Player */
+        /* CORRIGIDO: Agora fica acima da barra de navegação (bottom: 110px) e com z-index alto */
         .live-withdrawal {
             position: absolute;
-            bottom: 95px; left: 15px; right: 15px;
-            background: rgba(16, 185, 129, 0.22);
-            border: 1px solid rgba(16, 185, 129, 0.45);
+            bottom: 110px; left: 15px; right: 15px;
+            background: rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.5);
             padding: 10px 15px;
             border-radius: 12px;
-            z-index: 25;
+            z-index: 35;
             backdrop-filter: blur(15px);
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 11px;
-            transform: translateY(180%);
+            transform: translateY(200%);
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            pointer-events: none;
         }
         .live-withdrawal.active { transform: translateY(0); }
         .live-withdrawal i { color: #10b981; font-size: 15px; }
 
+        /* CORRIGIDO: Layout do topo expandido para mostrar Pontos E Reais */
         .points-header {
             position: absolute;
             top: 15px; left: 15px; right: 15px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 20;
-            background: rgba(12, 12, 15, 0.85);
-            padding: 12px 20px;
+            background: rgba(12, 12, 15, 0.9);
+            padding: 10px 15px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
+            gap: 5px;
         }
 
         .logo-text {
-            font-weight: 800; font-size: 16px;
+            font-weight: 800; font-size: 13px;
             background: linear-gradient(90deg, #ff9d00, #ffb700);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
         }
 
+        .header-balances {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
         .score-box {
-            display: flex; align-items: center; gap: 6px;
+            display: flex; align-items: center; gap: 4px;
             background: linear-gradient(135deg, #ff9d00, #ffb700);
-            padding: 6px 14px; border-radius: 20px;
-            color: #000; font-weight: 800; font-size: 11px;
-            box-shadow: 0 4px 15px rgba(255, 157, 0, 0.3);
+            padding: 4px 10px; border-radius: 20px;
+            color: #000; font-weight: 800; font-size: 10px;
+            box-shadow: 0 4px 10px rgba(255, 157, 0, 0.2);
+        }
+        
+        .real-box-main {
+            font-size: 11px;
+            font-weight: 700;
+            color: #00c853;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .video-box {
@@ -101,7 +118,7 @@
             flex-direction: column;
             gap: 16px;
             overflow-y: auto;
-            padding-bottom: 110px;
+            padding-bottom: 120px;
         }
 
         .daily-bonus-card {
@@ -173,15 +190,34 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
+        /* CORRIGIDO: Cabeçalho do menu com botão visível para Fechar */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
             z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 60px 15px 30px 15px; display: flex; flex-direction: column; gap: 15px;
+            padding: 20px 15px 30px 15px; display: flex; flex-direction: column; gap: 14px;
             overflow-y: auto;
         }
         .menu-drawer.active { left: 0; }
-        .close-menu { position: absolute; top: 18px; right: 20px; font-size: 24px; color: #ff9d00; cursor: pointer; }
+        
+        .menu-header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+        }
+        .btn-fechar-painel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
         
         .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
         .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
@@ -202,6 +238,24 @@
             font-weight: 800; border: none; padding: 12px; border-radius: 10px;
             cursor: pointer; width: 100%; font-size: 12px; gap: 8px;
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
+        }
+
+        /* CORRIGIDO: Botão de Logout adicionado */
+        .btn-logout {
+            background: #221515;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .card-aviso-seguranca {
@@ -238,10 +292,11 @@
 <body>
 
     <div class="cinema-container">
-        <!-- AJUSTADO: Prova social reposicionada estrategicamente na parte inferior -->
+        
+        <!-- CORRIGIDO: Z-index e posição recalculados para ficar acima do rodapé -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
-            <span id="liveWithdrawalText">Usuário ***@gmail.com acabou de sacar R$ 24,50 via Pix!</span>
+            <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
         </div>
 
         <div class="auth-screen" id="authScreen">
@@ -280,9 +335,12 @@
             </div>
         </div>
 
+        <!-- CORRIGIDO: Cabeçalho com o botão de fechar e botão de deslogar inserido -->
         <div class="menu-drawer" id="menuDrawer">
-            <i class="fa-solid fa-xmark close-menu" onclick="toggleMenu()"></i>
-            <h2 style="font-size: 16px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Panel</h2>
+            <div class="menu-header-box">
+                <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
+                <button class="btn-fechar-painel" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+            </div>
             
             <div class="data-card">
                 <p>Usuário Ativo</p>
@@ -315,29 +373,35 @@
             <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
                 <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
                 <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
-                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo (assistir e acumular seus primeiros 1.000 PTS).
+                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo.
                 </p>
                 <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
             </div>
 
             <div class="card-aviso-seguranca">
-                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO ATIVO:</strong>
-                IPs duplicados, uso de VPN/emuladores e fraudes geram banimento automático sem direito a saque.
+                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO:</strong>
+                Uso de VPN/emuladores e fraudes geram banimento automático.
             </div>
 
-            <a href="https://t.me/+90Iak2TuoW8wYjEx" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:12px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; margin-top: auto; min-height: 45px;">
-                <i class="fa-brands fa-telegram" style="font-size:16px;"></i> Suporte Oficial Telegram
+            <a href="https://t.me/+90Iak2TuoW8wYjEx" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:10px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; min-height: 40px;">
+                <i class="fa-brands fa-telegram" style="font-size:15px;"></i> Suporte Telegram
             </a>
+
+            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
         </div>
         
+        <!-- CORRIGIDO: Cabeçalho principal agora exibe Pontos E Reais -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
             </div>
             <span class="logo-text">CINE REWARDS</span>
-            <div class="score-box">
-                <i class="fa-solid fa-wallet"></i>
-                <span id="pointsBalance">0</span> PTS
+            <div class="header-balances">
+                <div class="score-box">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span id="pointsBalance">0</span> PTS
+                </div>
+                <span class="real-box-main" id="realBalanceMain">R$ 0,00</span>
             </div>
         </div>
 
@@ -406,8 +470,6 @@
         let player = null;
         let pontuacaoInterval = null;
         let currentVideoId = '';
-        
-        // AJUSTADO: Variável de controle para abrir o anúncio apenas no primeiro clique do usuário
         let primeiroCliqueFilme = true;
 
         const listaFilmes = [
@@ -479,7 +541,6 @@
         }
 
         function mudarVideo(id, titulo) {
-            // AJUSTADO: Abre o anúncio apenas na primeira vez que ele escolhe um filme. Depois roda liso.
             if (primeiroCliqueFilme) {
                 window.open(adsterraSmartlink, '_blank');
                 primeiroCliqueFilme = false;
@@ -525,6 +586,9 @@
             
             const saldoFormatted = userData.saldo_reais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('realBalance').innerText = saldoFormatted;
+            
+            // CORRIGIDO: Vincula o saldo em reais na tela principal (header)
+            document.getElementById('realBalanceMain').innerText = saldoFormatted;
 
             const rankSpan = document.getElementById('userRank');
             if(userData.pontos > 5000) {
@@ -659,6 +723,21 @@
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 if(error) alert(error.message);
+            }
+        }
+
+        // CORRIGIDO: Função para deslogar do Supabase de forma nativa
+        async function handleLogout() {
+            if(confirm('Tem certeza que deseja sair do aplicativo?')) {
+                const { error } = await _supabase.auth.signOut();
+                if(error) {
+                    alert('Erro ao sair: ' + error.message);
+                } else {
+                    toggleMenu(); // Fecha o menu lateral
+                    // Limpa estados visuais básicos locais
+                    userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+                    atualizarPainelVisual();
+                }
             }
         }
 
