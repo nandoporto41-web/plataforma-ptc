@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <script>(function(s){s.dataset.zone='11218298',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    <script>(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    <script src="https://5gvci.com/act/files/tag.min.js?z=11227090" data-cfasync="false" async></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
@@ -37,20 +33,41 @@
             overflow: hidden;
         }
 
+        /* Notificação Dinâmica de Saques - Prova Social Forte */
+        .live-withdrawal {
+            position: absolute;
+            top: 85px; left: 15px; right: 15px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 10px 15px;
+            border-radius: 12px;
+            z-index: 25;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            transform: translateY(-160%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .live-withdrawal.active { transform: translateY(0); }
+        .live-withdrawal i { color: #10b981; font-size: 15px; }
+
         .points-header {
             position: absolute;
             top: 15px; left: 15px; right: 15px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 20;
-            background: rgba(12, 12, 15, 0.75);
+            background: rgba(12, 12, 15, 0.8);
             padding: 12px 20px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .logo-text {
-            font-weight: 800; font-size: 15px;
+            font-weight: 800; font-size: 16px;
             background: linear-gradient(90deg, #ff9d00, #ffb700);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
@@ -80,9 +97,53 @@
             padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             overflow-y: auto;
             padding-bottom: 95px;
+        }
+
+        /* Gamificação - Caixa de Bônus Diário */
+        .daily-bonus-card {
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15);
+            transition: transform 0.2s;
+        }
+        .daily-bonus-card:active { transform: scale(0.98); }
+        .daily-bonus-info h4 { font-size: 13px; color: #f472b6; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .daily-bonus-info p { font-size: 10px; color: #a5b4fc; margin-top: 2px; }
+        .daily-bonus-btn {
+            background: #ec4899; color: #fff; border: none;
+            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Nova Funcionalidade Interativa: Roleta da Sorte🎡 */
+        .lucky-wheel-card {
+            background: linear-gradient(135deg, #064e3b, #022c22);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+            transition: transform 0.2s;
+        }
+        .lucky-wheel-card:active { transform: scale(0.98); }
+        .lucky-wheel-info h4 { font-size: 13px; color: #34d399; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .lucky-wheel-info p { font-size: 10px; color: #a7f3d0; margin-top: 2px; }
+        .lucky-wheel-btn {
+            background: #10b981; color: #fff; border: none;
+            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
         }
 
         .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
@@ -106,7 +167,7 @@
         .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
         .movie-card-info { padding: 8px; }
         .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; }
+        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; display: block; margin-top: 2px; }
 
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0;
@@ -141,6 +202,22 @@
         .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
         .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
         .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
+
+        /* Barra de Progresso do Saque Mínimo */
+        .progress-container {
+            margin-top: 5px;
+            width: 100%;
+            background: #222;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9d00, #00c853);
+            transition: width 0.4s ease;
+        }
 
         .btn-saque {
             background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
@@ -193,6 +270,12 @@
 <body>
 
     <div class="cinema-container">
+        <!-- Prova Social Viva -->
+        <div class="live-withdrawal" id="liveWithdrawal">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="liveWithdrawalText">Usuário ***@gmail.com acabou de sacar R$ 24,50 via Pix!</span>
+        </div>
+
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -209,7 +292,7 @@
                     <div class="info-badge-item">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                         <div class="info-badge-text">
-                            <h4>Conversta Tudo em Pix</h4>
+                            <h4>Converta Tudo em Pix</h4>
                             <p>Resgate seus fundos direto na carteira via Pix.</p>
                         </div>
                     </div>
@@ -239,13 +322,24 @@
             </div>
 
             <div class="data-card">
+                <p>Nível da Conta</p>
+                <span id="userRank" style="font-size:14px; font-weight:800; color:#ff9d00;"><i class="fa-solid fa-medal"></i> Bronze</span>
+            </div>
+
+            <div class="data-card">
                 <p>Pontos Acumulados</p>
                 <span id="ptsTotal">0</span> PTS
             </div>
             
             <div class="data-card" style="background: rgba(255, 157, 0, 0.04);">
-                <p>Saldo Convertido</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <p>Saldo Convertido</p>
+                    <span id="progressPercent" style="font-size:10px; color:#8e8e93;">0% para saque</span>
+                </div>
                 <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
             </div>
 
             <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
@@ -284,6 +378,24 @@
         </div>
 
         <div class="content-body" id="contentBody">
+            <!-- Gamificação: Retenção por Bônus Diário -->
+            <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
+                <div class="daily-bonus-info">
+                    <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
+                    <p id="dailyBonusStatus">Disponível! Resgate seus pontos de hoje.</p>
+                </div>
+                <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
+            </div>
+
+            <!-- Gamificação Adicional: Roleta Festiva/Sorte🎡 -->
+            <div class="lucky-wheel-card" id="luckyWheelCard" onclick="rodarRoletaSorte()">
+                <div class="lucky-wheel-info">
+                    <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte🎡</h4>
+                    <p id="luckyWheelStatus">Tente a sorte! Disponível a cada 1 hora.</p>
+                </div>
+                <button class="lucky-wheel-btn" id="luckyWheelBtn">Girar</button>
+            </div>
+
             <div class="movie-details">
                 <h3 id="movieTitle">Carregando...</h3>
                 <p id="movieDesc">Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
@@ -320,24 +432,26 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const indicarPorID = urlParams.get('ref'); 
+        const adsterraSmartlink = 'https://www.effectivecpmnetwork.com/z55txpkm?key=03ab2d56dc871c7f21983c6fc5d8bebb';
 
         let isSignUpMode = false;
         let currentUser = null;
         let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
         let player = null;
         let pontuacaoInterval = null;
+        let currentVideoId = '';
 
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', category: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '4isClyJJcYg', titulo: 'Proteção à testemunhas', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
             { id: '-tPux_s_qEY', titulo: 'O último comando', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'x6KT_2a98YA', titulo: 'Tempestade planeta em fúria', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
             { id: 'bBPKTYCYnc4', titulo: 'Corações de ferro', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'Hw_gWagWJRE', titulo: 'Policial em ação', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
+            { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Marciais', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
             { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
@@ -361,99 +475,11 @@
             }
         }
 
-        _supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                currentUser = session.user;
-                document.getElementById('userDisplay').innerText = currentUser.email;
-                document.getElementById('authScreen').classList.add('hidden');
-                await carregarDadosUsuario();
-            } else {
-                currentUser = null;
-                document.getElementById('authScreen').classList.remove('hidden');
-                document.getElementById('userDisplay').innerText = "Desconectado";
-            }
-        });
-
-        async function handleAuth() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-
-            if (!email || !password) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-
-            if (isSignUpMode) {
-                const { data, error } = await _supabase.auth.signUp({ email, password });
-                if (error) {
-                    alert('Erro no cadastro: ' + error.message);
-                    return;
-                }
-                if (data?.user) {
-                    const { error: dbError } = await _supabase.from('perfis').insert([{
-                        id: data.user.id,
-                        email: email,
-                        pontos: 0, 
-                        saldo_reais: 0.00,
-                        primeiro_video_assistido: false,
-                        indicado_por: indicarPorID || null
-                    }]);
-                    
-                    if (dbError) console.error('Erro ao criar perfil:', dbError.message);
-                    alert('Cadastro realizado com sucesso! Faça o login.');
-                    toggleAuthMode();
-                }
-            } else {
-                const { error } = await _supabase.auth.signInWithPassword({ email, password });
-                if (error) alert('Erro no login: ' + error.message);
-            }
+        function toggleMenu() {
+            document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        async function carregarDadosUsuario() {
-            if (!currentUser) return;
-            const { data, error } = await _supabase
-                .from('perfis')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
-
-            if (data) {
-                userData = {
-                    pontos: parseInt(data.pontos) || 0,
-                    saldo_reais: parseFloat(data.saldo_reais) || 0.00,
-                    primeiro_video_assistido: data.primeiro_video_assistido || false,
-                    indicado_por: data.indicado_por || null
-                };
-                atualizarInterface();
-            } else if (error) {
-                console.error('Erro ao carregar perfil:', error.message);
-            }
-        }
-
-        function atualizarInterface() {
-            document.getElementById('pointsBalance').innerText = userData.pontos;
-            document.getElementById('ptsTotal').innerText = userData.pontos;
-            document.getElementById('realBalance').innerText = `R$ ${userData.saldo_reais.toFixed(2).replace('.', ',')}`;
-        }
-
-        async function salvarDadosBanco() {
-            if (!currentUser) return;
-            
-            // Correção estrutural crucial para a tipagem NUMERIC do Supabase não rejeitar a gravação
-            const { error } = await _supabase
-                .from('perfis')
-                .upsert({
-                    id: currentUser.id,
-                    pontos: parseInt(userData.pontos),
-                    saldo_reais: parseFloat(userData.saldo_reais.toFixed(2)),
-                    primeiro_video_assistido: userData.primeiro_video_assistido,
-                    indicado_por: userData.indicado_por
-                });
-
-            if (error) console.error('Erro ao persistir dados:', error.message);
-        }
-
-        function renderCatalogo() {
+        function renderCatalog() {
             const grid = document.getElementById('catalogGrid');
             grid.innerHTML = '';
             listaFilmes.forEach(filme => {
@@ -464,7 +490,7 @@
                     <img src="${filme.thumb}" alt="${filme.titulo}">
                     <div class="movie-card-info">
                         <h5>${filme.titulo}</h5>
-                        <span><i class="fa-solid fa-star"></i> +5 PTS/min</span>
+                        <span><i class="fa-solid fa-play"></i> decolar +15 PTS/min</span>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -472,75 +498,231 @@
         }
 
         function onYouTubeIframeAPIReady() {
-            if (listaFilmes.length > 0) {
-                const primeiro = listaFilmes[0];
-                document.getElementById('movieTitle').innerText = primeiro.titulo;
+            if(listaFilmes.length > 0) {
+                currentVideoId = listaFilmes[0].id;
+                document.getElementById('movieTitle').innerText = listaFilmes[0].titulo;
                 player = new YT.Player('videoPlayer', {
-                    videoId: primeiro.id,
-                    playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'playsinline': 1 },
+                    videoId: currentVideoId,
+                    playerVars: { 'autoplay': 0, 'controls': 1, 'modestbranding': 1, 'rel': 0 },
                     events: { 'onStateChange': onPlayerStateChange }
                 });
             }
-            renderCatalogo();
         }
 
         function mudarVideo(id, titulo) {
+            // Monetização por clique ao trocar de filme via Smartlink
+            window.open(adsterraSmartlink, '_blank');
+
+            currentVideoId = id;
             document.getElementById('movieTitle').innerText = titulo;
-            if (player) {
+            if(player && player.loadVideoById) {
                 player.loadVideoById(id);
             }
         }
 
         function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                iniciarContagemPontos();
+            if (event.data == YT.PlayerState.PLAYING) {
+                if (!pontuacaoInterval) {
+                    pontuacaoInterval = setInterval(computarPontosMinuto, 60000);
+                }
             } else {
-                pararContagemPontos();
+                limparIntervaloPontos();
             }
         }
 
-        function iniciarContagemPontos() {
-            if (pontuacaoInterval) return;
-            pontuacaoInterval = setInterval(async () => {
-                if (currentUser) {
-                    userData.pontos += 5;
-                    userData.saldo_reais += 0.05; 
-                    atualizarInterface();
-                    await salvarDadosBanco();
-                }
-            }, 60000); 
+        function limparIntervaloPontos() {
+            if (pontuacaoInterval) {
+                clearInterval(pontuacaoInterval);
+                pontuacaoInterval = null;
+            }
         }
 
-        function pararContagemPontos() {
-            clearInterval(pontuacaoInterval);
-            pontuacaoInterval = null;
+        async function computarPontosMinuto() {
+            if (!currentUser || document.hidden) return;
+            
+            // Incremento contínuo com base no engajamento ativo
+            userData.pontos += 15;
+            userData.saldo_reais = (userData.pontos * 0.002);
+            
+            atualizarPainelVisual();
+            await sincronizarSupabase();
         }
 
-        function toggleMenu() {
-            document.getElementById('menuDrawer').classList.toggle('active');
+        function atualizarPainelVisual() {
+            document.getElementById('pointsBalance').innerText = userData.pontos;
+            document.getElementById('ptsTotal').innerText = userData.pontos;
+            
+            const saldoFormatted = userData.saldo_reais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('realBalance').innerText = saldoFormatted;
+
+            const rankSpan = document.getElementById('userRank');
+            if(userData.pontos > 5000) {
+                rankSpan.innerHTML = '<i class="fa-solid fa-gem" style="color:#00e5ff;"></i> Diamante';
+            } else if(userData.pontos > 2000) {
+                rankSpan.innerHTML = '<i class="fa-solid fa-crown" style="color:#ffd700;"></i> Ouro';
+            } else if(userData.pontos > 800) {
+                rankSpan.innerHTML = '<i class="fa-solid fa-medal" style="color:#c0c0c0;"></i> Prata';
+            } else {
+                rankSpan.innerHTML = '<i class="fa-solid fa-medal" style="color:#cd7f32;"></i> Bronze';
+            }
+
+            const minSaque = 20.00;
+            let percent = (userData.saldo_reais / minSaque) * 100;
+            if (percent > 100) percent = 100;
+            
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressPercent').innerText = Math.floor(percent) + '% para saque';
         }
 
-        function ejecutarCompartilhamento() {
+        async function coletarBonusDiario() {
             if (!currentUser) return;
-            const link = `${window.location.origin}${window.location.pathname}?ref=${currentUser.id}`;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('Link de indicação copiado com sucesso!');
+            const hoje = new Date().toDateString();
+            const ultimoBonus = localStorage.getItem('ultimoBonus_' + currentUser.id);
+            
+            if (ultimoBonus === hoje) {
+                alert('Você já coletou seu bônus diário hoje! Volte amanhã.');
+                return;
+            }
+
+            // Abre o Smartlink antes de entregar a recompensa
+            window.open(adsterraSmartlink, '_blank');
+
+            userData.pontos += 100;
+            userData.saldo_reais = (userData.pontos * 0.002);
+            localStorage.setItem('ultimoBonus_' + currentUser.id, hoje);
+            
+            document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
+            document.getElementById('dailyBonusBtn').innerText = 'Ok';
+            document.getElementById('dailyBonusBtn').style.background = '#333';
+            
+            atualizarPainelVisual();
+            await sincronizarSupabase();
+            alert('Parabéns! Você ganhou +100 PTS de bônus diário.');
+        }
+
+        async function rodarRoletaSorte() {
+            if (!currentUser) return;
+            const agora = Date.now();
+            const ultimaRoleta = localStorage.getItem('ultimaRoleta_' + currentUser.id);
+            const umaHora = 3600000; // 1 hora em milissegundos
+
+            if (ultimaRoleta && (agora - ultimaRoleta < umaHora)) {
+                const restante = Math.ceil((umaHora - (agora - ultimaRoleta)) / 60000);
+                alert(`A roleta está recarregando! Tente novamente em ${restante} minutos.`);
+                return;
+            }
+
+            // Abre o Smartlink gerando cliques orgânicos e alta receita
+            window.open(adsterraSmartlink, '_blank');
+
+            // Sorteio dinâmico de pontuação para aumentar o entretenimento
+            const premiações = [20, 40, 60, 80, 150, 300];
+            const pontosGanhos = premiações[Math.floor(Math.random() * premiações.length)];
+
+            userData.pontos += pontosGanhos;
+            userData.saldo_reais = (userData.pontos * 0.002);
+            localStorage.setItem('ultimaRoleta_' + currentUser.id, agora);
+
+            atualizarPainelVisual();
+            await sincronizarSupabase();
+            alert(`🎡 A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
+        }
+
+        async function sincronizarSupabase() {
+            if (!currentUser) return;
+            await _supabase.from('profiles').upsert({
+                id: currentUser.id,
+                pontos: userData.pontos,
+                saldo_reais: userData.saldo_reais
             });
         }
 
-        function solicitarSaque() {
-            if (userData.saldo_reais < 20) {
-                alert('Saldo insuficiente. O mínimo para saque é R$ 20,00.');
-                return;
-            }
-            alert('Solicitação enviada para processamento!');
+        function toggleLike() {
+            const icon = document.getElementById('likeBtnIcon');
+            icon.style.color = icon.style.color === 'rgb(239, 68, 68)' ? '#fff' : '#ef4444';
         }
 
-        function toggleLike() {
-            const icon = document.querySelector('#likeBtnIcon i');
-            icon.classList.toggle('fa-solid');
-            icon.style.color = icon.classList.contains('fa-solid') ? '#ef5350' : 'white';
+        function executarCompartilhamento() {
+            if(!currentUser) return;
+            const linkRef = window.location.origin + window.location.pathname + '?ref=' + currentUser.id;
+            navigator.clipboard.writeText(linkRef);
+            alert('Seu link exclusivo de indicação foi copiado para a área de transferência!');
         }
+
+        function solicitarSaque() {
+            if(userData.saldo_reais < 20.00) {
+                alert('Saldo insuficiente. O valor mínimo para transferência Pix é R$ 20,00.');
+            } else {
+                window.open(adsterraSmartlink, '_blank');
+                alert('Solicitação recebida! Seu saldo passará por auditoria de segurança de tráfego e o pagamento será enviado em até 24h.');
+            }
+        }
+
+        function iniciarNotificacoesSaque() {
+            const nomes = ['marcos', 'ana', 'lucas', 'diego', 'julia', 'felipe', 'carla', 'gabs', 'thiago', 'rafa', 'aline', 'bruno', 'mateus', 'patricia'];
+            const valores = ['21,40', '35,00', '20,00', '54,15', '22,90', '41,00', '27,50', '63,00', '20,50'];
+            
+            setInterval(() => {
+                if(Math.random() > 0.4) {
+                    const randomNome = nomes[Math.floor(Math.random() * nomes.length)];
+                    const randomValor = valores[Math.floor(Math.random() * valores.length)];
+                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}***@gmail.com sacou R$ ${randomValor} via Pix agora!`;
+                    
+                    const el = document.getElementById('liveWithdrawal');
+                    el.classList.add('active');
+                    setTimeout(() => el.classList.remove('active'), 6000);
+                }
+            }, 16000);
+        }
+
+        async function handleAuth() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            
+            if(!email || !password) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            if(isSignUpMode) {
+                const { data, error } = await _supabase.auth.signUp({ email, password, options: { data: { indicado_por: indicarPorID } } });
+                if(error) alert(error.message);
+                else alert('Cadastro realizado com sucesso! Verifique seu e-mail para confirmação.');
+            } else {
+                const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                if(error) alert(error.message);
+            }
+        }
+
+        _supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                document.getElementById('userDisplay').innerText = currentUser.email;
+                document.getElementById('authScreen').classList.add('hidden');
+                
+                const { data } = await _supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+                if(data) {
+                    userData.pontos = data.pontos || 0;
+                    userData.saldo_reais = data.saldo_reais || 0.00;
+                }
+                atualizarPainelVisual();
+                
+                const hoje = new Date().toDateString();
+                if(localStorage.getItem('ultimoBonus_' + currentUser.id) === hoje) {
+                    document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
+                    document.getElementById('dailyBonusBtn').innerText = 'Ok';
+                    document.getElementById('dailyBonusBtn').style.background = '#333';
+                }
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').classList.remove('hidden');
+                limparIntervaloPontos();
+            }
+        });
+
+        renderCatalog();
+        iniciarNotificacoesSaque();
     </script>
 </body>
 </html>
+
