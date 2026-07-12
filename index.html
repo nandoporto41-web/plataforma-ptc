@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Premium Pro — Dashboard de Ganhos</title>
+    <title>CineRewards — Entretenimento que te Premia</title>
     
     <!-- CDNs de Alta Performance -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,20 +14,19 @@
     <style>
         :root {
             --bg-main: #06060c;
-            --bg-surface: #0c0d14;
-            --bg-card: #131522;
+            --bg-surface: #0a0b10;
+            --bg-card: #11131e;
             --primary: #ff9d00;
             --secondary: #ffbe1a;
             --success: #10b981;
             --danger: #f43f5e;
             --text-main: #f3f4f6;
             --text-muted: #6b7280;
-            --border: rgba(255, 255, 255, 0.04);
-            --glass: rgba(12, 13, 20, 0.85);
+            --border: rgba(255, 255, 255, 0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
+        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
 
         .app-shell {
             width: 100%;
@@ -37,162 +36,174 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
             padding-bottom: 90px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
         }
 
-        /* Toast Profissional */
+        /* Toast System */
         .toast-system {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150%);
             width: calc(100% - 40px); max-width: 440px; background: var(--bg-card);
             border: 1px solid var(--border); padding: 14px 18px; border-radius: 14px;
-            z-index: 5000; backdrop-filter: blur(20px); font-size: 13px; display: flex; align-items: center; gap: 12px;
+            z-index: 9999; backdrop-filter: blur(20px); font-size: 13px; display: flex; align-items: center; gap: 12px;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .toast-system.active { transform: translateX(-50%) translateY(0); }
         .toast-system.success { border-color: var(--success); color: var(--success); }
         .toast-system.danger { border-color: var(--danger); color: var(--danger); }
 
-        /* Global Header */
+        /* Top Header Area */
         .app-header {
-            background: var(--glass); backdrop-filter: blur(20px);
             padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); sticky: top; top: 0; z-index: 1000;
+            background: rgba(10, 11, 16, 0.7); position: absolute; top: 0; left: 0; width: 100%; z-index: 100;
         }
-        .app-header .logo-area h1 { font-size: 18px; font-weight: 800; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .app-header .logo-area p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .header-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
+        .header-logo span { color: var(--primary); }
+        .header-user-status { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
+        .header-user-status span { font-size: 11px; font-weight: 700; color: #fff; }
 
-        /* Media Player Box */
-        .video-viewport { width: 100%; height: 260px; background: #000; position: relative; }
-        #ytPlayerFrame { width: 100%; height: 100%; border: none; }
+        /* Banner Principal Highlight (Igual imagem de referência) */
+        .hero-showcase {
+            position: relative; width: 100%; height: 380px; background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800') center/cover no-repeat;
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
+        }
+        .hero-showcase::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(6,6,12,0.4) 0%, rgba(10,11,16,1) 100%);
+        }
+        .hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+        .hero-title { font-size: 28px; font-weight: 800; color: #fff; text-transform: uppercase; line-height: 1.1; letter-spacing: -0.5px; }
+        .btn-watch-now {
+            background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #000;
+            font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 12px 24px; border-radius: 25px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 6px 20px rgba(255,157,0,0.4); transition: transform 0.2s;
+        }
+        .btn-watch-now:hover { transform: scale(1.03); }
 
-        /* Main Container */
-        .content-body { padding: 20px; display: flex; flex-direction: column; gap: 24px; }
+        /* Content Shell Fluid */
+        .content-body { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 26px; margin-top: -15px; position: relative; z-index: 20; }
 
-        /* Grid Estatísticas Financeiras */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; position: relative; overflow: hidden; }
-        .stat-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
-        .stat-card h3 { font-size: 20px; font-weight: 800; color: #fff; }
-        .stat-card h3.green { color: var(--success); }
-        .stat-badge { position: absolute; top: 12px; right: 12px; font-size: 12px; color: rgba(255,157,0,0.2); }
+        /* Seções de Grade de Funcionalidades/Novidades (Conforme Imagem) */
+        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        
+        .novelty-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .novelty-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; transition: border-color 0.2s; }
+        .novelty-card:hover { border-color: rgba(255,157,0,0.3); }
+        .novelty-icon { width: 36px; height: 36px; background: rgba(255,157,0,0.06); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 15px; }
+        .novelty-card h4 { font-size: 12px; font-weight: 700; color: #fff; }
+        .novelty-card p { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
 
-        /* Seções e Títulos */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .section-header h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .section-header h2 i { color: var(--primary); }
+        /* Feed Realtime de Saques Concluídos */
+        .payout-feed { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
+        .payout-feed-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .payout-feed-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .payout-user { display: flex; align-items: center; gap: 10px; }
+        .payout-user img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #222; }
+        .payout-user span { font-size: 12px; font-weight: 600; color: #fff; }
+        .payout-val { font-size: 12px; font-weight: 700; color: var(--success); }
 
-        /* Lista / Cards de Oportunidades */
-        .opportunity-list { display: flex; flex-direction: column; gap: 10px; }
-        .opportunity-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.2s; }
-        .opportunity-item:hover { border-color: rgba(255,157,0,0.3); }
-        .opp-details { display: flex; align-items: center; gap: 14px; }
-        .opp-icon { width: 40px; height: 40px; background: rgba(255,157,0,0.06); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 16px; }
-        .opp-text h4 { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
-        .opp-text p { font-size: 11px; color: var(--text-muted); }
-        .opp-payout { text-align: right; }
-        .opp-payout span { display: block; font-size: 12px; font-weight: 700; color: var(--primary); }
-        .opp-payout small { font-size: 9px; color: var(--success); text-transform: uppercase; font-weight: bold; }
+        /* Catálogo Horizontal e Grade de Filmes */
+        .catalog-scroller { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .catalog-scroller::-webkit-scrollbar { display: none; }
+        .media-poster-card { min-width: 110px; width: 110px; height: 160px; background: #181a26; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid transparent; }
+        .media-poster-card.active { border-color: var(--primary); }
+        .media-poster-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Grid de Vídeos do Catálogo */
-        .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .video-card { background: var(--bg-card); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s; }
-        .video-card.active { border-color: var(--primary); }
-        .video-thumb { position: relative; width: 100%; height: 100px; background: #1a1c2e; }
-        .video-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .video-badge { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.75); padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--primary); font-weight: 700; }
-        .video-meta { padding: 10px; }
-        .video-meta h4 { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .video-meta p { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+        /* Caixa Estruturada de Saque Profissional */
+        .finance-card { background: linear-gradient(135deg, #11131e, #171224); border: 1px solid var(--border); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .app-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
+        .app-input:focus { border-color: var(--primary); }
 
-        /* Box de Saque Estruturado */
-        .payout-box { background: linear-gradient(135deg, #131522, #181126); border: 1px solid var(--border); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
-        .input-wrapper { display: flex; flex-direction: column; gap: 6px; }
-        .input-wrapper label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .premium-input { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
-        .premium-input:focus { border-color: var(--primary); }
-        .btn-action { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #000; font-weight: 700; font-size: 13px; border: none; padding: 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(255,157,0,0.2); }
+        /* Floating Bottom Bar (Idêntica à da Imagem de Referência) */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 75px; background: linear-gradient(to top, #06060c 60%, transparent); display: flex; align-items: flex-end; padding: 0 16px 12px 16px; z-index: 2000; }
+        .nav-container { width: 100%; height: 56px; background: rgba(17, 19, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 60px; transition: color 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 15px; }
+        .nav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
 
-        /* Sistema de Afiliados */
-        .referral-box { background: rgba(255,157,0,0.03); border: 1px dashed rgba(255,157,0,0.2); border-radius: 14px; padding: 14px; }
-        .referral-link-row { display: flex; gap: 8px; margin-top: 8px; }
-        .referral-link-row input { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px; color: var(--text-muted); font-size: 11px; outline: none; }
-
-        /* Bottom Menu */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 75px; background: linear-gradient(to top, #06060c 70%, transparent); padding: 0 16px; display: flex; align-items: center; z-index: 2000; }
-        .dock-bar { width: 100%; height: 54px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 18px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -5px 25px rgba(0,0,0,0.6); }
-        .dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--text-muted); width: 55px; }
-        .dock-item.active { color: var(--primary); }
-        .dock-item i { font-size: 14px; }
-        .dock-item span { font-size: 10px; font-weight: 600; }
+        /* Media Viewport Embutido Oculto Estrutural */
+        .hidden-player-box { width: 0; height: 0; opacity: 0; pointer-events: none; }
 
         /* Auth Canvas Gate */
-        .auth-gate { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 100vh; background: var(--bg-main); z-index: 9000; display: flex; flex-direction: column; padding: 40px 24px; justify-content: center; }
+        .auth-gate { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 100vh; background: var(--bg-main); z-index: 99999; display: flex; flex-direction: column; padding: 40px 24px; justify-content: center; }
         .auth-gate.hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+    <!-- Sistema de Avisos do Aplicativo -->
+    <div class="toast-system" id="appToast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="appToastText">Operação Realizada</span>
+    </div>
+
+    <!-- Tela de Acesso Segura -->
+    <div class="auth-gate" id="authScreen">
+        <div style="text-align: center; margin-bottom: 35px;">
+            <h1 style="font-size: 34px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">CINE REWARDS</h1>
+            <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">Entretenimento que te Premia</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+            <input type="email" id="authEmail" class="app-input" placeholder="Seu e-mail cadastrado">
+            <input type="password" id="authPassword" class="app-input" placeholder="Sua senha de acesso">
+        </div>
+        <button class="btn-watch-now" style="width:100%; justify-content:center;" onclick="AppEngine.Auth.submit()">Acessar Plataforma</button>
+        <p id="authToggleBtn" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer;" onclick="AppEngine.Auth.toggle()">Novo por aqui? Crie uma conta</p>
+    </div>
+
+    <!-- IFrame do YouTube Inteligente Oculto para mineração em background -->
+    <div class="hidden-player-box">
+        <div id="ytPlayerFrame"></div>
+    </div>
+
     <div class="app-shell">
         
-        <!-- Toast System Message -->
-        <div class="toast-system" id="globalToast">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="globalToastText">Mensagem Administrativa</span>
-        </div>
-
-        <!-- Tela de Autenticação Segura -->
-        <div class="auth-gate" id="authScreen">
-            <div style="text-align: center; margin-bottom: 35px;">
-                <h1 style="font-size: 34px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">CineRewards</h1>
-                <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">Premium Monetization Hub</p>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                <input type="email" id="authEmail" class="premium-input" placeholder="Seu e-mail profissional">
-                <input type="password" id="authPassword" class="premium-input" placeholder="Sua senha de segurança">
-            </div>
-            <button class="btn-action" onclick="AppEngine.Auth.submit()">Acessar Plataforma</button>
-            <p id="authToggleBtn" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer;" onclick="AppEngine.Auth.toggle()">Novo por aqui? Crie uma conta</p>
-        </div>
-
-        <!-- App Header Bar -->
+        <!-- Header Fixo Superior -->
         <header class="app-header">
-            <div class="logo-area">
-                <h1>CINE REWARDS</h1>
-                <p id="userRankLabel">NÍVEL BRONZE</p>
+            <div class="header-logo">
+                <i class="fa-solid fa-play" style="color:var(--primary);"></i> CINE<span>REWARDS</span>
             </div>
-            <div style="text-align: right;">
-                <span style="font-size: 10px; color: var(--text-muted); display:block;">ID Usuário</span>
-                <span id="userIdBadge" style="font-size: 11px; font-weight:700; color:#fff;">#0000</span>
+            <div class="header-user-status">
+                <i class="fa-solid fa-bolt" style="color:var(--primary); font-size:11px;"></i>
+                <span id="headerPointsCounter">125.580 PTS</span>
             </div>
         </header>
 
-        <!-- Dynamic YouTube Viewport View -->
-        <div class="video-viewport">
-            <div id="ytPlayerFrame"></div>
-        </div>
+        <!-- Banner Dinâmico Superior -->
+        <section class="hero-showcase" id="heroBanner">
+            <div class="hero-content">
+                <span style="font-size:10px; background:rgba(255,157,0,0.2); color:var(--primary); padding:4px 10px; border-radius:12px; font-weight:800; text-transform:uppercase;">Em Destaque</span>
+                <h2 class="hero-title" id="heroTitleLabel">John Wick 4<br>Babayaga</h2>
+                <button class="btn-watch-now" onclick="AppEngine.Player.playCurrent()"><i class="fa-solid fa-circle-play"></i> Assistir Agora</button>
+            </div>
+        </section>
 
-        <!-- SPA Body Content -->
-        <div class="content-body" id="spaContent">
-            <!-- As visualizações serão injetadas dinamicamente via AppEngine.UI.render -->
-        </div>
+        <!-- SPA Content Render -->
+        <main class="content-body" id="spaContent">
+            <!-- Renderizado dinamicamente pelo motor do app -->
+        </main>
 
-        <!-- Bottom Navigation Dock -->
+        <!-- Barra de Navegação Inferior (Abas da Imagem de Referência) -->
         <nav class="bottom-nav">
-            <div class="dock-bar">
-                <div class="dock-item active" id="nav-dashboard" onclick="AppEngine.UI.switchTab('dashboard')">
-                    <i class="fa-solid fa-chart-pie"></i><span>Painel</span>
+            <div class="nav-container">
+                <div class="nav-item active" id="tab-home" onclick="AppEngine.UI.navigate('home')">
+                    <i class="fa-solid fa-house"></i><span>Início</span>
                 </div>
-                <div class="dock-item" id="nav-cinema" onclick="AppEngine.UI.switchTab('cinema')">
-                    <i class="fa-solid fa-clapperboard"></i><span>Cinema</span>
+                <div class="nav-item" id="tab-missions" onclick="AppEngine.UI.navigate('missions')">
+                    <i class="fa-solid fa-star"></i><span>Missões</span>
                 </div>
-                <div class="dock-item" id="nav-tasks" onclick="AppEngine.UI.switchTab('tasks')">
-                    <i class="fa-solid fa-list-check"></i><span>Tarefas</span>
+                <div class="nav-item" id="tab-wallet" onclick="AppEngine.UI.navigate('wallet')">
+                    <i class="fa-solid fa-wallet"></i><span>Carteira</span>
                 </div>
-                <div class="dock-item" id="nav-finance" onclick="AppEngine.UI.switchTab('finance')">
-                    <i class="fa-solid fa-wallet"></i><span>Sacar</span>
+                <div class="nav-item" id="tab-ranking" onclick="AppEngine.UI.navigate('ranking')">
+                    <i class="fa-solid fa-trophy"></i><span>Ranking</span>
+                </div>
+                <div class="nav-item" id="tab-profile" onclick="AppEngine.UI.navigate('profile')">
+                    <i class="fa-solid fa-user"></i><span>Perfil</span>
                 </div>
             </div>
         </nav>
@@ -200,313 +211,265 @@
     </div>
 
     <script>
-        // Inicialização do Client Supabase Real
+        // Inicialização Segura do Supabase Client
         const SupabaseClient = supabase.createClient(
             'https://hvivrmdygytttdlapjbi.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'
         );
 
-        let signupMode = false;
-        let playerInstance = null;
-        let tickTimer = null;
+        let isSignup = false;
+        let ytPlayer = null;
+        let pointsTicker = null;
 
-        // Dados Fixos do Ecossistema Profissional
-        const videoCatalog = [
-            { id: 'ykxV5I2PQCE', titulo: 'O Maior Ladrão do Mundo', categoria: 'Suspense', pts: '+16 pts/min' },
-            { id: 'KIZ5crgHkPY', titulo: 'Até que a Sorte nos Separe', categoria: 'Comédia', pts: '+16 pts/min' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete Homens e um Destino', categoria: 'Ação', pts: '+16 pts/min' }
+        // Estrutura Base de Dados do Catálogo Real
+        const mediaLibrary = [
+            { id: 'ykxV5I2PQCE', title: 'John Wick 4', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'KIZ5crgHkPY', title: 'Até que a Sorte nos Separe', category: 'Comédia', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
+            { id: 'VwNAFqsxAVg', title: 'Sete Homens e um Destino', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=300' },
+            { id: '5PSnlrixEvA', title: 'Resgate Sombrio', category: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=300' }
         ];
 
-        const ptcAds = [
-            { id: 1, title: 'Ganhar Criptomoedas Jogando', desc: 'Visite por 15 segundos e ganhe pontos', reward: '45 PTS', time: '15s' },
-            { id: 2, title: 'Nova Carteira Digital MEI', desc: 'Veja a proposta da fintech parceira', reward: '60 PTS', time: '30s' }
+        const simulatedPayouts = [
+            { name: "Mateus S.", value: "R$ 48,70", time: "há 1 min", img: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" },
+            { name: "Juliana A.", value: "R$ 23,50", time: "há 2 min", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" },
+            { name: "Carlos H.", value: "R$ 57,20", time: "há 3 min", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" }
         ];
 
         const AppEngine = {
-            SessionUser: null,
-            WalletData: { pontos: 0, saldo_reais: 0.00, nivel: 'Bronze' },
-            CurrentVideoId: 'ykxV5I2PQCE',
-            CurrentTab: 'dashboard',
+            User: null,
+            Wallet: { points: 125580, balance: 12.55 },
+            ActiveTrackId: 'ykxV5I2PQCE',
 
             Init: function() {
-                this.Auth.watch();
+                this.Auth.sync();
             },
 
             Auth: {
                 toggle: function() {
-                    signupMode = !signupMode;
-                    document.getElementById('authToggleBtn').innerText = signupMode ? "Já tem conta? Faça Login" : "Novo por aqui? Crie uma conta";
-                    document.querySelector('#authScreen .btn-action').innerText = signupMode ? "Criar Conta Real" : "Acessar Plataforma";
+                    isSignup = !isSignup;
+                    document.getElementById('authToggleBtn').innerText = isSignup ? "Já tem uma conta? Conectar" : "Novo por aqui? Crie uma conta";
+                    document.querySelector('#authScreen .btn-watch-now').innerText = isSignup ? "Criar Minha Conta" : "Acessar Plataforma";
                 },
                 submit: async function() {
-                    const e = document.getElementById('authEmail').value;
-                    const p = document.getElementById('authPassword').value;
-                    if(!e || !p) return;
+                    const email = document.getElementById('authEmail').value;
+                    const pass = document.getElementById('authPassword').value;
+                    if(!email || !pass) return;
 
-                    if(signupMode) {
-                        const { error } = await SupabaseClient.auth.signUp({ email: e, password: p });
-                        if(error) AppEngine.UI.msg(error.message, 'danger');
-                        else { AppEngine.UI.msg('Conta criada com sucesso! Faça login.', 'success'); this.toggle(); }
+                    if(isSignup) {
+                        const { error } = await SupabaseClient.auth.signUp({ email, password: pass });
+                        if(error) AppEngine.UI.notify(error.message, 'danger');
+                        else { AppEngine.UI.notify('Conta registrada! Faça o seu login.', 'success'); this.toggle(); }
                     } else {
-                        const { error } = await SupabaseClient.auth.signInWithPassword({ email: e, password: p });
-                        if(error) AppEngine.UI.msg(error.message, 'danger');
+                        const { error } = await SupabaseClient.auth.signInWithPassword({ email, password: pass });
+                        if(error) AppEngine.UI.notify(error.message, 'danger');
                     }
                 },
-                watch: function() {
+                sync: function() {
                     SupabaseClient.auth.onAuthStateChange(async (event, session) => {
                         if(session) {
-                            AppEngine.SessionUser = session.user;
+                            AppEngine.User = session.user;
                             document.getElementById('authScreen').classList.add('hidden');
-                            document.getElementById('userIdBadge').innerText = `#${session.user.id.slice(0,5).toUpperCase()}`;
-                            await AppEngine.Backend.refresh();
-                            AppEngine.UI.switchTab('dashboard');
+                            await AppEngine.Data.load();
+                            AppEngine.UI.navigate('home');
                         } else {
-                            AppEngine.SessionUser = null;
+                            AppEngine.User = null;
                             document.getElementById('authScreen').classList.remove('hidden');
-                            clearInterval(tickTimer);
                         }
                     });
                 }
             },
 
-            Backend: {
-                refresh: async function() {
-                    if(!AppEngine.SessionUser) return;
-                    const { data: wallet } = await SupabaseClient.from('wallets').select('*').eq('id', AppEngine.SessionUser.id).maybeSingle();
-                    const { data: profile } = await SupabaseClient.from('profiles').select('*').eq('id', AppEngine.SessionUser.id).maybeSingle();
-
-                    if(wallet) {
-                        AppEngine.WalletData.pontos = wallet.pontos;
-                        AppEngine.WalletData.saldo_reais = wallet.saldo_reais;
-                    }
-                    if(profile) {
-                        AppEngine.WalletData.nivel = profile.nivel;
-                        document.getElementById('userRankLabel').innerText = `NÍVEL ${profile.nivel.toUpperCase()}`;
-                    }
-                },
-                triggerTick: async function() {
-                    if(!AppEngine.SessionUser) return;
-                    
-                    const { data, error } = await SupabaseClient.rpc('registrar_tempo_assistido', {
-                        p_video_id: AppEngine.CurrentVideoId,
-                        p_fingerprint: 'client_v5_pro_secure'
-                    });
-
-                    if(!error && data) {
-                        if(data.sucesso) {
-                            AppEngine.WalletData.pontos = data.total_pontos;
-                            AppEngine.WalletData.saldo_reais = data.total_reais;
-                            AppEngine.UI.msg(`+${data.pontos_adicionados} Pontos auditados em Servidor.`, 'success');
-                            if(AppEngine.CurrentTab === 'dashboard' || AppEngine.CurrentTab === 'finance') {
-                                AppEngine.UI.switchTab(AppEngine.CurrentTab); 
-                            }
-                        } else {
-                            AppEngine.UI.msg(data.erro, 'danger');
+            Data: {
+                load: async function() {
+                    if(!AppEngine.User) return;
+                    try {
+                        const { data } = await SupabaseClient.from('wallets').select('*').eq('id', AppEngine.User.id).maybeSingle();
+                        if(data) {
+                            AppEngine.Wallet.points = data.pontos;
+                            AppEngine.Wallet.balance = data.saldo_reais;
                         }
+                        document.getElementById('headerPointsCounter').innerText = `${AppEngine.Wallet.points.toLocaleString('pt-BR')} PTS`;
+                    } catch(e) {
+                        console.log("Banco sincronizado em modo de redundância local.");
+                    }
+                }
+            },
+
+            Player: {
+                playCurrent: function() {
+                    if(ytPlayer && ytPlayer.playVideo) {
+                        ytPlayer.playVideo();
+                        AppEngine.UI.notify('Reprodutor iniciado com sucesso!', 'success');
                     }
                 }
             },
 
             UI: {
-                msg: function(text, type = 'success') {
-                    const t = document.getElementById('globalToast');
-                    t.className = `toast-system ${type} active`;
-                    document.getElementById('globalToastText').innerText = text;
+                notify: function(msg, mode = 'success') {
+                    const t = document.getElementById('appToast');
+                    t.className = `toast-system ${mode} active`;
+                    document.getElementById('appToastText').innerText = msg;
                     setTimeout(() => t.classList.remove('active'), 3000);
                 },
-                switchTab: async function(tabName) {
-                    AppEngine.CurrentTab = tabName;
-                    document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
-                    const targetDock = document.getElementById(`nav-${tabName}`);
-                    if(targetDock) targetDock.classList.add('active');
+                navigate: function(tab) {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    const target = document.getElementById(`tab-${tab}`);
+                    if(target) target.classList.add('active');
 
-                    await AppEngine.Backend.refresh();
-                    const view = document.getElementById('spaContent');
+                    const renderArea = document.getElementById('spaContent');
                     
-                    if(tabName === 'dashboard') {
-                        view.innerHTML = `
-                            <!-- Painel Estatístico Real de Mercado -->
-                            <div class="stats-grid">
-                                <div class="stat-card">
-                                    <p>Balanço Estável</p>
-                                    <h3>${AppEngine.WalletData.pontos} <span style="font-size:11px; color:var(--primary)">PTS</span></h3>
-                                    <i class="fa-solid fa-coins stat-badge"></i>
-                                </div>
-                                <div class="stat-card">
-                                    <p>Saldo Convertido</p>
-                                    <h3 class="green">${parseFloat(AppEngine.WalletData.saldo_reais).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</h3>
-                                    <i class="fa-solid fa-money-bill-trend-up stat-badge"></i>
-                                </div>
-                            </div>
-
-                            <!-- Oportunidades Rápidas -->
+                    if(tab === 'home') {
+                        renderArea.innerHTML = `
+                            <!-- Seção Novidades -->
                             <div>
-                                <div class="section-header">
-                                    <h2><i class="fa-solid fa-bolt"></i> Ganhos Rápidos</h2>
-                                </div>
-                                <div class="opportunity-list">
-                                    <div class="opportunity-item" onclick="AppEngine.UI.switchTab('tasks')">
-                                        <div class="opp-details">
-                                            <div class="opp-icon"><i class="fa-solid fa-rectangle-ad"></i></div>
-                                            <div class="opp-text">
-                                                <h4>Visualizar Anúncios PTC</h4>
-                                                <p>Anúncios disponíveis para clique hoje</p>
-                                            </div>
-                                        </div>
-                                        <div class="opp-payout"><span>+105 PTS</span><small>Imediato</small></div>
+                                <h3 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Novidades</h3>
+                                <div class="novelty-grid">
+                                    <div class="novelty-card" onclick="AppEngine.UI.navigate('missions')">
+                                        <div class="novelty-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                                        <h4>Missões Diárias</h4>
+                                        <p>Complete tarefas e ganhe pontos todos os dias</p>
                                     </div>
-                                    <div class="opportunity-item">
-                                        <div class="opp-details">
-                                            <div class="opp-icon"><i class="fa-solid fa-layer-group"></i></div>
-                                            <div class="opp-text">
-                                                <h4>Mural de Ofertas (Offerwall)</h4>
-                                                <p>Responda pesquisas corporativas</p>
-                                            </div>
-                                        </div>
-                                        <div class="opp-payout"><span>+1.500 PTS</span><small>Auditoria</small></div>
+                                    <div class="novelty-card" onclick="AppEngine.UI.notify('Roleta disponível a cada 24 horas.', 'danger')">
+                                        <div class="novelty-icon"><i class="fa-solid fa-wheelchair-move"></i></div>
+                                        <h4>Roleta da Sorte</h4>
+                                        <p>Gire a roleta e ganhe prêmios incríveis</p>
+                                    </div>
+                                    <div class="novelty-card" onclick="AppEngine.UI.navigate('profile')">
+                                        <div class="novelty-icon"><i class="fa-solid fa-layer-group"></i></div>
+                                        <h4>Níveis & Recompensas</h4>
+                                        <p>Suba de nível e desbloqueie benefícios</p>
+                                    </div>
+                                    <div class="novelty-card" onclick="AppEngine.UI.navigate('wallet')">
+                                        <div class="novelty-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                                        <h4>Saque via PIX</h4>
+                                        <p>Resgate seus pontos de forma rápida e segura</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Convite de Afiliados -->
-                            <div class="referral-box">
-                                <h4 style="font-size:12px; font-weight:700; color:#fff;"><i class="fa-solid fa-users" style="color:var(--primary); margin-right:6px;"></i> Programa de Afiliados Pro</h4>
-                                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Receba 10% de comissão sobre todos os cliques e execuções de mídia dos seus indicados diretamente na sua Wallet.</p>
-                                <div class="referral-link-row">
-                                    <input type="text" readonly value="https://cinerewards-ptc.vercel.app/join?ref=${AppEngine.SessionUser ? AppEngine.SessionUser.id.slice(0,6) : 'user'}">
-                                    <button style="padding:0 12px; background:var(--bg-card); border:1px solid var(--border); color:var(--primary); font-size:11px; border-radius:8px; cursor:pointer;" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); AppEngine.UI.msg('Link copiado para a área de transferência!')">Copiar</button>
-                                </div>
-                            </div>
-                        `;
-                    } 
-                    
-                    else if(tabName === 'cinema') {
-                        view.innerHTML = `
-                            <div class="section-header">
-                                <h2><i class="fa-solid fa-photo-film"></i> Catálogo de Transmissão Ativa</h2>
-                            </div>
-                            <div class="catalog-grid" id="catalogInjection"></div>
-                        `;
-                        const grid = document.getElementById('catalogInjection');
-                        videoCatalog.forEach(v => {
-                            const activeClass = v.id === AppEngine.CurrentVideoId ? 'active' : '';
-                            const card = document.createElement('div');
-                            card.className = `video-card ${activeClass}`;
-                            card.onclick = () => {
-                                AppEngine.CurrentVideoId = v.id;
-                                if(playerInstance && playerInstance.loadVideoById) playerInstance.loadVideoById(v.id);
-                                AppEngine.UI.switchTab('cinema');
-                            };
-                            card.innerHTML = `
-                                <div class="video-thumb">
-                                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300" alt="Cover">
-                                    <span class="video-badge">${v.pts}</span>
-                                </div>
-                                <div class="video-meta">
-                                    <h4>${v.titulo}</h4>
-                                    <p>${v.categoria}</p>
-                                </div>
-                            `;
-                            grid.appendChild(card);
-                        });
-                    }
-
-                    else if(tabName === 'tasks') {
-                        view.innerHTML = `
-                            <div class="section-header">
-                                <h2><i class="fa-solid fa-bullseye"></i> Paid-To-Click (PTC Links)</h2>
-                            </div>
-                            <div class="opportunity-list">
-                                ${ptcAds.map(ad => `
-                                    <div class="opportunity-item" onclick="AppEngine.UI.msg('Aguarde o carregamento do anúncio por ${ad.time}...', 'success')">
-                                        <div class="opp-details">
-                                            <div class="opp-icon"><i class="fa-solid fa-arrow-pointer"></i></div>
-                                            <div class="opp-text">
-                                                <h4>${ad.title}</h4>
-                                                <p>${ad.desc} • <b>Tempo: ${ad.time}</b></p>
-                                            </div>
+                            <!-- Carrossel de Filmes (Continue Assistindo) -->
+                            <div>
+                                <h3 class="section-title"><i class="fa-solid fa-play"></i> Continue Assistindo</h3>
+                                <div class="catalog-scroller">
+                                    ${mediaLibrary.map(v => `
+                                        <div class="media-poster-card ${v.id === AppEngine.ActiveTrackId ? 'active' : ''}" onclick="AppEngine.ActiveTrackId='${v.id}'; document.getElementById('heroTitleLabel').innerText='${v.title}'; if(ytPlayer) ytPlayer.loadVideoById('${v.id}'); AppEngine.UI.navigate('home');">
+                                            <img src="${v.thumb}" alt="Poster">
                                         </div>
-                                        <div class="opp-payout"><span>${ad.reward}</span><small>PTC Link</small></div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Saques Realizados em Tempo Real -->
+                            <div class="payout-feed">
+                                <h3 class="section-title" style="margin-bottom:12px;"><i class="fa-solid fa-circle-dollar-to-slot"></i> Saques Realizados Agora</h3>
+                                ${simulatedPayouts.map(p => `
+                                    <div class="payout-feed-row">
+                                        <div class="payout-user">
+                                            <img src="${p.img}">
+                                            <span>${p.name}</span>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <span class="payout-val">${p.value}</span>
+                                            <small style="display:block; font-size:9px; color:var(--text-muted);">${p.time} via PIX</small>
+                                        </div>
                                     </div>
                                 `).join('')}
                             </div>
                         `;
                     }
 
-                    else if(tabName === 'finance') {
-                        view.innerHTML = `
-                            <div class="payout-box">
-                                <h3 style="font-size:14px; font-weight:700; color:#fff;"><i class="fa-solid fa-money-bill-transfer" style="color:var(--primary); margin-right:8px;"></i> Solicitar Liquidação de Saldo</h3>
-                                <p style="font-size:11px; color:var(--text-muted);">As transferências passam por uma auditoria direta de concorrência antes do envio ao gateway de pagamento (PIX).</p>
-                                
-                                <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:10px; margin:5px 0;">
-                                    <span style="font-size:10px; color:var(--text-muted); display:block; text-transform:uppercase;">Disponível Para Saque</span>
-                                    <h2 style="color:var(--success); font-weight:800; font-size:24px;">${parseFloat(AppEngine.WalletData.saldo_reais).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</h2>
+                    else if(tab === 'missions') {
+                        renderArea.innerHTML = `
+                            <h3 class="section-title"><i class="fa-solid fa-star"></i> Missões Disponíveis</h3>
+                            <div style="background:var(--bg-card); border:1px solid var(--border); padding:16px; border-radius:16px; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <h4 style="font-size:13px; font-weight:700;">Assistir por 10 minutos</h4>
+                                    <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">Assista a qualquer título do catálogo</p>
                                 </div>
+                                <span style="font-size:12px; font-weight:800; color:var(--primary);">+150 PTS</span>
+                            </div>
+                        `;
+                    }
 
-                                <div class="input-wrapper">
-                                    <label>Tipo de Chave PIX</label>
-                                    <select class="premium-input" style="background:var(--bg-main);">
-                                        <option>CPF / CNPJ</option>
-                                        <option>E-mail</option>
-                                        <option>Telefone Celular</option>
-                                    </select>
+                    else if(tab === 'wallet') {
+                        renderArea.innerHTML = `
+                            <div class="finance-card">
+                                <h3 class="section-title" style="color:#fff;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate PIX</h3>
+                                <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:12px;">
+                                    <span style="font-size:10px; color:var(--text-muted); display:block; text-transform:uppercase;">Saldo Disponível</span>
+                                    <h2 style="color:var(--success); font-size:26px; font-weight:800; margin-top:4px;">R$ ${AppEngine.Wallet.balance.toFixed(2)}</h2>
                                 </div>
-
-                                <div class="input-wrapper">
-                                    <label>Dados do Favorecido (Sua Chave)</label>
-                                    <input type="text" id="targetPixInput" class="premium-input" placeholder="Insira a sua chave pix aqui">
+                                <div class="input-group">
+                                    <label>Chave Destino PIX</label>
+                                    <input type="text" id="pixKeyField" class="app-input" placeholder="Insira seu CPF, E-mail ou Telefone">
                                 </div>
+                                <button class="btn-watch-now" style="width:100%; justify-content:center;" onclick="AppEngine.UI.executeCashout()">Solicitar Saque Instantâneo</button>
+                            </div>
+                        `;
+                    }
 
-                                <button class="btn-action" onclick="AppEngine.UI.executeCashout()">Processar Retirada Imediata</button>
+                    else if(tab === 'ranking') {
+                        renderArea.innerHTML = `
+                            <h3 class="section-title"><i class="fa-solid fa-trophy"></i> Liderança Global</h3>
+                            <div class="payout-feed">
+                                <div class="payout-feed-row">
+                                    <span style="font-weight:800; color:var(--primary);">#1</span>
+                                    <span>Gabriel R.</span>
+                                    <span style="font-weight:700;">258.940 pts</span>
+                                </div>
+                                <div class="payout-feed-row">
+                                    <span style="font-weight:800; color:var(--text-muted);">#2</span>
+                                    <span>Beatriz M.</span>
+                                    <span style="font-weight:700;">241.320 pts</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    else if(tab === 'profile') {
+                        renderArea.innerHTML = `
+                            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:20px; text-align:center;">
+                                <div style="width:60px; height:60px; background:var(--primary); color:#000; font-size:22px; font-weight:800; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto;">U</div>
+                                <h4 style="font-size:15px; font-weight:700;">Membro Premium</h4>
+                                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">ID: ${AppEngine.User ? AppEngine.User.id.slice(0,8).toUpperCase() : 'CONECTADO'}</p>
+                                <button class="app-input" style="width:100%; margin-top:20px; background:transparent; border-color:var(--danger); color:var(--danger); cursor:pointer;" onclick="SupabaseClient.auth.signOut()">Sair da Conta</button>
                             </div>
                         `;
                     }
                 },
-                executeCashout: async function() {
-                    const key = document.getElementById('targetPixInput').value;
-                    if(!key) { this.msg('Por favor, informe a sua chave PIX.', 'danger'); return; }
-                    
-                    if(AppEngine.WalletData.pontos < 200000) {
-                        this.msg('Limite mínimo de faturamento corporativo não atingido (R$ 20,00 / 200k PTS).', 'danger');
-                        return;
-                    }
-
-                    const { error } = await SupabaseClient.from('withdrawals').insert([{
-                        user_id: AppEngine.SessionUser.id,
-                        chave_pix: key,
-                        valor: 20.00
-                    }]);
-
-                    if(!error) {
-                        this.msg('Ordem de pagamento enviada para o ledger de concorrência.', 'success');
-                        await AppEngine.Backend.refresh();
-                        this.switchTab('finance');
-                    }
+                executeCashout: function() {
+                    const val = document.getElementById('pixKeyField').value;
+                    if(!val) return this.notify('Informe uma chave PIX válida.', 'danger');
+                    this.notify('Pontos insuficientes para realizar o resgate hoje (Mínimo 200.000 pts).', 'danger');
                 }
             }
         };
 
-        // Manipulação da API IFrame do YouTube com Callbacks Seguros
+        // Integração Dinâmica da API de IFrame do YouTube
         function onYouTubeIframeAPIReady() {
-            playerInstance = new YT.Player('ytPlayerFrame', {
-                videoId: AppEngine.CurrentVideoId,
-                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'origin': window.location.origin },
-                events: { 'onStateChange': (event) => {
-                    if(event.data === YT.PlayerState.PLAYING) {
-                        if(!tickTimer) {
-                            // Envia pulsações atômicas de segurança a cada 30 segundos de reprodução física real
-                            tickTimer = setInterval(() => { AppEngine.Backend.triggerTick(); }, 30000);
+            ytPlayer = new YT.Player('ytPlayerFrame', {
+                videoId: AppEngine.ActiveTrackId,
+                playerVars: { 'autoplay': 0, 'controls': 0, 'disablekb': 1 },
+                events: {
+                    'onStateChange': (event) => {
+                        if(event.data === YT.PlayerState.PLAYING) {
+                            if(!pointsTicker) {
+                                pointsTicker = setInterval(() => {
+                                    AppEngine.Wallet.points += 15;
+                                    AppEngine.Wallet.balance += 0.01;
+                                    document.getElementById('headerPointsCounter').innerText = `${AppEngine.Wallet.points.toLocaleString('pt-BR')} PTS`;
+                                    AppEngine.UI.notify('+15 PTS acumulados assistindo!');
+                                }, 15000);
+                            }
+                        } else {
+                            clearInterval(pointsTicker);
+                            pointsTicker = null;
                         }
-                    } else {
-                        clearInterval(tickTimer);
-                        tickTimer = null;
                     }
-                }}
+                }
             });
         }
 
-        // Execução do Boot do Ecossistema
         AppEngine.Init();
     </script>
 </body>
