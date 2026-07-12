@@ -33,6 +33,7 @@
             overflow: hidden;
         }
 
+        /* CORRIGIDO: Agora fica acima da barra de navegação (bottom: 110px) e com z-index alto */
         .live-withdrawal {
             position: absolute;
             bottom: 110px; left: 15px; right: 15px;
@@ -54,6 +55,7 @@
         .live-withdrawal.active { transform: translateY(0); }
         .live-withdrawal i { color: #10b981; font-size: 15px; }
 
+        /* CORRIGIDO: Layout do topo expandido para mostrar Pontos E Reais */
         .points-header {
             position: absolute;
             top: 15px; left: 15px; right: 15px;
@@ -188,6 +190,7 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
+        /* CORRIGIDO: Cabeçalho do menu com botão visível para Fechar */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -237,6 +240,7 @@
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
         }
 
+        /* CORRIGIDO: Botão de Logout adicionado */
         .btn-logout {
             background: #221515;
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -289,6 +293,7 @@
 
     <div class="cinema-container">
         
+        <!-- CORRIGIDO: Z-index e posição recalculados para ficar acima do rodapé -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
@@ -330,6 +335,7 @@
             </div>
         </div>
 
+        <!-- CORRIGIDO: Cabeçalho com o botão de fechar e botão de deslogar inserido -->
         <div class="menu-drawer" id="menuDrawer">
             <div class="menu-header-box">
                 <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -384,6 +390,7 @@
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
         </div>
         
+        <!-- CORRIGIDO: Cabeçalho principal agora exibe Pontos E Reais -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -403,6 +410,7 @@
         </div>
 
         <div class="content-body" id="contentBody">
+            <!-- Card de Recompensa Diária -->
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
                     <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
@@ -411,17 +419,18 @@
                 <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
             </div>
 
+            <!-- Card de Roleta da Sorte -->
             <div class="lucky-wheel-card" id="luckyWheelCard" onclick="rodarRoletaSorte()">
                 <div class="lucky-wheel-info">
-                    <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte🎡</h4>
+                    <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte 🎡</h4>
                     <p id="luckyWheelStatus">Tente a sorte! Disponível a cada 1 hora.</p>
                 </div>
                 <button class="lucky-wheel-btn" id="luckyWheelBtn">Girar</button>
             </div>
 
             <div class="movie-details">
-                <h3 id="movieTitle">Carregando...</h3>
-                <p id="movieDesc">Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
+                <h3 id="movieTitle">Carregando catálogo oficial...</h3>
+                <p>Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
             </div>
 
             <div class="catalog-section">
@@ -432,20 +441,21 @@
 
         <div class="bottom-nav">
             <div class="control-bar">
-                <div class="action-item" onclick="toggleLike()">
-                    <div class="circle-btn" id="likeBtnIcon"><i class="fa-solid fa-heart"></i></div>
-                    <span class="btn-label">Gostei</span>
-                </div>
                 <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn" style="color: #ffb700;"><i class="fa-solid fa-share-nodes"></i></div>
+                    <div class="circle-btn"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="btn-label">Carteira</span>
+                </div>
+                <div class="action-item">
+                    <div class="circle-btn btn-main"><i class="fa-solid fa-play"></i></div>
+                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Cinema</span>
+                </div>
+                <div class="action-item" onclick="executarCompartilhamento()">
+                    <div class="circle-btn"><i class="fa-solid fa-gift"></i></div>
                     <span class="btn-label">Indicar</span>
-                </div>
-                <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn btn-main"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Carteira</span>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
@@ -469,17 +479,7 @@
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
             { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: '4isClyJJcYg', titulo: 'Proteção à testemunhas', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: '-tPux_s_qEY', titulo: 'O último comando', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'x6KT_2a98YA', titulo: 'Tempestade planeta em fúria', categoria: 'Ficção', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'bBPKTYCYnc4', titulo: 'Corações de ferro', categoria: 'Guerra', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
-            { id: 'Hw_gWagWJRE', titulo: 'Policial em ação', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
-            { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Marciais', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
-            { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
-            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
-            { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' }
+            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' }
         ];
 
         function toggleAuthMode() {
@@ -600,6 +600,7 @@
             document.getElementById('progressPercent').innerText = Math.floor(percent) + '% para saque';
         }
 
+        // CORREÇÃO DO BÔNUS: Modifica os botões visualmente antes de sincronizar para evitar que "suma"
         async function coletarBonusDiario() {
             if (!currentUser) return;
             const hoje = new Date().toDateString();
@@ -616,6 +617,7 @@
             userData.saldo_reais = (userData.pontos * 0.002);
             localStorage.setItem('ultimoBonus_' + currentUser.id, hoje);
             
+            // Trava o botão em tela imediatamente
             document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
             document.getElementById('dailyBonusBtn').innerText = 'Ok';
             document.getElementById('dailyBonusBtn').style.background = '#333';
@@ -625,6 +627,7 @@
             alert('Parabéns! Você ganhou +100 PTS de bônus diário.');
         }
 
+        // CORREÇÃO DA ROLETA: Sincronização direta e sem interrupções
         async function rodarRoletaSorte() {
             if (!currentUser) return;
             const agora = Date.now();
@@ -646,21 +649,27 @@
             userData.saldo_reais = (userData.pontos * 0.002);
             localStorage.setItem('ultimaRoleta_' + currentUser.id, agora);
 
+            // Trava o botão em tela imediatamente
+            document.getElementById('luckyWheelStatus').innerText = 'Aguardando recarga de 1 hora.';
+            document.getElementById('luckyWheelBtn').innerText = 'Aguarde';
+            document.getElementById('luckyWheelBtn').style.background = '#333';
+
             atualizarPainelVisual();
             await sincronizarSupabase();
             alert(`🎡 A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
         }
 
-        // CORRIGIDO: Forçando o tratamento de erros no console para monitoramento do banco
+        // CORREÇÃO CRÍTICA DO SALVAMENTO: Agora inclui obrigatoriamente o e-mail no Payload de sincronização
         async function sincronizarSupabase() {
             if (!currentUser) return;
             const { error } = await _supabase.from('profiles').upsert({
                 id: currentUser.id,
+                email: currentUser.email,
                 pontos: userData.pontos,
                 saldo_reais: userData.saldo_reais
             });
             if(error) {
-                console.error("Erro ao salvar no banco. Verifique as regras RLS:", error.message);
+                console.error("Erro ao salvar no banco:", error.message);
             }
         }
 
@@ -686,8 +695,8 @@
         }
 
         function iniciarNotificacoesSaque() {
-            const nomes = ['marcos', 'ana', 'lucas', 'diego', 'julia', 'felipe', 'carla', 'gabs', 'thiago', 'rafa', 'aline', 'bruno', 'mateus', 'patricia'];
-            const valores = ['21,40', '35,00', '20,00', '54,15', '22,90', '41,00', '27,50', '63,00', '20,50'];
+            const nomes = ['marcos', 'ana', 'lucas', 'diego', 'julia', 'felipe', 'carla', 'gabs', 'thiago', 'rafa'];
+            const valores = ['21,40', '35,00', '20,00', '54,15', '22,90'];
             
             setInterval(() => {
                 if(Math.random() > 0.4) {
@@ -734,19 +743,19 @@
             }
         }
 
-        // CORRIGIDO: Resgate dinâmico síncrono e instantâneo no evento de login/sessão ativa
+        // CORREÇÃO DE ATUALIZAÇÃO DA PÁGINA: Força a leitura do Supabase de forma restrita e limpa sem interferência local
         _supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 currentUser = session.user;
                 document.getElementById('userDisplay').innerText = currentUser.email;
                 document.getElementById('authScreen').classList.add('hidden');
                 
-                // Busca direta na tabela profiles com fallback para 0 caso o registro seja novo
+                // Puxa os dados direto do banco de dados salvos anteriormente
                 const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', currentUser.id).maybeSingle();
                 
                 if(data) {
-                    userData.pontos = data.pontos || 0;
-                    userData.saldo_reais = data.saldo_reais || 0.00;
+                    userData.pontos = parseInt(data.pontos) || 0;
+                    userData.saldo_reais = parseFloat(data.saldo_reais) || 0.00;
                 } else {
                     userData.pontos = 0;
                     userData.saldo_reais = 0.00;
@@ -754,11 +763,20 @@
                 
                 atualizarPainelVisual();
                 
+                // Mantém os estados visuais fixos baseados no tempo real
                 const hoje = new Date().toDateString();
                 if(localStorage.getItem('ultimoBonus_' + currentUser.id) === hoje) {
                     document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
                     document.getElementById('dailyBonusBtn').innerText = 'Ok';
                     document.getElementById('dailyBonusBtn').style.background = '#333';
+                }
+
+                const agora = Date.now();
+                const ultimaRoleta = localStorage.getItem('ultimaRoleta_' + currentUser.id);
+                if (ultimaRoleta && (agora - ultimaRoleta < 3600000)) {
+                    document.getElementById('luckyWheelStatus').innerText = 'Aguardando recarga de 1 hora.';
+                    document.getElementById('luckyWheelBtn').innerText = 'Aguarde';
+                    document.getElementById('luckyWheelBtn').style.background = '#333';
                 }
             } else {
                 currentUser = null;
