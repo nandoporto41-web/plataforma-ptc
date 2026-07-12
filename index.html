@@ -33,7 +33,6 @@
             overflow: hidden;
         }
 
-        /* CORRIGIDO: Agora fica acima da barra de navegação (bottom: 110px) e com z-index alto */
         .live-withdrawal {
             position: absolute;
             bottom: 110px; left: 15px; right: 15px;
@@ -55,7 +54,6 @@
         .live-withdrawal.active { transform: translateY(0); }
         .live-withdrawal i { color: #10b981; font-size: 15px; }
 
-        /* CORRIGIDO: Layout do topo expandido para mostrar Pontos E Reais */
         .points-header {
             position: absolute;
             top: 15px; left: 15px; right: 15px;
@@ -190,7 +188,6 @@
         .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
         .btn-label { font-size: 10px; color: #a0a0ab; }
 
-        /* CORRIGIDO: Cabeçalho do menu com botão visível para Fechar */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -223,6 +220,34 @@
         .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
         .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
 
+        /* NOVA SEÇÃO DE TERMOS E DIRETRIZES */
+        .platform-docs {
+            background: #111116;
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .platform-docs h4 {
+            font-size: 12px;
+            color: #ff9d00;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 4px;
+        }
+        .doc-item {
+            font-size: 10.5px;
+            color: #b3b3ba;
+            line-height: 1.4;
+        }
+        .doc-item strong {
+            color: #fff;
+            display: block;
+            margin-top: 2px;
+        }
+
         .progress-container { margin-top: 5px; width: 100%; background: #222; height: 6px; border-radius: 3px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d00, #00c853); transition: width 0.4s ease; }
 
@@ -240,7 +265,6 @@
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
         }
 
-        /* CORRIGIDO: Botão de Logout adicionado */
         .btn-logout {
             background: #221515;
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -293,7 +317,6 @@
 
     <div class="cinema-container">
         
-        <!-- CORRIGIDO: Z-index e posição recalculados para ficar acima do rodapé -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
@@ -315,7 +338,7 @@
                     <div class="info-badge-item">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                         <div class="info-badge-text">
-                            <h4>Converta Tudo em Pix</h4>
+                            <h4>Conversta Tudo em Pix</h4>
                             <p>Resgate seus fundos direto na carteira via Pix.</p>
                         </div>
                     </div>
@@ -335,7 +358,6 @@
             </div>
         </div>
 
-        <!-- CORRIGIDO: Cabeçalho com o botão de fechar e botão de deslogar inserido -->
         <div class="menu-drawer" id="menuDrawer">
             <div class="menu-header-box">
                 <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -378,6 +400,24 @@
                 <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
             </div>
 
+            <!-- MANUAL INTEGRADO DA PLATAFORMA -->
+            <div class="platform-docs">
+                <h4><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
+                <div class="doc-item">
+                    Cada minuto assistido contabiliza <strong>+15 PTS</strong> automáticos. O bônus diário e a roleta fornecem alavancagem rápida de pontos livres.
+                </div>
+                
+                <h4><i class="fa-solid fa-gavel"></i> Termos de Uso</h4>
+                <div class="doc-item">
+                    A conversão fixa aplicada é de 1000 PTS = R$ 2,00. Os saques são auditados e processados via chave PIX fornecida no momento do faturamento mínimo.
+                </div>
+
+                <h4><i class="fa-solid fa-ban"></i> Restrições de Uso</h4>
+                <div class="doc-item">
+                    É estritamente proibido o uso de autoclickers, clonadores de abas, emuladores de terminal ou redes VPN. Qualquer atividade inconsistente resultará na retenção imediata dos proventos.
+                </div>
+            </div>
+
             <div class="card-aviso-seguranca">
                 <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO:</strong>
                 Uso de VPN/emuladores e fraudes geram banimento automático.
@@ -390,7 +430,6 @@
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
         </div>
         
-        <!-- CORRIGIDO: Cabeçalho principal agora exibe Pontos E Reais -->
         <div class="points-header">
             <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
@@ -405,12 +444,11 @@
             </div>
         </div>
 
-        <div class="video-box">
+        <div class="video-box" id="cinemaTopo">
             <div id="videoPlayer"></div>
         </div>
 
         <div class="content-body" id="contentBody">
-            <!-- Card de Recompensa Diária -->
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
                     <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
@@ -419,7 +457,6 @@
                 <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
             </div>
 
-            <!-- Card de Roleta da Sorte -->
             <div class="lucky-wheel-card" id="luckyWheelCard" onclick="rodarRoletaSorte()">
                 <div class="lucky-wheel-info">
                     <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte 🎡</h4>
@@ -445,11 +482,13 @@
                     <div class="circle-btn"><i class="fa-solid fa-wallet"></i></div>
                     <span class="btn-label">Carteira</span>
                 </div>
-                <div class="action-item">
+                <!-- CORRIGIDO: Vinculado o evento para rolar até o player -->
+                <div class="action-item" onclick="focarNoVideo()">
                     <div class="circle-btn btn-main"><i class="fa-solid fa-play"></i></div>
                     <span class="btn-label" style="color:#ff9d00; font-weight:700;">Cinema</span>
                 </div>
-                <div class="action-item" onclick="executarCompartilhamento()">
+                <!-- CORRIGIDO: Vinculado o evento para abrir o menu de convites -->
+                <div class="action-item" onclick="abrirMenuIndicacao()">
                     <div class="circle-btn"><i class="fa-solid fa-gift"></i></div>
                     <span class="btn-label">Indicar</span>
                 </div>
@@ -469,17 +508,19 @@
 
         let isSignUpMode = false;
         let currentUser = null;
-        let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+        let userData = { pontos: 0, saldo_reais: 0.00 };
         let player = null;
         let pontuacaoInterval = null;
         let currentVideoId = '';
         let primeiroCliqueFilme = true;
+        let dadosCarregadosDoBanco = false;
 
+        // Catálogo completo reestruturado
         const listaFilmes = [
-            { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
-            { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' }
+            { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
+            { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' }
         ];
 
         function toggleAuthMode() {
@@ -501,6 +542,17 @@
 
         function toggleMenu() {
             document.getElementById('menuDrawer').classList.toggle('active');
+        }
+
+        function focarNoVideo() {
+            document.getElementById('cinemaTopo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function abrirMenuIndicacao() {
+            const drawer = document.getElementById('menuDrawer');
+            if(!drawer.classList.contains('active')) {
+                drawer.classList.add('active');
+            }
         }
 
         function renderCatalog() {
@@ -538,12 +590,12 @@
                 window.open(adsterraSmartlink, '_blank');
                 primeiroCliqueFilme = false;
             }
-
             currentVideoId = id;
             document.getElementById('movieTitle').innerText = titulo;
             if(player && player.loadVideoById) {
                 player.loadVideoById(id);
             }
+            focarNoVideo();
         }
 
         function onPlayerStateChange(event) {
@@ -564,7 +616,7 @@
         }
 
         async function computarPontosMinuto() {
-            if (!currentUser || document.hidden) return;
+            if (!currentUser || !dadosCarregadosDoBanco || document.hidden) return;
             
             userData.pontos += 15;
             userData.saldo_reais = (userData.pontos * 0.002);
@@ -600,9 +652,8 @@
             document.getElementById('progressPercent').innerText = Math.floor(percent) + '% para saque';
         }
 
-        // CORREÇÃO DO BÔNUS: Modifica os botões visualmente antes de sincronizar para evitar que "suma"
         async function coletarBonusDiario() {
-            if (!currentUser) return;
+            if (!currentUser || !dadosCarregadosDoBanco) return;
             const hoje = new Date().toDateString();
             const ultimoBonus = localStorage.getItem('ultimoBonus_' + currentUser.id);
             
@@ -617,7 +668,6 @@
             userData.saldo_reais = (userData.pontos * 0.002);
             localStorage.setItem('ultimoBonus_' + currentUser.id, hoje);
             
-            // Trava o botão em tela imediatamente
             document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
             document.getElementById('dailyBonusBtn').innerText = 'Ok';
             document.getElementById('dailyBonusBtn').style.background = '#333';
@@ -627,9 +677,8 @@
             alert('Parabéns! Você ganhou +100 PTS de bônus diário.');
         }
 
-        // CORREÇÃO DA ROLETA: Sincronização direta e sem interrupções
         async function rodarRoletaSorte() {
-            if (!currentUser) return;
+            if (!currentUser || !dadosCarregadosDoBanco) return;
             const agora = Date.now();
             const ultimaRoleta = localStorage.getItem('ultimaRoleta_' + currentUser.id);
             const umaHora = 3600000;
@@ -649,40 +698,30 @@
             userData.saldo_reais = (userData.pontos * 0.002);
             localStorage.setItem('ultimaRoleta_' + currentUser.id, agora);
 
-            // Trava o botão em tela imediatamente
             document.getElementById('luckyWheelStatus').innerText = 'Aguardando recarga de 1 hora.';
             document.getElementById('luckyWheelBtn').innerText = 'Aguarde';
             document.getElementById('luckyWheelBtn').style.background = '#333';
 
             atualizarPainelVisual();
             await sincronizarSupabase();
-            alert(`🎡 A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
+            alert(`A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
         }
 
-        // CORREÇÃO CRÍTICA DO SALVAMENTO: Agora inclui obrigatoriamente o e-mail no Payload de sincronização
         async function sincronizarSupabase() {
-            if (!currentUser) return;
-            const { error } = await _supabase.from('profiles').upsert({
+            if (!currentUser || !dadosCarregadosDoBanco) return;
+            await _supabase.from('profiles').upsert({
                 id: currentUser.id,
                 email: currentUser.email,
                 pontos: userData.pontos,
                 saldo_reais: userData.saldo_reais
             });
-            if(error) {
-                console.error("Erro ao salvar no banco:", error.message);
-            }
         }
 
-        function toggleLike() {
-            const icon = document.getElementById('likeBtnIcon');
-            icon.style.color = icon.style.color === 'rgb(239, 68, 68)' ? '#fff' : '#ef4444';
-        }
-
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             if(!currentUser) return;
             const linkRef = window.location.origin + window.location.pathname + '?ref=' + currentUser.id;
             navigator.clipboard.writeText(linkRef);
-            alert('Seu link exclusivo de indicação foi copiado para a área de transferência!');
+            alert('Seu link exclusivo de indicação foi copiado com sucesso!');
         }
 
         function solicitarSaque() {
@@ -690,7 +729,7 @@
                 alert('Saldo insuficiente. O valor mínimo para transferência Pix é R$ 20,00.');
             } else {
                 window.open(adsterraSmartlink, '_blank');
-                alert('Solicitação recebida! Seu saldo passará por auditoria de segurança de tráfego e o pagamento será enviado em até 24h.');
+                alert('Solicitação recebida! Seu saldo passará por auditoria de segurança e o pagamento enviado em até 24h.');
             }
         }
 
@@ -721,9 +760,36 @@
             }
 
             if(isSignUpMode) {
-                const { data, error } = await _supabase.auth.signUp({ email, password, options: { data: { indicado_por: indicarPorID } } });
-                if(error) alert(error.message);
-                else alert('Cadastro realizado com sucesso! Verifique seu e-mail para confirmação.');
+                // Cadastra e vincula indicação se aplicável
+                const { data, error } = await _supabase.auth.signUp({ 
+                    email, 
+                    password,
+                    options: { data: { indicado_por: indicarPorID } }
+                });
+                
+                if(error) {
+                    alert(error.message);
+                } else if(data?.user) {
+                    // Cria o registro inicial no banco imediatamente para garantir persistência
+                    await _supabase.from('profiles').insert({
+                        id: data.user.id,
+                        email: data.user.email,
+                        pontos: 100, // Começa com bônus de boas-vindas
+                        saldo_reais: 0.20
+                    });
+
+                    // Se foi indicado por alguém, bonifica quem indicou
+                    if(indicarPorID) {
+                        const { data: inviterData } = await _supabase.from('profiles').select('pontos').eq('id', indicarPorID).maybeSingle();
+                        if(inviterData) {
+                            let novosPts = (inviterData.pontos || 0) + 500;
+                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: (novosPts * 0.002) }).eq('id', indicarPorID);
+                        }
+                    }
+                    alert('Cadastro efetuado! Faça login agora.');
+                    isSignUpMode = false;
+                    toggleAuthMode();
+                }
             } else {
                 const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                 if(error) alert(error.message);
@@ -732,38 +798,41 @@
 
         async function handleLogout() {
             if(confirm('Tem certeza que deseja sair do aplicativo?')) {
+                dadosCarregadosDoBanco = false;
                 const { error } = await _supabase.auth.signOut();
-                if(error) {
-                    alert('Erro ao sair: ' + error.message);
-                } else {
+                if(!error) {
                     toggleMenu();
-                    userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+                    userData = { pontos: 0, saldo_reais: 0.00 };
                     atualizarPainelVisual();
                 }
             }
         }
 
-        // CORREÇÃO DE ATUALIZAÇÃO DA PÁGINA: Força a leitura do Supabase de forma restrita e limpa sem interferência local
+        // CORREÇÃO CRÍTICA DO FLUXO DE ENTRADA: Evita zerar dados ao recarregar a tela
         _supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
                 currentUser = session.user;
                 document.getElementById('userDisplay').innerText = currentUser.email;
                 document.getElementById('authScreen').classList.add('hidden');
                 
-                // Puxa os dados direto do banco de dados salvos anteriormente
+                // Primeiro puxa o registro existente
                 const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', currentUser.id).maybeSingle();
                 
                 if(data) {
                     userData.pontos = parseInt(data.pontos) || 0;
                     userData.saldo_reais = parseFloat(data.saldo_reais) || 0.00;
                 } else {
+                    // Cria se não houver registros anteriores, sem sobrescrever
                     userData.pontos = 0;
                     userData.saldo_reais = 0.00;
+                    await _supabase.from('profiles').upsert({ id: currentUser.id, email: currentUser.email, pontos: 0, saldo_reais: 0 });
                 }
                 
+                // Libera a gravação segura
+                dadosCarregadosDoBanco = true;
                 atualizarPainelVisual();
                 
-                // Mantém os estados visuais fixos baseados no tempo real
+                // Preservação visual das tarefas cronometradas do dia localmente
                 const hoje = new Date().toDateString();
                 if(localStorage.getItem('ultimoBonus_' + currentUser.id) === hoje) {
                     document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
@@ -780,6 +849,7 @@
                 }
             } else {
                 currentUser = null;
+                dadosCarregadosDoBanco = false;
                 document.getElementById('authScreen').classList.remove('hidden');
                 limparIntervaloPontos();
             }
