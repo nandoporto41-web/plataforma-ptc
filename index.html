@@ -3,860 +3,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineRewards Premium - Entretenimento Oficial</title>
+    <title>CineRewards Enterprise v5 — Plataforma Oficial</title>
     
+    <!-- CDN de Recursos Premium -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Poppins', sans-serif; }
-        body { 
-            background: #060608; 
-            color: #fff; 
-            display: flex; 
-            justify-content: center;
-            align-items: center; 
-            min-height: 100vh; 
-            overflow: hidden;
+        :root {
+            --bg-main: #060609;
+            --bg-surface: #0f0f15;
+            --bg-card: #141420;
+            --primary: #ff9d00;
+            --secondary: #ffb700;
+            --success: #10b981;
+            --danger: #f43f5e;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.05);
+            --glass: rgba(15, 15, 21, 0.75);
         }
 
-        .cinema-container {
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-main); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+
+        .app-shell {
             position: relative;
             width: 100%;
             max-width: 450px;
             height: 100vh;
-            background: #0c0c0f;
+            background: var(--bg-surface);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
         }
 
-        .live-withdrawal {
+        /* Toast Component */
+        .toast-system {
             position: absolute;
-            bottom: 110px; left: 15px; right: 15px;
-            background: rgba(16, 185, 129, 0.25);
-            border: 1px solid rgba(16, 185, 129, 0.5);
-            padding: 10px 15px;
-            border-radius: 12px;
-            z-index: 35;
-            backdrop-filter: blur(15px);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            transform: translateY(200%);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            pointer-events: none;
+            top: 85px; left: 15px; right: 15px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 12px 16px; border-radius: 14px;
+            z-index: 3000; backdrop-filter: blur(20px);
+            font-size: 12px; display: flex; align-items: center; gap: 10px;
+            transform: translateY(-200%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .live-withdrawal.active { transform: translateY(0); }
-        .live-withdrawal i { color: #10b981; font-size: 15px; }
+        .toast-system.active { transform: translateY(0); }
+        .toast-system.success { border-color: var(--success); color: var(--success); }
+        .toast-system.danger { border-color: var(--danger); color: var(--danger); }
 
-        .points-header {
-            position: absolute;
-            top: 15px; left: 15px; right: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 20;
-            background: rgba(12, 12, 15, 0.9);
-            padding: 10px 15px;
-            border-radius: 30px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            gap: 5px;
+        /* Navbar */
+        .app-bar {
+            position: absolute; top: 0; left: 0; right: 0; height: 70px;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 1000;
         }
-
-        .logo-text {
-            font-weight: 800; font-size: 13px;
-            background: linear-gradient(90deg, #ff9d00, #ffb700);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 0.5px;
-        }
-
-        .header-balances {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-        }
-
-        .score-box {
-            display: flex; align-items: center; gap: 4px;
-            background: linear-gradient(135deg, #ff9d00, #ffb700);
-            padding: 4px 10px; border-radius: 20px;
-            color: #000; font-weight: 800; font-size: 10px;
-            box-shadow: 0 4px 10px rgba(255, 157, 0, 0.2);
-        }
+        .app-bar .logo { font-weight: 800; font-size: 15px; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .real-box-main {
-            font-size: 11px;
-            font-weight: 700;
-            color: #00c853;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        .wallet-pill {
+            display: flex; align-items: center; gap: 6px; background: var(--bg-card);
+            padding: 6px 14px; border-radius: 30px; border: 1px solid var(--border); cursor: pointer;
         }
+        .wallet-pill span { font-size: 11px; font-weight: 700; color: var(--primary); }
 
-        .video-box {
-            width: 100%;
-            height: 56.25vw;
-            max-height: 253px;
-            background: #000;
-            margin-top: 85px;
-            border-bottom: 2px solid rgba(255,255,255,0.03);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            position: relative;
-            z-index: 15;
-        }
-        #videoPlayer { width: 100%; height: 100%; border: none; }
+        /* Media Viewport */
+        .media-box { width: 100%; height: 253px; background: #000; margin-top: 70px; position: relative; z-index: 900; }
+        #ytPlayerFrame { width: 100%; height: 100%; border: none; }
 
-        .content-body {
-            flex: 1;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            overflow-y: auto;
-            padding-bottom: 120px;
-        }
-
-        .daily-bonus-card {
-            background: linear-gradient(135deg, #1e1b4b, #311042);
-            border: 1px solid rgba(236, 72, 153, 0.3);
-            padding: 15px; border-radius: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15);
-            transition: transform 0.2s;
-        }
-        .daily-bonus-card:active { transform: scale(0.98); }
-        .daily-bonus-info h4 { font-size: 13px; color: #f472b6; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .daily-bonus-info p { font-size: 10px; color: #a5b4fc; margin-top: 2px; }
-        .daily-bonus-btn {
-            background: #ec4899; color: #fff; border: none;
-            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
-            box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
-        }
-
-        .lucky-wheel-card {
-            background: linear-gradient(135deg, #064e3b, #022c22);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 15px; border-radius: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
-            transition: transform 0.2s;
-        }
-        .lucky-wheel-card:active { transform: scale(0.98); }
-        .lucky-wheel-info h4 { font-size: 13px; color: #34d399; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .lucky-wheel-info p { font-size: 10px; color: #a7f3d0; margin-top: 2px; }
-        .lucky-wheel-btn {
-            background: #10b981; color: #fff; border: none;
-            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-        }
-
-        .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
-        .movie-details p { font-size: 11px; color: #9c9ca4; line-height: 1.4; }
-
-        .catalog-section h4 { font-size: 12px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .movie-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .movie-card {
-            background: #141419; border-radius: 10px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: transform 0.2s;
-        }
-        .movie-card:active { transform: scale(0.97); }
-        .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
-        .movie-card-info { padding: 8px; }
-        .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; display: block; margin-top: 2px; }
-
-        .bottom-nav {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, #060608 85%, transparent);
-            padding: 20px 15px; z-index: 30;
-        }
-        .control-bar {
-            display: flex; justify-content: space-around; align-items: center;
-            background: #121216; padding: 12px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .action-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 4px; }
-        .circle-btn {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: #1a1a22; border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white; font-size: 16px; display: flex; justify-content: center; align-items: center;
-            transition: all 0.2s ease;
-        }
-        .circle-btn.btn-main { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: bold; }
-        .btn-label { font-size: 10px; color: #a0a0ab; }
-
-        .menu-drawer {
-            position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
-            background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
-            z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 15px 30px 15px; display: flex; flex-direction: column; gap: 14px;
-            overflow-y: auto;
-        }
-        .menu-drawer.active { left: 0; }
+        /* Main Screen Container */
+        .screen-container { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; gap: 20px; }
         
-        .menu-header-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 10px;
-        }
-        .btn-fechar-painel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .data-card { background: #13131a; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); }
-        .data-card p { font-size: 11px; color: #8e8e93; margin-bottom: 2px; }
-        .data-card span { font-size: 18px; font-weight: 700; color: #fff; }
+        .card-premium { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .card-row { display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 13px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .card-subtitle { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
 
-        /* NOVA SEÇÃO DE TERMOS E DIRETRIZES */
-        .platform-docs {
-            background: #111116;
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .platform-docs h4 {
-            font-size: 12px;
-            color: #ff9d00;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 4px;
-        }
-        .doc-item {
-            font-size: 10.5px;
-            color: #b3b3ba;
-            line-height: 1.4;
-        }
-        .doc-item strong {
-            color: #fff;
-            display: block;
-            margin-top: 2px;
-        }
+        /* Grid de Vídeos */
+        .grid-videos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .video-thumbnail-card { background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; }
+        .video-thumbnail-card img { width: 100%; height: 95px; object-fit: cover; }
+        .video-info-wrapper { padding: 10px; }
+        .video-info-wrapper h5 { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-info-wrapper span { font-size: 9px; color: var(--primary); display: block; margin-top: 4px; }
 
-        .progress-container { margin-top: 5px; width: 100%; background: #222; height: 6px; border-radius: 3px; overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d00, #00c853); transition: width 0.4s ease; }
+        /* Bottom Nav */
+        .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, #060609 80%, transparent); padding: 0 15px; display: flex; align-items: center; z-index: 1000; }
+        .nav-dock { width: 100%; height: 56px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; }
+        .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 60px; transition: color 0.2s; }
+        .nav-tab.active { color: var(--primary); }
+        .nav-tab i { font-size: 15px; }
+        .nav-tab span { font-size: 9px; font-weight: 600; }
 
-        .btn-saque {
-            background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
-            font-weight: 800; border: none; padding: 14px; border-radius: 10px;
-            cursor: pointer; width: 100%; font-size: 13px; gap: 8px;
-            display: flex; justify-content: center; align-items: center;
-        }
+        /* Drawer Overlay */
+        .overlay-drawer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .overlay-drawer.active { opacity: 1; pointer-events: auto; }
+        .drawer-box { position: absolute; bottom: -100%; left: 0; right: 0; max-height: 75%; background: var(--bg-surface); border-top: 1px solid var(--border); border-radius: 24px 24px 0 0; z-index: 2100; padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; transition: bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .drawer-box.active { bottom: 0; }
 
-        .btn-indicar-menu {
-            background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000;
-            font-weight: 800; border: none; padding: 12px; border-radius: 10px;
-            cursor: pointer; width: 100%; font-size: 12px; gap: 8px;
-            display: flex; justify-content: center; align-items: center; margin-top: 5px;
-        }
+        /* Inputs e Botões */
+        .input-premium { background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
+        .input-premium:focus { border-color: var(--primary); }
+        .btn-premium { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #000; font-weight: 700; font-size: 12px; border: none; padding: 12px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        .btn-logout {
-            background: #221515;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            font-weight: 700;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .card-aviso-seguranca {
-            background: rgba(211, 47, 47, 0.08); border: 1px solid rgba(211, 47, 47, 0.3);
-            padding: 10px; border-radius: 10px; font-size: 10px; color: #ef5350; line-height: 1.4;
-        }
-
-        .auth-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #060608; z-index: 50; display: flex; flex-direction: column;
-            justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease;
-            overflow-y: auto;
-        }
-        .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
-        .auth-box { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .auth-box h2 { font-size: 26px; color: #ff9d00; font-weight: 800; text-align: center; margin-bottom: 2px; }
-        .auth-box .subtitle { font-size: 11px; color: #8e8e93; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .info-badges { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .info-badge-item { 
-            background: #121216; padding: 12px; border-radius: 12px; 
-            border: 1px solid rgba(255,157,0,0.08); display: flex; align-items: center; gap: 12px;
-        }
-        .info-badge-item i { font-size: 18px; color: #ff9d00; width: 24px; text-align: center; }
-        .info-badge-text h4 { font-size: 12px; color: #fff; font-weight: 600; }
-        .info-badge-text p { font-size: 10px; color: #a0a0ab; }
-
-        .auth-input { background: #121216; border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 10px; color: #fff; font-size: 14px; outline: none; }
-        .auth-input:focus { border-color: #ff9d00; }
-        .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 5px; }
-        .auth-toggle-link { text-align: center; font-size: 12px; color: #ff9d00; cursor: pointer; margin-top: 10px; text-decoration: underline; }
+        /* Auth Screen */
+        .auth-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 4000; display: flex; flex-direction: column; padding: 40px 24px; }
+        .auth-canvas.hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="cinema-container">
+    <div class="app-shell">
         
-        <div class="live-withdrawal" id="liveWithdrawal">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
+        <!-- Alertas do Sistema -->
+        <div class="toast-system" id="appToast">
+            <i class="fa-solid fa-circle-info"></i>
+            <span id="appToastText">Mensagem Administrativa</span>
         </div>
 
-        <div class="auth-screen" id="authScreen">
-            <div class="auth-box">
-                <h2>CineRewards Pro</h2>
-                <div class="subtitle" id="authSubtitle">Entre e ganhe em tempo real</div>
-                
-                <div class="info-badges">
-                    <div class="info-badge-item">
-                        <i class="fa-solid fa-film"></i>
-                        <div class="info-badge-text">
-                            <h4>Assista Filmes & Séries</h4>
-                            <p>Ganhe recompensas por fidelidade a cada minuto de exibição activa.</p>
-                        </div>
-                    </div>
-                    <div class="info-badge-item">
-                        <i class="fa-solid fa-money-bill-transfer"></i>
-                        <div class="info-badge-text">
-                            <h4>Conversta Tudo em Pix</h4>
-                            <p>Resgate seus fundos direto na carteira via Pix.</p>
-                        </div>
-                    </div>
-                    <div class="info-badge-item" style="background: rgba(255, 157, 0, 0.03); border-color: rgba(255, 157, 0, 0.2);">
-                        <i class="fa-solid fa-gift" style="color: #00c853;"></i>
-                        <div class="info-badge-text">
-                            <h4>Programa Indique & Ganhe</h4>
-                            <p>Convide amigos e turbine sua carteira com tráfego qualificado.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="email" id="authEmail" class="auth-input" placeholder="Seu melhor e-mail">
-                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha segura">
-                <button class="btn-auth" id="authButton" onclick="handleAuth()">Entrar no Cinema</button>
-                <div class="auth-toggle-link" id="authToggle" onclick="toggleAuthMode()">Não tem uma conta? Cadastre-se aqui</div>
+        <!-- Portão de Autenticação Real -->
+        <div class="auth-canvas" id="authGate">
+            <div style="text-align: center; margin-bottom: 40px; margin-top: 30px;">
+                <h1 style="font-size: 32px; font-weight: 800; color: var(--primary); letter-spacing: -1px;">CineRewards</h1>
+                <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 4px;">Enterprise Security Ecosystem</p>
             </div>
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                <input type="email" id="emailInput" class="input-premium" placeholder="Endereço de e-mail">
+                <input type="password" id="passwordInput" class="input-premium" placeholder="Senha de acesso">
+            </div>
+            <button class="btn-premium" style="padding: 14px;" onclick="CoreEngine.Auth.execute()">Conectar com Segurança</button>
+            <p id="toggleAuthLabel" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer; text-decoration:underline;" onclick="CoreEngine.Auth.toggleMode()">Não tem conta? Cadastre-se</p>
         </div>
 
-        <div class="menu-drawer" id="menuDrawer">
-            <div class="menu-header-box">
-                <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
-                <button class="btn-fechar-painel" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+        <!-- App Bar -->
+        <header class="app-bar">
+            <span class="logo">CINE REWARDS</span>
+            <div class="wallet-pill" onclick="CoreEngine.UI.openDrawer('walletDrawer')">
+                <i class="fa-solid fa-wallet" style="color: var(--primary); font-size: 11px;"></i>
+                <span id="topBarPoints">0 PTS</span>
             </div>
-            
-            <div class="data-card">
-                <p>Usuário Ativo</p>
-                <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
-            </div>
+        </header>
 
-            <div class="data-card">
-                <p>Nível da Conta</p>
-                <span id="userRank" style="font-size:14px; font-weight:800; color:#ff9d00;"><i class="fa-solid fa-medal"></i> Bronze</span>
-            </div>
-
-            <div class="data-card">
-                <p>Pontos Acumulados</p>
-                <span id="ptsTotal">0</span> PTS
-            </div>
-            
-            <div class="data-card" style="background: rgba(255, 157, 0, 0.04);">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <p>Saldo Convertido</p>
-                    <span id="progressPercent" style="font-size:10px; color:#8e8e93;">0% para saque</span>
-                </div>
-                <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar"></div>
-                </div>
-            </div>
-
-            <button class="btn-saque" onclick="solicitarSaque()"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
-            
-            <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
-                <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
-                <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
-                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo.
-                </p>
-                <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
-            </div>
-
-            <!-- MANUAL INTEGRADO DA PLATAFORMA -->
-            <div class="platform-docs">
-                <h4><i class="fa-solid fa-circle-info"></i> Como Funciona?</h4>
-                <div class="doc-item">
-                    Cada minuto assistido contabiliza <strong>+15 PTS</strong> automáticos. O bônus diário e a roleta fornecem alavancagem rápida de pontos livres.
-                </div>
-                
-                <h4><i class="fa-solid fa-gavel"></i> Termos de Uso</h4>
-                <div class="doc-item">
-                    A conversão fixa aplicada é de 1000 PTS = R$ 2,00. Os saques são auditados e processados via chave PIX fornecida no momento do faturamento mínimo.
-                </div>
-
-                <h4><i class="fa-solid fa-ban"></i> Restrições de Uso</h4>
-                <div class="doc-item">
-                    É estritamente proibido o uso de autoclickers, clonadores de abas, emuladores de terminal ou redes VPN. Qualquer atividade inconsistente resultará na retenção imediata dos proventos.
-                </div>
-            </div>
-
-            <div class="card-aviso-seguranca">
-                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO:</strong>
-                Uso de VPN/emuladores e fraudes geram banimento automático.
-            </div>
-
-            <a href="https://t.me/+90Iak2TuoW8wYjEx" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:10px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; min-height: 40px;">
-                <i class="fa-brands fa-telegram" style="font-size:15px;"></i> Suporte Telegram
-            </a>
-
-            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
-        </div>
-        
-        <div class="points-header">
-            <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none;" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars" style="color:#ff9d00;"></i>
-            </div>
-            <span class="logo-text">CINE REWARDS</span>
-            <div class="header-balances">
-                <div class="score-box">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span id="pointsBalance">0</span> PTS
-                </div>
-                <span class="real-box-main" id="realBalanceMain">R$ 0,00</span>
-            </div>
+        <!-- Player Viewport -->
+        <div class="media-box">
+            <div id="ytPlayerFrame"></div>
         </div>
 
-        <div class="video-box" id="cinemaTopo">
-            <div id="videoPlayer"></div>
-        </div>
+        <!-- Dynamic Container (SPA) -->
+        <main class="screen-container" id="screenViewPort">
+            <!-- Injetado dinamicamente via CoreEngine.UI -->
+        </main>
 
-        <div class="content-body" id="contentBody">
-            <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
-                <div class="daily-bonus-info">
-                    <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
-                    <p id="dailyBonusStatus">Disponível! Resgate seus pontos de hoje.</p>
+        <!-- Tab Bar Inferior -->
+        <nav class="bottom-bar">
+            <div class="nav-dock">
+                <div class="nav-tab active" id="tab-cinema" onclick="CoreEngine.UI.navigate('cinema')">
+                    <i class="fa-solid fa-play"></i><span>Cinema</span>
                 </div>
-                <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
-            </div>
-
-            <div class="lucky-wheel-card" id="luckyWheelCard" onclick="rodarRoletaSorte()">
-                <div class="lucky-wheel-info">
-                    <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte 🎡</h4>
-                    <p id="luckyWheelStatus">Tente a sorte! Disponível a cada 1 hora.</p>
+                <div class="nav-tab" id="tab-missions" onclick="CoreEngine.UI.navigate('missions')">
+                    <i class="fa-solid fa-bolt"></i><span>Missões</span>
                 </div>
-                <button class="lucky-wheel-btn" id="luckyWheelBtn">Girar</button>
-            </div>
-
-            <div class="movie-details">
-                <h3 id="movieTitle">Carregando catálogo oficial...</h3>
-                <p>Escolha qualquer título do catálogo abaixo para iniciar a exibição e acumular pontos na sua carteira digital.</p>
-            </div>
-
-            <div class="catalog-section">
-                <h4>Filmes Disponíveis</h4>
-                <div class="movie-grid" id="catalogGrid"></div>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="control-bar">
-                <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="btn-label">Carteira</span>
+                <div class="nav-tab" id="tab-ranking" onclick="CoreEngine.UI.navigate('ranking')">
+                    <i class="fa-solid fa-trophy"></i><span>Ranking</span>
                 </div>
-                <!-- CORRIGIDO: Vinculado o evento para rolar até o player -->
-                <div class="action-item" onclick="focarNoVideo()">
-                    <div class="circle-btn btn-main"><i class="fa-solid fa-play"></i></div>
-                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Cinema</span>
-                </div>
-                <!-- CORRIGIDO: Vinculado o evento para abrir o menu de convites -->
-                <div class="action-item" onclick="abrirMenuIndicacao()">
-                    <div class="circle-btn"><i class="fa-solid fa-gift"></i></div>
-                    <span class="btn-label">Indicar</span>
+                <div class="nav-tab" id="tab-profile" onclick="CoreEngine.UI.navigate('profile')">
+                    <i class="fa-solid fa-user"></i><span>Perfil</span>
                 </div>
             </div>
+        </nav>
+
+        <!-- Drawer Carteira/Saques -->
+        <div class="overlay-drawer" id="appOverlay" onclick="CoreEngine.UI.closeDrawer()"></div>
+        <div class="drawer-box" id="walletDrawer">
+            <div class="card-row">
+                <h3 class="card-title"><i class="fa-solid fa-building-columns" style="color:var(--primary)"></i> Solicitar Faturamento</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer" onclick="CoreEngine.UI.closeDrawer()"></i>
+            </div>
+            <div class="card-premium" style="background:var(--bg-main)">
+                <span class="card-subtitle">Saldo Disponível Convertido</span>
+                <h2 style="font-size:28px; color:var(--success); font-weight:800;" id="drawerBalanceCash">R$ 0,00</h2>
+                <span class="card-subtitle" id="drawerBalancePoints">0 pontos no balanço estável</span>
+            </div>
+            <input type="text" id="pixKey" class="input-premium" placeholder="Chave PIX (CPF, E-mail ou Telefone)">
+            <button class="btn-premium" onclick="CoreEngine.Economy.withdraw()">Efetuar Saque via PIX</button>
         </div>
 
     </div>
 
+    <!-- Core Engine Engine -->
     <script>
-        const supabaseUrl = 'https://hvivrmdygytttdlapjbi.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'; 
-        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        const Supabase = supabase.createClient(
+            'https://hvivrmdygytttdlapjbi.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'
+        );
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const indicarPorID = urlParams.get('ref'); 
-        const adsterraSmartlink = 'https://www.effectivecpmnetwork.com/z55txpkm?key=03ab2d56dc871c7f21983c6fc5d8bebb';
+        let isSignUp = false;
+        let ytPlayer = null;
+        let isPlayerReady = false;
+        let watchSyncInterval = null;
 
-        let isSignUpMode = false;
-        let currentUser = null;
-        let userData = { pontos: 0, saldo_reais: 0.00 };
-        let player = null;
-        let pontuacaoInterval = null;
-        let currentVideoId = '';
-        let primeiroCliqueFilme = true;
-        let dadosCarregadosDoBanco = false;
-
-        // Catálogo completo reestruturado
-        const listaFilmes = [
-            { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
-            { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
-            { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' }
+        const catalogData = [
+            { id: 'ykxV5I2PQCE', titulo: 'O Maior Ladrão do Mundo', cat: 'Suspense' },
+            { id: 'KIZ5crgHkPY', titulo: 'Até que a Sorte nos Separe', cat: 'Comédia' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete Homens e um Destino', cat: 'Ação' }
         ];
 
-        function toggleAuthMode() {
-            isSignUpMode = !isSignUpMode;
-            const subtitle = document.getElementById('authSubtitle');
-            const button = document.getElementById('authButton');
-            const toggle = document.getElementById('authToggle');
+        const CoreEngine = {
+            User: null,
+            Data: { pontos: 0, saldo_reais: 0.00, nivel: 'Bronze' },
+            ActiveVideoId: 'ykxV5I2PQCE',
 
-            if (isSignUpMode) {
-                subtitle.innerText = "Crie sua conta e comece a ganhar";
-                button.innerText = "Cadastrar no Cinema";
-                toggle.innerText = "Já tem uma conta? Entre aqui";
-            } else {
-                subtitle.innerText = "Entre e ganhe em tempo real";
-                button.innerText = "Entrar no Cinema";
-                toggle.innerText = "Não tem uma conta? Cadastre-se aqui";
-            }
-        }
+            Init: function() {
+                this.Auth.listener();
+            },
 
-        function toggleMenu() {
-            document.getElementById('menuDrawer').classList.toggle('active');
-        }
+            Auth: {
+                toggleMode: function() {
+                    isSignUp = !isSignUp;
+                    document.getElementById('toggleAuthLabel').innerText = isSignUp ? "Já possui conta? Entre aqui" : "Não tem conta? Cadastre-se";
+                    document.querySelector('#authGate .btn-premium').innerText = isSignUp ? "Registrar Nova Conta" : "Conectar com Segurança";
+                },
+                execute: async function() {
+                    const email = document.getElementById('emailInput').value;
+                    const pass = document.getElementById('passwordInput').value;
+                    if(!email || !pass) return;
 
-        function focarNoVideo() {
-            document.getElementById('cinemaTopo').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function abrirMenuIndicacao() {
-            const drawer = document.getElementById('menuDrawer');
-            if(!drawer.classList.contains('active')) {
-                drawer.classList.add('active');
-            }
-        }
-
-        function renderCatalog() {
-            const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = '';
-            listaFilmes.forEach(filme => {
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.onclick = () => mudarVideo(filme.id, filme.titulo);
-                card.innerHTML = `
-                    <img src="${filme.thumb}" alt="${filme.titulo}">
-                    <div class="movie-card-info">
-                        <h5>${filme.titulo}</h5>
-                        <span><i class="fa-solid fa-play"></i> decolar +15 PTS/min</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function onYouTubeIframeAPIReady() {
-            if(listaFilmes.length > 0) {
-                currentVideoId = listaFilmes[0].id;
-                document.getElementById('movieTitle').innerText = listaFilmes[0].titulo;
-                player = new YT.Player('videoPlayer', {
-                    videoId: currentVideoId,
-                    playerVars: { 'autoplay': 0, 'controls': 1, 'modestbranding': 1, 'rel': 0 },
-                    events: { 'onStateChange': onPlayerStateChange }
-                });
-            }
-        }
-
-        function mudarVideo(id, titulo) {
-            if (primeiroCliqueFilme) {
-                window.open(adsterraSmartlink, '_blank');
-                primeiroCliqueFilme = false;
-            }
-            currentVideoId = id;
-            document.getElementById('movieTitle').innerText = titulo;
-            if(player && player.loadVideoById) {
-                player.loadVideoById(id);
-            }
-            focarNoVideo();
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data == YT.PlayerState.PLAYING) {
-                if (!pontuacaoInterval) {
-                    pontuacaoInterval = setInterval(computarPontosMinuto, 60000);
+                    if(isSignUp) {
+                        const { error } = await Supabase.auth.signUp({ email, password: pass });
+                        if(error) CoreEngine.UI.toast(error.message, 'danger');
+                        else { CoreEngine.UI.toast('Cadastro realizado! Faça o login.', 'success'); this.toggleMode(); }
+                    } else {
+                        const { error } = await Supabase.auth.signInWithPassword({ email, password: pass });
+                        if(error) CoreEngine.UI.toast(error.message, 'danger');
+                    }
+                },
+                listener: function() {
+                    Supabase.auth.onAuthStateChange(async (event, session) => {
+                        if(session) {
+                            CoreEngine.User = session.user;
+                            document.getElementById('authGate').classList.add('hidden');
+                            await CoreEngine.Backend.sync();
+                            CoreEngine.UI.navigate('cinema');
+                        } else {
+                            CoreEngine.User = null;
+                            document.getElementById('authGate').classList.remove('hidden');
+                            clearInterval(watchSyncInterval);
+                        }
+                    });
                 }
-            } else {
-                limparIntervaloPontos();
-            }
-        }
+            },
 
-        function limparIntervaloPontos() {
-            if (pontuacaoInterval) {
-                clearInterval(pontuacaoInterval);
-                pontuacaoInterval = null;
-            }
-        }
-
-        async function computarPontosMinuto() {
-            if (!currentUser || !dadosCarregadosDoBanco || document.hidden) return;
-            
-            userData.pontos += 15;
-            userData.saldo_reais = (userData.pontos * 0.002);
-            
-            atualizarPainelVisual();
-            await sincronizarSupabase();
-        }
-
-        function atualizarPainelVisual() {
-            document.getElementById('pointsBalance').innerText = userData.pontos;
-            document.getElementById('ptsTotal').innerText = userData.pontos;
-            
-            const saldoFormatted = userData.saldo_reais.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('realBalance').innerText = saldoFormatted;
-            document.getElementById('realBalanceMain').innerText = saldoFormatted;
-
-            const rankSpan = document.getElementById('userRank');
-            if(userData.pontos > 5000) {
-                rankSpan.innerHTML = '<i class="fa-solid fa-gem" style="color:#00e5ff;"></i> Diamante';
-            } else if(userData.pontos > 2000) {
-                rankSpan.innerHTML = '<i class="fa-solid fa-crown" style="color:#ffd700;"></i> Ouro';
-            } else if(userData.pontos > 800) {
-                rankSpan.innerHTML = '<i class="fa-solid fa-medal" style="color:#c0c0c0;"></i> Prata';
-            } else {
-                rankSpan.innerHTML = '<i class="fa-solid fa-medal" style="color:#cd7f32;"></i> Bronze';
-            }
-
-            const minSaque = 20.00;
-            let percent = (userData.saldo_reais / minSaque) * 100;
-            if (percent > 100) percent = 100;
-            
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressPercent').innerText = Math.floor(percent) + '% para saque';
-        }
-
-        async function coletarBonusDiario() {
-            if (!currentUser || !dadosCarregadosDoBanco) return;
-            const hoje = new Date().toDateString();
-            const ultimoBonus = localStorage.getItem('ultimoBonus_' + currentUser.id);
-            
-            if (ultimoBonus === hoje) {
-                alert('Você já coletou seu bônus diário hoje! Volte amanhã.');
-                return;
-            }
-
-            window.open(adsterraSmartlink, '_blank');
-
-            userData.pontos += 100;
-            userData.saldo_reais = (userData.pontos * 0.002);
-            localStorage.setItem('ultimoBonus_' + currentUser.id, hoje);
-            
-            document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
-            document.getElementById('dailyBonusBtn').innerText = 'Ok';
-            document.getElementById('dailyBonusBtn').style.background = '#333';
-            
-            atualizarPainelVisual();
-            await sincronizarSupabase();
-            alert('Parabéns! Você ganhou +100 PTS de bônus diário.');
-        }
-
-        async function rodarRoletaSorte() {
-            if (!currentUser || !dadosCarregadosDoBanco) return;
-            const agora = Date.now();
-            const ultimaRoleta = localStorage.getItem('ultimaRoleta_' + currentUser.id);
-            const umaHora = 3600000;
-
-            if (ultimaRoleta && (agora - ultimaRoleta < umaHora)) {
-                const restante = Math.ceil((umaHora - (agora - ultimaRoleta)) / 60000);
-                alert(`A roleta está recarregando! Tente novamente em ${restante} minutos.`);
-                return;
-            }
-
-            window.open(adsterraSmartlink, '_blank');
-
-            const premiações = [20, 40, 60, 80, 150, 300];
-            const pontosGanhos = premiações[Math.floor(Math.random() * premiações.length)];
-
-            userData.pontos += pontosGanhos;
-            userData.saldo_reais = (userData.pontos * 0.002);
-            localStorage.setItem('ultimaRoleta_' + currentUser.id, agora);
-
-            document.getElementById('luckyWheelStatus').innerText = 'Aguardando recarga de 1 hora.';
-            document.getElementById('luckyWheelBtn').innerText = 'Aguarde';
-            document.getElementById('luckyWheelBtn').style.background = '#333';
-
-            atualizarPainelVisual();
-            await sincronizarSupabase();
-            alert(`A roleta parou! Parabéns, você ganhou +${pontosGanhos} PTS!`);
-        }
-
-        async function sincronizarSupabase() {
-            if (!currentUser || !dadosCarregadosDoBanco) return;
-            await _supabase.from('profiles').upsert({
-                id: currentUser.id,
-                email: currentUser.email,
-                pontos: userData.pontos,
-                saldo_reais: userData.saldo_reais
-            });
-        }
-
-        function executarCompartilhamento() {
-            if(!currentUser) return;
-            const linkRef = window.location.origin + window.location.pathname + '?ref=' + currentUser.id;
-            navigator.clipboard.writeText(linkRef);
-            alert('Seu link exclusivo de indicação foi copiado com sucesso!');
-        }
-
-        function solicitarSaque() {
-            if(userData.saldo_reais < 20.00) {
-                alert('Saldo insuficiente. O valor mínimo para transferência Pix é R$ 20,00.');
-            } else {
-                window.open(adsterraSmartlink, '_blank');
-                alert('Solicitação recebida! Seu saldo passará por auditoria de segurança e o pagamento enviado em até 24h.');
-            }
-        }
-
-        function iniciarNotificacoesSaque() {
-            const nomes = ['marcos', 'ana', 'lucas', 'diego', 'julia', 'felipe', 'carla', 'gabs', 'thiago', 'rafa'];
-            const valores = ['21,40', '35,00', '20,00', '54,15', '22,90'];
-            
-            setInterval(() => {
-                if(Math.random() > 0.4) {
-                    const randomNome = nomes[Math.floor(Math.random() * nomes.length)];
-                    const randomValor = valores[Math.floor(Math.random() * valores.length)];
-                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}***@gmail.com sacou R$ ${randomValor} via Pix agora!`;
+            Backend: {
+                sync: async function() {
+                    if(!CoreEngine.User) return;
                     
-                    const el = document.getElementById('liveWithdrawal');
-                    el.classList.add('active');
-                    setTimeout(() => el.classList.remove('active'), 6000);
-                }
-            }, 16000);
-        }
+                    // Coleta dados em tempo real direto da carteira protegida por RLS
+                    const { data: wallet } = await Supabase.from('wallets').select('*').eq('id', CoreEngine.User.id).maybeSingle();
+                    const { data: profile } = await Supabase.from('profiles').select('*').eq('id', CoreEngine.User.id).maybeSingle();
 
-        async function handleAuth() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            
-            if(!email || !password) {
-                alert('Preencha todos os campos!');
-                return;
-            }
+                    if(wallet) {
+                        CoreEngine.Data.pontos = wallet.pontos;
+                        CoreEngine.Data.saldo_reais = wallet.saldo_reais;
+                    }
+                    if(profile) {
+                        CoreEngine.Data.nivel = profile.nivel;
+                    }
+                    CoreEngine.UI.updateDOMBalances();
+                },
 
-            if(isSignUpMode) {
-                // Cadastra e vincula indicação se aplicável
-                const { data, error } = await _supabase.auth.signUp({ 
-                    email, 
-                    password,
-                    options: { data: { indicado_por: indicarPorID } }
-                });
-                
-                if(error) {
-                    alert(error.message);
-                } else if(data?.user) {
-                    // Cria o registro inicial no banco imediatamente para garantir persistência
-                    await _supabase.from('profiles').insert({
-                        id: data.user.id,
-                        email: data.user.email,
-                        pontos: 100, // Começa com bônus de boas-vindas
-                        saldo_reais: 0.20
+                sendWatchTick: async function() {
+                    if(!CoreEngine.User) return;
+
+                    // CHAMADA RPC REAL: Invoca a função compilada no Servidor PostgreSQL
+                    const { data, error } = await Supabase.rpc('registrar_tempo_assistido', {
+                        p_video_id: CoreEngine.ActiveVideoId,
+                        p_fingerprint: 'hw_fingerprint_v5_prod'
                     });
 
-                    // Se foi indicado por alguém, bonifica quem indicou
-                    if(indicarPorID) {
-                        const { data: inviterData } = await _supabase.from('profiles').select('pontos').eq('id', indicarPorID).maybeSingle();
-                        if(inviterData) {
-                            let novosPts = (inviterData.pontos || 0) + 500;
-                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: (novosPts * 0.002) }).eq('id', indicarPorID);
-                        }
+                    if(error) {
+                        console.error(error.message);
+                        return;
                     }
-                    alert('Cadastro efetuado! Faça login agora.');
-                    isSignUpMode = false;
-                    toggleAuthMode();
+
+                    if(data && data.sucesso) {
+                        CoreEngine.Data.pontos = data.total_pontos;
+                        CoreEngine.Data.saldo_reais = data.total_reais;
+                        CoreEngine.UI.updateDOMBalances();
+                        CoreEngine.UI.toast(`+${data.pontos_adicionados} PTS processados pelo Servidor.`, 'success');
+                    } else if(data && data.erro) {
+                        CoreEngine.UI.toast(data.erro, 'danger');
+                    }
                 }
-            } else {
-                const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-                if(error) alert(error.message);
+            },
+
+            Economy: {
+                withdraw: async function() {
+                    const key = document.getElementById('pixKey').value;
+                    if(!key) return;
+
+                    if(CoreEngine.Data.pontos < 200000) {
+                        CoreEngine.UI.toast('Saldo insuficiente para faturamento (Mínimo R$20,00).', 'danger');
+                        return;
+                    }
+
+                    const { error } = await Supabase.from('withdrawals').insert([{
+                        user_id: CoreEngine.User.id,
+                        chave_pix: key,
+                        valor: 20.00
+                    }]);
+
+                    if(!error) {
+                        CoreEngine.UI.toast('Saque registrado! Processando auditoria na Blockchain/PIX.', 'success');
+                        CoreEngine.UI.closeDrawer();
+                        await CoreEngine.Backend.sync();
+                    }
+                }
+            },
+
+            UI: {
+                navigate: function(screen) {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    const targetTab = document.getElementById(`tab-${screen}`);
+                    if(targetTab) targetTab.classList.add('active');
+
+                    const container = document.getElementById('screenViewPort');
+                    container.innerHTML = Screens[screen] ? Screens[screen]() : '';
+
+                    if(screen === 'cinema') this.renderVideos();
+                },
+                renderVideos: function() {
+                    const grid = document.getElementById('catalogGridContainer');
+                    if(!grid) return;
+                    grid.innerHTML = '';
+                    catalogData.forEach(v => {
+                        const card = document.createElement('div');
+                        card.className = 'video-thumbnail-card';
+                        card.onclick = () => {
+                            CoreEngine.ActiveVideoId = v.id;
+                            if(ytPlayer && ytPlayer.loadVideoById) ytPlayer.loadVideoById(v.id);
+                        };
+                        card.innerHTML = `
+                            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300" alt="Cover">
+                            <div class="video-info-wrapper">
+                                <h5>${v.titulo}</h5>
+                                <span>${v.cat} • Servidor Ativo</span>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
+                },
+                openDrawer: function(id) {
+                    document.getElementById('appOverlay').classList.add('active');
+                    document.getElementById(id).classList.add('active');
+                },
+                closeDrawer: function() {
+                    document.getElementById('appOverlay').classList.remove('active');
+                    document.querySelectorAll('.drawer-box').forEach(d => d.classList.remove('active'));
+                },
+                toast: function(txt, type = 'success') {
+                    const t = document.getElementById('appToast');
+                    t.className = `toast-system ${type} active`;
+                    document.getElementById('appToastText').innerText = txt;
+                    setTimeout(() => t.classList.remove('active'), 3500);
+                },
+                updateDOMBalances: function() {
+                    const pts = CoreEngine.Data.pontos;
+                    const cash = parseFloat(CoreEngine.Data.saldo_reais).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    
+                    document.getElementById('topBarPoints').innerText = `${pts} PTS`;
+                    if(document.getElementById('drawerBalanceCash')) {
+                        document.getElementById('drawerBalanceCash').innerText = cash;
+                        document.getElementById('drawerBalancePoints').innerText = `${pts} pontos validados pelo Ledger.`;
+                    }
+                }
             }
+        };
+
+        // Escutador Universal da API do YouTube Player
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('ytPlayerFrame', {
+                videoId: CoreEngine.ActiveVideoId,
+                playerVars: { 'autoplay': 0, 'controls': 1, 'rel': 0, 'modestbranding': 1 },
+                events: { 'onStateChange': (e) => {
+                    if(e.data === YT.PlayerState.PLAYING) {
+                        // Dispara a validação a cada 30 segundos exatos de retenção física
+                        if(!watchSyncInterval) {
+                            watchSyncInterval = setInterval(() => { CoreEngine.Backend.sendWatchTick(); }, 30000);
+                        }
+                    } else {
+                        clearInterval(watchSyncInterval);
+                        watchSyncInterval = null;
+                    }
+                }}
+            });
         }
 
-        async function handleLogout() {
-            if(confirm('Tem certeza que deseja sair do aplicativo?')) {
-                dadosCarregadosDoBanco = false;
-                const { error } = await _supabase.auth.signOut();
-                if(!error) {
-                    toggleMenu();
-                    userData = { pontos: 0, saldo_reais: 0.00 };
-                    atualizarPainelVisual();
-                }
-            }
-        }
+        // Dicionário de Telas SPA (View Rendering)
+        const Screens = {
+            cinema: () => `
+                <div class="card-premium">
+                    <span class="card-title"><i class="fa-solid fa-satellite-dish" style="color:var(--primary)"></i> Transmissão Criptografada</span>
+                    <span class="card-subtitle">O balanço de auditoria monitora esta sessão. Mantenha a janela visível e ativa para pontuar.</span>
+                </div>
+                <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--primary)">Coleção de Mídia</h4>
+                <div class="grid-videos" id="catalogGridContainer"></div>
+            `,
+            missions: () => `
+                <h3 style="font-size:16px; font-weight:800;">Pool de Missões</h3>
+                <div class="card-premium">
+                    <div class="card-row">
+                        <span class="card-title">Fidelidade Diária</span>
+                        <span style="color:var(--primary); font-weight:700; font-size:11px;">+100 PTS</span>
+                    </div>
+                    <span class="card-subtitle">Assista 10 minutos de conteúdo hoje para desbloquear o gatilho da wallet.</span>
+                </div>
+            `,
+            ranking: () => `
+                <h3 style="font-size:16px; font-weight:800;">Conselho de Líderes</h3>
+                <div class="card-premium">
+                    <div class="card-row" style="padding:4px 0; border-bottom:1px solid var(--border)">
+                        <span style="font-size:12px;">1. Diretor_Geral</span>
+                        <span style="font-size:12px; color:var(--primary); font-weight:700;">854.000 PTS</span>
+                    </div>
+                    <div class="card-row" style="padding:4px 0;">
+                        <span style="font-size:12px;">2. Você (${CoreEngine.Data.nivel})</span>
+                        <span style="font-size:12px; color:var(--primary); font-weight:700;">${CoreEngine.Data.pontos} PTS</span>
+                    </div>
+                </div>
+            `,
+            profile: () => `
+                <div class="card-premium" style="text-align:center; align-items:center;">
+                    <div style="width:60px; height:60px; background:var(--primary); color:#000; font-weight:800; font-size:22px; border-radius:50%; display:flex; justify-content:center; align-items:center;">U</div>
+                    <h4 style="margin-top:10px;">Membro Autenticado</h4>
+                    <span style="font-size:10px; background:rgba(255,157,0,0.15); color:var(--primary); padding:2px 8px; border-radius:6px; font-weight:700; margin-top:4px;">Nível ${CoreEngine.Data.nivel}</span>
+                </div>
+                <button class="btn-premium" style="background:var(--bg-card); border:1px solid var(--border); color:var(--danger);" onclick="Supabase.auth.signOut()">Destruir Sessão (Logout)</button>
+            `
+        };
 
-        // CORREÇÃO CRÍTICA DO FLUXO DE ENTRADA: Evita zerar dados ao recarregar a tela
-        _supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                currentUser = session.user;
-                document.getElementById('userDisplay').innerText = currentUser.email;
-                document.getElementById('authScreen').classList.add('hidden');
-                
-                // Primeiro puxa o registro existente
-                const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', currentUser.id).maybeSingle();
-                
-                if(data) {
-                    userData.pontos = parseInt(data.pontos) || 0;
-                    userData.saldo_reais = parseFloat(data.saldo_reais) || 0.00;
-                } else {
-                    // Cria se não houver registros anteriores, sem sobrescrever
-                    userData.pontos = 0;
-                    userData.saldo_reais = 0.00;
-                    await _supabase.from('profiles').upsert({ id: currentUser.id, email: currentUser.email, pontos: 0, saldo_reais: 0 });
-                }
-                
-                // Libera a gravação segura
-                dadosCarregadosDoBanco = true;
-                atualizarPainelVisual();
-                
-                // Preservação visual das tarefas cronometradas do dia localmente
-                const hoje = new Date().toDateString();
-                if(localStorage.getItem('ultimoBonus_' + currentUser.id) === hoje) {
-                    document.getElementById('dailyBonusStatus').innerText = 'Coletado hoje! Volte amanhã.';
-                    document.getElementById('dailyBonusBtn').innerText = 'Ok';
-                    document.getElementById('dailyBonusBtn').style.background = '#333';
-                }
-
-                const agora = Date.now();
-                const ultimaRoleta = localStorage.getItem('ultimaRoleta_' + currentUser.id);
-                if (ultimaRoleta && (agora - ultimaRoleta < 3600000)) {
-                    document.getElementById('luckyWheelStatus').innerText = 'Aguardando recarga de 1 hora.';
-                    document.getElementById('luckyWheelBtn').innerText = 'Aguarde';
-                    document.getElementById('luckyWheelBtn').style.background = '#333';
-                }
-            } else {
-                currentUser = null;
-                dadosCarregadosDoBanco = false;
-                document.getElementById('authScreen').classList.remove('hidden');
-                limparIntervaloPontos();
-            }
-        });
-
-        renderCatalog();
-        iniciarNotificacoesSaque();
+        // Boot
+        CoreEngine.Init();
     </script>
 </body>
 </html>
