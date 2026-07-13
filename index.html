@@ -55,39 +55,41 @@
         /* Top Header Area */
         .app-header {
             padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(10, 11, 16, 0.7); position: absolute; top: 0; left: 0; width: 100%; z-index: 100;
+            background: #0a0b10; width: 100%; z-index: 100;
+            border-bottom: 1px solid var(--border);
         }
         .header-logo { font-size: 16px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
         .header-logo span { color: var(--primary); }
         .header-user-status { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
         .header-user-status span { font-size: 11px; font-weight: 700; color: #fff; }
 
-        /* Banner Principal Highlight (Igual imagem de referência) */
+        /* Banner Principal Highlight - Dinâmico */
         .hero-showcase {
-            position: relative; width: 100%; height: 380px; background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800') center/cover no-repeat;
+            position: relative; width: 100%; height: 320px; background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800') center/cover no-repeat;
             display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
         }
         .hero-showcase::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(6,6,12,0.4) 0%, rgba(10,11,16,1) 100%);
+            background: linear-gradient(to bottom, rgba(10,11,16,0.2) 0%, rgba(10,11,16,1) 100%);
         }
         .hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-        .hero-title { font-size: 28px; font-weight: 800; color: #fff; text-transform: uppercase; line-height: 1.1; letter-spacing: -0.5px; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #fff; text-transform: uppercase; line-height: 1.1; letter-spacing: -0.5px; }
         .btn-watch-now {
             background: linear-gradient(90deg, var(--primary), var(--secondary)); color: #000;
             font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
             padding: 12px 24px; border-radius: 25px; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 6px 20px rgba(255,157,0,0.4); transition: transform 0.2s;
+            box-shadow: 0 6px 20px rgba(255,157,0,0.3); transition: transform 0.2s;
         }
         .btn-watch-now:hover { transform: scale(1.03); }
 
         /* Content Shell Fluid */
-        .content-body { padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 26px; margin-top: -15px; position: relative; z-index: 20; }
+        .content-body { padding: 20px; display: flex; flex-direction: column; gap: 24px; position: relative; z-index: 20; }
+        .content-body.home-adjusted { margin-top: -20px; }
 
-        /* Seções de Grade de Funcionalidades/Novidades (Conforme Imagem) */
-        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        /* Seções de Grade de Funcionalidades/Novidades */
+        .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
         
-        .novelty-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .novelty-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
         .novelty-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; transition: border-color 0.2s; }
         .novelty-card:hover { border-color: rgba(255,157,0,0.3); }
         .novelty-icon { width: 36px; height: 36px; background: rgba(255,157,0,0.06); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 15px; }
@@ -95,34 +97,34 @@
         .novelty-card p { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
 
         /* Feed Realtime de Saques Concluídos */
-        .payout-feed { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-        .payout-feed-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .payout-feed { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 2px; }
+        .payout-feed-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .payout-feed-row:last-child { border-bottom: none; padding-bottom: 0; }
         .payout-user { display: flex; align-items: center; gap: 10px; }
-        .payout-user img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #222; }
+        .payout-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #222; }
         .payout-user span { font-size: 12px; font-weight: 600; color: #fff; }
         .payout-val { font-size: 12px; font-weight: 700; color: var(--success); }
 
         /* Catálogo Horizontal e Grade de Filmes */
-        .catalog-scroller { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .catalog-scroller { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0; scrollbar-width: none; }
         .catalog-scroller::-webkit-scrollbar { display: none; }
-        .media-poster-card { min-width: 110px; width: 110px; height: 160px; background: #181a26; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid transparent; }
+        .media-poster-card { min-width: 115px; width: 115px; height: 165px; background: #181a26; border-radius: 14px; overflow: hidden; position: relative; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
         .media-poster-card.active { border-color: var(--primary); }
         .media-poster-card img { width: 100%; height: 100%; object-fit: cover; }
 
         /* Caixa Estruturada de Saque Profissional */
         .finance-card { background: linear-gradient(135deg, #11131e, #171224); border: 1px solid var(--border); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
         .input-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-        .app-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; }
+        .app-input { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.2s; }
         .app-input:focus { border-color: var(--primary); }
 
-        /* Floating Bottom Bar (Idêntica à da Imagem de Referência) */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 75px; background: linear-gradient(to top, #06060c 60%, transparent); display: flex; align-items: flex-end; padding: 0 16px 12px 16px; z-index: 2000; }
-        .nav-container { width: 100%; height: 56px; background: rgba(17, 19, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; align-items: center; }
+        /* Floating Bottom Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 80px; background: linear-gradient(to top, #06060c 70%, transparent); display: flex; align-items: flex-end; padding: 0 16px 14px 16px; z-index: 2000; }
+        .nav-container { width: 100%; height: 58px; background: rgba(17, 19, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 22px; display: flex; justify-content: space-around; align-items: center; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); width: 60px; transition: color 0.2s; }
         .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 15px; }
+        .nav-item i { font-size: 16px; }
         .nav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
 
         /* Media Viewport Embutido Oculto Estrutural */
@@ -155,7 +157,7 @@
         <p id="authToggleBtn" style="text-align:center; font-size:12px; color:var(--primary); margin-top:20px; cursor:pointer;" onclick="AppEngine.Auth.toggle()">Novo por aqui? Crie uma conta</p>
     </div>
 
-    <!-- IFrame do YouTube Inteligente Oculto para mineração em background -->
+    <!-- IFrame do YouTube Oculto para contagem de tempo -->
     <div class="hidden-player-box">
         <div id="ytPlayerFrame"></div>
     </div>
@@ -173,7 +175,7 @@
             </div>
         </header>
 
-        <!-- Banner Dinâmico Superior -->
+        <!-- Banner Dinâmico Superior (Controlado pelo script de navegação) -->
         <section class="hero-showcase" id="heroBanner">
             <div class="hero-content">
                 <span style="font-size:10px; background:rgba(255,157,0,0.2); color:var(--primary); padding:4px 10px; border-radius:12px; font-weight:800; text-transform:uppercase;">Em Destaque</span>
@@ -184,10 +186,10 @@
 
         <!-- SPA Content Render -->
         <main class="content-body" id="spaContent">
-            <!-- Renderizado dinamicamente pelo motor do app -->
+            <!-- Renderizado via JavaScript -->
         </main>
 
-        <!-- Barra de Navegação Inferior (Abas da Imagem de Referência) -->
+        <!-- Barra de Navegação Inferior -->
         <nav class="bottom-nav">
             <div class="nav-container">
                 <div class="nav-item active" id="tab-home" onclick="AppEngine.UI.navigate('home')">
@@ -211,7 +213,7 @@
     </div>
 
     <script>
-        // Inicialização Segura do Supabase Client
+        // Inicialização do Supabase Client
         const SupabaseClient = supabase.createClient(
             'https://hvivrmdygytttdlapjbi.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg'
@@ -221,12 +223,10 @@
         let ytPlayer = null;
         let pointsTicker = null;
 
-        // Estrutura Base de Dados do Catálogo Real
         const mediaLibrary = [
             { id: 'ykxV5I2PQCE', title: 'John Wick 4', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'KIZ5crgHkPY', title: 'Até que a Sorte nos Separe', category: 'Comédia', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
-            { id: 'VwNAFqsxAVg', title: 'Sete Homens e um Destino', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=300' },
-            { id: '5PSnlrixEvA', title: 'Resgate Sombrio', category: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509281373149-e957c6296406?w=300' }
+            { id: 'VwNAFqsxAVg', title: 'Sete Homens e um Destino', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=300' }
         ];
 
         const simulatedPayouts = [
@@ -290,7 +290,7 @@
                         }
                         document.getElementById('headerPointsCounter').innerText = `${AppEngine.Wallet.points.toLocaleString('pt-BR')} PTS`;
                     } catch(e) {
-                        console.log("Banco sincronizado em modo de redundância local.");
+                        console.log("Banco sincronizado localmente.");
                     }
                 }
             },
@@ -299,7 +299,7 @@
                 playCurrent: function() {
                     if(ytPlayer && ytPlayer.playVideo) {
                         ytPlayer.playVideo();
-                        AppEngine.UI.notify('Reprodutor iniciado com sucesso!', 'success');
+                        AppEngine.UI.notify('Reprodução iniciada com sucesso!', 'success');
                     }
                 }
             },
@@ -312,13 +312,19 @@
                     setTimeout(() => t.classList.remove('active'), 3000);
                 },
                 navigate: function(tab) {
+                    // Remove active de todos os botões e aplica no selecionado
                     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                     const target = document.getElementById(`tab-${tab}`);
                     if(target) target.classList.add('active');
 
                     const renderArea = document.getElementById('spaContent');
+                    const heroBanner = document.getElementById('heroBanner');
                     
-                    if(tab === 'home') {
+                    // CONTROLE DO BANNER DESTAQUE: Mostra apenas na Home
+                    if (tab === 'home') {
+                        heroBanner.style.display = 'flex';
+                        renderArea.className = "content-body home-adjusted";
+                        
                         renderArea.innerHTML = `
                             <!-- Seção Novidades -->
                             <div>
@@ -347,21 +353,21 @@
                                 </div>
                             </div>
 
-                            <!-- Carrossel de Filmes (Continue Assistindo) -->
+                            <!-- Carrossel de Filmes -->
                             <div>
                                 <h3 class="section-title"><i class="fa-solid fa-play"></i> Continue Assistindo</h3>
                                 <div class="catalog-scroller">
                                     ${mediaLibrary.map(v => `
-                                        <div class="media-poster-card ${v.id === AppEngine.ActiveTrackId ? 'active' : ''}" onclick="AppEngine.ActiveTrackId='${v.id}'; document.getElementById('heroTitleLabel').innerText='${v.title}'; if(ytPlayer) ytPlayer.loadVideoById('${v.id}'); AppEngine.UI.navigate('home');">
-                                            <img src="${v.thumb}" alt="Poster">
+                                        <div class="media-poster-card ${v.id === AppEngine.ActiveTrackId ? 'active' : ''}" onclick="AppEngine.ActiveTrackId='${v.id}'; document.getElementById('heroTitleLabel').innerHTML='${v.title}'; if(ytPlayer) ytPlayer.loadVideoById('${v.id}'); AppEngine.UI.navigate('home');">
+                                            <img src="${v.thumb}">
                                         </div>
                                     `).join('')}
                                 </div>
                             </div>
 
-                            <!-- Saques Realizados em Tempo Real -->
+                            <!-- Saques Realizados -->
                             <div class="payout-feed">
-                                <h3 class="section-title" style="margin-bottom:12px;"><i class="fa-solid fa-circle-dollar-to-slot"></i> Saques Realizados Agora</h3>
+                                <h3 class="section-title" style="margin-bottom:8px;"><i class="fa-solid fa-circle-dollar-to-slot"></i> Saques Realizados Agora</h3>
                                 ${simulatedPayouts.map(p => `
                                     <div class="payout-feed-row">
                                         <div class="payout-user">
@@ -376,65 +382,69 @@
                                 `).join('')}
                             </div>
                         `;
-                    }
+                    } else {
+                        // Oculta completamente o banner gigante nas outras páginas
+                        heroBanner.style.display = 'none';
+                        renderArea.className = "content-body"; // Remove margem negativa interna
+                        
+                        if(tab === 'missions') {
+                            renderArea.innerHTML = `
+                                <h3 class="section-title"><i class="fa-solid fa-star"></i> Missões Disponíveis</h3>
+                                <div style="background:var(--bg-card); border:1px solid var(--border); padding:20px; border-radius:18px; display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                                    <div>
+                                        <h4 style="font-size:14px; font-weight:700;">Assistir por 10 minutos</h4>
+                                        <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Assista a qualquer título do catálogo ativo</p>
+                                    </div>
+                                    <span style="font-size:13px; font-weight:800; color:var(--primary);">+150 PTS</span>
+                                </div>
+                            `;
+                        }
 
-                    else if(tab === 'missions') {
-                        renderArea.innerHTML = `
-                            <h3 class="section-title"><i class="fa-solid fa-star"></i> Missões Disponíveis</h3>
-                            <div style="background:var(--bg-card); border:1px solid var(--border); padding:16px; border-radius:16px; display:flex; justify-content:space-between; align-items:center;">
-                                <div>
-                                    <h4 style="font-size:13px; font-weight:700;">Assistir por 10 minutos</h4>
-                                    <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">Assista a qualquer título do catálogo</p>
+                        else if(tab === 'wallet') {
+                            renderArea.innerHTML = `
+                                <div class="finance-card" style="margin-top: 8px;">
+                                    <h3 class="section-title" style="color:#fff;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate PIX</h3>
+                                    <div style="background:rgba(0,0,0,0.3); padding:16px; border-radius:14px;">
+                                        <span style="font-size:10px; color:var(--text-muted); display:block; text-transform:uppercase; letter-spacing:0.5px;">Saldo Disponível</span>
+                                        <h2 style="color:var(--success); font-size:28px; font-weight:800; margin-top:4px;">R$ ${AppEngine.Wallet.balance.toFixed(2)}</h2>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Chave Destino PIX</label>
+                                        <input type="text" id="pixKeyField" class="app-input" placeholder="Insira seu CPF, E-mail ou Telefone">
+                                    </div>
+                                    <button class="btn-watch-now" style="width:100%; justify-content:center; margin-top:8px;" onclick="AppEngine.UI.executeCashout()">Solicitar Saque Instantâneo</button>
                                 </div>
-                                <span style="font-size:12px; font-weight:800; color:var(--primary);">+150 PTS</span>
-                            </div>
-                        `;
-                    }
+                            `;
+                        }
 
-                    else if(tab === 'wallet') {
-                        renderArea.innerHTML = `
-                            <div class="finance-card">
-                                <h3 class="section-title" style="color:#fff;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate PIX</h3>
-                                <div style="background:rgba(0,0,0,0.3); padding:14px; border-radius:12px;">
-                                    <span style="font-size:10px; color:var(--text-muted); display:block; text-transform:uppercase;">Saldo Disponível</span>
-                                    <h2 style="color:var(--success); font-size:26px; font-weight:800; margin-top:4px;">R$ ${AppEngine.Wallet.balance.toFixed(2)}</h2>
+                        else if(tab === 'ranking') {
+                            renderArea.innerHTML = `
+                                <h3 class="section-title"><i class="fa-solid fa-trophy"></i> Liderança Global</h3>
+                                <div class="payout-feed" style="margin-top:8px;">
+                                    <div class="payout-feed-row">
+                                        <span style="font-weight:800; color:var(--primary); font-size:14px;">#1</span>
+                                        <span style="font-size:13px;">Gabriel R.</span>
+                                        <span style="font-weight:700; font-size:13px;">258.940 pts</span>
+                                    </div>
+                                    <div class="payout-feed-row">
+                                        <span style="font-weight:800; color:var(--text-muted); font-size:14px;">#2</span>
+                                        <span style="font-size:13px;">Beatriz M.</span>
+                                        <span style="font-weight:700; font-size:13px;">241.320 pts</span>
+                                    </div>
                                 </div>
-                                <div class="input-group">
-                                    <label>Chave Destino PIX</label>
-                                    <input type="text" id="pixKeyField" class="app-input" placeholder="Insira seu CPF, E-mail ou Telefone">
-                                </div>
-                                <button class="btn-watch-now" style="width:100%; justify-content:center;" onclick="AppEngine.UI.executeCashout()">Solicitar Saque Instantâneo</button>
-                            </div>
-                        `;
-                    }
+                            `;
+                        }
 
-                    else if(tab === 'ranking') {
-                        renderArea.innerHTML = `
-                            <h3 class="section-title"><i class="fa-solid fa-trophy"></i> Liderança Global</h3>
-                            <div class="payout-feed">
-                                <div class="payout-feed-row">
-                                    <span style="font-weight:800; color:var(--primary);">#1</span>
-                                    <span>Gabriel R.</span>
-                                    <span style="font-weight:700;">258.940 pts</span>
+                        else if(tab === 'profile') {
+                            renderArea.innerHTML = `
+                                <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:24px; text-align:center; margin-top:8px;">
+                                    <div style="width:64px; height:64px; background:linear-gradient(45deg, var(--primary), var(--secondary)); color:#000; font-size:24px; font-weight:800; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto;">U</div>
+                                    <h4 style="font-size:16px; font-weight:700;">Membro Premium</h4>
+                                    <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">ID: ${AppEngine.User ? AppEngine.User.id.slice(0,8).toUpperCase() : '17F96956'}</p>
+                                    <button class="app-input" style="width:100%; margin-top:24px; background:transparent; border-color:var(--danger); color:var(--danger); cursor:pointer; font-weight:600;" onclick="SupabaseClient.auth.signOut()">Sair da Conta</button>
                                 </div>
-                                <div class="payout-feed-row">
-                                    <span style="font-weight:800; color:var(--text-muted);">#2</span>
-                                    <span>Beatriz M.</span>
-                                    <span style="font-weight:700;">241.320 pts</span>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    else if(tab === 'profile') {
-                        renderArea.innerHTML = `
-                            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:18px; padding:20px; text-align:center;">
-                                <div style="width:60px; height:60px; background:var(--primary); color:#000; font-size:22px; font-weight:800; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto;">U</div>
-                                <h4 style="font-size:15px; font-weight:700;">Membro Premium</h4>
-                                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">ID: ${AppEngine.User ? AppEngine.User.id.slice(0,8).toUpperCase() : 'CONECTADO'}</p>
-                                <button class="app-input" style="width:100%; margin-top:20px; background:transparent; border-color:var(--danger); color:var(--danger); cursor:pointer;" onclick="SupabaseClient.auth.signOut()">Sair da Conta</button>
-                            </div>
-                        `;
+                            `;
+                        }
                     }
                 },
                 executeCashout: function() {
@@ -445,7 +455,6 @@
             }
         };
 
-        // Integração Dinâmica da API de IFrame do YouTube
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('ytPlayerFrame', {
                 videoId: AppEngine.ActiveTrackId,
