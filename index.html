@@ -209,7 +209,7 @@
                     <div class="info-badge-item">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                         <div class="info-badge-text">
-                            <h4>Conversta Tudo em Pix</h4>
+                            <h4>Converta Tudo em Pix</h4>
                             <p>Resgate seus fundos direto na carteira via Pix.</p>
                         </div>
                     </div>
@@ -323,14 +323,16 @@
 
         let isSignUpMode = false;
         let currentUser = null;
-        let userData = { pontos: 0, saldo_reais: 0.00, primeiro_video_assistido: false, indicado_por: null };
+        let userData = { pontos: 0, saldo_reais: 0.00, bônus_indicação_pago: false, indicado_por: null };
         let player = null;
         let pontuacaoInterval = null;
+        let adRefreshInterval = null;
 
+        // Lista de Filmes Expandida e Otimizada
         const listaFilmes = [
             { id: 'ykxV5I2PQCE', titulo: 'O maior ladrão do mundo na sua missão mais perigosa', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=300' },
             { id: 'KIZ5crgHkPY', titulo: 'Até que a sorte nos separe', categoria: 'Comédia', thumb: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300' },
-            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', category: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
+            { id: 'VwNAFqsxAVg', titulo: 'Sete homens e um destino', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
             { id: 'AyvlqWV9Hj0', titulo: 'O lobo da noite', categoria: 'Suspense', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '4isClyJJcYg', titulo: 'Proteção à testemunhas', categoria: 'Policial', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300' },
             { id: '-tPux_s_qEY', titulo: 'O último comando', categoria: 'Faroeste', thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300' },
@@ -340,7 +342,7 @@
             { id: 'Y7SKTDtNON0', titulo: 'Ninja assassino', categoria: 'Artes Martial', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: 'e2dI2-smyLo', titulo: 'Terror na floresta escura', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300' },
             { id: '369_r-bm7Zg', titulo: 'A Noite dos Clowns Psicopatas', categoria: 'Terror', thumb: 'https://images.unsplash.com/photo-1601513525393-0393879212d4?w=300' },
-            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
+            { id: '5PSNL1qE6VY', titulo: 'Operação Kickboxer', category: 'Ação', thumb: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=300' },
             { id: 'L8hI-67gXwY', titulo: 'Furia Cega no Deserto', categoria: 'Ação', thumb: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300' }
         ];
 
@@ -361,8 +363,6 @@
             }
         }
 
-        _supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                currentUser = session.user;
-                document.getElementById('userDisplay').innerText = currentUser.email;
-                documen
+        async function handleAuth() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('auth
