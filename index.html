@@ -419,7 +419,11 @@
         </div>
 
         <!-- ABA 2: SAQUES -->
-        <div class="sub-screen" id="screen-saque">
+        <div class="sub-screen" id="screen-saque" style="padding-top: 25px;">
+            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
+            </button>
+
             <h3>Solicitar Retirada Pix</h3>
             <div class="data-card" style="background:#1c1c24; border-color:rgba(0,200,83,0.2); margin-top:5px;">
                 <p>Seu Saldo Disponível</p>
@@ -437,7 +441,11 @@
         </div>
 
         <!-- ABA 3: INDICAÇÕES -->
-        <div class="sub-screen" id="screen-indica">
+        <div class="sub-screen" id="screen-indica" style="padding-top: 25px;">
+            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
+            </button>
+
             <h3>Convide & Fature</h3>
             <div class="info-badges">
                 <div class="info-badge-item">
@@ -456,15 +464,39 @@
         </div>
 
         <!-- ABA 4: REGRAS -->
-        <div class="sub-screen" id="screen-regras">
-            <h3>Termos & Instruções de Uso</h3>
-            <div class="terms-box">
+        <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
+            <h3>Termos & Diretrizes da Plataforma</h3>
+            
+            <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
-                    <i class="fa-solid fa-circle-info"></i> <strong>Como funciona a monetização?</strong><br>
-                    Nossos servidores contabilizam seus ganhos minuto a minuto enquanto o player está ativo. Pausar o vídeo suspende a geração de pontos.
+                    <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
+                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de retenção. A taxa de conversão padrão estabelecida é de 1.000 PTS = R$ 1,00. Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
+                </div>
+
+                <div class="terms-item">
+                    <i class="fa-solid fa-video"></i> <strong>2. Manutenção do Player de Vídeo</strong><br>
+                    Para que a contabilização ocorra, o player precisa estar em modo de execução ativo (PLAY). Pausar o conteúdo, silenciar completamente o navegador através de ferramentas externas ou minimizar a aplicação irá interromper temporariamente a checagem de presença dos nossos servidores.
+                </div>
+
+                <div class="terms-item">
+                    <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
+                </div>
+
+                <div class="terms-item">
+                    <i class="fa-solid fa-user-shield"></i> <strong>4. Diretrizes Antifraude e Uso Justo</strong><br>
+                    É estritamente proibida a utilização de scripts automatizados, clonadores de aplicativos, cliques automáticos (auto-clickers) ou emuladores para burlar o tempo de exibição. Qualquer detecção de atividade artificial resultará no bloqueio definitivo da conta e no estorno dos saldos pendentes.
+                </div>
+
+                <div class="terms-item">
+                    <i class="fa-solid fa-gift"></i> <strong>5. Programa de Recompensas por Convites</strong><br>
+                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 500 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
                 </div>
             </div>
-            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3);" onclick="navegarParaAba('home')">Voltar aos Vídeos</button>
+
+            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000; font-weight: 700;" onclick="navegarParaAba('home')">
+                <i class="fa-solid fa-circle-check"></i> Entendi, Ir para os Vídeos
+            </button>
         </div>
 
         <!-- Bottom Nav permanente na base -->
@@ -527,16 +559,17 @@
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
             
-            // Gerencia visibilidade das telas
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
             document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
 
-            // Garante que os seletores visuais do menu inferior atualizem perfeitamente
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
+            
+            // Ativa o visual de seleção se vier pelo botão alternativo das Regras
+            if(alvo === 'home') document.getElementById('nav-home').classList.add('active');
         }
 
         function toggleAuthMode() {
@@ -556,9 +589,28 @@
 
             try {
                 if (isSignUpMode) {
-                    // O cadastro passa a confiar na Trigger criada diretamente no banco de dados!
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
+                    
+                    // Lógica de Indicação Ativa: Verifica se veio por indicação de alguém (?ref=ID)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const indicadorId = urlParams.get('ref');
+                    
+                    if (indicadorId && indicadorId !== data.user.id) {
+                        // Busca os dados do indicador
+                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
+                        if (dadosIndicador) {
+                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 500;
+                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 5.00;
+                            
+                            // Adiciona o prêmio de 500 pontos (R$ 5,00) na conta de quem indicou
+                            await _supabase.from('profiles').update({
+                                pontos: novosPts,
+                                saldo_reais: novoSaldo
+                            }).eq('id', indicadorId);
+                        }
+                    }
+
                     alert("Cadastro realizado! Agora basta clicar em Entrar.");
                     isSignUpMode = false;
                     toggleAuthMode();
@@ -578,11 +630,9 @@
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
             try {
-                // Aguarda 1.5s em novos cadastros caso a trigger leve milissegundos para rodar
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
                 
                 if (!data) {
-                    // Fallback de contingência caso a trigger demore
                     const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
                     data = fallbackProfile;
                 }
@@ -593,7 +643,7 @@
 
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
-            } {
+            } finally {
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
             }
@@ -793,7 +843,7 @@
                         pontosLocaisMemoria += parseInt(vData.recompensa);
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
                         
-                        atualizarInterfaceDados(pontosLocaisMemoria, dineroLocalMemoria);
+                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
@@ -808,9 +858,9 @@
             if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
-            alert("Link de indicação copiado!");
+            alert("Link de indicação copiado com sucesso!");
         }
 
         function executarPedidoSaque() {
