@@ -453,7 +453,7 @@
                     <i class="fa-solid fa-user-plus" style="color:#ff9d00;"></i>
                     <div class="info-badge-text">
                         <h4>Indique um Amigo</h4>
-                        <p>Ganhe instantaneamente 500 PTS (R$ 5,00) por novo registro.</p>
+                        <p>Ganhe instantaneamente 50.000 PTS (R$ 5,00) por novo registro.</p>
                     </div>
                 </div>
             </div>
@@ -471,7 +471,7 @@
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
                     <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
-                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é de 100 PTS = R$ 1,00 (cada 1 ponto equivale a 1 centavo real). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
+                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é de 10.000 PTS = R$ 1,00 (assim, cada grupo de 50.000 pontos equivale exatamente a R$ 5,00 reais). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
                 </div>
 
                 <div class="terms-item">
@@ -491,7 +491,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-gift"></i> <strong>5. Programa de Recompensas por Convites</strong><br>
-                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 500 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
+                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 50.000 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
                 </div>
             </div>
 
@@ -541,9 +541,9 @@
         let intervaloCronometroBonus = null;
 
         const musicasReais = [
-            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 45 },
-            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 50 },
-            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 30 }
+            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 4500 },
+            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 5000 },
+            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 3000 }
         ];
 
         const colecaoVideos = [];
@@ -598,7 +598,7 @@
                     if (indicadorId && indicadorId !== data.user.id) {
                         let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
-                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 500;
+                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 50000;
                             let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 5.00;
                             
                             await _supabase.from('profiles').update({
@@ -685,9 +685,9 @@
                 } else {
                     botao.disabled = true;
                     const horas = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0');
-                    const minutos = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                    const minutes = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
                     const segundos = String(Math.floor((diferencaMs % (1000 * 60)) / 1000)).padStart(2, '0');
-                    textoStatus.innerText = `Próximo resgate em: ${horas}:${minutos}:${segundos}`;
+                    textoStatus.innerText = `Próximo resgate em: ${horas}:${minutes}:${segundos}`;
                 }
             }
 
@@ -701,7 +701,8 @@
             const isoAgora = new Date().toISOString();
             dataUltimoBonusIso = isoAgora;
 
-            pontosLocaisMemoria += 150;
+            // Bônus diário proporcional (Ex: 15.000 pontos = R$ 1,50)
+            pontosLocaisMemoria += 15000;
             dinheiroLocalMemoria += 1.50;
             
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
@@ -838,10 +839,11 @@
                         if(!vData) return;
 
                         pontosLocaisMemoria += parseInt(vData.recompensa);
-                        // Convertendo cada 1 ponto para 0.01 centavos exatos
-                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.01);
                         
-                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+                        // Ajustado para a proporção: 50.000 pontos = R$ 5,00 (1 ponto = 0.0001 reais)
+                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.0001);
+                        
+                        atualizarInterfaceDados(pontosLocaisMemoria, dineroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
@@ -856,7 +858,7 @@
             if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
-        function executarCompartilhamento() {
+        function ejecutarCompartilhamento() {
             navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
             alert("Link de indicação copiado com sucesso!");
         }
