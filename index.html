@@ -536,6 +536,10 @@
         let idVideoAtivo = null;
         let emExibicaoAnuncio = false;
 
+        // Estados locais redundantes para forçar renderização visual imediata
+        let pontosLocaisMemoria = 0;
+        let dinheiroLocalMemoria = 0.00;
+
         // Base de Dados Real de Hits Musicais com Títulos e Metadados Corretos conforme as imagens
         const musicasReais = [
             { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 45 },
@@ -613,7 +617,11 @@
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
             const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', user.id).single();
-            if (!error && data) atualizarInterfaceDados(data.pontos, parseFloat(data.saldo_reais));
+            if (!error && data) {
+                pontosLocaisMemoria = parseInt(data.pontos) || 0;
+                dinheiroLocalMemoria = parseFloat(data.saldo_reais) || 0.00;
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+            }
         }
 
         function atualizarInterfaceDados(pontos, saldoReais) {
@@ -631,17 +639,18 @@
 
         async function coletarBonusDiario() {
             if (!usuarioAtualId) return;
-            const { data } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
-            if (data) {
-                const nPts = data.pontos + 150;
-                const nSl = parseFloat(data.saldo_reais) + 1.50;
-                const { error } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
-                if (!error) {
-                    atualizarInterfaceDados(nPts, nSl);
-                    document.getElementById('dailyBonusStatus').innerText = "Coletado hoje!";
-                    document.getElementById('dailyBonusBtn').disabled = true;
-                }
-            }
+            
+            pontosLocaisMemoria += 150;
+            dinheiroLocalMemoria += 1.50;
+            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+            
+            document.getElementById('dailyBonusStatus').innerText = "Coletado hoje!";
+            document.getElementById('dailyBonusBtn').disabled = true;
+
+            await _supabase.from('profiles').update({ 
+                pontos: pontosLocaisMemoria, 
+                saldo_reais: dinheiroLocalMemoria 
+            }).eq('id', usuarioAtualId);
         }
 
         // DISPARADOR CORRIGIDO MONETAG - Execução Real e Limpa
@@ -748,17 +757,16 @@
             }
         }
 
-        // Sistema de Contabilização Reforçado para Navegadores Mobile (WebView/Vercel)
+        // CORREÇÃO DEFINITIVA DO LOOP CRONÔMETRO DE PONTOS MOBILE
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
             
             cronometroPontuacao = setInterval(async () => {
                 if(!usuarioAtualId || emExibicaoAnuncio || document.hidden) return;
                 
-                // Validação de segurança dupla do estado de execução do Iframe
                 let playerRealmenteTocando = false;
                 try {
-                    if (youtubePlayer && youtubePlayer.getPlayerState && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                    if (youtubePlayer && typeof youtubePlayer.getPlayerState === 'function' && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
                         playerRealmenteTocando = true;
                     }
                 } catch(e) { playerRealmenteTocando = false; }
@@ -772,15 +780,16 @@
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
 
-                        // Incremento atômico diretamente refletido no Supabase
-                        const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
-                        if(!error && data) {
-                            const nPts = data.pontos + vData.recompensa;
-                            const nSl = parseFloat(data.saldo_reais) + (vData.recompensa * 0.001); // Ajuste da taxa de conversão proporcional
-                            
-                            const { error: updError } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
-                            if(!updError) atualizarInterfaceDados(nPts, nSl);
-                        }
+                        // Upgrade: Incrementa localmente primeiro para resposta visual imediata no topo
+                        pontosLocaisMemoria += parseInt(vData.recompensa);
+                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
+                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+                        
+                        // Atualização direta assíncrona blindada no banco de dados (Removido gargalo de leitura prévia travada)
+                        await _supabase.from('profiles').update({ 
+                            pontos: pontosLocaisMemoria, 
+                            saldo_reais: dinheiroLocalMemoria 
+                        }).eq('id', usuarioAtualId);
                     }
                 }
             }, 1000);
