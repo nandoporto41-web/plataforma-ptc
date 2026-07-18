@@ -432,7 +432,7 @@
             <div class="video-list-section">
                 <h3>Grade de Hits Musicais (+100 Conteúdos)</h3>
                 <div class="playlist-container" id="playlistContainer">
-                    <!-- Gerado via JS com títulos e identidades corretas -->
+                    <!-- Gerado via JS -->
                 </div>
             </div>
         </div>
@@ -536,13 +536,12 @@
         let idVideoAtivo = null;
         let emExibicaoAnuncio = false;
 
-        // Estados locais redundantes para forçar renderização visual imediata
+        // Estados locais em memória
         let pontosLocaisMemoria = 0;
         let dinheiroLocalMemoria = 0.00;
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Base de Dados Real de Hits Musicais com Títulos e Metadados Corretos conforme as imagens
         const musicasReais = [
             { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 45 },
             { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 50 },
@@ -554,8 +553,6 @@
         ];
 
         const colecaoVideos = [];
-
-        // Geração da Grade Expandida mantendo títulos estruturados de forma atraente
         for (let i = 1; i <= 105; i++) {
             const base = musicasReais[(i - 1) % musicasReais.length];
             colecaoVideos.push({
@@ -568,7 +565,6 @@
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
-            
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
@@ -592,14 +588,15 @@
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
 
-            if (!email || !password) return alert("Preencha os campos!");
+            if (!email || !password) return alert("Preencha todos os campos!");
 
             try {
                 if (isSignUpMode) {
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
                     if (data?.user) {
-                        await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
+                        const { error: insError } = await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
+                        if (insError) alert("Erro ao criar perfil no banco: " + insError.message);
                         alert("Cadastro finalizado com sucesso!");
                         window.location.reload();
                     }
@@ -607,9 +604,9 @@
                     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     document.getElementById('authScreen').classList.add('hidden');
-                    carregarDadosDoUsuario(data.user);
+                    await carregarDadosDoUsuario(data.user);
                 }
-            } catch (err) { alert(err.message); }
+            } catch (err) { alert("Erro de Autenticação: " + err.message); }
         }
 
         async function carregarDadosDoUsuario(user) {
@@ -618,13 +615,31 @@
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
-            const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais, ultimo_bonus').eq('id', user.id).single();
-            if (!error && data) {
-                pontosLocaisMemoria = parseInt(data.pontos) || 0;
-                dinheiroLocalMemoria = parseFloat(data.saldo_reais) || 0.00;
-                dataUltimoBonusIso = data.ultimo_bonus;
+            try {
+                let { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais, ultimo_bonus').eq('id', user.id).maybeSingle();
                 
-                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+                if (error) {
+                    alert("Erro ao ler dados do Supabase: " + error.message);
+                }
+
+                // Se não existir a linha do usuário, cria ela agora para evitar travamentos
+                if (!data) {
+                    const { error: insertError } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
+                    if (insertError) alert("Falha ao inicializar perfil: " + insertError.message);
+                    
+                    pontosLocaisMemoria = 0;
+                    dinheiroLocalMemoria = 0.00;
+                    dataUltimoBonusIso = null;
+                } else {
+                    pontosLocaisMemoria = parseInt(data.pontos) || 0;
+                    dinheiroLocalMemoria = parseFloat(data.saldo_reais) || 0.00;
+                    dataUltimoBonusIso = data.ultimo_bonus;
+                }
+            } catch (e) {
+                alert("Erro inesperado de conexão: " + e.message);
+            } finally {
+                // Executa SEMPRE para garantir que saia do estado "Verificando..."
+                atualizarInterfaceDados(pontosLocaisMemoria, dineroLocalMemoria);
                 gerenciarCronometroBonusDiario();
             }
         }
@@ -642,7 +657,6 @@
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
         }
 
-        // GERENCIADOR PROFISSIONAL DE TRAVA DE TEMPO 24H (DIÁRIO)
         function gerenciarCronometroBonusDiario() {
             if (intervaloCronometroBonus) clearInterval(intervaloCronometroBonus);
 
@@ -658,7 +672,7 @@
             function atualizarTempo() {
                 const agora = new Date();
                 const ultimaColeta = new Date(dataUltimoBonusIso);
-                const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000)); // 24 horas depois
+                const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000));
                 const diferencaMs = proximaColeta - agora;
 
                 if (diferencaMs <= 0) {
@@ -681,7 +695,6 @@
         async function coletarBonusDiario() {
             if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
             
-            // Dupla checagem local por segurança antes de somar
             if (dataUltimoBonusIso) {
                 const agora = new Date();
                 const proximaColeta = new Date(new Date(dataUltimoBonusIso).getTime() + (24 * 60 * 60 * 1000));
@@ -697,15 +710,18 @@
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
             gerenciarCronometroBonusDiario();
 
-            // Gravação síncrona/auditada no banco registrando o TIMESTAMP atual da coleta
-            await _supabase.from('profiles').update({ 
+            // Sincronização direta com tratamento de erro visível
+            const { error } = await _supabase.from('profiles').update({ 
                 pontos: pontosLocaisMemoria, 
                 saldo_reais: dinheiroLocalMemoria,
                 ultimo_bonus: isoAgora
             }).eq('id', usuarioAtualId);
+
+            if (error) {
+                alert("ATENÇÃO: O bônus foi computado na tela, mas falhou ao gravar no Banco de Dados! Detalhe do erro: " + error.message);
+            }
         }
 
-        // DISPARADOR MONETAG - Execução Real e Limpa
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true;
             pararContagemGanhos();
@@ -716,13 +732,11 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            // Injeção do Bloco de Zona 11218300 (Vignette)
             const script1 = document.createElement('script');
             script1.src = 'https://n6wxm.com/vignette.min.js';
             script1.dataset.zone = '11218300';
             containerScripts.appendChild(script1);
 
-            // Injeção do Bloco de Zona 11218299 (Tag Principal)
             const script2 = document.createElement('script');
             script2.src = 'https://nap5k.com/tag.min.js';
             script2.dataset.zone = '11218299';
@@ -751,7 +765,6 @@
             }, 1000);
         }
 
-        // Renderizador da Grade de Vídeos com Nomes Atualizados
         function inicializarPlaylist() {
             const container = document.getElementById('playlistContainer');
             container.innerHTML = "";
@@ -777,7 +790,6 @@
             idVideoAtivo = colecaoVideos[0].id;
         }
 
-        // YouTube Iframe API
         window.onYouTubeIframeAPIReady = function() {
             if(colecaoVideos.length > 0) {
                 youtubePlayer = new YT.Player('videoPlayer', {
@@ -809,7 +821,6 @@
             }
         }
 
-        // Loop Cronômetro de Pontos Móvel
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
             
@@ -832,16 +843,19 @@
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
 
-                        // Incrementa localmente primeiro para resposta visual imediata no topo
                         pontosLocaisMemoria += parseInt(vData.recompensa);
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        // Atualização direta assíncrona no banco de dados
-                        await _supabase.from('profiles').update({ 
+                        // Envio para o Banco com aviso claro em caso de pane
+                        const { error } = await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
                             saldo_reais: dinheiroLocalMemoria 
                         }).eq('id', usuarioAtualId);
+
+                        if (error) {
+                            alert("ERRO CRÍTICO: Os pontos por assistir não foram salvos no banco! Erro: " + error.message);
+                        }
                     }
                 }
             }, 1000);
@@ -853,7 +867,7 @@
 
         async function ejecutarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
-            if(isNaN(val) || val < 20) return alert("Mínimo R$ 20,00");
+            if(isNaN(val) || val < 20) return alert("O valor mínimo para saque é R$ 20,00");
             alert("Sua solicitação foi enviada para o painel de auditoria. Prazo de processamento: até 24 horas úteis.");
         }
 
@@ -869,7 +883,7 @@
             const { data: { session } } = await _supabase.auth.getSession();
             if (session?.user) {
                 document.getElementById('authScreen').classList.add('hidden');
-                carregarDadosDoUsuario(session.user);
+                await carregarDadosDoUsuario(session.user);
             }
         });
     </script>
