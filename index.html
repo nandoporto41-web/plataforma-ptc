@@ -373,7 +373,8 @@
             </div>
 
             <button class="btn-saque" onclick="navegarParaAba('saque')"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
-            <button class="btn-indicar-menu" onclick="navegarParaAba('regras')"><i class="fa-solid fa-shield-halved"></i> Diretrizes e Regras</button>
+            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700);" onclick="navegarParaAba('indica')"><i class="fa-solid fa-gift"></i> Convide e Ganhe (R$ 5,00)</button>
+            <button class="btn-indicar-menu" style="background: #1c1c24; color: #fff; border: 1px solid rgba(255,255,255,0.1);" onclick="navegarParaAba('regras')"><i class="fa-solid fa-shield-halved"></i> Diretrizes e Regras</button>
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </div>
         
@@ -480,7 +481,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 hours úteis.
                 </div>
 
                 <div class="terms-item">
@@ -847,7 +848,7 @@
                         
                         await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
-                            saldo_reais: dinheiroLocalMemoria 
+                            saldo_reais: dineroLocalMemoria 
                         }).eq('id', usuarioAtualId);
                     }
                 }
@@ -858,7 +859,7 @@
             if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
             alert("Link de indicação copiado com sucesso!");
         }
