@@ -471,7 +471,7 @@
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
                     <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
-                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de retenção. A taxa de conversão padrão estabelecida é de 1.000 PTS = R$ 1,00. Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
+                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é de 100 PTS = R$ 1,00 (cada 1 ponto equivale a 1 centavo real). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
                 </div>
 
                 <div class="terms-item">
@@ -481,7 +481,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 hours úteis.
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
                 </div>
 
                 <div class="terms-item">
@@ -491,7 +491,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-gift"></i> <strong>5. Programa de Recompensas por Convites</strong><br>
-                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional of 500 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
+                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 500 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
                 </div>
             </div>
 
@@ -569,7 +569,6 @@
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
             
-            // Ativa o visual de seleção se vier pelo botão alternativo das Regras
             if(alvo === 'home') document.getElementById('nav-home').classList.add('active');
         }
 
@@ -593,18 +592,15 @@
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
                     
-                    // Lógica de Indicação Ativa: Verifica se veio por indicação de alguém (?ref=ID)
                     const urlParams = new URLSearchParams(window.location.search);
                     const indicadorId = urlParams.get('ref');
                     
                     if (indicadorId && indicadorId !== data.user.id) {
-                        // Busca os dados do indicador
                         let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
                             let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 500;
                             let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 5.00;
                             
-                            // Adiciona o prêmio de 500 pontos (R$ 5,00) na conta de quem indicou
                             await _supabase.from('profiles').update({
                                 pontos: novosPts,
                                 saldo_reais: novoSaldo
@@ -842,7 +838,8 @@
                         if(!vData) return;
 
                         pontosLocaisMemoria += parseInt(vData.recompensa);
-                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
+                        // Convertendo cada 1 ponto para 0.01 centavos exatos
+                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.01);
                         
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
@@ -859,7 +856,7 @@
             if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
-        function ejecutarCompartilhamento() {
+        function executarCompartilhamento() {
             navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
             alert("Link de indicação copiado com sucesso!");
         }
