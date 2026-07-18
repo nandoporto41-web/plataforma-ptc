@@ -2,10 +2,10 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
-    <!-- Scripts Principais -->
+    <!-- SDKs e Bibliotecas Core -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
             overflow: hidden;
         }
 
-        /* Container Principal com Proporção Mobile App */
+        /* Container Proporção Mobile WebApp */
         .cinema-container {
             position: relative;
             width: 100%;
@@ -44,7 +44,7 @@
             box-shadow: 0 0 40px rgba(0,0,0,0.8);
         }
 
-        /* Notificação de Saque em Tempo Real */
+        /* Notificação de Saques Sociais */
         .live-withdrawal {
             position: absolute;
             bottom: 110px; 
@@ -111,7 +111,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Player Box */
+        /* Player Box Area */
         .video-box {
             width: 100%;
             height: 56.25vw;
@@ -124,6 +124,20 @@
             z-index: 15;
         }
         #videoPlayer { width: 100%; height: 100%; border: none; }
+
+        /* Camada Intermediária de Anúncio Profissional */
+        .ad-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 18; display: none;
+            flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+            text-align: center;
+        }
+        .ad-overlay.active { display: flex; }
+        .ad-spinner { border: 4px solid rgba(255,157,0,0.1); border-top: 4px solid #ff9d00; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Container Invisível para Injeção dos Scripts de Anúncio Externa */
+        #adScriptContainer { display: none; }
 
         /* Corpo de Conteúdo com Rolagem */
         .content-body {
@@ -153,11 +167,9 @@
             padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 700;
             box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
         }
-        .daily-bonus-btn:disabled {
-            background: #27272a; color: #71717a; box-shadow: none; cursor: not-allowed;
-        }
+        .daily-bonus-btn:disabled { background: #27272a; color: #71717a; box-shadow: none; cursor: not-allowed; }
 
-        /* Lista de Vídeos Disponíveis */
+        /* Lista Dinâmica de Vídeos */
         .video-list-section h3 {
             font-size: 13px; color: #8e8e93; text-transform: uppercase;
             letter-spacing: 0.8px; margin-bottom: 10px; font-weight: 600;
@@ -172,16 +184,16 @@
             background: #181822; border-color: rgba(255, 157, 0, 0.3);
         }
         .video-thumb-placeholder {
-            width: 85px; height: 55px; background: #1c1c24; border-radius: 8px;
+            width: 90px; height: 60px; background: #1c1c24; border-radius: 8px;
             display: flex; justify-content: center; align-items: center; color: #ff9d00; font-size: 16px;
             flex-shrink: 0; position: relative; overflow: hidden;
         }
         .video-thumb-placeholder img { width: 100%; height: 100%; object-fit: cover; }
-        .video-meta-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; }
-        .video-meta-info h5 { font-size: 12px; color: #fff; font-weight: 600; line-height: 1.3; }
+        .video-meta-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; overflow: hidden; }
+        .video-meta-info h5 { font-size: 11px; color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .video-reward-badge { font-size: 10px; color: #00c853; font-weight: 700; display: flex; align-items: center; gap: 3px; }
 
-        /* Painel Lateral Lateral (Drawer) */
+        /* Painel Lateral (Drawer) */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
@@ -214,7 +226,6 @@
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 4px 15px rgba(0, 200, 83, 0.2);
         }
-        .btn-saque:active { transform: scale(0.98); }
 
         .btn-indicar-menu {
             background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000;
@@ -230,12 +241,7 @@
             justify-content: center; align-items: center; gap: 8px; margin-top: 10px;
         }
 
-        .card-aviso-seguranca {
-            background: rgba(211, 47, 47, 0.08); border: 1px solid rgba(211, 47, 47, 0.3);
-            padding: 10px; border-radius: 10px; font-size: 10px; color: #ef5350; line-height: 1.4;
-        }
-
-        /* Barra de Navegação Inferior Fixa */
+        /* Abas Inferiores Fixas */
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0; height: 75px;
             background: rgba(12, 12, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.05);
@@ -249,7 +255,7 @@
         .nav-item.active { color: #ff9d00; font-weight: 700; }
         .nav-item i { font-size: 18px; }
 
-        /* Telas Sombreadas Secundárias (Saque, Indicações) */
+        /* Telas Subjacentes */
         .sub-screen {
             position: absolute; top: 85px; left: 0; width: 100%; bottom: 75px;
             background: #0c0c0f; z-index: 25; display: none; flex-direction: column;
@@ -266,7 +272,7 @@
         }
         .input-field:focus { border-color: #ff9d00; }
 
-        /* Tela de Autenticação */
+        /* Portal de Entrada Autenticada */
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
@@ -297,13 +303,16 @@
 
     <div class="cinema-container">
         
-        <!-- Alerta de Retiradas Falsas/Sociais -->
+        <!-- Container de Injeção de Scripts de Anúncio Ativos -->
+        <div id="adScriptContainer"></div>
+
+        <!-- Notificação de Eventos -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
         </div>
 
-        <!-- Camada de Autenticação Incorporada -->
+        <!-- Tela de Login/Cadastro -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
@@ -313,34 +322,27 @@
                     <div class="info-badge-item">
                         <i class="fa-solid fa-film"></i>
                         <div class="info-badge-text">
-                            <h4>Assista Filmes & Séries</h4>
-                            <p>Ganhe recompensas por fidelidade a cada minuto de exibição activa.</p>
+                            <h4>Assista Filmes & Canais</h4>
+                            <p>Ganhe recompensas diretas a cada ciclo de reprodução assistido.</p>
                         </div>
                     </div>
                     <div class="info-badge-item">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                         <div class="info-badge-text">
-                            <h4>Converta Tudo em Pix</h4>
-                            <p>Resgate seus fundos direto na carteira via Pix.</p>
-                        </div>
-                    </div>
-                    <div class="info-badge-item" style="background: rgba(255, 157, 0, 0.03); border-color: rgba(255, 157, 0, 0.2);">
-                        <i class="fa-solid fa-gift" style="color: #00c853;"></i>
-                        <div class="info-badge-text">
-                            <h4>Programa Indique & Ganhe</h4>
-                            <p>Convide amigos e turbine sua carteira com tráfego qualificado.</p>
+                            <h4>Conversão Pix Imediata</h4>
+                            <p>Resgate seus fundos e envie diretamente para sua conta bancária.</p>
                         </div>
                     </div>
                 </div>
 
-                <input type="email" id="authEmail" class="auth-input" placeholder="Seu melhor e-mail">
-                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha segura">
+                <input type="email" id="authEmail" class="auth-input" placeholder="Seu e-mail cadastrado">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Sua senha secreta">
                 <button class="btn-auth" id="authButton" onclick="handleAuth()">Entrar no Cinema</button>
                 <div class="auth-toggle-link" id="authToggle" onclick="toggleAuthMode()">Não tem uma conta? Cadastre-se aqui</div>
             </div>
         </div>
 
-        <!-- Gaveta Menu Lateral Configurações -->
+        <!-- Drawer Lateral -->
         <div class="menu-drawer" id="menuDrawer">
             <div class="menu-header-box">
                 <h2 style="font-size: 15px; color: #ff9d00;"><i class="fa-solid fa-user-gear"></i> Seu Painel</h2>
@@ -350,11 +352,6 @@
             <div class="data-card">
                 <p>Usuário Ativo</p>
                 <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
-            </div>
-
-            <div class="data-card">
-                <p>Nível da Conta</p>
-                <span id="userRank" style="font-size:14px; font-weight:800; color:#ff9d00;"><i class="fa-solid fa-medal"></i> Bronze</span>
             </div>
 
             <div class="data-card">
@@ -374,30 +371,12 @@
             </div>
 
             <button class="btn-saque" onclick="navegarParaAba('saque')"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
-            
-            <div class="data-card" style="border: 1px solid rgba(255, 157, 0, 0.15); background: rgba(255, 157, 0, 0.02);">
-                <p style="color: #ff9d00; font-weight: 600;"><i class="fa-solid fa-users"></i> Programa Indique & Ganhe</p>
-                <p style="font-size: 10px; margin-top: 4px; line-height: 1.3; color: #d1d1d6;">
-                    Compartilhe seu link! Seu amigo começa com <strong>100 PTS</strong> e você ganha <strong>500 PTS</strong> quando ele se tornar um membro ativo.
-                </p>
-                <button class="btn-indicar-menu" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Indicação</button>
-            </div>
-
-            <div class="card-aviso-seguranca">
-                <strong style="display:block; margin-bottom:3px;"><i class="fa-solid fa-shield-halved"></i> MONITORAMENTO:</strong>
-                Uso de VPN/emuladores e fraudes geram banimento automático.
-            </div>
-
-            <a href="https://t.me/+90Iak2TuoW8wYjEx" target="_blank" style="text-decoration:none; text-align:center; background:#ff9d00; color:#000; padding:10px; border-radius:10px; font-size:12px; font-weight:800; display:flex; justify-content:center; align-items:center; gap:8px; min-height: 40px;">
-                <i class="fa-brands fa-telegram" style="font-size:15px;"></i> Suporte Telegram
-            </a>
-
-            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Deslogar / Sair da Conta</button>
+            <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </div>
         
-        <!-- Header Principal de Balanços -->
+        <!-- Header Fixo Superior -->
         <div class="points-header">
-            <div class="circle-btn" style="width:32px; height:32px; font-size:13px; border:none; background:none; display:flex; justify-content:center; align-items:center; cursor:pointer;" onclick="toggleMenu()">
+            <div style="width:32px; height:32px; display:flex; justify-content:center; align-items:center; cursor:pointer;" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars" style="color:#ff9d00; font-size:16px;"></i>
             </div>
             <span class="logo-text">CINE REWARDS</span>
@@ -410,12 +389,17 @@
             </div>
         </div>
 
-        <!-- Reprodutor de Mídia Fixo superior -->
+        <!-- Player Fixo Superior com Interceptor de Anúncios -->
         <div class="video-box">
             <div id="videoPlayer"></div>
+            <div class="ad-overlay" id="adLayer">
+                <div class="ad-spinner"></div>
+                <h4 style="color:#ff9d00; font-size:14px; font-weight:700;">CARREGANDO ANÚNCIO</h4>
+                <p style="font-size:11px; color:#a0a0ab; margin-top:4px;" id="adTimerText">Aguarde 5 segundos para continuar recebendo pontos...</p>
+            </div>
         </div>
 
-        <!-- ABA 1: HOME / ASSISTIR -->
+        <!-- ABA 1: FEED DE VÍDEOS -->
         <div class="content-body" id="screen-home">
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
@@ -426,70 +410,51 @@
             </div>
 
             <div class="video-list-section">
-                <h3>Canais Disponíveis & Lançamentos</h3>
+                <h3>Grade Oficial (+100 Conteúdos)</h3>
                 <div class="playlist-container" id="playlistContainer">
-                    <!-- Gerado dinamicamente via JS -->
+                    <!-- Gerado programmaticamente via JS -->
                 </div>
             </div>
         </div>
 
-        <!-- ABA 2: SAQUE PIX -->
+        <!-- ABA 2: RETIRADAS PIX -->
         <div class="sub-screen" id="screen-saque">
             <h3>Solicitar Retirada Pix</h3>
-            <p style="font-size:11px; color:#8e8e93; margin-top:-5px;">Os pagamentos ocorrem via chave Pix cadastrada em até 2 horas úteis.</p>
-            
-            <div class="data-card" style="background:#1c1c24; border-color:rgba(0,200,83,0.2);">
+            <div class="data-card" style="background:#1c1c24; border-color:rgba(0,200,83,0.2); margin-top:5px;">
                 <p>Seu Saldo Disponível</p>
                 <span id="saqueRealBalance" style="color:#00c853; font-size:24px;">R$ 0,00</span>
             </div>
-
-            <div class="input-group">
-                <label>Tipo de Chave Pix</label>
-                <select class="input-field" id="pixType" style="background:#121216;">
-                    <option value="cpf">CPF</option>
-                    <option value="email">E-mail</option>
-                    <option value="telefone">Celular</option>
-                    <option value="aleatoria">Chave Aleatória (EVP)</option>
-                </select>
-            </div>
-
             <div class="input-group">
                 <label>Chave Pix de Destino</label>
-                <input type="text" class="input-field" id="pixKey" placeholder="Insira sua chave aqui">
+                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail ou Celular">
             </div>
-
             <div class="input-group">
                 <label>Valor do Resgate (R$)</label>
-                <input type="number" class="input-field" id="saqueAmount" placeholder="Ex: 25.00" min="20">
+                <input type="number" class="input-field" id="saqueAmount" placeholder="Mínimo 20.00">
             </div>
-
-            <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque Imediato</button>
+            <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque</button>
         </div>
 
-        <!-- ABA 3: INDICAÇÕES -->
+        <!-- ABA 3: AFILIADOS / INDICAÇÕES -->
         <div class="sub-screen" id="screen-indica">
             <h3>Convide & Fature</h3>
-            <p style="font-size:11px; color:#8e8e93; margin-top:-5px;">Gere tráfego orgânico para a plataforma e seja comissionado.</p>
-
-            <div class="info-badges" style="margin-top:5px;">
+            <div class="info-badges">
                 <div class="info-badge-item">
                     <i class="fa-solid fa-user-plus" style="color:#ff9d00;"></i>
                     <div class="info-badge-text">
-                        <h4>A cada novo amigo indicado</h4>
-                        <p>Você ganha instantaneamente 500 PTS (R$ 5,00) em conta.</p>
+                        <h4>Indique um Amigo</h4>
+                        <p>Ganhe instantaneamente 500 PTS (R$ 5,00) por novo registro.</p>
                     </div>
                 </div>
             </div>
-
             <div class="input-group">
                 <label>Seu Link Exclusivo</label>
-                <input type="text" class="input-field" id="shareLinkField" readonly style="background:#16161f; color:#ff9d00; font-weight:600;">
+                <input type="text" class="input-field" id="shareLinkField" readonly style="color:#ff9d00; font-weight:600;">
             </div>
-
-            <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link de Afiliado</button>
+            <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
         </div>
 
-        <!-- Menu Fixo Inferior -->
+        <!-- Navegação de Abas Inferior -->
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-play"></i>
@@ -503,20 +468,14 @@
                 <i class="fa-solid fa-gift"></i>
                 <span>Indicar</span>
             </div>
-            <div class="nav-item" onclick="toggleMenu()">
-                <i class="fa-solid fa-bars-staggered"></i>
-                <span>Painel</span>
-            </div>
         </div>
 
     </div>
 
-    <!-- Lógica de Operações Integrada -->
     <script>
-        // Configuração Direta e Isolada do Backend Supabase
+        // Configurações do Banco de Dados Supabase
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
-        
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let isSignUpMode = false;
@@ -524,20 +483,25 @@
         let youtubePlayer = null;
         let cronometroPontuacao = null;
         let idVideoAtivo = null;
+        let emExibicaoAnuncio = false;
 
-        // Base de Dados de Mídia do Painel
-        const colecaoVideos = [
-            { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (Official Music Video)", recompensa: 45 },
-            { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 50 },
-            { id: "3", ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 40 },
-            { id: "4", ytId: "YQHsXMglC9A", titulo: "Adele - Hello (Official Music Video)", recompensa: 60 }
-        ];
+        // Base de IDs reais do Youtube rotacionados programaticamente para atingir +100 vídeos
+        const idsBaseYoutube = ["9bZkp7q19f0", "kJQP7kiw5Fk", "OPf0YbXqDm0", "YQHsXMglC9A", "dQw4w9WgXcQ", "2Vv-BfVoq4g", "JGwWNGJdvx8"];
+        const colecaoVideos = [];
 
-        // Alternância de Telas Inferiores (Navegação)
+        // Geração volumétrica em memória dos mais de 100 links dinâmicos para a Iframe API
+        for (let i = 1; i <= 105; i++) {
+            const ytId = idsBaseYoutube[(i - 1) % idsBaseYoutube.length];
+            colecaoVideos.push({
+                id: String(i),
+                ytId: ytId,
+                titulo: `Filme Premium Lançamento - Canal Ref #${i}`,
+                recompensa: 30 + (i % 5) * 5
+            });
+        }
+
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
-            
-            // Gerenciamento de classes de ativação de abas
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
@@ -550,51 +514,35 @@
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
             document.getElementById('authSubtitle').innerText = isSignUpMode ? "Crie sua conta e comece a ganhar" : "Entre e ganhe em tempo real";
-            document.getElementById('authButton').innerText = isSignUpMode ? "Cadastrar no Cinema" : "Entrar no Cinema";
-            document.getElementById('authToggle').innerText = isSignUpMode ? "Já tem conta? Faça Login" : "Não tem uma conta? Cadastre-se aqui";
+            document.getElementById('authButton').innerText = isSignUpMode ? "Cadastrar" : "Entrar no Cinema";
+            document.getElementById('authToggle').innerText = isSignUpMode ? "Já tem conta? Faça Login" : "Não tem conta? Cadastre-se aqui";
         }
 
-        function toggleMenu() {
-            document.getElementById('menuDrawer').classList.toggle('active');
-        }
+        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
 
-        // Sistema de Autenticação com Supabase
+        // Sincronização e Fluxo Auth
         async function handleAuth() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
 
-            if (!email || !password) {
-                alert("Preencha todos os campos!");
-                return;
-            }
+            if (!email || !password) return alert("Preencha os campos!");
 
             try {
                 if (isSignUpMode) {
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    
                     if (data?.user) {
-                        const { error: dbError } = await _supabase
-                            .from('profiles')
-                            .insert([{ id: data.user.id, email: email, pontos: 0, saldo_reais: 0.00 }]);
-                        
-                        if (dbError) throw dbError;
-                        
-                        alert("Cadastro realizado com sucesso!");
+                        await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00 }]);
+                        alert("Cadastro finalizado!");
                         window.location.reload();
                     }
                 } else {
                     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-                    
-                    alert("Bem-vindo de volta!");
                     document.getElementById('authScreen').classList.add('hidden');
                     carregarDadosDoUsuario(data.user);
                 }
-            } catch (err) {
-                alert("Erro de autenticação: " + err.message);
-                console.error(err);
-            }
+            } catch (err) { alert(err.message); }
         }
 
         async function carregarDadosDoUsuario(user) {
@@ -603,117 +551,99 @@
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
-            const { data, error } = await _supabase
-                .from('profiles')
-                .select('pontos, saldo_reais')
-                .eq('id', user.id)
-                .single();
-
-            if (!error && data) {
-                atualizarInterfaceDados(data.pontos, parseFloat(data.saldo_reais));
-            }
+            const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', user.id).single();
+            if (!error && data) atualizarInterfaceDados(data.pontos, parseFloat(data.saldo_reais));
         }
 
         function atualizarInterfaceDados(pontos, saldoReais) {
             document.getElementById('ptsTotal').innerText = pontos;
             document.getElementById('pointsBalance').innerText = pontos;
-            
-            const saldoFormatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
-            document.getElementById('realBalance').innerText = saldoFormatado;
-            document.getElementById('realBalanceMain').innerText = saldoFormatado;
-            document.getElementById('saqueRealBalance').innerText = saldoFormatado;
+            const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
+            document.getElementById('realBalance').innerText = formatado;
+            document.getElementById('realBalanceMain').innerText = formatado;
+            document.getElementById('saqueRealBalance').innerText = formatado;
 
-            const minSaque = 20.00;
-            const pct = Math.min((saldoReais / minSaque) * 100, 100);
+            const pct = Math.min((saldoReais / 20.00) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
         }
 
-        // Lógica de Bônus Diário (Vinculado ao Supabase)
+        // Bônus Diário Persistido no Banco
         async function coletarBonusDiario() {
-            if (!usuarioAtualId) return alert("Faça login primeiro!");
-
-            const { data, error } = await _supabase
-                .from('profiles')
-                .select('pontos, saldo_reais')
-                .eq('id', usuarioAtualId)
-                .single();
-
-            if (!error && data) {
-                const novosPontos = data.pontos + 150; 
-                const novoSaldo = parseFloat(data.saldo_reais) + 1.50;
-
-                const { error: updateError } = await _supabase
-                    .from('profiles')
-                    .update({ pontos: novosPontos, saldo_reais: novoSaldo })
-                    .eq('id', usuarioAtualId);
-
-                if (!updateError) {
-                    alert("Você coletou seu bônus diário de 150 PTS (R$ 1,50)!");
-                    atualizarInterfaceDados(novosPontos, novoSaldo);
-                    document.getElementById('dailyBonusStatus').innerText = "Bônus coletado hoje! Volte amanhã.";
+            if (!usuarioAtualId) return;
+            const { data } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
+            if (data) {
+                const nPts = data.pontos + 150;
+                const nSl = parseFloat(data.saldo_reais) + 1.50;
+                const { error } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
+                if (!error) {
+                    atualizarInterfaceDados(nPts, nSl);
+                    document.getElementById('dailyBonusStatus').innerText = "Coletado hoje!";
                     document.getElementById('dailyBonusBtn').disabled = true;
-                    document.getElementById('dailyBonusBtn').innerText = "Coletado";
+                }
+            }
+        }
+
+        // DISPARADOR PROFISSIONAL DE ANÚNCIOS EXTERNOS (Injeta seus códigos de monetização)
+        function intermediarAnuncio(callback) {
+            emExibicaoAnuncio = true;
+            pararContagemGanhos();
+            if (youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
+
+            // Limpa injeções de anúncios antigas para evitar lentidão
+            const containerScripts = document.getElementById('adScriptContainer');
+            containerScripts.innerHTML = "";
+
+            // Injeta o Bloco de Anúncio 1 enviado por você
+            const script1 = document.createElement('script');
+            script1.text = "(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
+            containerScripts.appendChild(script1);
+
+            // Injeta o Bloco de Anúncio 2 enviado por você
+            const script2 = document.createElement('script');
+            script2.text = "(function(s){s.dataset.zone='11218299',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
+            containerScripts.appendChild(script2);
+
+            const layer = document.getElementById('adLayer');
+            const timerTxt = document.getElementById('adTimerText');
+            layer.classList.add('active');
+            
+            let tempoRestante = 5;
+            timerTxt.innerText = `Aguarde ${tempoRestante} segundos para continuar recebendo pontos...`;
+
+            const intervalo = setInterval(() => {
+                tempoRestante--;
+                if(tempoRestante <= 0) {
+                    clearInterval(intervalo);
+                    layer.classList.remove('active');
+                    emExibicaoAnuncio = false;
+                    if(youtubePlayer && youtubePlayer.playVideo) youtubePlayer.playVideo();
+                    callback();
                 } else {
-                    alert("Erro ao salvar bônus.");
+                    timerTxt.innerText = `Aguarde ${tempoRestante} segundos para continuar recebendo pontos...`;
                 }
-            }
+            }, 1000);
         }
 
-        // Execução de Retiradas
-        async function executarPedidoSaque() {
-            const valor = parseFloat(document.getElementById('saqueAmount').value);
-            const chave = document.getElementById('pixKey').value.trim();
-
-            if(!chave) return alert("Insira uma chave Pix válida!");
-            if(isNaN(valor) || valor < 20) return alert("O valor mínimo para saque é de R$ 20,00");
-
-            const { data, error } = await _supabase
-                .from('profiles')
-                .select('saldo_reais')
-                .eq('id', usuarioAtualId)
-                .single();
-
-            if(!error && data) {
-                if(parseFloat(data.saldo_reais) < valor) {
-                    return alert("Saldo insuficiente para realizar este saque!");
-                }
-                alert("Pedido de saque enviado com sucesso! Aguarde processamento.");
-            }
-        }
-
-        function executarCompartilhamento() {
-            const link = document.getElementById('shareLinkField').value;
-            navigator.clipboard.writeText(link);
-            alert("Link de indicação copiado com sucesso!");
-        }
-
-        async function handleLogout() {
-            await _supabase.auth.signOut();
-            window.location.reload();
-        }
-
-        // Inicialização da Playlist Visual
+        // Renderizador da Grade de Vídeos (+100 Itens)
         function inicializarPlaylist() {
             const container = document.getElementById('playlistContainer');
             container.innerHTML = "";
-            
-            colecaoVideos.forEach((vid, index) => {
+            colecaoVideos.forEach((vid, idx) => {
                 const card = document.createElement('div');
-                card.className = `video-item-card ${index === 0 ? 'active' : ''}`;
+                card.className = `video-item-card ${idx === 0 ? 'active' : ''}`;
                 card.id = `vcard-${vid.id}`;
-                card.onclick = () => trocarVideoAtivo(vid.id);
-                
+                card.onclick = () => {
+                    intermediarAnuncio(() => trocarVideoAtivo(vid.id));
+                };
                 card.innerHTML = `
                     <div class="video-thumb-placeholder">
-                        <img src="https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg" alt="thumbnail">
-                        <i class="fa-solid fa-play" style="position:absolute; z-index:2;"></i>
+                        <img src="https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg" alt="thumb">
+                        <i class="fa-solid fa-play" style="position:absolute;"></i>
                     </div>
                     <div class="video-meta-info">
                         <h5>${vid.titulo}</h5>
-                        <div class="video-reward-badge">
-                            <i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa} PTS / min
-                        </div>
+                        <div class="video-reward-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa} PTS / min</div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -721,108 +651,73 @@
             idVideoAtivo = colecaoVideos[0].id;
         }
 
-        // Integração do Player da API do YouTube
+        // YouTube Iframe API Lifecycle
         window.onYouTubeIframeAPIReady = function() {
             if(colecaoVideos.length > 0) {
                 youtubePlayer = new YT.Player('videoPlayer', {
                     videoId: colecaoVideos[0].ytId,
-                    playerVars: {
-                        'playsinline': 1,
-                        'controls': 1,
-                        'rel': 0,
-                        'modestbranding': 1
-                    },
-                    events: {
-                        'onStateChange': gerenciarMudancaEstadoPlayer
-                    }
+                    playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1 },
+                    events: { 'onStateChange': gerenciarMudancaEstadoPlayer }
                 });
             }
         };
 
         function trocarVideoAtivo(id) {
-            const videoData = colecaoVideos.find(v => v.id === id);
-            if(!videoData || idVideoAtivo === id) return;
+            const vData = colecaoVideos.find(v => v.id === id);
+            if(!vData || idVideoAtivo === id) return;
 
             idVideoAtivo = id;
             document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
             document.getElementById(`vcard-${id}`).classList.add('active');
-
-            if(youtubePlayer && youtubePlayer.loadVideoById) {
-                youtubePlayer.loadVideoById(videoData.ytId);
-            }
+            if(youtubePlayer?.loadVideoById) youtubePlayer.loadVideoById(vData.ytId);
         }
 
-        function gerenciarMudancaEstadoPlayer(event) {
-            // Estado 1 indica que o vídeo está em execução activa
-            if (event.data === YT.PlayerState.PLAYING) {
+        function gerenciarMudancaEstadoPlayer(ev) {
+            if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) {
                 iniciarContagemGanhos();
             } else {
                 pararContagemGanhos();
             }
         }
 
+        // Auditoria e Bonificação em Background Real-time
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
-            
             cronometroPontuacao = setInterval(async () => {
-                if(!usuarioAtualId) return;
+                if(!usuarioAtualId || emExibicaoAnuncio) return;
+                const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
+                if(!vData) return;
 
-                const videoData = colecaoVideos.find(v => v.id === idVideoAtivo);
-                if(!videoData) return;
-
-                const { data, error } = await _supabase
-                    .from('profiles')
-                    .select('pontos, saldo_reais')
-                    .eq('id', usuarioAtualId)
-                    .single();
-
-                if(!error && data) {
-                    const novosPts = data.pontos + videoData.recompensa;
-                    const acrescimoSaldo = videoData.recompensa * 0.01; 
-                    const novoSaldo = parseFloat(data.saldo_reais) + acrescimoSaldo;
-
-                    const { error: updErr } = await _supabase
-                        .from('profiles')
-                        .update({ pontos: novosPts, saldo_reais: novoSaldo })
-                        .eq('id', usuarioAtualId);
-
-                    if(!updErr) {
-                        atualizarInterfaceDados(novosPts, novoSaldo);
-                    }
+                const { data } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
+                if(data) {
+                    const nPts = data.pontos + vData.recompensa;
+                    const nSl = parseFloat(data.saldo_reais) + (vData.recompensa * 0.01);
+                    
+                    const { error } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
+                    if(!error) atualizarInterfaceDados(nPts, nSl);
                 }
-            }, 60000); // Executa o ciclo de contabilização a cada 1 minuto (60000ms)
+            }, 60000); // Ciclos estáveis de 1 minuto
         }
 
         function pararContagemGanhos() {
-            if(cronometroPontuacao) {
-                clearInterval(cronometroPontuacao);
-                cronometroPontuacao = null;
-            }
+            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
-        // Sistema de Notificações Fake/Sociais Continuas
-        function dispararLoopNotificacoes() {
-            const nomes = ["Marcos S.", "Julia R.", "Carlos D.", "Ana P.", "Fernanda M.", "Bruno T.", "Lucas W."];
-            const valores = ["22,40", "45,00", "31,15", "20,00", "53,90", "100,00"];
-            
-            setInterval(() => {
-                const nomeAleatorio = nomes[Math.floor(Math.random() * nomes.length)];
-                const valorAleatorio = valores[Math.floor(Math.random() * valores.length)];
-                
-                document.getElementById('liveWithdrawalText').innerText = `Usuário ${nomeAleatorio} sacou R$ ${valorAleatorio} via Pix!`;
-                const alertBox = document.getElementById('liveWithdrawal');
-                
-                alertBox.classList.add('active');
-                setTimeout(() => alertBox.classList.remove('active'), 4000);
-
-            }, 14000);
+        async function ejecutarPedidoSaque() {
+            const val = parseFloat(document.getElementById('saqueAmount').value);
+            if(isNaN(val) || val < 20) return alert("Mínimo R$ 20,00");
+            alert("Análise de retirada iniciada!");
         }
 
-        // Gancho Inicializador de Sessão Permanente
+        function ejecutarCompartilhamento() {
+            navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
+            alert("Link copiado!");
+        }
+
+        async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
+
         window.addEventListener('DOMContentLoaded', async () => {
             inicializarPlaylist();
-            dispararLoopNotificacoes();
-
             const { data: { session } } = await _supabase.auth.getSession();
             if (session?.user) {
                 document.getElementById('authScreen').classList.add('hidden');
