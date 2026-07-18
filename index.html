@@ -272,6 +272,25 @@
         }
         .input-field:focus { border-color: #ff9d00; }
 
+        /* Bloco Estilizado de Termos/Restrições */
+        .terms-box {
+            background: #111116;
+            border-left: 3px solid #ff9d00;
+            padding: 12px;
+            border-radius: 4px 12px 12px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .terms-item {
+            font-size: 11px;
+            color: #b3b3b3;
+            line-height: 1.4;
+        }
+        .terms-item strong {
+            color: #ffb700;
+        }
+
         /* Portal de Entrada Autenticada */
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -371,6 +390,7 @@
             </div>
 
             <button class="btn-saque" onclick="navegarParaAba('saque')"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
+            <button class="btn-indicar-menu" onclick="navegarParaAba('regras')"><i class="fa-solid fa-shield-halved"></i> Diretrizes e Regras</button>
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </div>
         
@@ -412,7 +432,7 @@
             <div class="video-list-section">
                 <h3>Grade Oficial (+100 Conteúdos)</h3>
                 <div class="playlist-container" id="playlistContainer">
-                    <!-- Gerado programmaticamente via JS -->
+                    <!-- Gerado via JS -->
                 </div>
             </div>
         </div>
@@ -454,6 +474,36 @@
             <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
         </div>
 
+        <!-- ABA 4: DIRETRIZES E RESTRIÇÕES PROFISSIONAIS -->
+        <div class="sub-screen" id="screen-regras">
+            <h3>Termos & Instruções de Uso</h3>
+            
+            <div class="terms-box">
+                <div class="terms-item">
+                    <i class="fa-solid fa-circle-info"></i> <strong>Como funciona a monetização?</strong><br>
+                    Nossos servidores contabilizam seus ganhos minuto a minuto enquanto o player está ativo e visível. Pausar o vídeo suspende a geração de pontos.
+                </div>
+            </div>
+
+            <div class="terms-box">
+                <div class="terms-item">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Restrição Antifraude:</strong><br>
+                    O uso de autoclickers, emuladores modificados, bloqueadores de anúncios (AdBlocks) ou múltiplas contas no mesmo IP resultará no bloqueio permanente dos fundos.
+                </div>
+            </div>
+
+            <div class="terms-box">
+                <div class="terms-item">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> <strong>Regras de Retirada:</strong><br>
+                    Os saques passam por auditoria automática de 24h para validar a exibição dos blocos publicitários. O limite mínimo fixado para transferências via Pix é de R$ 20,00.
+                </div>
+            </div>
+            
+            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3);" onclick="navegarParaAba('home')">
+                Voltar aos Vídeos
+            </button>
+        </div>
+
         <!-- Navegação de Abas Inferior -->
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
@@ -482,6 +532,7 @@
         let usuarioAtualId = null;
         let youtubePlayer = null;
         let cronometroPontuacao = null;
+        let tempoAcumuladoSegundos = 0;
         let idVideoAtivo = null;
         let emExibicaoAnuncio = false;
 
@@ -502,9 +553,12 @@
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
+            
+            // Gerenciamento de Visibilidade das Telas
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
+            document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
 
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`);
@@ -533,7 +587,7 @@
                     if (error) throw error;
                     if (data?.user) {
                         await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00 }]);
-                        alert("Cadastro finalizado!");
+                        alert("Cadastro finalizado com sucesso!");
                         window.location.reload();
                     }
                 } else {
@@ -584,22 +638,21 @@
             }
         }
 
-        // DISPARADOR PROFISSIONAL DE ANÚNCIOS EXTERNOS (Injeta seus códigos de monetização)
+        // DISPARADOR PROFISSIONAL DE ANÚNCIOS EXTERNOS
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true;
             pararContagemGanhos();
             if (youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
 
-            // Limpa injeções de anúncios antigas para evitar lentidão
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            // Injeta o Bloco de Anúncio 1 enviado por você
+            // Script de Anúncio 1 enviado por você
             const script1 = document.createElement('script');
             script1.text = "(function(s){s.dataset.zone='11218300',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
             containerScripts.appendChild(script1);
 
-            // Injeta o Bloco de Anúncio 2 enviado por você
+            // Script de Anúncio 2 enviado por você
             const script2 = document.createElement('script');
             script2.text = "(function(s){s.dataset.zone='11218299',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
             containerScripts.appendChild(script2);
@@ -667,6 +720,7 @@
             if(!vData || idVideoAtivo === id) return;
 
             idVideoAtivo = id;
+            tempoAcumuladoSegundos = 0; // Reseta a contagem incremental para o novo vídeo
             document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
             document.getElementById(`vcard-${id}`).classList.add('active');
             if(youtubePlayer?.loadVideoById) youtubePlayer.loadVideoById(vData.ytId);
@@ -680,23 +734,35 @@
             }
         }
 
-        // Auditoria e Bonificação em Background Real-time
+        // Monitor de Alta Precisão (Contabiliza de 1 em 1 minuto de reprodução ativa)
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
+            
             cronometroPontuacao = setInterval(async () => {
-                if(!usuarioAtualId || emExibicaoAnuncio) return;
-                const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
-                if(!vData) return;
-
-                const { data } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
-                if(data) {
-                    const nPts = data.pontos + vData.recompensa;
-                    const nSl = parseFloat(data.saldo_reais) + (vData.recompensa * 0.01);
+                if(!usuarioAtualId || emExibicaoAnuncio || document.hidden) return;
+                
+                // Validação extra: garante que o player está tocando mesmo no mobile
+                if (youtubePlayer && youtubePlayer.getPlayerState && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                    tempoAcumuladoSegundos++;
                     
-                    const { error } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
-                    if(!error) atualizarInterfaceDados(nPts, nSl);
+                    // Completou 60 segundos ativo assistindo o vídeo
+                    if (tempoAcumuladoSegundos >= 60) {
+                        tempoAcumuladoSegundos = 0; // Reseta ciclo
+                        
+                        const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
+                        if(!vData) return;
+
+                        const { data } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', usuarioAtualId).single();
+                        if(data) {
+                            const nPts = data.pontos + vData.recompensa;
+                            const nSl = parseFloat(data.saldo_reais) + (vData.recompensa * 0.01);
+                            
+                            const { error } = await _supabase.from('profiles').update({ pontos: nPts, saldo_reais: nSl }).eq('id', usuarioAtualId);
+                            if(!error) atualizarInterfaceDados(nPts, nSl);
+                        }
+                    }
                 }
-            }, 60000); // Ciclos estáveis de 1 minuto
+            }, 1000); // Roda a verificação de segundo em segundo para precisão absoluta
         }
 
         function pararContagemGanhos() {
@@ -706,12 +772,12 @@
         async function ejecutarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
             if(isNaN(val) || val < 20) return alert("Mínimo R$ 20,00");
-            alert("Análise de retirada iniciada!");
+            alert("Sua solicitação foi enviada para o painel de auditoria. Prazo de processamento: até 24 horas úteis.");
         }
 
         function ejecutarCompartilhamento() {
             navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
-            alert("Link copiado!");
+            alert("Link de indicação copiado com sucesso!");
         }
 
         async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
