@@ -467,7 +467,7 @@
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3);" onclick="navegarParaAba('home')">Voltar aos Vídeos</button>
         </div>
 
-        <!-- Bottom Nav -->
+        <!-- Bottom Nav permanente na base -->
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-play"></i>
@@ -526,11 +526,14 @@
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
+            
+            // Gerencia visibilidade das telas
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
             document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
 
+            // Garante que os seletores visuais do menu inferior atualizem perfeitamente
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
@@ -553,21 +556,19 @@
 
             try {
                 if (isSignUpMode) {
+                    // O cadastro passa a confiar na Trigger criada diretamente no banco de dados!
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    if (data?.user) {
-                        await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
-                        alert("Cadastro finalizado com sucesso! Faça login para entrar.");
-                        isSignUpMode = false;
-                        toggleAuthMode();
-                    }
+                    alert("Cadastro realizado! Agora basta clicar em Entrar.");
+                    isSignUpMode = false;
+                    toggleAuthMode();
                 } else {
                     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     document.getElementById('authScreen').classList.add('hidden');
                     await carregarDadosDoUsuario(data.user);
                 }
-            } catch (err) { alert("Erro de Autenticação: " + err.message); }
+            } catch (err) { alert("Erro de Autenticação: " + (err.message || JSON.stringify(err))); }
         }
 
         async function carregarDadosDoUsuario(user) {
@@ -577,11 +578,13 @@
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
             try {
+                // Aguarda 1.5s em novos cadastros caso a trigger leve milissegundos para rodar
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
                 
                 if (!data) {
-                    const { data: newProfile, error: insError } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
-                    data = newProfile;
+                    // Fallback de contingência caso a trigger demore
+                    const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
+                    data = fallbackProfile;
                 }
 
                 pontosLocaisMemoria = parseInt(data?.pontos) || 0;
@@ -589,8 +592,8 @@
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
             } catch (e) {
-                console.error("Erro ao carregar dados do Supabase:", e.message);
-            } finally {
+                console.error("Erro na leitura de dados sincronizados:", e.message);
+            } {
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
             }
@@ -630,6 +633,7 @@
                 if (diferencaMs <= 0) {
                     clearInterval(intervaloCronometroBonus);
                     botao.disabled = false;
+                    dataUltimoBonusIso = null; 
                     textoStatus.innerText = "Disponível! Resgate seus pontos de hoje.";
                 } else {
                     botao.disabled = true;
@@ -656,13 +660,11 @@
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
             gerenciarCronometroBonusDiario();
 
-            const { error } = await _supabase.from('profiles').update({ 
+            await _supabase.from('profiles').update({ 
                 pontos: pontosLocaisMemoria, 
                 saldo_reais: dinheiroLocalMemoria,
                 ultimo_bonus: isoAgora
             }).eq('id', usuarioAtualId);
-
-            if (error) console.error("Erro ao salvar bônus no banco:", error.message);
         }
 
         function intermediarAnuncio(callback) {
@@ -791,25 +793,19 @@
                         pontosLocaisMemoria += parseInt(vData.recompensa);
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
                         
-                        // Atualiza a tela primeiro
-                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+                        atualizarInterfaceDados(pontosLocaisMemoria, dineroLocalMemoria);
                         
-                        // Envia para o Banco de Dados imediatamente e captura eventuais erros
-                        const { error } = await _supabase.from('profiles').update({ 
+                        await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
                             saldo_reais: dinheiroLocalMemoria 
                         }).eq('id', usuarioAtualId);
-
-                        if (error) {
-                            console.error("Erro crítico ao salvar pontos no Supabase:", error.message);
-                        }
                     }
                 }
             }, 1000);
         }
 
         function pararContagemGanhos() {
-            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronorchetroPontuacao = null; }
+            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
         }
 
         function ejecutarCompartilhamento() {
@@ -828,17 +824,15 @@
             window.location.reload(); 
         }
 
-        // Otimização do gatilho de inicialização e persistência automática de sessão
         window.addEventListener('DOMContentLoaded', async () => {
             inicializarPlaylist();
             
-            const { data: { session }, error } = await _supabase.auth.getSession();
+            const { data: { session } } = await _supabase.auth.getSession();
             if (session?.user) {
                 document.getElementById('authScreen').classList.add('hidden');
                 await carregarDadosDoUsuario(session.user);
             }
 
-            // Escuta mudanças de autenticação (caso o token expire ou renove de fundo)
             _supabase.auth.onAuthStateChange(async (event, session) => {
                 if (session?.user) {
                     document.getElementById('authScreen').classList.add('hidden');
