@@ -487,7 +487,12 @@
     <script>
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        });
 
         let isSignUpMode = false;
         let usuarioAtualId = null;
@@ -552,8 +557,9 @@
                     if (error) throw error;
                     if (data?.user) {
                         await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
-                        alert("Cadastro finalizado com sucesso!");
-                        window.location.reload();
+                        alert("Cadastro finalizado com sucesso! Faça login para entrar.");
+                        isSignUpMode = false;
+                        toggleAuthMode();
                     }
                 } else {
                     const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
@@ -574,7 +580,6 @@
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
                 
                 if (!data) {
-                    // Fallback dinâmico seguro se o registro do profile falhar na criação
                     const { data: newProfile, error: insError } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
                     data = newProfile;
                 }
@@ -584,7 +589,7 @@
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
             } catch (e) {
-                console.log("Ignorando erro estrutural temporário para não quebrar a tela:", e.message);
+                console.error("Erro ao carregar dados do Supabase:", e.message);
             } finally {
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
@@ -651,11 +656,13 @@
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
             gerenciarCronometroBonusDiario();
 
-            await _supabase.from('profiles').update({ 
+            const { error } = await _supabase.from('profiles').update({ 
                 pontos: pontosLocaisMemoria, 
                 saldo_reais: dinheiroLocalMemoria,
                 ultimo_bonus: isoAgora
             }).eq('id', usuarioAtualId);
+
+            if (error) console.error("Erro ao salvar bônus no banco:", error.message);
         }
 
         function intermediarAnuncio(callback) {
@@ -668,7 +675,6 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            // Injeção limpa e assíncrona para evitar congelar a aplicação
             const script1 = document.createElement('script');
             script1.async = true;
             script1.src = 'https://n6wxm.com/vignette.min.js';
@@ -784,19 +790,31 @@
 
                         pontosLocaisMemoria += parseInt(vData.recompensa);
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
+                        
+                        // Atualiza a tela primeiro
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        await _supabase.from('profiles').update({ 
+                        // Envia para o Banco de Dados imediatamente e captura eventuais erros
+                        const { error } = await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
                             saldo_reais: dinheiroLocalMemoria 
                         }).eq('id', usuarioAtualId);
+
+                        if (error) {
+                            console.error("Erro crítico ao salvar pontos no Supabase:", error.message);
+                        }
                     }
                 }
             }, 1000);
         }
 
         function pararContagemGanhos() {
-            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
+            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronorchetroPontuacao = null; }
+        }
+
+        function ejecutarCompartilhamento() {
+            navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
+            alert("Link de indicação copiado!");
         }
 
         function executarPedidoSaque() {
@@ -805,20 +823,32 @@
             alert("Sua solicitação foi enviada para análise automática.");
         }
 
-        function ejecutarCompartilhamento() {
-            navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
-            alert("Link de indicação copiado!");
+        async function handleLogout() { 
+            await _supabase.auth.signOut(); 
+            window.location.reload(); 
         }
 
-        async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
-
+        // Otimização do gatilho de inicialização e persistência automática de sessão
         window.addEventListener('DOMContentLoaded', async () => {
             inicializarPlaylist();
-            const { data: { session } } = await _supabase.auth.getSession();
+            
+            const { data: { session }, error } = await _supabase.auth.getSession();
             if (session?.user) {
                 document.getElementById('authScreen').classList.add('hidden');
                 await carregarDadosDoUsuario(session.user);
             }
+
+            // Escuta mudanças de autenticação (caso o token expire ou renove de fundo)
+            _supabase.auth.onAuthStateChange(async (event, session) => {
+                if (session?.user) {
+                    document.getElementById('authScreen').classList.add('hidden');
+                    if (usuarioAtualId !== session.user.id) {
+                        await carregarDadosDoUsuario(session.user);
+                    }
+                } else {
+                    document.getElementById('authScreen').classList.remove('hidden');
+                }
+            });
         });
     </script>
 </body>
