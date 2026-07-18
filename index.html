@@ -373,7 +373,7 @@
             </div>
 
             <button class="btn-saque" onclick="navegarParaAba('saque')"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
-            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700);" onclick="navegarParaAba('indica')"><i class="fa-solid fa-gift"></i> Convide e Ganhe (R$ 5,00)</button>
+            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700);" onclick="navegarParaAba('indica')"><i class="fa-solid fa-gift"></i> Convide e Ganhe (R$ 0,15)</button>
             <button class="btn-indicar-menu" style="background: #1c1c24; color: #fff; border: 1px solid rgba(255,255,255,0.1);" onclick="navegarParaAba('regras')"><i class="fa-solid fa-shield-halved"></i> Diretrizes e Regras</button>
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </div>
@@ -453,7 +453,7 @@
                     <i class="fa-solid fa-user-plus" style="color:#ff9d00;"></i>
                     <div class="info-badge-text">
                         <h4>Indique um Amigo</h4>
-                        <p>Ganhe instantaneamente 500 PTS (R$ 5,00) por novo registro.</p>
+                        <p>Ganhe instantaneamente 15 PTS (R$ 0,15) por novo registro.</p>
                     </div>
                 </div>
             </div>
@@ -471,7 +471,7 @@
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
                     <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
-                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de retenção. A taxa de conversão padrão estabelecida é de 1.000 PTS = R$ 1,00. Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
+                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de retenção. A taxa de conversão padrão estabelecida é de 1 PT = R$ 0,01. Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
                 </div>
 
                 <div class="terms-item">
@@ -481,17 +481,17 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 hours úteis.
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
                 </div>
 
                 <div class="terms-item">
                     <i class="fa-solid fa-user-shield"></i> <strong>4. Diretrizes Antifraude e Uso Justo</strong><br>
-                    É estritamente proibida a utilização de scripts automatizados, clonadores de aplicativos, cliques automáticos (auto-clickers) ou emuladores para burlar o tempo de exibição. Qualquer detecção de atividade artificial resultará no bloqueio definitivo da conta e no estorno dos saldos pendentes.
+                    É estritamente proibida a utilização de scripts automatizados, clonadores de aplicativos, cliques automáticos (auto-clickers) ou emuladores para burlar o tempo de exibição. Qualquer detecção de atividade artificial resultará no bloco definitivo da conta e no estorno dos saldos pendentes.
                 </div>
 
                 <div class="terms-item">
                     <i class="fa-solid fa-gift"></i> <strong>5. Programa de Recompensas por Convites</strong><br>
-                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 500 PTS (R$ 5,00) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
+                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 15 PTS (R$ 0,15) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
                 </div>
             </div>
 
@@ -540,10 +540,11 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
+        // VALORES ATUALIZADOS: Vídeos agora pagam frações de ponto (R$ 0,002, R$ 0,003 e R$ 0,001 por minuto)
         const musicasReais = [
-            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 45 },
-            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 50 },
-            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 30 }
+            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 0.20 },
+            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 0.30 },
+            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 0.10 }
         ];
 
         const colecaoVideos = [];
@@ -569,7 +570,6 @@
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
             
-            // Ativa o visual de seleção se vier pelo botão alternativo das Regras
             if(alvo === 'home') document.getElementById('nav-home').classList.add('active');
         }
 
@@ -593,18 +593,16 @@
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
                     
-                    // Lógica de Indicação Ativa: Verifica se veio por indicação de alguém (?ref=ID)
                     const urlParams = new URLSearchParams(window.location.search);
                     const indicadorId = urlParams.get('ref');
                     
                     if (indicadorId && indicadorId !== data.user.id) {
-                        // Busca os dados do indicador
                         let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
-                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 500;
-                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 5.00;
+                            // VALOR ATUALIZADO: Ganha 15 pontos (R$ 0,15) ao invés de R$ 5,00
+                            let novosPts = (parseFloat(dadosIndicador.pontos) || 0) + 15;
+                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.15;
                             
-                            // Adiciona o prêmio de 500 pontos (R$ 5,00) na conta de quem indicou
                             await _supabase.from('profiles').update({
                                 pontos: novosPts,
                                 saldo_reais: novoSaldo
@@ -638,7 +636,7 @@
                     data = fallbackProfile;
                 }
 
-                pontosLocaisMemoria = parseInt(data?.pontos) || 0;
+                pontosLocaisMemoria = parseFloat(data?.pontos) || 0;
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
@@ -651,8 +649,11 @@
         }
 
         function atualizarInterfaceDados(pontos, saldoReais) {
-            document.getElementById('ptsTotal').innerText = pontos;
-            document.getElementById('pointsBalance').innerText = pontos;
+            // Exibe os pontos com formato de duas casas decimais se necessário para as frações de centavos ficarem legíveis
+            const pontosFormatados = parseFloat(pontos).toFixed(2);
+            document.getElementById('ptsTotal').innerText = pontosFormatados;
+            document.getElementById('pointsBalance').innerText = pontosFormatados;
+            
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalance').innerText = formatado;
             document.getElementById('realBalanceMain').innerText = formatado;
@@ -705,8 +706,9 @@
             const isoAgora = new Date().toISOString();
             dataUltimoBonusIso = isoAgora;
 
-            pontosLocaisMemoria += 150;
-            dinheiroLocalMemoria += 1.50;
+            // VALOR ATUALIZADO: Bônus diário reduzido para 5 pontos (R$ 0,05)
+            pontosLocaisMemoria += 5;
+            dinheiroLocalMemoria += 0.05;
             
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
             gerenciarCronometroBonusDiario();
@@ -780,7 +782,7 @@
                     </div>
                     <div class="video-meta-info">
                         <h5>${vid.titulo}</h5>
-                        <div class="video-reward-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa} PTS / min</div>
+                        <div class="video-reward-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa.toFixed(2)} PTS / min</div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -841,14 +843,15 @@
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
 
-                        pontosLocaisMemoria += parseInt(vData.recompensa);
-                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
+                        // MATEMÁTICA ATUALIZADA: Cada 1 Ponto = R$ 0,01 Reais
+                        pontosLocaisMemoria += parseFloat(vData.recompensa);
+                        dinheiroLocalMemoria += (parseFloat(vData.recompensa) * 0.01);
                         
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
-                            saldo_reais: dineroLocalMemoria 
+                            saldo_reais: dinheiroLocalMemoria 
                         }).eq('id', usuarioAtualId);
                     }
                 }
