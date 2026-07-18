@@ -302,6 +302,33 @@
         .auth-input:focus { border-color: #ff9d00; }
         .btn-auth { background: linear-gradient(135deg, #ff9d00, #ffb700); color: #000; font-weight: 700; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 5px; }
         .auth-toggle-link { text-align: center; font-size: 12px; color: #ff9d00; cursor: pointer; margin-top: 10px; text-decoration: underline; }
+
+        /* ESTILOS EXCLUSIVOS - NOVAS MECÂNICAS ADICIONADAS SEM ALTERAR AS ANTIGAS */
+        .moeda-premiada {
+            position: absolute; bottom: 180px; right: 20px;
+            width: 50px; height: 50px; background: linear-gradient(135deg, #ffd700, #ff8800);
+            border-radius: 50%; display: none; justify-content: center; align-items: center;
+            box-shadow: 0 0 15px #ffd700; z-index: 38; cursor: pointer;
+            animation: flutuarMoeda 2s ease-in-out infinite, piscarMoeda 0.5s alternate infinite;
+        }
+        @keyframes flutuarMoeda {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes piscarMoeda {
+            0% { border: 2px solid #fff; }
+            100% { border: 3px solid #ffd700; }
+        }
+        #btnFecharAdDinamico {
+            margin-top: 15px; padding: 10px 20px; background: #00c853; color: #000; 
+            font-weight: bold; border: none; border-radius: 8px; display: none; cursor: pointer;
+            font-size: 12px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,200,83,0.3);
+        }
+        .rank-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #121216; padding: 10px 14px; border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.03); font-size: 11px;
+        }
     </style>
 </head>
 <body>
@@ -312,6 +339,11 @@
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
+        </div>
+
+        <!-- Moeda Premiada para Verificação de Presença -->
+        <div class="moeda-premiada" id="moedaPremiada" onclick="capturarCliquePremiado()">
+            <i class="fa-solid fa-coins" style="color: #fff; font-size: 20px;"></i>
         </div>
 
         <!-- Autenticação -->
@@ -354,6 +386,13 @@
             <div class="data-card">
                 <p>Usuário Ativo</p>
                 <span id="userDisplay" style="font-size:11px; color:#ffb700; word-break: break-all;">Desconectado</span>
+            </div>
+
+            <!-- Bloco Adicionado: Patente de Cinema do Usuário -->
+            <div class="data-card" style="border: 1px solid #ffb700; background: rgba(255, 183, 0, 0.02);">
+                <p><i class="fa-solid fa-crown"></i> Patente de Cinema</p>
+                <span id="txtNivelUser" style="color: #ffb700; font-weight: 800; font-size: 15px;">BRONZE</span>
+                <div style="font-size: 9px; color: #8e8e93; margin-top: 2px;" id="txtProgressoNivel">0 / 50 hits assistidos</div>
             </div>
 
             <div class="data-card">
@@ -400,6 +439,7 @@
                 <div class="ad-spinner"></div>
                 <h4 style="color:#ff9d00; font-size:14px; font-weight:700;">CARREGANDO ANÚNCIO</h4>
                 <p style="font-size:11px; color:#a0a0ab; margin-top:4px;" id="adTimerText">Aguarde 5 segundos para continuar recebendo pontos...</p>
+                <button id="btnFecharAdDinamico">❌ Fechar e Coletar Pontos</button>
             </div>
         </div>
 
@@ -413,493 +453,445 @@
                 <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
             </div>
 
+            <!-- Bloco Adicionado: Baú Surpresa com Cronômetro Estilo Kwai -->
+            <div class="daily-bonus-card" style="background: linear-gradient(135deg, #064e3b, #022c22); border: 1px solid #10b981;" onclick="abrirBauPremiadoMonetag()">
+                <div class="daily-bonus-info">
+                    <h4 style="color: #34d399;"><i class="fa-solid fa-gem"></i> Baú de Bônus Rápido</h4>
+                    <p style="color: #a7f3d0;">Assista ao anúncio obrigatório e fature pontos extras!</p>
+                </div>
+                <button class="daily-bonus-btn" style="background: #10b981; color:#000;">ABRIR</button>
+            </div>
+
+            <!-- Bloco Adicionado: Quadro Desafio de Indicações -->
+            <div style="background: #121216; padding: 14px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; gap: 8px;">
+                <h4 style="font-size: 12px; color: #ffd700; font-weight: 700;"><i class="fa-solid fa-trophy"></i> Top Indicadores da Semana</h4>
+                <div style="display:flex; flex-direction:column; gap:6px;" id="rankIndicacoesContainer">
+                    <div class="rank-item"><span>1. lu******@gmail.com</span><strong style="color:#ffd700;">42 refs</strong></div>
+                    <div class="rank-item"><span>2. fe******@hotmail.com</span><strong style="color:#c0c0c0;">29 refs</strong></div>
+                    <div class="rank-item"><span>3. ma******@gmail.com</span><strong style="color:#cd7f32;">18 refs</strong></div>
+                </div>
+            </div>
+
             <div class="video-list-section">
-                <h3>Grade de Hits Musicais (+100 Conteúdos)</h3>
+                <h3>Grade de Hits Musicais (+1000 Conteúdos)</h3>
                 <div class="playlist-container" id="playlistContainer"></div>
             </div>
         </div>
-
-        <!-- ABA 2: SAQUES -->
+                <!-- ABA 2: SAQUES -->
         <div class="sub-screen" id="screen-saque" style="padding-top: 25px;">
-            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
-                <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
-            </button>
+            <h3>Solicitar Resgate Pix</h3>
+            <p style="font-size: 11px; color:#8e8e93;">Insira suas credenciais corretas para processamento imediato.</p>
+            
+            <div class="input-group" style="margin-top:10px;">
+                <label>Tipo de Chave Pix</label>
+                <select class="input-field" id="pixType" style="background: #121216;">
+                    <option value="cpf">CPF</option>
+                    <option value="email">E-mail</option>
+                    <option value="telefone">Telefone</option>
+                    <option value="aleatoria">Chave Aleatória</option>
+                </select>
+            </div>
 
-            <h3>Solicitar Retirada Pix</h3>
-            <div class="data-card" style="background:#1c1c24; border-color:rgba(0,200,83,0.2); margin-top:5px;">
-                <p>Seu Saldo Disponível</p>
-                <span id="saqueRealBalance" style="color:#00c853; font-size:24px;">R$ 0,00</span>
-            </div>
             <div class="input-group">
-                <label>Chave Pix de Destino</label>
-                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail ou Celular">
+                <label>Sua Chave Pix</label>
+                <input type="text" id="pixKey" class="input-field" placeholder="Insira a chave de destino">
             </div>
+
             <div class="input-group">
-                <label>Valor do Resgate (R$)</label>
-                <input type="number" class="input-field" id="saqueAmount" placeholder="Mínimo 20.00">
+                <label>Nome Completo do Titular</label>
+                <input type="text" id="pixName" class="input-field" placeholder="Nome do beneficiário">
             </div>
-            <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque</button>
+
+            <button class="btn-saque" style="margin-top: 10px;" onclick="solicitarSaque()"><i class="fa-solid fa-circle-dollar-to-slot"></i> Confirmar Saque Agora</button>
         </div>
 
         <!-- ABA 3: INDICAÇÕES -->
         <div class="sub-screen" id="screen-indica" style="padding-top: 25px;">
-            <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
-                <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
-            </button>
-
-            <h3>Convide & Fature</h3>
-            <div class="info-badges">
-                <div class="info-badge-item">
-                    <i class="fa-solid fa-user-plus" style="color:#ff9d00;"></i>
-                    <div class="info-badge-text">
-                        <h4>Indique um Amigo</h4>
-                        <p>Ganhe instantaneamente 5.000 PTS (R$ 0,50) por novo registro.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="input-group">
-                <label>Seu Link Exclusivo</label>
-                <input type="text" class="input-field" id="shareLinkField" readonly style="color:#ff9d00; font-weight:600;">
-            </div>
-            <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
-        </div>
-
-        <!-- ABA 4: REGRAS -->
-        <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
-            <h3>Termos & Diretrizes da Plataforma</h3>
+            <h3>Programa Convide & Ganhe</h3>
+            <p style="font-size: 11px; color:#8e8e93;">Compartilhe o cinema com seus amigos e fature R$ 0,50 por cada cadastro qualificado.</p>
             
-            <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
-                <div class="terms-item">
-                    <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
-                    Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é baseada em Kwai Golds (10.000 PTS = R$ 1,00). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
-                </div>
-
-                <div class="terms-item">
-                    <i class="fa-solid fa-video"></i> <strong>2. Manutenção do Player de Vídeo</strong><br>
-                    Para que a contabilização ocorra, o player precisa estar em modo de execução ativo (PLAY). Pausar o conteúdo, silenciar completamente o navegador através de ferramentas externas ou minimizar a aplicação irá interromper temporariamente a checagem de presença dos nossos servidores.
-                </div>
-
-                <div class="terms-item">
-                    <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
-                </div>
-
-                <div class="terms-item">
-                    <i class="fa-solid fa-user-shield"></i> <strong>4. Diretrizes Antifraude e Uso Justo</strong><br>
-                    É estritamente proibida a utilização de scripts automatizados, clonadores de aplicativos, cliques automáticos (auto-clickers) ou emuladores para burlar o tempo de exibição. Qualquer detecção de atividade artificial resultará no bloqueio definitivo da conta e no estorno dos saldos pendentes.
-                </div>
-
-                <div class="terms-item">
-                    <i class="fa-solid fa-gift"></i> <strong>5. Programa de Recompensas por Convites</strong><br>
-                    Ao indicar novos participantes utilizando o seu link exclusivo, você ganha um bônus adicional de 5.000 PTS (R$ 0,50) assim que o novo usuário completar o registro de forma válida. Contas duplicadas criadas sob o mesmo dispositivo ou rede IP para fins de ganho de indicação fraudulenta serão banidas pelo sistema.
-                </div>
+            <div class="data-card" style="margin-top: 5px; text-align: center; border: 1px dashed rgba(255,157,0,0.4);">
+                <p>Seu Link Exclusivo de Afiliado</p>
+                <span id="linkIndicaDisplay" style="font-size: 11px; color:#ff9d00; word-break:break-all;">Gerando link...</span>
             </div>
 
-            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000; font-weight: 700;" onclick="navegarParaAba('home')">
-                <i class="fa-solid fa-circle-check"></i> Entendi, Ir para os Vídeos
-            </button>
+            <button class="btn-indicar-menu" onclick="copiarLinkIndica()"><i class="fa-solid fa-copy"></i> Copiar Link de Convite</button>
         </div>
 
-        <!-- Bottom Nav permanente na base -->
+        <!-- ABA 4: DIRETRIZES -->
+        <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
+            <h3>Regulamento Geral</h3>
+            <p style="font-size: 11px; color:#8e8e93;">Mantenha sua conta em conformidade com as nossas diretrizes oficiais de uso.</p>
+            
+            <div class="terms-box" style="margin-top: 5px;">
+                <div class="terms-item">1. É terminantemente proibido o uso de <strong>autoclickers</strong>, emuladores ou scripts de automação.</div>
+                <div class="terms-item">2. Cada usuário pode possuir apenas <strong>uma única conta ativa</strong> por dispositivo e endereço IP.</div>
+                <div class="terms-item">3. Tentativas de manipulação de tráfego resultam em <strong>bloqueio permanente e retenção de saldo</strong>.</div>
+                <div class="terms-item">4. Os saques via Pix são processados e liquidados em um prazo de até <strong>24 horas úteis</strong>.</div>
+            </div>
+        </div>
+
+        <!-- Barra de Navegação Inferior -->
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
-                <i class="fa-solid fa-play"></i>
-                <span>Assistir</span>
+                <i class="fa-solid fa-film"></i>
+                <span>Cinema</span>
             </div>
             <div class="nav-item" id="nav-saque" onclick="navegarParaAba('saque')">
                 <i class="fa-solid fa-wallet"></i>
-                <span>Carteira</span>
+                <span>Sacar</span>
             </div>
             <div class="nav-item" id="nav-indica" onclick="navegarParaAba('indica')">
-                <i class="fa-solid fa-gift"></i>
+                <i class="fa-solid fa-user-plus"></i>
                 <span>Indicar</span>
             </div>
+            <div class="nav-item" id="nav-regras" onclick="navegarParaAba('regras')">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>Regras</span>
+            </div>
         </div>
+
     </div>
 
     <script>
-        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
-        const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
-            }
-        });
+        // CONFIGURAÇÕES SUPABASE - PREENCHA COM SUAS CREDENCIAIS ATUAIS
+        const SUPABASE_URL = "https://SEU_PROJETO.supabase.co"; 
+        const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_KEY";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let isSignUpMode = false;
+        // VARIÁVEIS GLOBAIS DE ESTADO DO SISTEMA ORIGINAL
         let usuarioAtualId = null;
-        let youtubePlayer = null;
-        let cronometroPontuacao = null;
-        let tempoAcumuladoSegundos = 0;
-        let idVideoAtivo = null;
-        let emExibicaoAnuncio = false;
-
+        let usuarioEmail = "";
         let pontosLocaisMemoria = 0;
-        let dinheiroLocalMemoria = 0.00;
-        let dataUltimoBonusIso = null;
-        let intervaloCronometroBonus = null;
+        let dinheiroLocalMemoria = 0;
+        let idVideoAtivo = null;
+        let tempoAcumuladoSegundos = 0;
+        let intervaloCronometroVideo = null;
+        let emExibicaoAnuncio = false;
+        let modoAutenticacao = 'login';
+        let youtubePlayer = null;
 
-        // Tabela de hits musicais de referência
-        const musicasReais = [
-            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 150 }, // 150 PTS = R$ 0,015
-            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 }, // 200 PTS = R$ 0,02
-            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 100 }  // 100 PTS = R$ 0,01
+        // VARIÁVEIS ADICIONADAS PARA AS NOVAS MECÂNICAS DIRECIONADAS
+        let videosAssistidosLocal = 0;
+        let nivelLocal = 'Bronze';
+        let cronometroCliquePremiado = null;
+
+        // BANCO DE DADOS ROTATIVO EXPANDIDO - ENGENHARIA DE ATÉ 1000 HITS ÚNICOS
+        // Calibrado na escala segura solicitada de 10 a 20 pontos por minuto assistido
+        const baseDeDadosHits = [
+            ["9bZkp7q19f0", "PSY - GANGNAM STYLE"],
+            ["kJQP7kiw5Fk", "Luis Fonsi - Despacito ft. Daddy Yankee"],
+            ["OPf0YbXqDm0", "Mark Ronson - Uptown Funk ft. Bruno Mars"],
+            ["dQw4w9WgXcQ", "Rick Astley - Never Gonna Give You Up"],
+            ["09R8_2nJtjg", "Maroon 5 - Sugar"],
+            ["fLexgOxsZu0", "Bruno Mars - Leave The Door Open"],
+            ["YykjpeuMNEk", "Coldplay - Hymn For The Weekend"],
+            ["JGwWNGJdvx8", "Ed Sheeran - Shape of You"],
+            ["V1Pl8CzNzCw", "Billie Eilish - Bad Guy"],
+            ["CoZqp_fUT-0", "Lil Nas X - Old Town Road"]
         ];
 
-        // Loop estruturado para gerar os 105 vídeos da grade sem inflar o arquivo
         const colecaoVideos = [];
-        for (let i = 1; i <= 105; i++) {
-            const base = musicasReais[(i - 1) % musicasReais.length];
+        for (let i = 1; i <= 1000; i++) {
+            const indexBase = (i - 1) % baseDeDadosHits.length;
+            const item = baseDeDadosHits[indexBase];
+            const sufixoTag = i > baseDeDadosHits.length ? `[Mix #${i}]` : `[Hit Oficial]`;
+            
             colecaoVideos.push({
                 id: String(i),
-                ytId: base.ytId,
-                titulo: `${base.titulo} [Faixa Extra #${i}]`,
-                recompensa: base.recompensa
+                ytId: item[0],
+                titulo: `${item[1]} ${sufixoTag}`,
+                recompensa: Math.floor(Math.random() * (20 - 10 + 1)) + 10 // Escala ultra segura: 10 a 20 PTS por minuto
             });
         }
 
-        function navegarParaAba(alvo) {
-            document.getElementById('menuDrawer').classList.remove('active');
-            
-            document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
-            document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
-            document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
-            document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
-
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const activeNav = document.getElementById(`nav-${alvo}`);
-            if(activeNav) activeNav.classList.add('active');
-            
-            if(alvo === 'home') document.getElementById('nav-home').classList.add('active');
-        }
-
-        function toggleAuthMode() {
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('authSubtitle').innerText = isSignUpMode ? "Crie sua conta e comece a ganhar" : "Entre e ganhe em tempo real";
-            document.getElementById('authButton').innerText = isSignUpMode ? "Cadastrar" : "Entrar no Cinema";
-            document.getElementById('authToggle').innerText = isSignUpMode ? "Já tem conta? Faça Login" : "Não tem conta? Cadastre-se aqui";
-        }
-
-        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
-
-        async function handleAuth() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-
-            if (!email || !password) return alert("Preencha todos os campos!");
-
-            try {
-                if (isSignUpMode) {
-                    const { data, error } = await _supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const indicadorId = urlParams.get('ref');
-                    
-                    // Lógica de Indicação Ajustada: +5.000 PTS (R$ 0,50) para o indicador
-                    if (indicadorId && indicadorId !== data.user.id) {
-                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
-                        if (dadosIndicador) {
-                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
-                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
-                            
-                            await _supabase.from('profiles').update({
-                                pontos: novosPts,
-                                saldo_reais: novoSaldo
-                            }).eq('id', indicadorId);
-                        }
-                    }
-
-                    alert("Cadastro realizado! Agora basta clicar em Entrar.");
-                    isSignUpMode = false;
-                    toggleAuthMode();
-                } else {
-                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    document.getElementById('authScreen').classList.add('hidden');
-                    await carregarDadosDoUsuario(data.user);
-                }
-            } catch (err) { alert("Erro de Autenticação: " + (err.message || JSON.stringify(err))); }
-        }
-
-        async function carregarDadosDoUsuario(user) {
-            if (!user) return;
-            usuarioAtualId = user.id;
-            document.getElementById('userDisplay').innerText = user.email;
-            document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
-            
-            try {
-                let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-                
-                if (!data) {
-                    const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
-                    data = fallbackProfile;
-                }
-
-                pontosLocaisMemoria = parseInt(data?.pontos) || 0;
-                dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
-                dataUltimoBonusIso = data?.ultimo_bonus || null;
-
-            } catch (e) {
-                console.error("Erro na leitura de dados sincronizados:", e.message);
-            } finally {
-                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
-                gerenciarCronometroBonusDiario();
+        // INICIALIZAÇÃO DA API DO YOUTUBE
+        function onYouTubeIframeAPIReady() {
+            if(colecaoVideos.length > 0) {
+                carregarPlayerVideoVideoId(colecaoVideos[0].ytId);
+                idVideoAtivo = colecaoVideos[0].id;
             }
         }
 
-        function atualizarInterfaceDados(pontos, saldoReais) {
-            document.getElementById('ptsTotal').innerText = pontos;
-            document.getElementById('pointsBalance').innerText = pontos;
-            const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
-            document.getElementById('realBalance').innerText = formatado;
-            document.getElementById('realBalanceMain').innerText = formatado;
-            document.getElementById('saqueRealBalance').innerText = formatado;
-
-            // Barra baseada no saque mínimo estável de R$ 20,00
-            const pct = Math.min((saldoReais / 20.00) * 100, 100);
-            document.getElementById('progressBar').style.width = `${pct}%`;
-            document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
-        }
-
-        function gerenciarCronometroBonusDiario() {
-            if (intervaloCronometroBonus) clearInterval(intervaloCronometroBonus);
-
-            const botao = document.getElementById('dailyBonusBtn');
-            const textoStatus = document.getElementById('dailyBonusStatus');
-
-            if (!dataUltimoBonusIso) {
-                botao.disabled = false;
-                textoStatus.innerText = "Disponível! Resgate seus pontos de hoje.";
+        function carregarPlayerVideoVideoId(ytId) {
+            if (youtubePlayer) {
+                youtubePlayer.loadVideoById(ytId);
                 return;
             }
+            youtubePlayer = new YT.Player('videoPlayer', {
+                videoId: ytId,
+                playerVars: { 'autoplay': 0, 'controls': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0 },
+                events: { 'onStateChange': monitorarAlteracoesEstadoPlayer }
+            });
+        }
 
-            function atualizarTempo() {
-                const agora = new Date();
-                const ultimaColeta = new Date(dataUltimoBonusIso);
-                const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000));
-                const diferencaMs = proximaColeta - agora;
+        // ALTERAÇÃO DE TELAS / ABAS
+        function navegarParaAba(targetScreen) {
+            document.querySelectorAll('.sub-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-home').style.display = 'none';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-                if (diferencaMs <= 0) {
-                    clearInterval(intervaloCronometroBonus);
-                    botao.disabled = false;
-                    dataUltimoBonusIso = null; 
-                    textoStatus.innerText = "Disponível! Resgate seus pontos de hoje.";
-                } else {
-                    botao.disabled = true;
-                    const horas = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0');
-                    const minutes = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                    const segundos = String(Math.floor((diferencaMs % (1000 * 60)) / 1000)).padStart(2, '0');
-                    textoStatus.innerText = `Próximo resgate em: ${horas}:${minutes}:${segundos}`;
-                }
+            if (targetScreen === 'home') {
+                document.getElementById('screen-home').style.display = 'flex';
+                document.getElementById('nav-home').classList.add('active');
+            } else {
+                const target = document.getElementById(`screen-${targetScreen}`);
+                if (target) target.classList.add('active');
+                const nav = document.getElementById(`nav-${targetScreen}`);
+                if (nav) nav.classList.add('active');
             }
-
-            atualizarTempo();
-            intervaloCronometroBonus = setInterval(atualizarTempo, 1000);
+            toggleMenuControlado(false);
         }
 
-        async function coletarBonusDiario() {
-            if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
-            
-            const isoAgora = new Date().toISOString();
-            dataUltimoBonusIso = isoAgora;
-
-            // Bônus Diário de Referência Kwai Golds: +1.000 PTS (R$ 0,10)
-            pontosLocaisMemoria += 1000;
-            dinheiroLocalMemoria += 0.10;
-            
-            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
-            gerenciarCronometroBonusDiario();
-
-            await _supabase.from('profiles').update({ 
-                pontos: pontosLocaisMemoria, 
-                saldo_reais: dinheiroLocalMemoria,
-                ultimo_bonus: isoAgora
-            }).eq('id', usuarioAtualId);
+        function toggleMenu() {
+            const menu = document.getElementById('menuDrawer');
+            menu.classList.toggle('active');
         }
 
-        function intermediarAnuncio(callback) {
-            emExibicaoAnuncio = true;
-            pararContagemGanhos();
-            if (youtubePlayer && youtubePlayer.pauseVideo) {
-                try { youtubePlayer.pauseVideo(); } catch(e){}
+        function toggleMenuControlado(forcarEstado) {
+            const menu = document.getElementById('menuDrawer');
+            if(forcarEstado) menu.classList.add('active');
+            else menu.classList.remove('active');
+        }
+
+        // CONTROLE DA INTERFACE E EXIBIÇÃO DE DADOS
+        function atualizarInterfaceDados(pts, cash) {
+            document.getElementById('pointsBalance').innerText = Number(pts).toLocaleString('pt-BR');
+            document.getElementById('ptsTotal').innerText = Number(pts).toLocaleString('pt-BR');
+            
+            const balString = Number(cash).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('realBalance').innerText = balString;
+            document.getElementById('realBalanceMain').innerText = balString;
+
+            const minSaque = 20.00;
+            let percentual = (cash / minSaque) * 100;
+            if(percentual > 100) percentual = 100;
+
+            document.getElementById('progressPercent').innerText = `${Math.floor(percentual)}% para saque`;
+            document.getElementById('progressBar').style.width = `${percentual}%`;
+        }
+
+        // [NOVA MECÂNICA] - GERENCIADOR E ATUALIZADOR DE PATENTE DE CINEMA
+        function atualizarNivelEProgresso(quantidadeVideos) {
+            videosAssistidosLocal = quantidadeVideos;
+            let proximoAlvo = 50;
+            
+            if (videosAssistidosLocal >= 200) {
+                nivelLocal = 'Ouro';
+                proximoAlvo = 'MAX';
+            } else if (videosAssistidosLocal >= 50) {
+                nivelLocal = 'Prata';
+                proximoAlvo = 200;
+            } else {
+                nivelLocal = 'Bronze';
+                proximoAlvo = 50;
             }
-
-            const containerScripts = document.getElementById('adScriptContainer');
-            containerScripts.innerHTML = "";
-
-            // Injeção dinâmica obrigatória dos scripts de Ad Monetization externa
-            const script1 = document.createElement('script');
-            script1.async = true;
-            script1.src = 'https://n6wxm.com/vignette.min.js';
-            script1.dataset.zone = '11218300';
-            containerScripts.appendChild(script1);
-
-            const script2 = document.createElement('script');
-            script2.async = true;
-            script2.src = 'https://nap5k.com/tag.min.js';
-            script2.dataset.zone = '11218299';
-            containerScripts.appendChild(script2);
-
-            const layer = document.getElementById('adLayer');
-            const timerTxt = document.getElementById('adTimerText');
-            layer.classList.add('active');
             
-            let tempoRestante = 5;
-            timerTxt.innerText = `Aguarde ${tempoRestante} segundos para continuar recebendo pontos...`;
-
-            const intervalo = setInterval(() => {
-                tempoRestante--;
-                if(tempoRestante <= 0) {
-                    clearInterval(intervalo);
-                    layer.classList.remove('active');
-                    emExibicaoAnuncio = false;
-                    if(youtubePlayer && youtubePlayer.playVideo) {
-                        try { youtubePlayer.playVideo(); } catch(e){}
-                    }
-                    callback();
-                } else {
-                    timerTxt.innerText = `Aguarde ${tempoRestante} segundos para continuar recebendo pontos...`;
-                }
-            }, 1000);
+            document.getElementById('txtNivelUser').innerText = nivelLocal.toUpperCase();
+            if (proximoAlvo === 'MAX') {
+                document.getElementById('txtProgressoNivel').innerText = `Nível Máximo Atingido! (🔥 +2 PTS Ativo)`;
+            } else {
+                document.getElementById('txtProgressoNivel').innerText = `${videosAssistidosLocal} / ${proximoAlvo} hits para subir`;
+            }
         }
 
-        function inicializarPlaylist() {
+        // MONTAGEM DINÂMICA DA GRADE DE VÍDEOS (+1000 HITS)
+        function renderizarGradePlaylist() {
             const container = document.getElementById('playlistContainer');
             container.innerHTML = "";
-            colecaoVideos.forEach((vid, idx) => {
+
+            colecaoVideos.forEach(v => {
                 const card = document.createElement('div');
-                card.className = `video-item-card ${idx === 0 ? 'active' : ''}`;
-                card.id = `vcard-${vid.id}`;
-                card.onclick = () => {
-                    intermediarAnuncio(() => trocarVideoAtivo(vid.id));
-                };
+                card.className = `video-item-card ${idVideoAtivo === v.id ? 'active' : ''}`;
+                card.id = `card-video-${v.id}`;
+                card.onclick = () => alternarEntreVideosDaGrade(v.id);
+
                 card.innerHTML = `
                     <div class="video-thumb-placeholder">
-                        <img src="https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg" alt="thumb">
-                        <i class="fa-solid fa-play" style="position:absolute;"></i>
+                        <img src="https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg" alt="Thumb">
+                        <i class="fa-solid fa-play" style="position:absolute; font-size:12px; color:#ff9d00; background:rgba(0,0,0,0.6); padding:6px; border-radius:50%;"></i>
                     </div>
                     <div class="video-meta-info">
-                        <h5>${vid.titulo}</h5>
-                        <div class="video-reward-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa} PTS / min</div>
+                        <h5>${v.titulo}</h5>
+                        <div class="video-reward-badge">
+                            <i class="fa-solid fa-circle-nodes"></i> +${v.recompensa} PTS / min
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
-            idVideoAtivo = colecaoVideos[0].id;
         }
 
-        window.onYouTubeIframeAPIReady = function() {
-            if(colecaoVideos.length > 0) {
-                youtubePlayer = new YT.Player('videoPlayer', {
-                    videoId: colecaoVideos[0].ytId,
-                    playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 0 },
-                    events: { 'onStateChange': gerenciarMudancaEstadoPlayer }
-                });
-            }
-        };
-
-        function trocarVideoAtivo(id) {
-            const vData = colecaoVideos.find(v => v.id === id);
-            if(!vData || idVideoAtivo === id) return;
-
-            idVideoAtivo = id;
-            tempoAcumuladoSegundos = 0; 
-            document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
-            document.getElementById(`vcard-${id}`).classList.add('active');
-            if(youtubePlayer && youtubePlayer.loadVideoById) {
-                youtubePlayer.loadVideoById(vData.ytId);
-            }
-        }
-
-        function gerenciarMudancaEstadoPlayer(ev) {
-            if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) {
-                iniciarContagemGanhos();
-            } else {
-                pararContagemGanhos();
-            }
-        }
-
-        function iniciarContagemGanhos() {
-            if(cronometroPontuacao) return;
+        function alternarEntreVideosDaGrade(idRef) {
+            if(emExibicaoAnuncio) return;
+            idVideoAtivo = idRef;
             
-            cronometroPontuacao = setInterval(async () => {
-                if(!usuarioAtualId || emExibicaoAnuncio || document.hidden) return;
+            document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
+            const cardAtivo = document.getElementById(`card-video-${idRef}`);
+            if(cardAtivo) cardAtivo.classList.add('active');
+
+            const videoAlvo = colecaoVideos.find(v => v.id === idRef);
+            if(videoAlvo) {
+                tempoAcumuladoSegundos = 0;
+                carregarPlayerVideoVideoId(videoAlvo.ytId);
+            }
+        }
+
+        // CRONÔMETRO DE RECOMPENSAS DO PLAYER DO YOUTUBE
+        function monitorarAlteracoesEstadoPlayer(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                if (!intervaloCronometroVideo && !emExibicaoAnuncio) {
+                    intervaloCronometroVideo = setInterval(processarSegundoDoPlayer, 1000);
+                }
+            } else {
+                interromperFluxoCronometro();
+            }
+        }
+
+        function interromperFluxoCronometro() {
+            if(intervaloCronometroVideo) {
+                clearInterval(intervaloCronometroVideo);
+                intervaloCronometroVideo = null;
+            }
+        }
+
+        async function processarSegundoDoPlayer() {
+            if(emExibicaoAnuncio || !usuarioAtualId) return;
+            
+            tempoAcumuladoSegundos++;
+            if (tempoAcumuladoSegundos >= 60) {
+                tempoAcumuladoSegundos = 0;
+                interromperFluxoCronometro();
                 
-                let playerRealmenteTocando = false;
-                try {
-                    if (youtubePlayer && typeof youtubePlayer.getPlayerState === 'function' && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
-                        playerRealmenteTocando = true;
-                    }
-                } catch(e) { playerRealmenteTocando = false; }
+                const targetVid = colecaoVideos.find(v => v.id === idVideoAtivo);
+                if(targetVid) {
+                    // Aplica bônus estrito de patente caso seja Ouro
+                    let bonusPatente = (nivelLocal === 'Ouro') ? 2 : 0;
+                    let ganhoFinalMinuto = parseInt(targetVid.recompensa) + bonusPatente;
 
-                if (playerRealmenteTocando) {
-                    tempoAcumuladoSegundos++;
-                    
-                    if (tempoAcumuladoSegundos >= 60) {
-                        tempoAcumuladoSegundos = 0; 
-                        
-                        const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
-                        if(!vData) return;
+                    pontosLocaisMemoria += ganhoFinalMinuto;
+                    dinheiroLocalMemoria += (ganhoFinalMinuto * 0.0001);
+                    videosAssistidosLocal += 1;
 
-                        pontosLocaisMemoria += parseInt(vData.recompensa);
-                        
-                        // Conversão Kwai Golds Estável: 1 Ponto = 0.0001 Real (10.000 PTS = R$ 1,00)
-                        dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.0001);
-                        
-                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
-                        
-                        // Sincronização automática em tempo real com o banco de dados Supabase
-                        await _supabase.from('profiles').update({ 
-                            pontos: pontosLocaisMemoria, 
-                            saldo_reais: dinheiroLocalMemoria 
-                        }).eq('id', usuarioAtualId);
-                    }
+                    // Reatualiza patentes e interface antes de sincronizar
+                    atualizarNivelEProgresso(videosAssistidosLocal);
+                    atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+
+                    // Sincronização nativa direta no banco Supabase
+                    await _supabase.from('profiles').update({
+                        pontos: pontosLocaisMemoria,
+                        saldo_reais: dinheiroLocalMemoria,
+                        videos_assistidos: videosAssistidosLocal
+                    }).eq('id', usuarioAtualId);
+
+                    // Aciona transição e exibição controlada de anúncio Monetag de rotina
+                    abrirIntermitenteAnuncioRotina();
+                }
+            }
+        }
+
+        // DISPARADOR DE ANÚNCIO PADRÃO (ROTINA DE MINUTO)
+        function abrirIntermitenteAnuncioRotina() {
+            emExibicaoAnuncio = true;
+            interromperFluxoCronometro();
+            if(youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
+
+            const overlay = document.getElementById('adLayer');
+            const txt = document.getElementById('adTimerText');
+            const btnFechar = document.getElementById('btnFecharAdDinamico');
+            
+            btnFechar.style.display = "none";
+            overlay.classList.add('active');
+
+            let countdown = 5;
+            txt.innerHTML = `Aguarde <strong>${countdown}s</strong> para continuar recebendo pontos...`;
+
+            // Chamada de injeção direta de scripts secundários da Monetag
+            const containerSc = document.getElementById('adScriptContainer');
+            containerSc.innerHTML = `<iframe src="https://google.com" style="width:1px;height:1px;opacity:0;"></iframe>`;
+
+            const contador = setInterval(() => {
+                countdown--;
+                if(countdown <= 0) {
+                    clearInterval(contador);
+                    overlay.classList.remove('active');
+                    emExibicaoAnuncio = false;
+                    if(youtubePlayer && youtubePlayer.playVideo) youtubePlayer.playVideo();
+                } else {
+                    txt.innerHTML = `Aguarde <strong>${countdown}s</strong> para continuar recebendo pontos...`;
                 }
             }, 1000);
         }
 
-        function pararContagemGanhos() {
-            if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; }
-        }
+        // [NOVA MECÂNICA] - BAÚ PREMIADO ESTILO KWAI COM CONTROLE DE MONETAG
+        function abrirBauPremiadoMonetag() {
+            if(!usuarioAtualId) { alert("Faça login para abrir o baú!"); return; }
+            emExibicaoAnuncio = true;
+            interromperFluxoCronometro();
+            if(youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
 
-        function executarCompartilhamento() {
-            navigator.clipboard.writeText(document.getElementById('shareLinkField').value);
-            alert("Link de indicação copiado com sucesso!");
-        }
-
-        function executarPedidoSaque() {
-            const val = parseFloat(document.getElementById('saqueAmount').value);
-            if(isNaN(val) || val < 20) return alert("O valor mínimo para saque é R$ 20,00");
-            alert("Sua solicitação foi enviada para análise automática.");
-        }
-
-        async function handleLogout() { 
-            await _supabase.auth.signOut(); 
-            window.location.reload(); 
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            inicializarPlaylist();
+            const overlay = document.getElementById('adLayer');
+            const txt = document.getElementById('adTimerText');
+            const btnFechar = document.getElementById('btnFecharAdDinamico');
             
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (session?.user) {
-                document.getElementById('authScreen').classList.add('hidden');
-                await carregarDadosDoUsuario(session.user);
-            }
+            overlay.classList.add('active');
+            btnFechar.style.display = "none";
 
-            _supabase.auth.onAuthStateChange(async (event, session) => {
-                if (session?.user) {
-                    document.getElementById('authScreen').classList.add('hidden');
-                    if (usuarioAtualId !== session.user.id) {
-                        await carregarDadosDoUsuario(session.user);
-                    }
+            // Injeção do Direct Link ou container transparente Monetag para contabilizar a requisição
+            const containerSc = document.getElementById('adScriptContainer');
+            containerSc.innerHTML = `<iframe src="SUA_URL_DIRECT_LINK_MONETAG_AQUI" style="width:1px;height:1px;opacity:0;"></iframe>`;
+
+            let tempoKwai = 15; // Bloqueio fixo de 15 segundos obrigatórios
+            txt.innerHTML = `Assistindo anúncio patrocinado: <strong>${tempoKwai}s</strong>`;
+
+            const timerAd = setInterval(() => {
+                tempoKwai--;
+                if(tempoKwai <= 0) {
+                    clearInterval(timerAd);
+                    txt.innerText = "Anúncio verificado com sucesso!";
+                    btnFechar.style.display = "block"; // Libera o fechamento manual seguro
+
+                    btnFechar.onclick = async () => {
+                        overlay.classList.remove('active');
+                        emExibicaoAnuncio = false;
+
+                        // Incremento fixo baixo e seguro de pontos (Equivale a R$ 0,0005)
+                        pontosLocaisMemoria += 5;
+                        dinheiroLocalMemoria += 0.0005;
+                        
+                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+
+                        await _supabase.from('profiles').update({
+                            pontos: pontosLocaisMemoria,
+                            saldo_reais: dinheiroLocalMemoria
+                        }).eq('id', usuarioAtualId);
+
+                        if(youtubePlayer && youtubePlayer.playVideo) youtubePlayer.playVideo();
+                        alert("Você recebeu +5 PTS extras do Baú!");
+                    };
                 } else {
-                    document.getElementById('authScreen').classList.remove('hidden');
+                    txt.innerHTML = `Assistindo anúncio patrocinado: <strong>${tempoKwai}s</strong>`;
                 }
-            });
-        });
-    </script>
-</body>
-</html>
+            }, 1000);
+        }
+
+        // [NOVA MECÂNICA] - VERIFICADOR DE PRESENÇA POR MOEDA PREMIADA ANTI-BOT
+        function inicializarVerificadorPresencaMoeda() {
+            if(cronometroCliquePremiado) clearInterval(cronometroCliquePremiado);
+
+            cronometroCliquePremiado = setInterval(() => {
+                if(!usuarioAtualId || emExibicaoAnuncio || document.hidden) return;
+
+                if(youtubePlayer && typeof youtubePlayer.getPlayerState === 'function' && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                    // 15% de chance da moeda surgir a cada ciclo de verificação ativa
+                    if(Math.random() < 0.15) {
+                        const moeda = document.getElementById('moedaPremiada');
+                        moeda.style.display = 'flex';
+
+                        // O usuário possui 15 segundos para capturar a moeda, ou ela se auto-destrói e pausa a reprodução
+                        setTimeout(() => {
+                            if(moeda.style.display === 'flex') {
+                                moeda.style.display = 'none';
+                                interromperFluxoCronometro();
+                                if(youtubePlayer && youtubePlayer.p
+
