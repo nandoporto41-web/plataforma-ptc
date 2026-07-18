@@ -156,18 +156,6 @@
         .movie-details h3 { font-size: 16px; color: #fff; margin-bottom: 4px; font-weight: 700; }
         .movie-details p { font-size: 11px; color: #9c9ca4; line-height: 1.4; }
 
-        .catalog-section h4 { font-size: 12px; color: #ffb700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-        .movie-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .movie-card {
-            background: #141419; border-radius: 10px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: transform 0.2s;
-        }
-        .movie-card:active { transform: scale(0.97); }
-        .movie-card img { width: 100%; height: 95px; object-fit: cover; background: #222; }
-        .movie-card-info { padding: 8px; }
-        .movie-card-info h5 { font-size: 11px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-card-info span { font-size: 9px; color: #ff9d00; font-weight: 600; display: block; margin-top: 2px; }
-
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(to top, #060608 85%, transparent);
@@ -410,160 +398,106 @@
                 </div>
                 <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
             </div>
-
-            <div class="lucky-wheel-card" id="luckyWheelCard" onclick="rodarRoletaSorte()">
-                <div class="lucky-wheel-info">
-                    <h4><i class="fa-solid fa-ferris-wheel"></i> Roleta da Sorte🎡</h4>
-                    <p id="luckyWheelStatus">Tente a sorte! Disponível a cada 1 hora</p>
-                </div>
-                <button class="lucky-wheel-btn" id="luckyWheelBtn">Girar</button>
-            </div>
-
-            <div class="movie-details">
-                <h3>Filme em Exibição</h3>
-                <p>Assista ao conteúdo promocional integrado e receba recompensas automáticas creditadas em seu saldo a cada ciclo concluído.</p>
-            </div>
-
-            <div class="catalog-section">
-                <h4>Conteúdos Disponíveis</h4>
-                <div class="movie-grid">
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=80" alt="Cine 1">
-                        <div class="movie-card-info">
-                            <h5>Canal de Variedades Premium</h5>
-                            <span>+450 PTS / Ciclo</span>
-                        </div>
-                    </div>
-                    <div class="movie-card">
-                        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" alt="Cine 2">
-                        <div class="movie-card-info">
-                            <h5>Trailers Oficiais Lançamentos</h5>
-                            <span>+600 PTS / Ciclo</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-
-        <div class="bottom-nav">
-            <div class="control-bar">
-                <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="btn-label">Carteira</span>
-                </div>
-                <div class="action-item">
-                    <div class="circle-btn btn-main"><i class="fa-solid fa-play"></i></div>
-                    <span class="btn-label" style="color:#ff9d00; font-weight:700;">Cinema</span>
-                </div>
-                <div class="action-item" onclick="toggleMenu()">
-                    <div class="circle-btn"><i class="fa-solid fa-gift"></i></div>
-                    <span class="btn-label">Indicar</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <!-- SCRIPT DE INICIALIZAÇÃO CORRETO DO SUPABASE E OPERAÇÕES -->
     <script>
-        // Configuração segura das credenciais coletadas do seu token público
-        const SUPABASE_URL = "https://hvivrmdygyttdlapjbi.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg";
-
-        // Instanciando o cliente de banco de dados com nome isolado (_db) para evitar travar o carregamento
-        const _db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Substitua pelas suas chaves reais do projeto Supabase
+        const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
+        const SUPABASE_ANON_KEY = "INSIRA_AQUI_SUA_ANON_KEY_DO_SUPABASE";
+        
+        // Inicializa o cliente corretamente utilizando a biblioteca global
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let isSignUpMode = false;
 
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
-            document.getElementById('authButton').innerText = isSignUpMode ? 'Cadastrar no Cinema' : 'Entrar no Cinema';
-            document.getElementById('authToggle').innerText = isSignUpMode ? 'Já tem conta? Faça Login' : 'Não tem uma conta? Cadastre-se aqui';
-            document.getElementById('authSubtitle').innerText = isSignUpMode ? 'Crie sua conta e comece a ganhar' : 'Entre e ganhe em tempo real';
+            document.getElementById('authSubtitle').innerText = isSignUpMode ? "Crie sua conta e comece a ganhar" : "Entre e ganhe em tempo real";
+            document.getElementById('authButton').innerText = isSignUpMode ? "Cadastrar no Cinema" : "Entrar no Cinema";
+            document.getElementById('authToggle').innerText = isSignUpMode ? "Já tem conta? Faça Login" : "Não tem uma conta? Cadastre-se aqui";
         }
 
         function toggleMenu() {
             document.getElementById('menuDrawer').classList.toggle('active');
         }
 
-        // Sistema integrado para Autenticação e Criação de registro sincronizado com o Banco de Dados
         async function handleAuth() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
 
             if (!email || !password) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
+                alert("Preencha todos os campos!");
                 return;
             }
 
             try {
                 if (isSignUpMode) {
-                    const { data, error } = await _db.auth.signUp({ email, password });
+                    // Processo de Cadastro
+                    const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
-
-                    if (data.user) {
-                        const { error: dbError } = await _db
-                            .from('usuarios')
+                    
+                    if (data?.user) {
+                        // Grava os dados iniciais do usuário na tabela correta (profiles) conforme seus logs
+                        const { error: dbError } = await _supabase
+                            .from('profiles')
                             .insert([{ id: data.user.id, email: email, pontos: 0, saldo_reais: 0.00 }]);
                         
                         if (dbError) throw dbError;
-                        alert('Cadastro realizado com sucesso! Alterne para o modo de Login para prosseguir.');
-                        toggleAuthMode();
+                        
+                        alert("Cadastro realizado com sucesso!");
+                        window.location.reload();
                     }
                 } else {
-                    const { data, error } = await _db.auth.signInWithPassword({ email, password });
+                    // Processo de Login
+                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
-
-                    alert('Conexão realizada com sucesso!');
+                    
+                    alert("Bem-vindo de volta!");
                     document.getElementById('authScreen').classList.add('hidden');
-                    carregarDadosDoUsuario(data.user.id);
+                    carregarDadosDoUsuario(data.user);
                 }
             } catch (err) {
-                alert('Ocorreu um erro: ' + err.message);
+                alert("Ocorreu um erro: " + err.message);
                 console.error(err);
             }
         }
 
-        // Coleta e sincroniza dinamicamente as informações do usuário da tabela 'usuarios'
-        async function carregarDadosDoUsuario(userId) {
-            try {
-                const { data, error } = await _db
-                    .from('usuarios')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
+        async function carregarDadosDoUsuario(user) {
+            if (!user) return;
+            document.getElementById('userDisplay').innerText = user.email;
+            
+            // Busca dados salvos na tabela profiles
+            const { data, error } = await _supabase
+                .from('profiles')
+                .select('pontos, saldo_reais')
+                .eq('id', user.id)
+                .single();
 
-                if (error) throw error;
-
-                if (data) {
-                    document.getElementById('userDisplay').innerText = data.email;
-                    document.getElementById('ptsTotal').innerText = data.pontos;
-                    document.getElementById('pointsBalance').innerText = data.pontos;
-                    
-                    const valorDinheiro = data.saldo_reais ? data.saldo_reais : 0;
-                    document.getElementById('realBalance').innerText = `R$ ${valorDinheiro.toFixed(2)}`;
-                    document.getElementById('realBalanceMain').innerText = `R$ ${valorDinheiro.toFixed(2)}`;
-                    
-                    let metaSaque = (valorDinheiro / 20) * 100;
-                    if(metaSaque > 100) metaSaque = 100;
-                    document.getElementById('progressBar').style.width = `${metaSaque}%`;
-                    document.getElementById('progressPercent').innerText = `${Math.floor(metaSaque)}% para saque`;
-                }
-            } catch (err) {
-                console.error('Falha ao recuperar dados salvos no banco:', err.message);
+            if (!error && data) {
+                document.getElementById('ptsTotal').innerText = data.pontos;
+                document.getElementById('pointsBalance').innerText = data.pontos;
+                
+                const saldoFormatado = `R$ ${parseFloat(data.saldo_reais).toFixed(2).replace('.', ',')}`;
+                document.getElementById('realBalance').innerText = saldoFormatado;
+                document.getElementById('realBalanceMain').innerText = saldoFormatado;
             }
         }
 
         async function handleLogout() {
-            await _db.auth.signOut();
+            await _supabase.auth.signOut();
             window.location.reload();
         }
 
-        // Stubs de controle de UI nativos do seu design original
-        function coletarBonusDiario() { alert('Bônus coletado com sucesso!'); }
-        function rodarRoletaSorte() { alert('Roleta girando...'); }
-        function solicitarSaque() { alert('Verificando os critérios mínimos de elegibilidade do Pix...'); }
-        function executarCompartilhamento() { alert('Link de indicação copiado!'); }
+        // Verifica persistência de login ao abrir a página
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session?.user) {
+                document.getElementById('authScreen').classList.add('hidden');
+                carregarDadosDoUsuario(session.user);
+            }
+        });
     </script>
 </body>
 </html>
