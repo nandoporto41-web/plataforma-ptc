@@ -424,9 +424,9 @@
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
                     <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
-                    <p id="dailyBonusStatus">Disponível! Resgate seus pontos de hoje.</p>
+                    <p id="dailyBonusStatus">Verificando disponibilidade...</p>
                 </div>
-                <button class="daily-bonus-btn" id="dailyBonusBtn">Coletar</button>
+                <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
             </div>
 
             <div class="video-list-section">
@@ -539,6 +539,8 @@
         // Estados locais redundantes para forçar renderização visual imediata
         let pontosLocaisMemoria = 0;
         let dinheiroLocalMemoria = 0.00;
+        let dataUltimoBonusIso = null;
+        let intervaloCronometroBonus = null;
 
         // Base de Dados Real de Hits Musicais com Títulos e Metadados Corretos conforme as imagens
         const musicasReais = [
@@ -597,7 +599,7 @@
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
                     if (data?.user) {
-                        await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00 }]);
+                        await _supabase.from('profiles').insert([{ id: data.user.id, email, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]);
                         alert("Cadastro finalizado com sucesso!");
                         window.location.reload();
                     }
@@ -616,11 +618,14 @@
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
-            const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', user.id).single();
+            const { data, error } = await _supabase.from('profiles').select('pontos, saldo_reais, ultimo_bonus').eq('id', user.id).single();
             if (!error && data) {
                 pontosLocaisMemoria = parseInt(data.pontos) || 0;
                 dinheiroLocalMemoria = parseFloat(data.saldo_reais) || 0.00;
+                dataUltimoBonusIso = data.ultimo_bonus;
+                
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+                gerenciarCronometroBonusDiario();
             }
         }
 
@@ -637,23 +642,70 @@
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
         }
 
+        // GERENCIADOR PROFISSIONAL DE TRAVA DE TEMPO 24H (DIÁRIO)
+        function gerenciarCronometroBonusDiario() {
+            if (intervaloCronometroBonus) clearInterval(intervaloCronometroBonus);
+
+            const botao = document.getElementById('dailyBonusBtn');
+            const textoStatus = document.getElementById('dailyBonusStatus');
+
+            if (!dataUltimoBonusIso) {
+                botao.disabled = false;
+                textoStatus.innerText = "Disponível! Resgate seus pontos de hoje.";
+                return;
+            }
+
+            function atualizarTempo() {
+                const agora = new Date();
+                const ultimaColeta = new Date(dataUltimoBonusIso);
+                const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000)); // 24 horas depois
+                const diferencaMs = proximaColeta - agora;
+
+                if (diferencaMs <= 0) {
+                    clearInterval(intervaloCronometroBonus);
+                    botao.disabled = false;
+                    textoStatus.innerText = "Disponível! Resgate seus pontos de hoje.";
+                } else {
+                    botao.disabled = true;
+                    const horas = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0');
+                    const minutos = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                    const segundos = String(Math.floor((diferencaMs % (1000 * 60)) / 1000)).padStart(2, '0');
+                    textoStatus.innerText = `Próximo resgate em: ${horas}:${minutos}:${segundos}`;
+                }
+            }
+
+            atualizarTempo();
+            intervaloCronometroBonus = setInterval(atualizarTempo, 1000);
+        }
+
         async function coletarBonusDiario() {
-            if (!usuarioAtualId) return;
+            if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
             
+            // Dupla checagem local por segurança antes de somar
+            if (dataUltimoBonusIso) {
+                const agora = new Date();
+                const proximaColeta = new Date(new Date(dataUltimoBonusIso).getTime() + (24 * 60 * 60 * 1000));
+                if (proximaColeta > agora) return alert("Você já coletou seu bônus hoje!");
+            }
+
+            const isoAgora = new Date().toISOString();
+            dataUltimoBonusIso = isoAgora;
+
             pontosLocaisMemoria += 150;
             dinheiroLocalMemoria += 1.50;
-            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
             
-            document.getElementById('dailyBonusStatus').innerText = "Coletado hoje!";
-            document.getElementById('dailyBonusBtn').disabled = true;
+            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
+            gerenciarCronometroBonusDiario();
 
+            // Gravação síncrona/auditada no banco registrando o TIMESTAMP atual da coleta
             await _supabase.from('profiles').update({ 
                 pontos: pontosLocaisMemoria, 
-                saldo_reais: dinheiroLocalMemoria 
+                saldo_reais: dinheiroLocalMemoria,
+                ultimo_bonus: isoAgora
             }).eq('id', usuarioAtualId);
         }
 
-        // DISPARADOR CORRIGIDO MONETAG - Execução Real e Limpa
+        // DISPARADOR MONETAG - Execução Real e Limpa
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true;
             pararContagemGanhos();
@@ -699,7 +751,7 @@
             }, 1000);
         }
 
-        // Renderizador Corrigido da Grade de Vídeos com Nomes Atualizados
+        // Renderizador da Grade de Vídeos com Nomes Atualizados
         function inicializarPlaylist() {
             const container = document.getElementById('playlistContainer');
             container.innerHTML = "";
@@ -757,7 +809,7 @@
             }
         }
 
-        // CORREÇÃO DEFINITIVA DO LOOP CRONÔMETRO DE PONTOS MOBILE
+        // Loop Cronômetro de Pontos Móvel
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
             
@@ -780,12 +832,12 @@
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
 
-                        // Upgrade: Incrementa localmente primeiro para resposta visual imediata no topo
+                        // Incrementa localmente primeiro para resposta visual imediata no topo
                         pontosLocaisMemoria += parseInt(vData.recompensa);
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.001);
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        // Atualização direta assíncrona blindada no banco de dados (Removido gargalo de leitura prévia travada)
+                        // Atualização direta assíncrona no banco de dados
                         await _supabase.from('profiles').update({ 
                             pontos: pontosLocaisMemoria, 
                             saldo_reais: dinheiroLocalMemoria 
