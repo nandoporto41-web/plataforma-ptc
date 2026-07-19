@@ -16,7 +16,7 @@
 
     <!-- Estilos Customizados e Variáveis -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
         
         :root {
             --bg-base: #060608;
@@ -44,7 +44,7 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
 
         /* Classes Utilitárias do Painel */
-        .panel-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+        .panel-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px -10 rgba(0,0,0,0.5); }
         .input-dark { background: #0b0b0e; border: 1px solid var(--border-color); color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%; outline: none; transition: border-color 0.2s; }
         .input-dark:focus { border-color: var(--brand-primary); }
 
@@ -94,14 +94,14 @@
             </h1>
             <div class="flex items-center gap-2 mt-2">
                 <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-xs text-zinc-400 font-bold uppercase tracking-widest" id="db-status">Conectado</span>
+                <span class="text-xs text-zinc-400 font-bold uppercase tracking-widest" id="db-status">Iniciando Banco...</span>
             </div>
         </div>
         
         <div class="flex flex-row md:flex-col gap-2 w-max md:w-full">
             <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-pie w-6 text-center"></i> <span>Visão Geral</span></button>
             <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users w-6 text-center"></i> <span>Usuários</span></button>
-            <button onclick="UI.changeTab('saques')" id="nav-saques" class="nav-item"><i class="fa-solid fa-building-columns w-6 text-center"></i> <span>Saques (PIX)</span></button>
+            <button onclick="UI.changeTab('saques')" id="nav-saques" class="nav-item"><i class="fa-solid fa-building-columns w-6 text-center"></i> <span>Saques Realizados</span></button>
             <button onclick="UI.changeTab('filmes')" id="nav-filmes" class="nav-item"><i class="fa-solid fa-clapperboard w-6 text-center"></i> <span>Catálogo de Hits</span></button>
             <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item"><i class="fa-solid fa-gear w-6 text-center"></i> <span>Setup do Sistema</span></button>
         </div>
@@ -115,7 +115,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-3xl font-black text-white">Monitoramento de Sistema</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Estatísticas atualizadas em tempo real da plataforma.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Estatísticas sincronizadas de ambas as tabelas financeiras.</p>
                 </div>
                 <button onclick="App.Controllers.Dashboard.load()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-5 rounded-lg shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2">
                     <i class="fa-solid fa-rotate-right"></i> Atualizar Agora
@@ -144,7 +144,7 @@
 
                 <div class="panel-card p-6 relative overflow-hidden group hover:border-purple-500/50 transition-colors">
                     <div class="absolute -right-4 -bottom-4 text-purple-500/5 text-8xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-clapperboard"></i></div>
-                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Catálogo de Vídeos</p>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-wider mb-2">Catálogo Ativo</p>
                     <p class="text-4xl font-black text-purple-400" id="metric-videos">0</p>
                 </div>
             </div>
@@ -175,7 +175,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-3xl font-black text-white">Gestão de Base</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Busque usuários, edite carteiras e monitore a atividade.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Busque usuários, edite carteiras e altere patentes.</p>
                 </div>
                 <div class="relative w-full md:w-72">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -186,13 +186,12 @@
             </div>
             <div id="container-users" class="grid gap-4"></div>
         </section>
-
         <!-- ABA 3: AUDITORIA DE SAQUES -->
         <section id="tab-saques" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-3xl font-black text-white">Auditoria Financeira</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Processe os pedidos de PIX da plataforma.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Audite saques vindos de ambas as tabelas do banco.</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                     <select id="filter-saque-status" class="input-dark w-full md:w-48 cursor-pointer" onchange="App.Controllers.Withdrawals.load()">
@@ -206,12 +205,12 @@
             <div id="container-withdrawals" class="grid gap-4"></div>
         </section>
 
-        <!-- ABA 4: CONTROLE DE HITS / VÍDEOS -->
+        <!-- ABA 4: CONTROLE DE HITS VIVOS -->
         <section id="tab-filmes" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-3xl font-black text-white">Catálogo de Hits</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Gerencie os vídeos e configure o ganho por minuto.</p>
+                    <h2 class="text-3xl font-black text-white">Catálogo Dinâmico de Hits</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Adicione, edite ou delete hits diretamente da tabela do banco de dados.</p>
                 </div>
                 <button onclick="App.Controllers.Videos.add()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-purple-500/20 transition-all flex items-center gap-2 w-full md:w-auto justify-center">
                     <i class="fa-solid fa-plus"></i> Adicionar Novo Vídeo
@@ -223,38 +222,26 @@
         <!-- ABA 5: CONFIGURAÇÕES GLOBAIS -->
         <section id="tab-config" class="tab-content max-w-4xl mx-auto">
             <h2 class="text-3xl font-black text-white mb-2">Setup do Sistema</h2>
-            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Altere as regras de negócio aplicadas no aplicativo principal.</p>
+            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Ajustes estruturais de diretrizes.</p>
             <div id="container-config" class="panel-card p-6 md:p-10"></div>
         </section>
 
     </main>
 
-    <!-- JAVASCRIPT MASTER COMPLETAMENTE UNIFICADO -->
     <script>
-        window.addEventListener('error', function(event) {
-            const consoleEl = document.getElementById('debug-console');
-            const logsEl = document.getElementById('debug-logs');
-            consoleEl.style.display = 'flex';
-            logsEl.innerHTML += `\n[JS CRASH] Linha ${event.lineno}: ${event.message}`;
-        });
-
         const UI = {
             changeTab: function(tabId) {
-                try {
-                    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                    
-                    document.getElementById(`tab-${tabId}`).classList.add('active');
-                    document.getElementById(`nav-${tabId}`).classList.add('active');
-                    
-                    if (tabId === 'dashboard') App.Controllers.Dashboard.load();
-                    if (tabId === 'usuarios') App.Controllers.Users.load();
-                    if (tabId === 'saques') App.Controllers.Withdrawals.load();
-                    if (tabId === 'filmes') App.Controllers.Videos.load();
-                    if (tabId === 'config') App.Controllers.Config.load();
-                } catch (e) {
-                    console.error("Erro ao mudar aba:", e);
-                }
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+                document.getElementById(`nav-${tabId}`).classList.add('active');
+                
+                if (tabId === 'dashboard') App.Controllers.Dashboard.load();
+                if (tabId === 'usuarios') App.Controllers.Users.load();
+                if (tabId === 'saques') App.Controllers.Withdrawals.load();
+                if (tabId === 'filmes') App.Controllers.Videos.load();
+                if (tabId === 'config') App.Controllers.Config.load();
             },
             showLoading: function(containerId) {
                 const el = document.getElementById(containerId);
@@ -281,9 +268,7 @@
                     
                     App.Controllers.Dashboard.load();
                 } catch (e) {
-                    document.getElementById('db-status').innerText = "ERRO SUPABASE";
-                    document.getElementById('db-status').parentElement.children[0].className = "w-2 h-2 rounded-full bg-red-500";
-                    console.error("Falha ao inicializar o cliente Supabase:", e);
+                    console.error(e);
                 }
             },
 
@@ -291,18 +276,22 @@
                 Dashboard: {
                     load: async function() {
                         try {
-                            // Puxa contagem da tabela profiles
-                            const { data: users, count: totalUsers, error: errU } = await App.DB.from('profiles').select('*', { count: 'exact' });
-                            // Puxa saques pendentes e aprovados
-                            const { data: pending, count: totalPending } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'pendente');
-                            const { data: approved, count: totalApproved } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'aprovado');
+                            const { data: users, count: totalUsers } = await App.DB.from('profiles').select('*', { count: 'exact' });
+                            
+                            // Unificação inteligente de contagem das duas tabelas financeiras detectadas
+                            const { count: countSaques } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'pendente');
+                            const { count: countSol } = await App.DB.from('solicitacoes_saque').select('*', { count: 'exact' }).eq('status', 'pendente');
+                            
+                            const { count: approvedSaques } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'aprovado');
+                            const { count: approvedSol } = await App.DB.from('solicitacoes_saque').select('*', { count: 'exact' }).eq('status', 'aprovado');
+
+                            const { count: totalVids } = await App.DB.from('videos').select('*', { count: 'exact' });
                             
                             document.getElementById('metric-users').innerText = totalUsers || 0;
-                            document.getElementById('metric-pending').innerText = totalPending || 0;
-                            document.getElementById('metric-approved').innerText = totalApproved || 0;
-                            document.getElementById('metric-videos').innerText = "1000+";
+                            document.getElementById('metric-pending').innerText = (countSaques || 0) + (countSol || 0);
+                            document.getElementById('metric-approved').innerText = (approvedSaques || 0) + (approvedSol || 0);
+                            document.getElementById('metric-videos').innerText = totalVids || 0;
 
-                            // Preenche tabela de últimos cadastros
                             const tbody = document.getElementById('table-latest-users');
                             if (users && users.length > 0) {
                                 tbody.innerHTML = users.slice(0, 5).map(u => `
@@ -316,9 +305,7 @@
                             } else {
                                 tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-zinc-600">Nenhum usuário encontrado.</td></tr>`;
                             }
-                        } catch (err) {
-                            console.error("Erro no controlador do Dashboard:", err);
-                        }
+                        } catch (err) { console.error(err); }
                     }
                 },
 
@@ -326,32 +313,26 @@
                     load: async function() {
                         UI.showLoading('container-users');
                         try {
-                            const { data: users, error } = await App.DB.from('profiles').select('*').order('pontos', { ascending: false });
-                            if (error) throw error;
-                            App.Controllers.Users.render(users);
-                        } catch (err) {
-                            UI.showEmpty('container-users', 'Falha ao buscar usuários: ' + err.message);
-                        }
+                            const { data: users } = await App.DB.from('profiles').select('*').order('pontos', { ascending: false });
+                            this.render(users);
+                        } catch (err) { UI.showEmpty('container-users', err.message); }
                     },
                     render: function(list) {
                         const container = document.getElementById('container-users');
-                        if (!list || list.length === 0) {
-                            UI.showEmpty('container-users', 'Nenhum usuário cadastrado na base.');
-                            return;
-                        }
+                        if (!list || list.length === 0) { UI.showEmpty('container-users', 'Nenhum usuário encontrado.'); return; }
                         container.innerHTML = list.map(u => `
                             <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
                                     <h4 class="text-lg font-bold text-white">${u.email}</h4>
-                                    <p class="text-xs text-zinc-500 mt-0.5">ID: ${u.id}</p>
+                                    <p class="text-xs text-zinc-500">ID: ${u.id} | Patente: <span class="text-purple-400 font-bold">${u.nivel || 'Bronze'}</span></p>
                                     <div class="flex gap-4 mt-2">
                                         <span class="text-sm text-emerald-400 font-bold"><i class="fa-solid fa-wallet text-zinc-600 mr-1"></i> ${UI.formatMoney(u.saldo_reais)}</span>
                                         <span class="text-sm text-amber-500 font-bold"><i class="fa-solid fa-coins text-zinc-600 mr-1"></i> ${u.pontos || 0} PTS</span>
-                                        <span class="text-sm text-purple-400 font-bold"><i class="fa-solid fa-video text-zinc-600 mr-1"></i> ${u.videos_assistidos || 0} hits</span>
+                                        <span class="text-sm text-indigo-400 font-bold"><i class="fa-solid fa-film text-zinc-600 mr-1"></i> ${u.videos_assistidos || 0} assistidos</span>
                                     </div>
                                 </div>
-                                <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0})" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
-                                    <i class="fa-solid fa-user-pen"></i> Ajustar Conta
+                                <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0}, '${u.nivel || 'Bronze'}')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-user-pen"></i> Ajustar Dados
                                 </button>
                             </div>
                         `).join('');
@@ -359,31 +340,36 @@
                     handleSearch: async function(e) {
                         const query = e.target.value.trim();
                         if (!query) { this.load(); return; }
-                        try {
-                            const { data, error } = await App.DB.from('profiles').select('*').ilike('email', `%${query}%`);
-                            if (!error) this.render(data);
-                        } catch (err) { console.error(err); }
+                        const { data } = await App.DB.from('profiles').select('*').ilike('email', `%${query}%`);
+                        this.render(data);
                     },
-                    edit: async function(id, pts, cash) {
+                    edit: async function(id, pts, cash, currentNivel) {
                         const { value: formValues } = await Swal.fire({
-                            title: 'Modificar Carteira',
+                            title: 'Modificar Dados Master',
                             html: `
-                                <label class="text-left text-xs text-zinc-400 block mb-1">Pontos Disponíveis</label>
+                                <label class="text-left text-xs text-zinc-400 block mb-1">Pontos</label>
                                 <input id="swal-pts" type="number" class="swal2-input w-full mb-3" value="${pts}">
-                                <label class="text-left text-xs text-zinc-400 block mb-1">Saldo em Reais (R$)</label>
-                                <input id="swal-cash" type="number" step="0.01" class="swal2-input w-full" value="${cash}">
+                                <label class="text-left text-xs text-zinc-400 block mb-1">Saldo Real (R$)</label>
+                                <input id="swal-cash" type="number" step="0.01" class="swal2-input w-full mb-3" value="${cash}">
+                                <label class="text-left text-xs text-zinc-400 block mb-1">Patente do Usuário</label>
+                                <select id="swal-nivel" class="swal2-input w-full p-2" style="background:#0b0b0e; color:white; height:50px; border-radius:6px;">
+                                    <option value="Bronze" ${currentNivel === 'Bronze' ? 'selected' : ''}>Bronze</option>
+                                    <option value="Prata" ${currentNivel === 'Prata' ? 'selected' : ''}>Prata</option>
+                                    <option value="Ouro" ${currentNivel === 'Ouro' ? 'selected' : ''}>Ouro</option>
+                                </select>
                             `,
                             focusConfirm: false,
-                            confirmButtonText: 'Salvar Alterações',
                             preConfirm: () => [
                                 parseInt(document.getElementById('swal-pts').value) || 0,
-                                parseFloat(document.getElementById('swal-cash').value) || 0.0
+                                parseFloat(document.getElementById('swal-cash').value) || 0.0,
+                                document.getElementById('swal-nivel').value
                             ]
                         });
                         if (formValues) {
-                            const [newPts, newCash] = formValues;
-                            const { error } = await App.DB.from('profiles').update({ pontos: newPts, saldo_reais: newCash }).eq('id', id);
-                            if (!error) { Swal.fire('Sucesso!', 'Carteira atualizada.', 'success'); this.load(); }
+                            const [nPts, nCash, nNivel] = formValues;
+                            await App.DB.from('profiles').update({ pontos: nPts, saldo_reais: nCash, nivel: nNivel }).eq('id', id);
+                            Swal.fire('Sucesso!', 'Dados atualizados com sucesso.', 'success');
+                            this.load();
                         }
                     }
                 },
@@ -393,95 +379,91 @@
                         UI.showLoading('container-withdrawals');
                         const statusFiltro = document.getElementById('filter-saque-status').value;
                         try {
-                            const { data, error } = await App.DB.from('saques').select('*').eq('status', statusFiltro).order('created_at', { ascending: false });
-                            if (error) throw error;
+                            // Varredura dupla unificada nas duas tabelas financeiras para não perder nenhum pedido
+                            const { data: listA } = await App.DB.from('saques').select('*').eq('status', statusFiltro);
+                            const { data: listB } = await App.DB.from('solicitacoes_saque').select('*').eq('status', statusFiltro);
                             
+                            let mesclado = [...(listA || []), ...(listB || [])];
+
                             const container = document.getElementById('container-withdrawals');
-                            if (!data || data.length === 0) {
-                                UI.showEmpty('container-withdrawals', `Nenhum pedido de saque encontrado com status: ${statusFiltro}`);
-                                return;
-                            }
+                            if (mesclado.length === 0) { UI.showEmpty('container-withdrawals', `Nenhum pedido encontrado como ${statusFiltro}.`); return; }
                             
-                            container.innerHTML = data.map(s => `
-                                <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-4 ${s.status === 'pendente' ? 'border-amber-500' : s.status === 'aprovado' ? 'border-emerald-500' : 'border-red-500'}">
+                            container.innerHTML = mesclado.map(s => `
+                                <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-4 ${s.status === 'pendente' ? 'border-amber-500' : 'border-emerald-500'}">
                                     <div>
-                                        <div class="flex items-center gap-2">
-                                            <h4 class="text-lg font-black text-white">${UI.formatMoney(s.valor)}</h4>
-                                            <span class="badge ${s.status === 'pendente' ? 'bg-amber-500/10 text-amber-500' : s.status === 'aprovado' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}">${s.status}</span>
-                                        </div>
-                                        <p class="text-sm text-zinc-300 mt-1">Beneficiário: <span class="text-white font-semibold">${s.nome_titular || 'Não Informado'}</span></p>
-                                        <p class="text-xs text-zinc-500">Chave Pix [${s.tipo_chave}]: <span class="text-zinc-400 font-mono">${s.chave_pix}</span></p>
-                                        <p class="text-[10px] text-zinc-600 mt-2">Solicitado em: ${UI.formatDate(s.created_at)} | Vinculado a: ${s.email}</p>
+                                        <h4 class="text-lg font-black text-white">${UI.formatMoney(s.valor || s.valor_solicitado)}</h4>
+                                        <p class="text-sm text-zinc-300">Beneficiário: <span class="text-white font-semibold">${s.nome_titular || 'Chave Pix'}</span></p>
+                                        <p class="text-xs font-mono text-zinc-400">${s.chave_pix}</p>
+                                        <p class="text-[10px] text-zinc-500 mt-2">Origem: ${s.email || 'Usuário CineRewards'} | Data: ${UI.formatDate(s.created_at)}</p>
                                     </div>
                                     ${s.status === 'pendente' ? `
-                                        <div class="flex gap-2 w-full md:w-auto">
-                                            <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'aprovado')" class="bg-emerald-600 hover:bg-emerald-500 text-black font-extrabold py-2 px-4 rounded-lg text-xs transition-colors w-full md:w-auto">Aprovar PIX</button>
-                                            <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'recusado')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-bold py-2 px-4 rounded-lg text-xs transition-colors w-full md:w-auto">Recusar</button>
+                                        <div class="flex gap-2">
+                                            <button onclick="App.Controllers.Withdrawals.process('${s.id}', 'aprovado', '${s.valor_solicitado ? 'solicitacoes_saque' : 'saques'}')" class="bg-emerald-600 text-black font-extrabold py-2 px-4 rounded-lg text-xs">Aprovar</button>
+                                            <button onclick="App.Controllers.Withdrawals.process('${s.id}', 'recusado', '${s.valor_solicitado ? 'solicitacoes_saque' : 'saques'}')" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-xs">Recusar</button>
                                         </div>
                                     ` : ''}
                                 </div>
                             `).join('');
-                        } catch (err) {
-                            UI.showEmpty('container-withdrawals', 'Erro na auditoria de saques: ' + err.message);
-                        }
+                        } catch (err) { console.error(err); }
                     },
-                    updateStatus: async function(id, novoStatus) {
-                        const { error } = await App.DB.from('saques').update({ status: novoStatus }).eq('id', id);
-                        if (!error) {
-                            Swal.fire('Atualizado!', `O saque foi marcado como ${novoStatus}.`, 'success');
-                            this.load();
-                        } else {
-                            Swal.fire('Erro', error.message, 'error');
-                        }
+                    process: async function(id, statusAlvo, tabelaOrigem) {
+                        await App.DB.from(tabelaOrigem).update({ status: statusAlvo }).eq('id', id);
+                        Swal.fire('Sucesso!', 'Transação atualizada.', 'success');
+                        this.load();
                     }
                 },
 
                 Videos: {
-                    load: function() {
-                        const container = document.getElementById('container-videos');
-                        // Exibição amigável do setup de hits rotativos virtuais
-                        container.innerHTML = `
-                            <div class="panel-card p-6 col-span-full text-center border border-purple-500/20">
-                                <i class="fa-solid fa-arrows-spin text-4xl text-purple-500 mb-2 animate-spin"></i>
-                                <h4 class="text-lg font-bold text-white">Biblioteca Virtual Ativa</h4>
-                                <p class="text-zinc-400 text-sm mt-1">O site principal está rodando a playlist dinâmica automatizada de 1.000 clipes musicais reais do YouTube.</p>
-                            </div>
-                        `;
+                    load: async function() {
+                        UI.showLoading('container-videos');
+                        try {
+                            const { data: vids } = await App.DB.from('videos').select('*');
+                            const container = document.getElementById('container-videos');
+                            
+                            if(!vids || vids.length === 0) {
+                                UI.showEmpty('container-videos', 'Nenhum vídeo cadastrado no catálogo real ainda.');
+                                return;
+                            }
+
+                            container.innerHTML = vids.map(v => `
+                                <div class="panel-card p-4 flex flex-col justify-between gap-4">
+                                    <div>
+                                        <img src="https://img.youtube.com/vi/${v.yt_id || v.ytId}/hqdefault.jpg" class="w-full h-32 object-cover rounded-lg bg-zinc-900">
+                                        <h5 class="text-sm font-bold text-white mt-2 line-clamp-1">${v.titulo}</h5>
+                                        <p class="text-xs text-amber-500 font-bold mt-1">+${v.recompensa || v.pontos} PTS por ciclo</p>
+                                    </div>
+                                    <button onclick="App.Controllers.Videos.delete('${v.id}')" class="bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white py-2 rounded-lg text-xs font-bold transition-all w-full">
+                                        <i class="fa-solid fa-trash-can mr-1"></i> Apagar Hit
+                                    </button>
+                                </div>
+                            `).join('');
+                        } catch (e) { console.error(e); }
                     },
-                    add: function() {
-                        Swal.fire('Catálogo Automático', 'A playlist de 1.000 Hits Únicos já está ativa e injetada no script principal para proteger a economia do site.', 'info');
-                    }
-                },
+                    add: async function() {
+                        const { value: formValues } = await Swal.fire({
+                            title: 'Adicionar Clipe Musical',
+                            html: `
+                                <input id="v-title" class="swal2-input w-full mb-3" placeholder="Título da Música">
+                                <input id="v-ytid" class="swal2-input w-full mb-3" placeholder="ID do Vídeo no YouTube (Ex: 9bZkp7q19f0)">
+                                <input id="v-pts" type="number" class="swal2-input w-full" placeholder="Recompensa (Ex: 15)">
+                            `,
+                            preConfirm: () => [
+                                document.getElementById('v-title').value.trim(),
+                                document.getElementById('v-ytid').value.trim(),
+                                parseInt(document.getElementById('v-pts').value) || 10
+                            ]
+                        });
 
-                Config: {
-                    load: function() {
-                        const container = document.getElementById('container-config');
-                        container.innerHTML = `
-                            <div class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Conversão Padrão</label>
-                                        <input type="text" class="input-dark bg-zinc-900/50 cursor-not-allowed" value="10.000 PTS = R$ 1,00" readonly>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Saque Mínimo</label>
-                                        <input type="text" class="input-dark bg-zinc-900/50 cursor-not-allowed" value="R$ 20,00" readonly>
-                                    </div>
-                                </div>
-                                <div class="p-4 rounded-lg bg-indigo-500/5 border border-indigo-500/20 text-xs text-indigo-300">
-                                    <i class="fa-solid fa-shield-halved mr-1.5"></i> Configurações de Regras de Negócio e Anti-Fraude aplicadas com sucesso diretamente no código fonte para impedir bypass.
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-            }
-        };
+                        if(formValues) {
+                            const [titulo, yt_id, recompensa] = formValues;
+                            if(!titulo || !yt_id) return Swal.fire('Erro', 'Preencha os campos obrigatórios!', 'error');
 
-        // Dispara o start global do Master Admin
-        window.addEventListener('DOMContentLoaded', () => {
-            App.init();
-        });
-    </script>
-</body>
-</html>
+                            await App.DB.from('videos').insert([{ titulo, yt_id, recompensa }]);
+                            Swal.fire('Injetado!', 'Hit adicionado ao catálogo com sucesso.', 'success');
+                            this.load();
+                        }
+                    },
+                    delete: async function(id) {
+                        const confirm = await Swal.fire({ title: 'Excluir Clipe?', text: 'Isso removerá o conteúdo imediatamente da grade dos usuários.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sim, deletar' });
+                        if(confirm.isConfirmed) {
+            
