@@ -103,6 +103,8 @@
             <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-pie w-6 text-center"></i> <span>Visão Geral</span></button>
             <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users w-6 text-center"></i> <span>Usuários</span></button>
             <button onclick="UI.changeTab('saques')" id="nav-saques" class="nav-item"><i class="fa-solid fa-building-columns w-6 text-center"></i> <span>Saques (PIX)</span></button>
+            <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired w-6 text-center"></i> <span>Rede Afiliados</span></button>
+            <button onclick="UI.changeTab('logs')" id="nav-logs" class="nav-item"><i class="fa-solid fa-fingerprint w-6 text-center"></i> <span>IPs e Segurança</span></button>
             <button onclick="UI.changeTab('filmes')" id="nav-filmes" class="nav-item"><i class="fa-solid fa-clapperboard w-6 text-center"></i> <span>Catálogo de Hits</span></button>
             <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item"><i class="fa-solid fa-gear w-6 text-center"></i> <span>Setup do Sistema</span></button>
         </div>
@@ -170,12 +172,12 @@
             </div>
         </section>
 
-        <!-- ABA 2: GESTÃO DE USUÁRIOS -->
+        <!-- ABA 2: GESTÃO DE USUÁRIOS E RETENÇÃO DE HITS -->
         <section id="tab-usuarios" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-3xl font-black text-white">Gestão de Base</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Busque usuários, edite carteiras e monitore a atividade.</p>
+                    <h2 class="text-3xl font-black text-white">Gestão de Base e Retenção</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Busque perfis, ajuste carteiras e inspecione o histórico de hits assistidos (`watch_history`).</p>
                 </div>
                 <div class="relative w-full md:w-72">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -187,12 +189,12 @@
             <div id="container-users" class="grid gap-4"></div>
         </section>
 
-        <!-- ABA 3: AUDITORIA DE SAQUES -->
+        <!-- ABA 3: AUDITORIA DE SAQUES UNIFICADOS -->
         <section id="tab-saques" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-3xl font-black text-white">Auditoria Financeira</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Processe os pedidos de PIX da plataforma.</p>
+                    <h2 class="text-3xl font-black text-white">Auditoria Financeira Dupla</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Sincronização estável de transações lidas de saques e solicitações.</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                     <select id="filter-saque-status" class="input-dark w-full md:w-48 cursor-pointer" onchange="App.Controllers.Withdrawals.load()">
@@ -206,7 +208,54 @@
             <div id="container-withdrawals" class="grid gap-4"></div>
         </section>
 
-        <!-- ABA 4: CONTROLE DE HITS / VÍDEOS -->
+        <!-- ABA 4: MAPA E RELACIONAMENTO DE INDICAÇÕES (ESTILO KWAI) -->
+        <section id="tab-indica" class="tab-content max-w-7xl mx-auto">
+            <div class="border-b border-zinc-800 pb-4 mb-6">
+                <h2 class="text-3xl font-black text-white">Árvore de Indicações</h2>
+                <p class="text-zinc-400 text-sm mt-1">Monitore quem indicou quem e as redes de afiliados registradas na tabela `indicacoes`.</p>
+            </div>
+            <div class="panel-card p-6 overflow-x-auto">
+                <table class="w-full text-left text-sm text-zinc-400">
+                    <thead class="text-xs uppercase bg-[#0b0b0e] text-zinc-500">
+                        <tr>
+                            <th class="px-4 py-3 rounded-l-lg">ID Vínculo</th>
+                            <th class="px-4 py-3">ID do Indicador (Dono)</th>
+                            <th class="px-4 py-3">ID do Indicado (Convidado)</th>
+                            <th class="px-4 py-3 rounded-r-lg">Data do Vínculo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-tree-referrals" class="divide-y divide-zinc-800">
+                        <tr><td colspan="4" class="text-center py-6 text-zinc-600">Carregando árvore...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ABA 5: RASTREAMENTO DE LOCALIDADE, IPS E DISPOSITIVOS -->
+        <section id="tab-logs" class="tab-content max-w-7xl mx-auto">
+            <div class="border-b border-zinc-800 pb-4 mb-6">
+                <h2 class="text-3xl font-black text-white">Auditoria de IPs e Dispositivos</h2>
+                <p class="text-zinc-400 text-sm mt-1">Rastreamento contra contas fakes e robôs (`antifraud_logs`). Veja a geolocalização e aparelhos.</p>
+            </div>
+            <div class="panel-card p-6 overflow-x-auto">
+                <table class="w-full text-left text-sm text-zinc-400">
+                    <thead class="text-xs uppercase bg-[#0b0b0e] text-zinc-500">
+                        <tr>
+                            <th class="px-4 py-3 rounded-l-lg">E-mail</th>
+                            <th class="px-4 py-3">Endereço IP</th>
+                            <th class="px-4 py-3">Localidade Detectada</th>
+                            <th class="px-4 py-3">Aparelho / User-Agent</th>
+                            <th class="px-4 py-3 rounded-r-lg">Data e Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-antifraud-logs" class="divide-y divide-zinc-800">
+                        <tr><td colspan="5" class="text-center py-6 text-zinc-600">Buscando rastros digitais...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ABA 6: CONTROLE DE HITS / VÍDEOS REAL -->
         <section id="tab-filmes" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
@@ -220,53 +269,19 @@
             <div id="container-videos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- ABA 5: CONFIGURAÇÕES GLOBAIS VIVAS -->
+        <!-- ABA 7: CONFIGURAÇÕES GLOBAIS VIVAS -->
         <section id="tab-config" class="tab-content max-w-4xl mx-auto">
             <h2 class="text-3xl font-black text-white mb-2">Setup do Sistema</h2>
-            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Altere as regras de negócio e limites mínimos salvos no banco.</p>
+            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Altere as regras de negócio aplicadas no aplicativo principal.</p>
             <div id="container-config" class="panel-card p-6 md:p-10"></div>
         </section>
 
     </main>
 
     <script>
-        window.addEventListener('error', function(event) {
-            const consoleEl = document.getElementById('debug-console');
-            const logsEl = document.getElementById('debug-logs');
-            consoleEl.style.display = 'flex';
-            logsEl.innerHTML += `\n[JS CRASH] Linha ${event.lineno}: ${event.message}`;
-        });
-
-        const UI = {
-            changeTab: function(tabId) {
-                try {
-                    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                    
-                    document.getElementById(`tab-${tabId}`).classList.add('active');
-                    document.getElementById(`nav-${tabId}`).classList.add('active');
-                    
-                    if (tabId === 'dashboard') App.Controllers.Dashboard.load();
-                    if (tabId === 'usuarios') App.Controllers.Users.load();
-                    if (tabId === 'saques') App.Controllers.Withdrawals.load();
-                    if (tabId === 'filmes') App.Controllers.Videos.load();
-                    if (tabId === 'config') App.Controllers.Config.load();
-                } catch (e) {
-                    console.error("Erro ao mudar aba:", e);
-                }
-            },
-            showLoading: function(containerId) {
-                const el = document.getElementById(containerId);
-                if(el) el.innerHTML = '<div class="col-span-full"><div class="spinner"></div></div>';
-            },
-            showEmpty: function(containerId, message) {
-                const el = document.getElementById(containerId);
-                if(el) el.innerHTML = `<div class="col-span-full p-8 text-center text-zinc-500 border-2 border-dashed border-zinc-800 rounded-xl"><i class="fa-solid fa-box-open text-4xl mb-3 opacity-50"></i><br>${message}</div>`;
-            },
-            formatMoney: (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value || 0),
-            formatDate: (dateStr) => dateStr ? new Date(dateStr).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '---'
-        };
-
+        // ==========================================
+        // MÓDULO 2: BANCO DE DADOS E CONTROLADORES
+        // ==========================================
         const App = {
             DB: null,
             init: function() {
@@ -282,7 +297,7 @@
                 } catch (e) {
                     document.getElementById('db-status').innerText = "ERRO SUPABASE";
                     document.getElementById('db-status').parentElement.children[0].className = "w-2 h-2 rounded-full bg-red-500";
-                    console.error(e);
+                    console.error("Falha ao inicializar o cliente Supabase:", e);
                 }
             },
 
@@ -292,7 +307,7 @@
                         try {
                             const { data: users, count: totalUsers } = await App.DB.from('profiles').select('*', { count: 'exact' });
                             
-                            // Coleta cruzada simultânea das duas tabelas financeiras para somar saldos pendentes corretamente
+                            // Coleta cruzada de saques aceitando campos 'valor' e 'valor_solicitado'
                             const { count: countSaques } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'pendente');
                             const { count: countSol } = await App.DB.from('solicitacoes_saque').select('*', { count: 'exact' }).eq('status', 'pendente');
                             
@@ -319,7 +334,9 @@
                             } else {
                                 tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-zinc-600">Nenhum usuário encontrado.</td></tr>`;
                             }
-                        } catch (err) { console.error(err); }
+                        } catch (err) {
+                            console.error("Erro no controlador do Dashboard:", err);
+                        }
                     }
                 },
 
@@ -330,33 +347,58 @@
                             const { data: users, error } = await App.DB.from('profiles').select('*').order('pontos', { ascending: false });
                             if (error) throw error;
                             App.Controllers.Users.render(users);
-                        } catch (err) { UI.showEmpty('container-users', err.message); }
+                        } catch (err) {
+                            UI.showEmpty('container-users', 'Falha ao buscar usuários: ' + err.message);
+                        }
                     },
                     render: function(list) {
                         const container = document.getElementById('container-users');
-                        if (!list || list.length === 0) { UI.showEmpty('container-users', 'Nenhum usuário cadastrado.'); return; }
+                        if (!list || list.length === 0) {
+                            UI.showEmpty('container-users', 'Nenhum usuário cadastrado na base.');
+                            return;
+                        }
                         container.innerHTML = list.map(u => `
                             <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
                                     <h4 class="text-lg font-bold text-white">${u.email}</h4>
-                                    <p class="text-xs text-zinc-500 mt-0.5">ID: ${u.id} | Patente: <span class="text-purple-400 font-bold">${u.nivel || 'Bronze'}</span></p>
+                                    <p class="text-xs text-zinc-500 mt-0.5">ID: ${u.id} | Patente: <span class="text-indigo-400 font-bold">${u.nivel || 'Bronze'}</span></p>
                                     <div class="flex gap-4 mt-2">
                                         <span class="text-sm text-emerald-400 font-bold"><i class="fa-solid fa-wallet text-zinc-600 mr-1"></i> ${UI.formatMoney(u.saldo_reais)}</span>
                                         <span class="text-sm text-amber-500 font-bold"><i class="fa-solid fa-coins text-zinc-600 mr-1"></i> ${u.pontos || 0} PTS</span>
-                                        <span class="text-sm text-indigo-400 font-bold"><i class="fa-solid fa-film text-zinc-600 mr-1"></i> ${u.videos_assistidos || 0} assistidos</span>
+                                        <span class="text-sm text-purple-400 font-bold"><i class="fa-solid fa-film text-zinc-600 mr-1"></i> ${u.videos_assistidos || 0} assistidos</span>
                                     </div>
                                 </div>
-                                <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0}, '${u.nivel || 'Bronze'}')" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
-                                    <i class="fa-solid fa-user-pen"></i> Ajustar Dados
-                                </button>
+                                <div class="flex gap-2 w-full md:w-auto">
+                                    <button onclick="App.Controllers.Users.inspectHistory('${u.id}', '${u.email}')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2 px-3 rounded-lg text-xs flex items-center gap-1 transition-colors">
+                                        <i class="fa-solid fa-clock-rotate-left"></i> Ver Hits
+                                    </button>
+                                    <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0}, '${u.nivel || 'Bronze'}')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
+                                        <i class="fa-solid fa-user-pen"></i> Ajustar Dados
+                                    </button>
+                                </div>
                             </div>
                         `).join('');
+                    },
+                    inspectHistory: async function(uid, email) {
+                        try {
+                            const { data: history } = await App.DB.from('watch_history').select('*').eq('user_id', uid).order('created_at', { ascending: false });
+                            let htmlContent = `<div class="text-left space-y-2 max-h-60 overflow-y-auto">`;
+                            if(history && history.length > 0) {
+                                htmlContent += history.map(h => `<div class="p-2 bg-zinc-900 border border-zinc-800 rounded text-xs text-zinc-300">🎵 <strong>${h.video_titulo}</strong><br><span class="text-[10px] text-zinc-500">Assistiu por ${h.tempo_assistido || 60}s em ${UI.formatDate(h.created_at)}</span></div>`).join('');
+                            } else {
+                                htmlContent += `<p class="text-zinc-500 text-xs text-center py-4">Nenhum hit registrado no histórico deste perfil ainda.</p>`;
+                            }
+                            htmlContent += `</div>`;
+                            Swal.fire({ title: `Histórico: ${email}`, html: htmlContent, confirmButtonText: 'Fechar Janela' });
+                        } catch(e) { console.error(e); }
                     },
                     handleSearch: async function(e) {
                         const query = e.target.value.trim();
                         if (!query) { this.load(); return; }
-                        const { data } = await App.DB.from('profiles').select('*').ilike('email', `%${query}%`);
-                        this.render(data);
+                        try {
+                            const { data, error } = await App.DB.from('profiles').select('*').ilike('email', `%${query}%`);
+                            if (!error) this.render(data);
+                        } catch (err) { console.error(err); }
                     },
                     edit: async function(id, pts, cash, currentNivel) {
                         const { value: formValues } = await Swal.fire({
@@ -393,7 +435,6 @@
                         UI.showLoading('container-withdrawals');
                         const statusFiltro = document.getElementById('filter-saque-status').value;
                         try {
-                            // Varredura cirúrgica dupla: aceita requisições das duas tabelas financeiras sem quebras
                             const { data: listA } = await App.DB.from('saques').select('*').eq('status', statusFiltro);
                             const { data: listB } = await App.DB.from('solicitacoes_saque').select('*').eq('status', statusFiltro);
                             
@@ -406,7 +447,6 @@
                             }
                             
                             container.innerHTML = mesclado.map(s => {
-                                // Consolidação inteligente independente do nome da coluna de envio do site (valor ou valor_solicitado)
                                 let valorFinal = s.valor || s.valor_solicitado || 0;
                                 let tabelaOrigem = s.valor_solicitado ? 'solicitacoes_saque' : 'saques';
 
@@ -445,6 +485,49 @@
                     }
                 },
 
+                Referrals: {
+                    load: async function() {
+                        try {
+                            const { data, error } = await App.DB.from('indicacoes').select('*').order('created_at', { ascending: false });
+                            const tbody = document.getElementById('table-tree-referrals');
+                            if(error || !data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-zinc-600">Nenhuma indicação cruzada registrada.</td></tr>`;
+                                return;
+                            }
+                            tbody.innerHTML = data.map(i => `
+                                <tr>
+                                    <td class="px-4 py-3 font-mono text-xs text-zinc-500">${i.id}</td>
+                                    <td class="px-4 py-3 text-white text-xs font-semibold">${i.indicador_id}</td>
+                                    <td class="px-4 py-3 text-indigo-400 text-xs font-semibold">${i.indicado_id}</td>
+                                    <td class="px-4 py-3 text-zinc-500 text-xs">${UI.formatDate(i.created_at)}</td>
+                                </tr>
+                            `).join('');
+                        } catch(e) { console.error(e); }
+                    }
+                },
+
+                Logs: {
+                    load: async function() {
+                        try {
+                            const { data, error } = await App.DB.from('antifraud_logs').select('*').order('created_at', { ascending: false });
+                            const tbody = document.getElementById('table-antifraud-logs');
+                            if(error || !data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-zinc-600">Nenhum rastro de IP capturado nas sessões de login.</td></tr>`;
+                                return;
+                            }
+                            tbody.innerHTML = data.map(l => `
+                                <tr>
+                                    <td class="px-4 py-3 text-white text-xs font-medium">${l.email}</td>
+                                    <td class="px-4 py-3 text-amber-500 font-mono text-xs">${l.ip_address || '---'}</td>
+                                    <td class="px-4 py-3 text-emerald-400 text-xs font-semibold">${l.localidade || 'Brasil'}</td>
+                                    <td class="px-4 py-3 text-zinc-400 text-xs max-w-[150px] truncate">${l.dispositivo || 'Mobile Chrome'}</td>
+                                    <td class="px-4 py-3 text-zinc-500 text-xs">${UI.formatDate(l.created_at)}</td>
+                                </tr>
+                            `).join('');
+                        } catch(e) { console.error(e); }
+                    }
+                },
+
                 Videos: {
                     load: async function() {
                         UI.showLoading('container-videos');
@@ -463,7 +546,7 @@
                                     <div>
                                         <img src="https://img.youtube.com/vi/${v.yt_id || v.ytId}/hqdefault.jpg" class="w-full h-32 object-cover rounded-lg bg-zinc-900">
                                         <h5 class="text-sm font-bold text-white mt-2 line-clamp-1">${v.titulo}</h5>
-                                        <p class="text-xs text-amber-500 font-bold mt-1">+${v.recompensa || v.pontos || v.pontosPorMinuto || 15} PTS por ciclo</p>
+                                        <p class="text-xs text-amber-500 font-bold mt-1">+${v.recompensa || v.pontos || 15} PTS por ciclo</p>
                                     </div>
                                     <button onclick="App.Controllers.Videos.delete('${v.id}')" class="bg-red-600/10 hover:bg-red-600 text-red-400 hover:text-white py-2 rounded-lg text-xs font-bold transition-all w-full">
                                         <i class="fa-solid fa-trash-can mr-1"></i> Apagar Hit
@@ -528,7 +611,6 @@
                         const container = document.getElementById('container-config');
                         UI.showLoading('container-config');
                         try {
-                            // Tenta carregar as regras dinâmicas salvas na tabela de configurações
                             let { data: conf } = await App.DB.from('configuracoes').select('*').maybeSingle();
                             if(!conf) {
                                 conf = { taxa_conversao: "10.000 PTS = R$ 1,00", saque_minimo: 20.00 };
@@ -557,7 +639,6 @@
                         const taxa = document.getElementById('cfg-conversao').value;
                         const min = parseFloat(document.getElementById('cfg-minimo').value) || 20.00;
 
-                        // Atualiza as regras de negócio de pontuação diretamente na tabela
                         const { error } = await App.DB.from('configuracoes').upsert({ id: 1, taxa_conversao: taxa, saque_minimo: min });
                         if(!error) {
                             Swal.fire('Sucesso!', 'Configurações de limites e pontos sincronizadas.', 'success');
