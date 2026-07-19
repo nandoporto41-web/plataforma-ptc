@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body { background-color: #0b0c10; color: #e5e7eb; }
@@ -18,6 +19,9 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Ajuste do SweetAlert para dark mode */
+        .swal2-popup { background: #18181b !important; color: #fff !important; }
+        .swal2-input { background: #27272a !important; color: #fff !important; border: 1px solid #3f3f46 !important; }
     </style>
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden font-sans">
@@ -25,20 +29,22 @@
     <nav class="glass-panel md:w-64 w-full p-4 flex md:flex-col justify-between md:justify-start gap-4 overflow-x-auto shrink-0 border-b md:border-r border-zinc-800 z-10">
         <div class="hidden md:block mb-8 mt-4">
             <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-500">
-                CineRewards<span class="text-white">PRO</span>
+                CineWorld<span class="text-white">Admin</span>
             </h1>
         </div>
         
         <div class="flex md:flex-col gap-2 w-full min-w-max">
-            <button onclick="changeTab('dashboard')" id="btn-dashboard" class="nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all">📊 Dashboard</button>
-            <button onclick="changeTab('filmes')" id="btn-filmes" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">🎬 Filmes</button>
-            <button onclick="changeTab('saques')" id="btn-saques" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">💸 Auditoria</button>
-            <button onclick="changeTab('config')" id="btn-config" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all">⚙️ Setup</button>
+            <button onclick="changeTab('dashboard')" id="btn-dashboard" class="nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all"><i class="fa-solid fa-chart-simple w-6"></i> Dashboard</button>
+            <button onclick="changeTab('usuarios')" id="btn-usuarios" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all"><i class="fa-solid fa-users w-6"></i> Usuários</button>
+            <button onclick="changeTab('filmes')" id="btn-filmes" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all"><i class="fa-solid fa-clapperboard w-6"></i> Filmes/Hits</button>
+            <button onclick="changeTab('saques')" id="btn-saques" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all"><i class="fa-solid fa-money-bill-transfer w-6"></i> Auditoria (Saques)</button>
+            <button onclick="changeTab('config')" id="btn-config" class="nav-btn p-3 rounded-lg hover:bg-zinc-800 text-zinc-400 font-bold text-sm text-left transition-all"><i class="fa-solid fa-gear w-6"></i> Setup</button>
         </div>
     </nav>
 
     <main class="flex-1 overflow-y-auto p-4 md:p-8 relative">
         
+        <!-- DASHBOARD -->
         <div id="tab-dashboard" class="tab-content active max-w-5xl mx-auto">
             <h2 class="text-2xl font-black mb-6">Visão Geral</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -59,16 +65,26 @@
             </div>
         </div>
 
+        <!-- GESTÃO DE USUÁRIOS (NOVO) -->
+        <div id="tab-usuarios" class="tab-content max-w-5xl mx-auto">
+            <h2 class="text-2xl font-black mb-6">Gestão de Usuários</h2>
+            <div class="grid gap-3" id="list-usuarios">
+                <p class="text-zinc-500">Carregando usuários...</p>
+            </div>
+        </div>
+
+        <!-- FILMES E HITS -->
         <div id="tab-filmes" class="tab-content max-w-5xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-black">Gestão de Filmes</h2>
-                <button onclick="addFilme()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-blue-600/30 transition-all">+ Novo Filme</button>
+                <button onclick="addFilme()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-blue-600/30 transition-all">+ Novo Hit</button>
             </div>
             <div class="grid gap-3" id="list-filmes">
                 <p class="text-zinc-500">Carregando filmes...</p>
             </div>
         </div>
 
+        <!-- AUDITORIA DE SAQUES -->
         <div id="tab-saques" class="tab-content max-w-5xl mx-auto">
             <h2 class="text-2xl font-black mb-6">Auditoria Financeira</h2>
             <div class="grid gap-4" id="list-saques">
@@ -76,6 +92,7 @@
             </div>
         </div>
 
+        <!-- CONFIGURAÇÕES GLOBAIS -->
         <div id="tab-config" class="tab-content max-w-3xl mx-auto">
             <h2 class="text-2xl font-black mb-6">Configurações Globais</h2>
             <div class="glass-panel p-6 rounded-2xl space-y-4" id="form-config">
@@ -87,6 +104,7 @@
 
     <script>
         // --- 1. CONFIGURAÇÃO SUPABASE ---
+        // Peguei as mesmas chaves do seu código original
         const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -105,6 +123,7 @@
             activeBtn.className = 'nav-btn p-3 rounded-lg bg-purple-600/20 text-purple-400 font-bold text-sm text-left border border-purple-500/30 transition-all';
             
             if(tabId === 'dashboard') loadDashboard();
+            if(tabId === 'usuarios') loadUsuarios();
             if(tabId === 'filmes') loadFilmes();
             if(tabId === 'saques') loadSaques();
             if(tabId === 'config') loadConfig();
@@ -132,7 +151,48 @@
             }
         }
 
-        // Carregar Filmes
+        // ================= USUÁRIOS =================
+        async function loadUsuarios() {
+            const { data } = await supabase.from('perfis_premium').select('*').order('created_at', { ascending: false }).limit(50);
+            const list = document.getElementById('list-usuarios');
+            
+            if(!data || data.length === 0) return list.innerHTML = '<p class="text-zinc-500">Nenhum usuário cadastrado.</p>';
+
+            list.innerHTML = data.map(u => `
+                <div class="glass-panel p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4 border-l-4 border-l-blue-500">
+                    <div>
+                        <h3 class="font-bold text-white text-lg">${u.email}</h3>
+                        <p class="text-zinc-400 text-sm">
+                            <span class="text-yellow-500 font-bold">${u.pontos || 0} PTS</span> | 
+                            <span class="text-emerald-500 font-bold">R$ ${(u.saldo || 0).toFixed(2)}</span>
+                        </p>
+                        <p class="text-zinc-600 text-xs mt-1">Assistidos: ${u.tempo_assistido || 0} min | Indicações: ${u.indicacoes_ativas || 0}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editPontos('${u.id}', ${u.pontos || 0})" class="bg-yellow-600/30 text-yellow-400 p-2 rounded-lg hover:bg-yellow-600 hover:text-white transition font-bold text-sm"><i class="fa-solid fa-coins"></i> Editar Pontos</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editPontos(userId, currentPts) {
+            const { value: novosPontos } = await Swal.fire({
+                title: 'Editar Pontos do Usuário',
+                input: 'number',
+                inputValue: currentPts,
+                showCancelButton: true,
+                confirmButtonText: 'Salvar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (novosPontos) {
+                await supabase.from('perfis_premium').update({ pontos: parseInt(novosPontos) }).eq('id', userId);
+                Swal.fire({icon: 'success', title: 'Pontos atualizados!', timer: 1500, showConfirmButton: false});
+                loadUsuarios();
+            }
+        }
+
+        // ================= FILMES =================
         async function loadFilmes() {
             const { data } = await supabase.from('filmes').select('*').order('created_at', { ascending: false });
             const list = document.getElementById('list-filmes');
@@ -143,46 +203,49 @@
                 <div class="glass-panel p-4 rounded-xl flex justify-between items-center">
                     <div>
                         <h3 class="font-bold text-white text-lg">${f.titulo}</h3>
-                        <p class="text-zinc-500 text-xs truncate max-w-[200px] md:max-w-md">${f.url_video}</p>
+                        <p class="text-zinc-500 text-xs">ID do Vídeo: ${f.url_video}</p>
+                        <p class="text-emerald-400 text-xs font-bold mt-1">+${f.pontos_por_minuto || 0} PTS / min</p>
                     </div>
-                    <button onclick="delFilme('${f.id}')" class="bg-red-900/30 text-red-400 p-2 rounded hover:bg-red-600 hover:text-white transition">🗑️</button>
+                    <button onclick="delFilme('${f.id}')" class="bg-red-900/30 text-red-400 p-3 rounded hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
 
         async function addFilme() {
             const { value: formValues } = await Swal.fire({
-                title: 'Adicionar Filme',
+                title: 'Adicionar Novo Hit/Clipe',
                 html: `
-                    <input id="swal-titulo" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="Título do Filme">
-                    <input id="swal-url" class="swal2-input bg-zinc-800 text-white border-zinc-700" placeholder="URL do Vídeo">
+                    <input id="swal-titulo" class="swal2-input w-[80%] mx-auto" placeholder="Título da Música/Vídeo">
+                    <input id="swal-url" class="swal2-input w-[80%] mx-auto" placeholder="ID do YouTube (Ex: dQw4w9WgXcQ)">
+                    <input id="swal-pts" type="number" class="swal2-input w-[80%] mx-auto" placeholder="Quantos pontos por minuto?">
                 `,
-                background: '#18181b', color: '#fff',
                 focusConfirm: false,
+                showCancelButton: true,
                 preConfirm: () => {
                     return {
                         titulo: document.getElementById('swal-titulo').value,
-                        url_video: document.getElementById('swal-url').value
+                        url_video: document.getElementById('swal-url').value,
+                        pontos_por_minuto: parseInt(document.getElementById('swal-pts').value) || 100
                     }
                 }
             });
 
-            if (formValues && formValues.titulo) {
+            if (formValues && formValues.titulo && formValues.url_video) {
                 await supabase.from('filmes').insert(formValues);
-                Swal.fire({icon: 'success', title: 'Adicionado!', background: '#18181b', color: '#fff', timer: 1500});
+                Swal.fire({icon: 'success', title: 'Adicionado!', timer: 1500});
                 loadFilmes();
             }
         }
 
         async function delFilme(id) {
-            const res = await Swal.fire({ title: 'Excluir filme?', background: '#18181b', color: '#fff', showCancelButton: true });
+            const res = await Swal.fire({ title: 'Excluir filme?', text: 'Essa ação removerá o vídeo da plataforma principal.', icon: 'warning', showCancelButton: true });
             if(res.isConfirmed) {
                 await supabase.from('filmes').delete().eq('id', id);
                 loadFilmes();
             }
         }
 
-        // Carregar Saques (Sistema de Auditoria)
+        // ================= SAQUES / AUDITORIA =================
         async function loadSaques() {
             const { data: saques } = await supabase.from('solicitacoes_saque').select('*, perfis_premium(*)').eq('status', 'Pendente');
             const list = document.getElementById('list-saques');
@@ -200,7 +263,7 @@
                         <p class="text-zinc-400 text-xs">Solicitação #${s.id.substring(0,8)}</p>
                         <h3 class="text-xl font-bold mt-1">${user.email || 'Usuário Desconhecido'}</h3>
                         <p class="text-emerald-400 font-black text-3xl my-2">R$ ${s.valor.toFixed(2)}</p>
-                        <p class="text-sm"><span class="text-purple-400 font-bold">PIX:</span> ${s.chave_pix}</p>
+                        <p class="text-sm"><span class="text-purple-400 font-bold">Chave PIX:</span> <span class="bg-zinc-800 p-1 rounded px-2 select-all">${s.chave_pix}</span></p>
                     </div>
                     
                     <div class="flex-1 bg-black/40 p-4 rounded-xl border border-zinc-800">
@@ -215,9 +278,9 @@
                         </ul>
                     </div>
 
-                    <div class="flex flex-col gap-2 justify-center">
-                        <button onclick="auditarSaque('${s.id}', 'Aprovado')" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-emerald-500 transition">Aprovar Pagamento</button>
-                        <button onclick="auditarSaque('${s.id}', 'Recusado')" class="bg-zinc-800 text-red-400 font-bold py-3 px-6 rounded-xl border border-red-500/20 hover:bg-red-900/30 transition">Recusar / Estornar</button>
+                    <div class="flex flex-col gap-2 justify-center min-w-[200px]">
+                        <button onclick="auditarSaque('${s.id}', 'Aprovado')" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-emerald-500 transition"><i class="fa-solid fa-check"></i> Aprovar Pagamento</button>
+                        <button onclick="auditarSaque('${s.id}', 'Recusado')" class="bg-zinc-800 text-red-400 font-bold py-3 px-6 rounded-xl border border-red-500/20 hover:bg-red-900/30 transition"><i class="fa-solid fa-xmark"></i> Recusar Pedido</button>
                     </div>
                 </div>
             `}).join('');
@@ -227,17 +290,50 @@
             let motivo = null;
             if(status === 'Recusado') {
                 const { value } = await Swal.fire({
-                    title: 'Motivo da Recusa', input: 'text', background: '#18181b', color: '#fff'
+                    title: 'Motivo da Recusa (opcional)', input: 'text', placeholder: 'Ex: Fraude, dados incorretos...'
                 });
-                if(!value) return;
-                motivo = value;
+                if(value !== undefined) motivo = value;
             }
             await supabase.from('solicitacoes_saque').update({ status, motivo_recusa: motivo }).eq('id', id);
-            Swal.fire({icon: 'success', title: `Saque ${status}`, background: '#18181b', color: '#fff', timer: 1500});
+            Swal.fire({icon: 'success', title: `Saque ${status}!`, timer: 1500});
             loadSaques();
         }
 
-        // Iniciar
+        // ================= CONFIGURAÇÕES =================
+        async function loadConfig() {
+            const { data } = await supabase.from('configuracoes').select('*').limit(1).single();
+            const form = document.getElementById('form-config');
+            
+            // Se não existir a linha de config, usar padrão 0
+            const cfg = data || { id: 1, min_saque: 20, min_indicacoes: 5 };
+
+            form.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-xs font-bold text-zinc-500 uppercase">Valor Mínimo para Saque (R$)</label>
+                        <input id="cfg-saque" type="number" value="${cfg.min_saque}" class="w-full bg-zinc-800 text-white p-3 rounded-lg border border-zinc-700 mt-1 outline-none focus:border-purple-500">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-zinc-500 uppercase">Mínimo de Indicações</label>
+                        <input id="cfg-indica" type="number" value="${cfg.min_indicacoes}" class="w-full bg-zinc-800 text-white p-3 rounded-lg border border-zinc-700 mt-1 outline-none focus:border-purple-500">
+                    </div>
+                </div>
+                <button onclick="saveConfig(${cfg.id})" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl mt-4 transition"><i class="fa-solid fa-floppy-disk"></i> Salvar Configurações do Site</button>
+            `;
+        }
+
+        async function saveConfig(id) {
+            const min_saque = parseFloat(document.getElementById('cfg-saque').value);
+            const min_indicacoes = parseInt(document.getElementById('cfg-indica').value);
+            
+            // Verifica se a tabela já tinha a linha, se não, faz um upsert
+            await supabase.from('configuracoes').upsert({ id: id, min_saque, min_indicacoes });
+            
+            Swal.fire({icon: 'success', title: 'Configurações Salvas!', timer: 1500});
+            loadDashboard(); // Atualiza os dados no dashboard
+        }
+
+        // Iniciar Dashboard ao abrir
         window.onload = () => { loadDashboard(); };
     </script>
 </body>
