@@ -3,622 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CineWorld | Master Admin Panel</title>
+    <title>CineWorld | Master Admin Panel V2</title>
 
-    <!-- Bibliotecas Externas -->
+    <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Estilos Customizados e Animações -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         
-        :root {
-            --bg-dark: #050505;
-            --bg-panel: #0a0a0f;
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --text-main: #e5e7eb;
-            --text-muted: #8e8e93;
-        }
+        body { background-color: #050505; color: #e5e7eb; font-family: 'Inter', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        @media (max-width: 768px) { body { flex-direction: column; } }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        
-        @media (min-width: 768px) { body { flex-direction: row; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
 
-        /* Scrollbar Personalizada */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        .glass { background: #0a0a0f; border: 1px solid #1f1f2e; border-radius: 12px; }
+        
+        /* Navegação Garantida */
+        .nav-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 14px; color: #8e8e93; font-weight: 600; border-radius: 10px; transition: 0.2s; cursor: pointer; text-align: left; }
+        .nav-btn:hover { background: #18181b; color: #fff; }
+        .nav-btn.active { background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2); }
 
-        /* Classes de UI */
-        .glass-panel { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
-        
-        /* Navegação */
-        .nav-container { background: #08080c; border-bottom: 1px solid var(--glass-border); z-index: 50; }
-        @media (min-width: 768px) { .nav-container { border-bottom: none; border-right: 1px solid var(--glass-border); width: 260px; } }
-        
-        .nav-btn {
-            background: transparent; border: 1px solid transparent; color: var(--text-muted);
-            transition: all 0.2s ease-in-out; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            padding: 14px 16px; border-radius: 12px; font-weight: 600; font-size: 0.875rem; white-space: nowrap;
-        }
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.03); color: #fff; }
-        .nav-btn.active { background: rgba(99, 102, 241, 0.1); color: #818cf8; border-color: rgba(99, 102, 241, 0.2); }
-        
-        /* Abas / Tabs */
-        .tab-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
-        .tab-section.active { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.3s ease-out forwards; }
-        
+        /* Abas Escondidas/Visíveis */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Utilitários Visuais */
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-pendente { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .status-aprovado { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .status-recusado { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-
-        .loader-spinner { border: 3px solid rgba(99, 102, 241, 0.2); border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #6366f1; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* SweetAlert Dark Theme Override */
-        .swal2-popup { background: #121214 !important; border: 1px solid #27272a !important; border-radius: 16px !important; color: #fff !important; }
-        .swal2-title { color: #fff !important; }
-        .swal2-input, .swal2-textarea { background: #18181b !important; border: 1px solid #3f3f46 !important; color: #fff !important; border-radius: 8px !important; }
-        .swal2-input:focus, .swal2-textarea:focus { border-color: var(--primary) !important; box-shadow: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR / NAVBAR SUPERIOR NO MOBILE -->
-    <nav class="nav-container p-4 flex md:flex-col shrink-0 overflow-x-auto">
-        <div class="hidden md:flex flex-col mb-8 mt-2 px-2">
-            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">
-                CineWorld<span class="text-white">Admin</span>
-            </h1>
-            <p class="text-xs text-zinc-500 font-semibold uppercase mt-1 tracking-wider"><i class="fa-solid fa-circle text-[8px] text-emerald-500 mr-1 animate-pulse"></i> Sistema Online</p>
+    <!-- MENU LATERAL -->
+    <nav class="bg-[#08080c] border-b md:border-r border-[#1f1f2e] w-full md:w-64 p-4 flex flex-row md:flex-col shrink-0 overflow-x-auto z-50">
+        <div class="hidden md:block mb-8 mt-2 px-2">
+            <h1 class="text-2xl font-black text-indigo-500">CineWorld<span class="text-white">PRO</span></h1>
+            <p class="text-xs text-emerald-500 mt-1">● Sistema Ativo</p>
         </div>
         
-        <div class="flex md:flex-col gap-2 w-full">
-            <button class="nav-btn active" data-target="dashboard"><i class="fa-solid fa-chart-line w-5 text-center"></i> Dashboard</button>
-            <button class="nav-btn" data-target="usuarios"><i class="fa-solid fa-users w-5 text-center"></i> Usuários</button>
-            <button class="nav-btn" data-target="saques"><i class="fa-solid fa-money-bill-transfer w-5 text-center"></i> Saques (PIX)</button>
-            <button class="nav-btn" data-target="filmes"><i class="fa-solid fa-clapperboard w-5 text-center"></i> Hits/Filmes</button>
-            <button class="nav-btn" data-target="config"><i class="fa-solid fa-gear w-5 text-center"></i> Setup Geral</button>
+        <!-- Usando onclick direto no HTML garante que o clique funcione sempre -->
+        <div class="flex flex-row md:flex-col gap-2 w-max md:w-full">
+            <button onclick="mudarAba('dashboard')" id="btn-dashboard" class="nav-btn active"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard</button>
+            <button onclick="mudarAba('usuarios')" id="btn-usuarios" class="nav-btn"><i class="fa-solid fa-users w-5"></i> Usuários</button>
+            <button onclick="mudarAba('saques')" id="btn-saques" class="nav-btn"><i class="fa-solid fa-money-bill-transfer w-5"></i> Saques (PIX)</button>
+            <button onclick="mudarAba('filmes')" id="btn-filmes" class="nav-btn"><i class="fa-solid fa-clapperboard w-5"></i> Controle de Hits</button>
+            <button onclick="mudarAba('config')" id="btn-config" class="nav-btn"><i class="fa-solid fa-gear w-5"></i> Setup</button>
         </div>
     </nav>
 
-    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+    <!-- ÁREA PRINCIPAL -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto relative">
         
-        <!-- MENSAGEM DE ERRO GLOBAL (Invisível por padrão) -->
-        <div id="sys-error" class="hidden bg-red-900/30 border border-red-500/50 rounded-xl p-4 mb-6 flex items-start gap-3">
-            <i class="fa-solid fa-triangle-exclamation text-red-400 mt-1"></i>
-            <div>
-                <h4 class="text-red-400 font-bold text-sm uppercase">Erro de Comunicação com Banco de Dados</h4>
-                <p id="sys-error-msg" class="text-red-200 text-xs mt-1">Detalhes do erro aqui.</p>
-            </div>
-            <button onclick="document.getElementById('sys-error').classList.add('hidden')" class="ml-auto text-red-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        <!-- CAIXA DE DEBUG (Muito importante para descobrirmos erros) -->
+        <div id="debug-box" class="hidden mb-6 bg-red-900/30 border border-red-500 p-4 rounded-xl">
+            <h3 class="text-red-400 font-bold text-sm uppercase"><i class="fa-solid fa-bug"></i> Log de Erro do Supabase</h3>
+            <p id="debug-text" class="text-xs text-red-200 mt-2 font-mono break-words"></p>
+            <button onclick="document.getElementById('debug-box').classList.add('hidden')" class="mt-3 text-xs bg-red-500/20 px-3 py-1 rounded text-red-300">Fechar Aviso</button>
         </div>
 
-        <!-- ABA 1: DASHBOARD -->
-        <section id="tab-dashboard" class="tab-section active max-w-6xl mx-auto">
-            <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Monitoramento de Sistema</h2>
-                    <p class="text-zinc-500 text-xs md:text-sm mt-1">Resumo em tempo real da operação CineWorld.</p>
-                </div>
-                <button id="btn-refresh-dash" class="text-indigo-400 hover:text-indigo-300 font-bold text-sm flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-500/10 transition-colors">
-                    <i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Atualizar</span>
-                </button>
+        <!-- ABA: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content active max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
+                <h2 class="text-2xl font-black text-white">Monitoramento Global</h2>
+                <button onclick="carregarDashboard()" class="text-indigo-400 text-sm font-bold bg-indigo-500/10 px-4 py-2 rounded-lg hover:bg-indigo-500/20"><i class="fa-solid fa-rotate"></i> Atualizar</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="glass-panel p-5 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-indigo-500/10 text-6xl"><i class="fa-solid fa-users"></i></div>
-                    <p class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-1">Total de Usuários</p>
-                    <p class="text-3xl font-black text-white" id="dash-users">0</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="glass p-5">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Total de Usuários</p>
+                    <p class="text-3xl font-black text-white" id="m-users"><i class="fa-solid fa-ellipsis"></i></p>
                 </div>
-                <div class="glass-panel p-5 relative overflow-hidden border-amber-500/30">
-                    <div class="absolute -right-4 -bottom-4 text-amber-500/10 text-6xl"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <p class="text-amber-500 text-[10px] font-bold uppercase tracking-widest mb-1">Saques Pendentes</p>
-                    <p class="text-3xl font-black text-amber-400" id="dash-pendentes">0</p>
+                <div class="glass p-5 border-amber-500/30 border">
+                    <p class="text-amber-500 text-[10px] font-bold uppercase mb-1">Saques Pendentes</p>
+                    <p class="text-3xl font-black text-amber-400" id="m-pendentes"><i class="fa-solid fa-ellipsis"></i></p>
                 </div>
-                <div class="glass-panel p-5 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-emerald-500/10 text-6xl"><i class="fa-solid fa-check-double"></i></div>
-                    <p class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-1">Saques Aprovados</p>
-                    <p class="text-3xl font-black text-emerald-400" id="dash-aprovados">0</p>
+                <div class="glass p-5">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Saques Pagos</p>
+                    <p class="text-3xl font-black text-emerald-400" id="m-pagos"><i class="fa-solid fa-ellipsis"></i></p>
                 </div>
-                <div class="glass-panel p-5 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-red-500/10 text-6xl"><i class="fa-solid fa-ban"></i></div>
-                    <p class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-1">Saques Recusados</p>
-                    <p class="text-3xl font-black text-red-400" id="dash-recusados">0</p>
+                <div class="glass p-5">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Vídeos / Hits</p>
+                    <p class="text-3xl font-black text-indigo-400" id="m-filmes"><i class="fa-solid fa-ellipsis"></i></p>
                 </div>
             </div>
-            
-            <div class="glass-panel p-6" id="dash-latest-users">
-                <h3 class="text-lg font-bold text-white mb-4 border-b border-zinc-800 pb-2">Últimos Cadastros</h3>
-                <div id="dash-users-list" class="space-y-3"><div class="loader-spinner"></div></div>
-            </div>
-        </section>
 
-        <!-- ABA 2: USUÁRIOS -->
-        <section id="tab-usuarios" class="tab-section max-w-6xl mx-auto">
-            <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Gestão de Usuários</h2>
-                    <p class="text-zinc-500 text-xs md:text-sm mt-1">Edite saldos, adicione pontos e supervisione contas.</p>
-                </div>
-                <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-1 flex items-center">
-                    <i class="fa-solid fa-magnifying-glass text-zinc-500 ml-2"></i>
-                    <input type="text" id="search-user" placeholder="Buscar email..." class="bg-transparent border-none text-white text-sm px-3 py-1 outline-none w-32 md:w-48">
+            <div class="glass p-6">
+                <h3 class="font-bold text-white mb-4">Últimos Cadastros</h3>
+                <div id="lista-ultimos-users" class="space-y-2 text-sm text-zinc-400">
+                    <p>Puxando dados...</p>
                 </div>
             </div>
-            
-            <div class="grid gap-3" id="lista-usuarios-completa">
-                <div class="loader-spinner"></div>
-            </div>
-        </section>
+        </div>
 
-        <!-- ABA 3: SAQUES -->
-        <section id="tab-saques" class="tab-section max-w-6xl mx-auto">
-            <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Central de Saques</h2>
-                    <p class="text-zinc-500 text-xs md:text-sm mt-1">Audite as solicitações e realize os pagamentos via PIX.</p>
-                </div>
-                <select id="filter-saques" class="bg-zinc-900 border border-zinc-800 text-zinc-300 text-sm rounded-lg px-3 py-2 outline-none">
+        <!-- ABA: USUÁRIOS -->
+        <div id="tab-usuarios" class="tab-content max-w-6xl mx-auto">
+            <h2 class="text-2xl font-black text-white mb-6 border-b border-zinc-800 pb-4">Gestão de Usuários</h2>
+            <div id="conteudo-usuarios" class="grid gap-3"></div>
+        </div>
+
+        <!-- ABA: SAQUES -->
+        <div id="tab-saques" class="tab-content max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
+                <h2 class="text-2xl font-black text-white">Auditoria de Saques</h2>
+                <select id="filtro-saque" onchange="carregarSaques()" class="bg-[#18181b] border border-zinc-700 text-white rounded p-2 text-sm outline-none">
                     <option value="Pendente">Pendentes</option>
                     <option value="Aprovado">Aprovados</option>
                     <option value="Recusado">Recusados</option>
                 </select>
             </div>
-            
-            <div class="grid gap-4" id="lista-saques-completa">
-                <div class="loader-spinner"></div>
-            </div>
-        </section>
+            <div id="conteudo-saques" class="grid gap-4"></div>
+        </div>
 
-        <!-- ABA 4: FILMES / HITS -->
-        <section id="tab-filmes" class="tab-section max-w-6xl mx-auto">
-            <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Controle de Hits</h2>
-                    <p class="text-zinc-500 text-xs md:text-sm mt-1">Gerencie os vídeos musicais e a pontuação paga por eles.</p>
-                </div>
-                <button id="btn-add-filme" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Novo Vídeo
-                </button>
+        <!-- ABA: FILMES -->
+        <div id="tab-filmes" class="tab-content max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
+                <h2 class="text-2xl font-black text-white">Controle de Hits</h2>
+                <button onclick="adicionarFilme()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-sm transition shadow-lg"><i class="fa-solid fa-plus"></i> Novo Hit</button>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="lista-filmes-completa">
-                <div class="loader-spinner"></div>
-            </div>
-        </section>
+            <div id="conteudo-filmes" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
 
-        <!-- ABA 5: CONFIGURAÇÕES -->
-        <section id="tab-config" class="tab-section max-w-3xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-black text-white mb-2">Configurações Globais</h2>
-            <p class="text-zinc-500 text-sm mb-6 border-b border-zinc-800 pb-4">Defina as regras gerais do sistema de pontuação e saque.</p>
-            
-            <div class="glass-panel p-6 md:p-8" id="container-config">
-                <div class="loader-spinner"></div>
-            </div>
-        </section>
+        <!-- ABA: CONFIG -->
+        <div id="tab-config" class="tab-content max-w-3xl mx-auto">
+            <h2 class="text-2xl font-black text-white mb-6 border-b border-zinc-800 pb-4">Setup Geral</h2>
+            <div id="conteudo-config" class="glass p-6 md:p-8"></div>
+        </div>
 
     </main>
 
-    <!-- SCRIPT PRINCIPAL: Toda a Lógica de Integração -->
+    <!-- JAVASCRIPT BLINDADO -->
     <script>
-        // ==========================================
-        // 1. INICIALIZAÇÃO E CREDENCIAIS
-        // ==========================================
-        const SUPABASE_URL = 'https://hvivrmdygytttdlapjbi.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
-        
-        let supabase;
-        let regrasGerais = { min_saque: 20, min_indicacoes: 5 };
+        // --- 1. CREDENCIAIS ---
+        const URL_SUPA = 'https://hvivrmdygytttdlapjbi.supabase.co';
+        const KEY_SUPA = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aXZybWR5Z3l0dHRkbGFwamJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2ODc4NDMsImV4cCI6MjA5ODI2Mzg0M30.7tEyMfCreAwn7e2zikqWtdErjEHCL-la4-RzPxN1Twg';
+        const supabase = window.supabase.createClient(URL_SUPA, KEY_SUPA);
 
-        // Formatação Monetária BR
-        const formataBRL = (valor) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-        const formataData = (dataStr) => new Date(dataStr).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        // --- 2. SISTEMA DE NAVEGAÇÃO GARANTIDO ---
+        function mudarAba(idAba) {
+            // Esconde todas as abas e botões
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            // Ativa a aba atual
+            document.getElementById(`tab-${idAba}`).classList.add('active');
+            document.getElementById(`btn-${idAba}`).classList.add('active');
+            
+            // Oculta caixa de erro ao trocar de aba
+            document.getElementById('debug-box').classList.add('hidden');
 
-        // Exibe erro na UI
-        const reportarErro = (msg, consoleDetail) => {
-            console.error(msg, consoleDetail);
-            const errBox = document.getElementById('sys-error');
-            const errMsg = document.getElementById('sys-error-msg');
-            errMsg.innerText = `${msg} | Verifique o console para mais detalhes.`;
-            errBox.classList.remove('hidden');
-        };
-
-        // ==========================================
-        // 2. SISTEMA DE NAVEGAÇÃO ROBUSTO
-        // ==========================================
-        function setupNavigation() {
-            const botoes = document.querySelectorAll('.nav-btn');
-            const abas = document.querySelectorAll('.tab-section');
-
-            botoes.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    // Remove active de todos
-                    botoes.forEach(b => b.classList.remove('active'));
-                    abas.forEach(a => a.classList.remove('active'));
-                    
-                    // Adiciona active no clicado
-                    const targetId = e.currentTarget.getAttribute('data-target');
-                    e.currentTarget.classList.add('active');
-                    document.getElementById(`tab-${targetId}`).classList.add('active');
-
-                    // Carrega os dados da aba específica
-                    carregarAbaAtiva(targetId);
-                });
-            });
+            // Dispara o carregamento de dados apropriado
+            if(idAba === 'dashboard') carregarDashboard();
+            if(idAba === 'usuarios') carregarUsuarios();
+            if(idAba === 'saques') carregarSaques();
+            if(idAba === 'filmes') carregarFilmes();
+            if(idAba === 'config') carregarConfig();
         }
 
-        function carregarAbaAtiva(targetId) {
-            document.getElementById('sys-error').classList.add('hidden'); // Limpa erros antigos
-            if (targetId === 'dashboard') loadDashboard();
-            if (targetId === 'usuarios') loadUsuarios();
-            if (targetId === 'saques') loadSaques(document.getElementById('filter-saques').value);
-            if (targetId === 'filmes') loadFilmes();
-            if (targetId === 'config') loadConfig();
+        // Sistema de relatórios de erros visível
+        function mostrarErro(contexto, erro) {
+            console.error(`Erro em ${contexto}:`, erro);
+            document.getElementById('debug-box').classList.remove('hidden');
+            document.getElementById('debug-text').innerText = `[${contexto}] -> ${erro.message || JSON.stringify(erro)}`;
         }
 
-        // ==========================================
-        // 3. FUNÇÕES DE BANCO DE DADOS (CRUD)
-        // ==========================================
+        // Formatação de Dinheiro
+        const fMoney = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
 
-        // --- DASHBOARD ---
-        async function loadDashboard() {
+        // --- 3. DASHBOARD ---
+        async function carregarDashboard() {
             try {
-                // Requisições paralelas para performance
-                const [reqUsers, reqPendentes, reqAprovados, reqRecusados, reqUltimos] = await Promise.all([
-                    supabase.from('perfis_premium').select('*', { count: 'exact', head: true }),
-                    supabase.from('solicitacoes_saque').select('*', { count: 'exact', head: true }).eq('status', 'Pendente'),
-                    supabase.from('solicitacoes_saque').select('*', { count: 'exact', head: true }).eq('status', 'Aprovado'),
-                    supabase.from('solicitacoes_saque').select('*', { count: 'exact', head: true }).eq('status', 'Recusado'),
-                    supabase.from('perfis_premium').select('email, created_at, saldo').order('created_at', { ascending: false }).limit(5)
-                ]);
+                // Buscas simples, isoladas, para evitar que uma quebre a outra
+                const u = await supabase.from('perfis_premium').select('id', { count: 'exact', head: true });
+                const sPend = await supabase.from('solicitacoes_saque').select('id', { count: 'exact', head: true }).eq('status', 'Pendente');
+                const sPago = await supabase.from('solicitacoes_saque').select('id', { count: 'exact', head: true }).eq('status', 'Aprovado');
+                const f = await supabase.from('filmes').select('id', { count: 'exact', head: true });
+                const ultimos = await supabase.from('perfis_premium').select('email, saldo').order('created_at', { ascending: false }).limit(4);
 
-                if(reqUsers.error) throw reqUsers.error;
+                document.getElementById('m-users').innerText = u.count || 0;
+                document.getElementById('m-pendentes').innerText = sPend.count || 0;
+                document.getElementById('m-pagos').innerText = sPago.count || 0;
+                document.getElementById('m-filmes').innerText = f.count || 0;
 
-                document.getElementById('dash-users').innerText = reqUsers.count || 0;
-                document.getElementById('dash-pendentes').innerText = reqPendentes.count || 0;
-                document.getElementById('dash-aprovados').innerText = reqAprovados.count || 0;
-                document.getElementById('dash-recusados').innerText = reqRecusados.count || 0;
-
-                // Renderiza últimos usuários
-                const listaDiv = document.getElementById('dash-users-list');
-                if(reqUltimos.data && reqUltimos.data.length > 0) {
-                    listaDiv.innerHTML = reqUltimos.data.map(u => `
-                        <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800/50">
-                            <div>
-                                <p class="text-sm font-bold text-white">${u.email}</p>
-                                <p class="text-[10px] text-zinc-500">${formataData(u.created_at)}</p>
-                            </div>
-                            <span class="text-emerald-400 font-bold text-sm">${formataBRL(u.saldo || 0)}</span>
+                const divUsers = document.getElementById('lista-ultimos-users');
+                if (ultimos.data && ultimos.data.length > 0) {
+                    divUsers.innerHTML = ultimos.data.map(x => `
+                        <div class="flex justify-between items-center border-b border-zinc-800/50 pb-2 mb-2">
+                            <span class="text-white">${x.email}</span>
+                            <span class="text-emerald-500 font-bold">${fMoney(x.saldo)}</span>
                         </div>
                     `).join('');
                 } else {
-                    listaDiv.innerHTML = '<p class="text-zinc-500 text-sm">Nenhum cadastro recente.</p>';
+                    divUsers.innerHTML = "Nenhum usuário cadastrado.";
                 }
-            } catch (error) {
-                reportarErro("Falha ao carregar Dashboard. Verifique Políticas RLS.", error);
+            } catch (err) {
+                mostrarErro('Dashboard', err);
             }
         }
 
-        // --- USUÁRIOS ---
-        async function loadUsuarios(termoBusca = '') {
-            const div = document.getElementById('lista-usuarios-completa');
-            div.innerHTML = '<div class="loader-spinner"></div>';
+        // --- 4. USUÁRIOS ---
+        async function carregarUsuarios() {
+            const div = document.getElementById('conteudo-usuarios');
+            div.innerHTML = '<div class="loader"></div>';
 
             try {
-                let query = supabase.from('perfis_premium').select('*').order('created_at', { ascending: false }).limit(50);
-                if(termoBusca) {
-                    query = query.ilike('email', `%${termoBusca}%`);
-                }
-
-                const { data, error } = await query;
+                const { data, error } = await supabase.from('perfis_premium').select('*').order('created_at', { ascending: false }).limit(50);
                 if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    div.innerHTML = '<div class="glass-panel p-8 text-center text-zinc-500">Nenhum usuário encontrado.</div>';
-                    return;
-                }
+                if (!data || data.length === 0) { div.innerHTML = '<p class="text-zinc-500">Nenhum usuário no banco de dados.</p>'; return; }
 
                 div.innerHTML = data.map(u => `
-                    <div class="glass-panel p-4 flex flex-col lg:flex-row justify-between items-center gap-4 hover:border-indigo-500/30 transition-colors">
-                        <div class="w-full lg:w-1/3">
-                            <h3 class="font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user text-zinc-500 text-sm"></i> ${u.email}</h3>
-                            <p class="text-xs text-zinc-500 mt-1">Cadastrado em: ${formataData(u.created_at)}</p>
+                    <div class="glass p-4 flex flex-col md:flex-row justify-between items-center gap-4 hover:bg-[#0f0f15] transition">
+                        <div class="w-full">
+                            <h3 class="font-bold text-white text-lg">${u.email || 'Usuário Sem Email'}</h3>
+                            <div class="flex gap-4 text-xs mt-2 font-mono">
+                                <span class="bg-[#18181b] px-2 py-1 rounded border border-zinc-800"><span class="text-zinc-500">Saldo:</span> <span class="text-emerald-400">${fMoney(u.saldo)}</span></span>
+                                <span class="bg-[#18181b] px-2 py-1 rounded border border-zinc-800"><span class="text-zinc-500">Pts:</span> <span class="text-amber-400">${u.pontos || 0}</span></span>
+                            </div>
                         </div>
-                        <div class="w-full lg:w-auto flex flex-wrap gap-2 text-sm">
-                            <div class="bg-[#13131a] px-3 py-1.5 rounded border border-zinc-800"><span class="text-zinc-500 text-[10px] block">Saldo</span><span class="text-emerald-400 font-black">${formataBRL(u.saldo || 0)}</span></div>
-                            <div class="bg-[#13131a] px-3 py-1.5 rounded border border-zinc-800"><span class="text-zinc-500 text-[10px] block">Pontos</span><span class="text-amber-400 font-bold">${u.pontos || 0}</span></div>
-                            <div class="bg-[#13131a] px-3 py-1.5 rounded border border-zinc-800"><span class="text-zinc-500 text-[10px] block">Indicações</span><span class="text-white">${u.indicacoes_ativas || 0}</span></div>
-                        </div>
-                        <div class="w-full lg:w-auto flex gap-2">
-                            <button onclick="editarUsuario('${u.id}', 'pontos', ${u.pontos || 0}, '${u.email}')" class="flex-1 bg-zinc-800 hover:bg-amber-600 text-zinc-300 hover:text-white px-3 py-2 rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-star text-amber-500"></i> PONTOS</button>
-                            <button onclick="editarUsuario('${u.id}', 'saldo', ${u.saldo || 0}, '${u.email}')" class="flex-1 bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-white px-3 py-2 rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-dollar-sign text-emerald-500"></i> SALDO</button>
+                        <div class="flex gap-2 w-full md:w-auto">
+                            <button onclick="editarCampo('${u.id}', 'pontos', ${u.pontos || 0})" class="flex-1 bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-2 rounded text-xs font-bold hover:bg-amber-500 hover:text-black transition">Edit Pts</button>
+                            <button onclick="editarCampo('${u.id}', 'saldo', ${u.saldo || 0})" class="flex-1 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-2 rounded text-xs font-bold hover:bg-emerald-500 hover:text-black transition">Edit $</button>
                         </div>
                     </div>
                 `).join('');
-            } catch (error) {
-                div.innerHTML = `<div class="p-4 bg-red-900/20 text-red-400 rounded-lg">Erro: ${error.message}</div>`;
-                reportarErro("Erro ao listar usuários", error);
+            } catch (err) {
+                div.innerHTML = '<p class="text-red-500">Falha ao carregar.</p>';
+                mostrarErro('Usuários', err);
             }
         }
 
-        window.editarUsuario = async function(id, campo, valorAtual, email) {
+        window.editarCampo = async function(id, campo, valorAtual) {
             const { value } = await Swal.fire({
-                title: `Editar ${campo.toUpperCase()}`,
-                text: `Usuário: ${email}`,
+                title: `Novo valor de ${campo}`,
                 input: 'number',
                 inputAttributes: { step: campo === 'saldo' ? '0.01' : '1' },
                 inputValue: valorAtual,
-                showCancelButton: true,
-                confirmButtonText: 'Salvar',
-                cancelButtonText: 'Cancelar'
+                showCancelButton: true, background: '#121214', color: '#fff'
             });
 
-            if (value !== undefined && value !== null && value !== "") {
+            if (value !== undefined && value !== "") {
                 try {
-                    let updateObj = {};
-                    updateObj[campo] = campo === 'saldo' ? parseFloat(value) : parseInt(value);
-                    
-                    const { error } = await supabase.from('perfis_premium').update(updateObj).eq('id', id);
-                    if(error) throw error;
-                    
-                    Swal.fire({ icon: 'success', title: 'Atualizado!', timer: 1500, showConfirmButton: false });
-                    loadUsuarios(document.getElementById('search-user').value); // recarrega mantendo a busca
-                } catch(e) {
-                    Swal.fire('Erro', e.message, 'error');
-                }
+                    let obj = {}; obj[campo] = (campo === 'saldo') ? parseFloat(value) : parseInt(value);
+                    const { error } = await supabase.from('perfis_premium').update(obj).eq('id', id);
+                    if (error) throw error;
+                    Swal.fire({icon: 'success', title: 'Salvo!', timer: 1000, background: '#121214', color: '#fff'});
+                    carregarUsuarios();
+                } catch(e) { mostrarErro('Edição User', e); }
             }
         }
 
-        // --- SAQUES ---
-        async function loadSaques(statusFilter = 'Pendente') {
-            const div = document.getElementById('lista-saques-completa');
-            div.innerHTML = '<div class="loader-spinner"></div>';
+        // --- 5. SAQUES (COM MAPEAMENTO MANUAL ANTI-CRASH) ---
+        async function carregarSaques() {
+            const div = document.getElementById('conteudo-saques');
+            const statusFiltro = document.getElementById('filtro-saque').value;
+            div.innerHTML = '<div class="loader"></div>';
 
             try {
-                // Tenta fazer o JOIN. Se a Foreign Key não estiver bem configurada no Supabase, isso pode falhar.
-                const { data, error } = await supabase
-                    .from('solicitacoes_saque')
-                    .select(`*, perfis_premium(email, tempo_assistido, indicacoes_ativas)`)
-                    .eq('status', statusFilter)
-                    .order('created_at', { ascending: false });
+                // Passo 1: Busca os saques sem Foreign Key Join para evitar crash do Supabase
+                const { data: saques, error: e1 } = await supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro).order('created_at', { ascending: false });
+                if (e1) throw e1;
 
-                if (error) throw error;
+                if (!saques || saques.length === 0) { div.innerHTML = `<p class="text-zinc-500 p-4">Nenhum saque ${statusFiltro}.</p>`; return; }
 
-                if (!data || data.length === 0) {
-                    div.innerHTML = `<div class="glass-panel p-10 text-center"><i class="fa-solid fa-inbox text-4xl text-zinc-600 mb-3"></i><p class="text-zinc-400">Nenhum saque <strong>${statusFilter}</strong> encontrado.</p></div>`;
-                    return;
-                }
+                // Passo 2: Busca os e-mails separadamente e faz o "match" via Javascript
+                const { data: users, error: e2 } = await supabase.from('perfis_premium').select('id, email');
+                if (e2) throw e2;
+                
+                // Cria um dicionário para achar o email rápido
+                const userMap = {};
+                if(users) users.forEach(u => userMap[u.id] = u.email);
 
-                div.innerHTML = data.map(s => {
-                    const emailUser = s.perfis_premium?.email || 'Email Indisponível (Sem vinculo)';
-                    const tempoAst = s.perfis_premium?.tempo_assistido || 0;
-                    const indcs = s.perfis_premium?.indicacoes_ativas || 0;
+                div.innerHTML = saques.map(s => {
+                    const email = userMap[s.perfil_id] || `ID: ${s.perfil_id}`;
+                    let botoes = '';
                     
-                    let badgeClass = s.status === 'Pendente' ? 'status-pendente' : (s.status === 'Aprovado' ? 'status-aprovado' : 'status-recusado');
-                    
-                    let botoesHTML = '';
-                    if(s.status === 'Pendente') {
-                        botoesHTML = `
-                            <button onclick="processarSaque('${s.id}', 'Aprovado')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded font-bold text-sm transition shadow-lg"><i class="fa-solid fa-check mr-1"></i> Aprovar</button>
-                            <button onclick="processarSaque('${s.id}', 'Recusado')" class="bg-transparent border border-red-500/50 text-red-400 hover:bg-red-500/10 px-4 py-2 rounded font-bold text-sm transition"><i class="fa-solid fa-xmark mr-1"></i> Recusar</button>
+                    if (s.status === 'Pendente') {
+                        botoes = `
+                            <button onclick="mudarStatusSaque('${s.id}', 'Aprovado')" class="bg-emerald-600 text-white px-4 py-2 rounded text-sm font-bold w-full mb-2">Marcar Pago</button>
+                            <button onclick="mudarStatusSaque('${s.id}', 'Recusado')" class="border border-red-500/50 text-red-400 hover:bg-red-900/30 px-4 py-2 rounded text-sm font-bold w-full">Recusar</button>
                         `;
-                    } else if (s.status === 'Recusado') {
-                        botoesHTML = `<p class="text-xs text-red-400">Motivo: ${s.motivo_recusa || 'Não informado'}</p>`;
                     }
 
                     return `
-                    <div class="glass-panel p-5 border-l-4 ${s.status === 'Pendente' ? 'border-l-amber-500' : (s.status === 'Aprovado' ? 'border-l-emerald-500' : 'border-l-red-500')} flex flex-col md:flex-row gap-6">
+                    <div class="glass p-5 border-l-4 ${s.status === 'Pendente' ? 'border-amber-500' : 'border-zinc-700'} flex flex-col md:flex-row gap-4">
                         <div class="flex-1">
-                            <div class="flex justify-between items-start">
-                                <p class="text-zinc-500 text-[10px] font-mono">ID: ${s.id}</p>
-                                <span class="status-badge ${badgeClass}">${s.status}</span>
-                            </div>
-                            <h3 class="font-bold text-lg text-white mt-1">${emailUser}</h3>
-                            <p class="text-3xl font-black text-emerald-400 my-2">${formataBRL(s.valor)}</p>
-                            <div class="bg-black/50 p-2 rounded border border-zinc-800/50 inline-block">
-                                <p class="text-[10px] text-zinc-500 uppercase font-bold mb-1">CHAVE PIX (Copie abaixo)</p>
-                                <p class="font-mono text-sm text-white select-all bg-zinc-900 p-1 rounded">${s.chave_pix}</p>
+                            <p class="text-zinc-500 text-xs mb-1">ID Saque: ${s.id}</p>
+                            <h3 class="font-bold text-white text-lg">${email}</h3>
+                            <p class="text-2xl font-black text-emerald-400 my-2">${fMoney(s.valor)}</p>
+                            <div class="bg-[#050505] border border-zinc-800 p-2 rounded inline-block">
+                                <p class="text-[10px] text-zinc-500">CHAVE PIX (Copie)</p>
+                                <p class="font-mono text-white select-all">${s.chave_pix}</p>
                             </div>
                         </div>
-                        
-                        <div class="w-full md:w-48 flex flex-col gap-2 justify-center bg-zinc-900/30 p-3 rounded-lg border border-zinc-800/30">
-                            <p class="text-[10px] text-zinc-400 uppercase font-bold text-center mb-1">Ações</p>
-                            ${botoesHTML}
+                        <div class="w-full md:w-40 flex flex-col justify-center">
+                            ${botoes}
                         </div>
                     </div>
                 `}).join('');
-            } catch (error) {
-                div.innerHTML = `<div class="p-4 bg-red-900/20 text-red-400 rounded-lg">Erro: ${error.message}</div>`;
-                reportarErro("Erro ao carregar saques", error);
+            } catch (err) {
+                div.innerHTML = '<p class="text-red-500">Falha ao carregar.</p>';
+                mostrarErro('Saques', err);
             }
         }
 
-        window.processarSaque = async function(id, novoStatus) {
+        window.mudarStatusSaque = async function(id, status) {
             let motivo = null;
-            if(novoStatus === 'Recusado') {
-                const res = await Swal.fire({ title: 'Motivo da Recusa', input: 'text', showCancelButton: true });
+            if(status === 'Recusado') {
+                const res = await Swal.fire({ title: 'Motivo', input: 'text', showCancelButton: true, background: '#121214', color: '#fff' });
                 if(!res.isConfirmed) return;
                 motivo = res.value;
             }
-            
             try {
-                const { error } = await supabase.from('solicitacoes_saque').update({ status: novoStatus, motivo_recusa: motivo }).eq('id', id);
-                if (error) throw error;
-                Swal.fire({ icon: 'success', title: `Saque ${novoStatus}!`, timer: 1500, showConfirmButton: false });
-                loadSaques(document.getElementById('filter-saques').value);
-            } catch (e) {
-                Swal.fire('Erro', e.message, 'error');
-            }
+                const { error } = await supabase.from('solicitacoes_saque').update({ status, motivo_recusa: motivo }).eq('id', id);
+                if(error) throw error;
+                Swal.fire({icon: 'success', title: 'Atualizado!', timer: 1000, background: '#121214', color: '#fff'});
+                carregarSaques();
+            } catch(e) { mostrarErro('Update Saque', e); }
         }
 
-        // --- FILMES / HITS ---
-        async function loadFilmes() {
-            const div = document.getElementById('lista-filmes-completa');
-            div.innerHTML = '<div class="loader-spinner"></div>';
-            
+        // --- 6. FILMES / HITS ---
+        async function carregarFilmes() {
+            const div = document.getElementById('conteudo-filmes');
+            div.innerHTML = '<div class="loader"></div>';
             try {
                 const { data, error } = await supabase.from('filmes').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    div.innerHTML = '<div class="glass-panel p-8 text-center text-zinc-500 col-span-full">Nenhum hit cadastrado no sistema.</div>';
-                    return;
-                }
+                if (!data || data.length === 0) { div.innerHTML = '<p class="text-zinc-500">Nenhum hit cadastrado.</p>'; return; }
 
                 div.innerHTML = data.map(f => `
-                    <div class="glass-panel p-4 flex flex-col justify-between">
-                        <div>
-                            <div class="w-full h-32 bg-zinc-900 rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
-                                <img src="https://img.youtube.com/vi/${f.url_video}/mqdefault.jpg" class="w-full h-full object-cover opacity-50" onerror="this.src=''; this.onerror=null; this.parentElement.innerHTML='<i class=\\'fa-brands fa-youtube text-4xl text-zinc-700\\'></i>';">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                                <span class="absolute bottom-2 left-2 bg-amber-500 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">+${f.pontos_por_minuto || 0} PTS/min</span>
-                            </div>
-                            <h3 class="font-bold text-white text-sm line-clamp-2 leading-tight">${f.titulo}</h3>
-                            <p class="text-[10px] text-zinc-500 mt-1 font-mono">ID: ${f.url_video}</p>
-                        </div>
-                        <button onclick="deletarFilme('${f.id}')" class="mt-4 w-full bg-red-900/20 text-red-400 hover:bg-red-500 hover:text-white border border-red-900/50 py-2 rounded text-xs font-bold transition-colors"><i class="fa-solid fa-trash"></i> Remover Hit</button>
+                    <div class="glass p-4">
+                        <h3 class="font-bold text-white">${f.titulo}</h3>
+                        <p class="text-zinc-500 text-xs my-1 font-mono">ID YT: ${f.url_video}</p>
+                        <p class="text-amber-400 font-bold text-sm mb-4">+${f.pontos_por_minuto || 0} PTS por minuto</p>
+                        <button onclick="deletarFilme('${f.id}')" class="text-red-400 border border-red-500/30 hover:bg-red-900/30 w-full py-2 rounded text-sm font-bold transition">Remover</button>
                     </div>
                 `).join('');
-            } catch (error) {
-                div.innerHTML = `<div class="p-4 bg-red-900/20 text-red-400 rounded-lg col-span-full">Erro: ${error.message}</div>`;
-                reportarErro("Erro ao carregar filmes", error);
+            } catch(err) { mostrarErro('Filmes', err); }
+        }
+
+        window.adicionarFilme = async function() {
+            const { value: form } = await Swal.fire({
+                title: 'Novo Hit',
+                html: `
+                    <input id="f-titulo" class="swal2-input !w-full !m-0 !mb-3" placeholder="Título da Música">
+                    <input id="f-url" class="swal2-input !w-full !m-0 !mb-3" placeholder="ID YouTube (Ex: dQw4w9WgXcQ)">
+                    <input id="f-pts" type="number" class="swal2-input !w-full !m-0" placeholder="Pontos por minuto">
+                `,
+                background: '#121214', color: '#fff', focusConfirm: false, showCancelButton: true,
+                preConfirm: () => {
+                    const titulo = document.getElementById('f-titulo').value;
+                    const url = document.getElementById('f-url').value;
+                    const pts = document.getElementById('f-pts').value;
+                    if(!titulo || !url) { Swal.showValidationMessage('Preencha os campos!'); return false; }
+                    return { titulo, url_video: url, pontos_por_minuto: parseInt(pts) || 100 };
+                }
+            });
+            if(form) {
+                try {
+                    const { error } = await supabase.from('filmes').insert(form);
+                    if(error) throw error;
+                    Swal.fire({icon: 'success', title: 'Salvo!', timer: 1000, background: '#121214', color: '#fff'});
+                    carregarFilmes();
+                } catch(e) { mostrarErro('Adicionar Filme', e); }
             }
         }
 
         window.deletarFilme = async function(id) {
-            const { isConfirmed } = await Swal.fire({ title: 'Remover Filme?', text: 'Ele sairá imediatamente do aplicativo.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
-            if (isConfirmed) {
-                try {
-                    await supabase.from('filmes').delete().eq('id', id);
-                    loadFilmes();
-                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
-            }
+            try {
+                await supabase.from('filmes').delete().eq('id', id);
+                carregarFilmes();
+            } catch(e) { mostrarErro('Deletar Filme', e); }
         }
 
-        // --- CONFIGURAÇÕES ---
-        async function loadConfig() {
-            const div = document.getElementById('container-config');
-            div.innerHTML = '<div class="loader-spinner"></div>';
-            
+        // --- 7. CONFIGURAÇÕES ---
+        async function carregarConfig() {
+            const div = document.getElementById('conteudo-config');
+            div.innerHTML = '<div class="loader"></div>';
             try {
                 const { data, error } = await supabase.from('configuracoes').select('*').limit(1);
-                if(error) throw error;
-
-                const cfg = (data && data.length > 0) ? data[0] : { id: 1, min_saque: 20, min_indicacoes: 5 };
+                if (error) throw error;
+                const c = (data && data.length > 0) ? data[0] : { id: 1, min_saque: 20, min_indicacoes: 5 };
 
                 div.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
-                            <label class="block text-xs font-bold text-indigo-400 mb-2 uppercase tracking-wide"><i class="fa-solid fa-money-bill-wave"></i> Valor Mín. Saque (R$)</label>
-                            <input type="number" id="inp-min-saque" value="${cfg.min_saque}" class="w-full bg-[#121216] border border-zinc-700 text-white p-3 rounded-lg text-lg font-bold outline-none focus:border-indigo-500 transition-colors">
-                            <p class="text-[10px] text-zinc-500 mt-2">Valor que o usuário precisa atingir para pedir PIX.</p>
-                        </div>
-                        <div class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800">
-                            <label class="block text-xs font-bold text-amber-400 mb-2 uppercase tracking-wide"><i class="fa-solid fa-user-plus"></i> Mínimo Indicações</label>
-                            <input type="number" id="inp-min-indica" value="${cfg.min_indicacoes}" class="w-full bg-[#121216] border border-zinc-700 text-white p-3 rounded-lg text-lg font-bold outline-none focus:border-amber-500 transition-colors">
-                            <p class="text-[10px] text-zinc-500 mt-2">Quantidade de amigos que o usuário precisa convidar.</p>
-                        </div>
+                    <div class="mb-4">
+                        <label class="text-xs font-bold text-zinc-500 uppercase">Saque Mínimo (R$)</label>
+                        <input type="number" id="c-saque" value="${c.min_saque}" class="w-full bg-[#18181b] border border-zinc-700 p-3 rounded text-white mt-1">
                     </div>
-                    <button onclick="salvarConfig(${cfg.id})" class="mt-8 w-full md:w-auto md:px-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black py-4 rounded-xl shadow-[0_4px_20px_rgba(99,102,241,0.4)] transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> GRAVAR CONFIGURAÇÕES NO BANCO
-                    </button>
+                    <div class="mb-6">
+                        <label class="text-xs font-bold text-zinc-500 uppercase">Mínimo Indicações</label>
+                        <input type="number" id="c-indica" value="${c.min_indicacoes}" class="w-full bg-[#18181b] border border-zinc-700 p-3 rounded text-white mt-1">
+                    </div>
+                    <button onclick="salvarConfig(${c.id})" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-lg hover:bg-indigo-500 transition">Salvar Alterações</button>
                 `;
-            } catch(error) {
-                div.innerHTML = `<div class="p-4 bg-red-900/20 text-red-400 rounded-lg">Erro: ${error.message}</div>`;
-                reportarErro("Erro ao ler Configurações", error);
-            }
+            } catch(err) { mostrarErro('Config', err); }
         }
 
         window.salvarConfig = async function(id) {
-            const min_saque = parseFloat(document.getElementById('inp-min-saque').value);
-            const min_indicacoes = parseInt(document.getElementById('inp-min-indica').value);
-            
+            const s = parseFloat(document.getElementById('c-saque').value);
+            const i = parseInt(document.getElementById('c-indica').value);
             try {
-                const { error } = await supabase.from('configuracoes').upsert({ id: id, min_saque, min_indicacoes });
+                const { error } = await supabase.from('configuracoes').upsert({ id, min_saque: s, min_indicacoes: i });
                 if(error) throw error;
-                Swal.fire({ icon: 'success', title: 'Regras Atualizadas!', timer: 1500, showConfirmButton: false });
-            } catch(e) {
-                Swal.fire('Erro ao salvar', e.message, 'error');
-            }
+                Swal.fire({icon: 'success', title: 'Salvo!', timer: 1000, background: '#121214', color: '#fff'});
+            } catch(e) { mostrarErro('Salvar Config', e); }
         }
 
-        // ==========================================
-        // 4. LISTENERS DE EVENTOS ADICIONAIS
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializa Supabase
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch(e) {
-                reportarErro("Falha crítica ao iniciar SDK do Supabase.", e);
-                return;
-            }
-
-            // Inicia os botões de navegação
-            setupNavigation();
-            
-            // Carrega a tela inicial
-            carregarAbaAtiva('dashboard');
-
-            // Eventos soltos
-            document.getElementById('btn-refresh-dash').addEventListener('click', () => carregarAbaAtiva('dashboard'));
-            
-            document.getElementById('search-user').addEventListener('input', (e) => {
-                // Debounce simples de 500ms
-                clearTimeout(window.searchTimeout);
-                window.searchTimeout = setTimeout(() => loadUsuarios(e.target.value), 500);
-            });
-
-            document.getElementById('filter-saques').addEventListener('change', (e) => loadSaques(e.target.value));
-
-            document.getElementById('btn-add-filme').addEventListener('click', async () => {
-                const { value: form } = await Swal.fire({
-                    title: 'Cadastrar Novo Hit',
-                    html: `
-                        <div class="text-left mb-2 text-xs text-zinc-400">Título do Vídeo:</div>
-                        <input id="swal-titulo" class="swal2-input !w-full !m-0 !mb-4" placeholder="Ex: MC IG - Let's Go 4">
-                        <div class="text-left mb-2 text-xs text-zinc-400">ID do YouTube (Ex: dQw4w9WgXcQ):</div>
-                        <input id="swal-url" class="swal2-input !w-full !m-0 !mb-4" placeholder="Código que fica após v=">
-                        <div class="text-left mb-2 text-xs text-amber-400 font-bold">Pontos ganhos por Minuto:</div>
-                        <input id="swal-pts" type="number" class="swal2-input !w-full !m-0" placeholder="Ex: 150">
-                    `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Adicionar',
-                    preConfirm: () => {
-                        const titulo = document.getElementById('swal-titulo').value;
-                        const url = document.getElementById('swal-url').value;
-                        const pts = document.getElementById('swal-pts').value;
-                        if(!titulo || !url) { Swal.showValidationMessage('Preencha Título e ID!'); return false; }
-                        return { titulo, url_video: url, pontos_por_minuto: parseInt(pts) || 100 };
-                    }
-                });
-
-                if(form) {
-                    try {
-                        const { error } = await supabase.from('filmes').insert(form);
-                        if(error) throw error;
-                        Swal.fire({ icon: 'success', title: 'Adicionado!', timer: 1000, showConfirmButton: false });
-                        loadFilmes();
-                    } catch(e) { Swal.fire('Erro', e.message, 'error'); }
-                }
-            });
-        });
+        // Inicia na Dashboard
+        window.onload = () => mudarAba('dashboard');
 
     </script>
 </body>
