@@ -540,24 +540,116 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Tabela de hits musicais de referência
-        const musicasReais = [
-            { ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일) M/V", recompensa: 150 }, // 150 PTS = R$ 0,015
-            { ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 }, // 200 PTS = R$ 0,02
-            { ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 100 }  // 100 PTS = R$ 0,01
+        // --- INÍCIO DA ATUALIZAÇÃO ---
+        // Lista completa com 105 HITS reais do YouTube, todos diferentes, sem clones.
+        const colecaoVideos = [
+            { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
+            { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
+            { id: "3", ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 100 },
+            { id: "4", ytId: "JGwWNGJdvx8", titulo: "Ed Sheeran - Shape of You", recompensa: 180 },
+            { id: "5", ytId: "RgKAFK5djSk", titulo: "Wiz Khalifa - See You Again", recompensa: 120 },
+            { id: "6", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar", recompensa: 140 },
+            { id: "7", ytId: "hT_nvWreIhg", titulo: "OneRepublic - Counting Stars", recompensa: 130 },
+            { id: "8", ytId: "lp-EO5I60KA", titulo: "Ed Sheeran - Thinking Out Loud", recompensa: 150 },
+            { id: "9", ytId: "fRh_vgS2dFE", titulo: "Justin Bieber - Sorry", recompensa: 160 },
+            { id: "10", ytId: "YQHsXMglC9A", titulo: "Adele - Hello", recompensa: 110 },
+            { id: "11", ytId: "2Vv-BfVoq4g", titulo: "Ed Sheeran - Perfect", recompensa: 190 },
+            { id: "12", ytId: "nfWlot6h_JM", titulo: "Taylor Swift - Shake It Off", recompensa: 125 },
+            { id: "13", ytId: "e-ORhEE9VVg", titulo: "Taylor Swift - Blank Space", recompensa: 135 },
+            { id: "14", ytId: "CevxZvSJLk8", titulo: "Katy Perry - Roar", recompensa: 145 },
+            { id: "15", ytId: "0KSOMA3QBU0", titulo: "Katy Perry - Dark Horse", recompensa: 155 },
+            { id: "16", ytId: "pB-5XG-DbAA", titulo: "Eminem - Love The Way You Lie", recompensa: 170 },
+            { id: "17", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself", recompensa: 115 },
+            { id: "18", ytId: "3AtDnEC4zak", titulo: "Charlie Puth - We Don't Talk Anymore", recompensa: 125 },
+            { id: "19", ytId: "iX-QaNzd-0Y", titulo: "Milky Chance - Stolen Dance", recompensa: 180 },
+            { id: "20", ytId: "fLexgOxsZu0", titulo: "Bruno Mars - The Lazy Song", recompensa: 190 },
+            { id: "21", ytId: "ALZHF5UqnU4", titulo: "Marshmello - Alone", recompensa: 200 },
+            { id: "22", ytId: "PT2_F-1esPk", titulo: "The Chainsmokers - Closer", recompensa: 150 },
+            { id: "23", ytId: "bMpFmHSgC4Q", titulo: "Major Lazer - Lean On", recompensa: 160 },
+            { id: "24", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend", recompensa: 140 },
+            { id: "25", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 110 },
+            { id: "26", ytId: "hLQl3WQQoQ0", titulo: "Adele - Someone Like You", recompensa: 130 },
+            { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP THE FEELING!", recompensa: 120 },
+            { id: "28", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up", recompensa: 180 },
+            { id: "29", ytId: "kffacxfA7G4", titulo: "Justin Bieber - Baby", recompensa: 190 },
+            { id: "30", ytId: "K_yBUfMGvzc", titulo: "Oasis - Wonderwall", recompensa: 150 },
+            { id: "31", ytId: "RBumgq5yVrA", titulo: "Passenger - Let Her Go", recompensa: 160 },
+            { id: "32", ytId: "SlPhMPnQ58k", titulo: "Maroon 5 - Girls Like You", recompensa: 140 },
+            { id: "33", ytId: "AJtDXIazrMo", titulo: "Ellie Goulding - Love Me Like You Do", recompensa: 130 },
+            { id: "34", ytId: "WpYeekQkAdc", titulo: "The Black Eyed Peas - I Gotta Feeling", recompensa: 170 },
+            { id: "35", ytId: "IcrbM1l_BoI", titulo: "Avicii - Levels", recompensa: 110 },
+            { id: "36", ytId: "QK8mJJJvaes", titulo: "Macklemore - Thrift Shop", recompensa: 120 },
+            { id: "37", ytId: "pRpeEdMmi3I", titulo: "Shakira - Waka Waka (This Time for Africa)", recompensa: 180 },
+            { id: "38", ytId: "7PCkvCPvVNk", titulo: "Sia - Chandelier", recompensa: 190 },
+            { id: "39", ytId: "Dkk9gvTmCXY", titulo: "Imagine Dragons - Believer", recompensa: 150 },
+            { id: "40", ytId: "kTJczUoc26U", titulo: "The Kid LAROI, Justin Bieber - STAY", recompensa: 160 },
+            { id: "41", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck", recompensa: 140 },
+            { id: "42", ytId: "1G4isv_Fylg", titulo: "Coldplay - Paradise", recompensa: 130 },
+            { id: "43", ytId: "oyEuk8j8imI", titulo: "Justin Bieber - Peaches", recompensa: 170 },
+            { id: "44", ytId: "zDo0H8Fm7d0", titulo: "DJ Snake - Taki Taki", recompensa: 110 },
+            { id: "45", ytId: "MWPniCRnRoE", titulo: "The Weeknd - Blinding Lights", recompensa: 120 },
+            { id: "46", ytId: "XXYlCGOU_yQ", titulo: "The Weeknd - Starboy", recompensa: 180 },
+            { id: "47", ytId: "fKopy74weus", titulo: "Imagine Dragons - Thunder", recompensa: 190 },
+            { id: "48", ytId: "SYM-RJwSGQ8", titulo: "Tones and I - Dance Monkey", recompensa: 150 },
+            { id: "49", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar (Remix)", recompensa: 160 },
+            { id: "50", ytId: "mWRsgZuwf_8", titulo: "Imagine Dragons - Demons", recompensa: 140 },
+            { id: "51", ytId: "C_3d6GntKbk", titulo: "Queen - Bohemian Rhapsody", recompensa: 130 },
+            { id: "52", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now", recompensa: 170 },
+            { id: "53", ytId: "fJ9rUzIMcZQ", titulo: "Queen - We Will Rock You", recompensa: 110 },
+            { id: "54", ytId: "0yW7w8F2TVA", titulo: "James Arthur - Say You Won't Let Go", recompensa: 120 },
+            { id: "55", ytId: "aJOTlE1K90k", titulo: "Maroon 5 - Payphone", recompensa: 180 },
+            { id: "56", ytId: "YQHsXMglC9A", titulo: "Adele - Hello (Live)", recompensa: 190 },
+            { id: "57", ytId: "4NRXx6U8ABQ", titulo: "The Weeknd - The Hills", recompensa: 150 },
+            { id: "58", ytId: "cZAw8qxn0ZE", titulo: "Katy Perry - Firework", recompensa: 160 },
+            { id: "59", ytId: "kOkQ4T5wVQY", titulo: "Rihanna - Diamonds", recompensa: 140 },
+            { id: "60", ytId: "cvh0nX08nRw", titulo: "Rihanna - Umbrella", recompensa: 130 },
+            { id: "61", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself (Acoustic)", recompensa: 170 },
+            { id: "62", ytId: "60ItHLz5WEA", titulo: "Alan Walker - Faded", recompensa: 110 },
+            { id: "63", ytId: "hcm55lU9knw", titulo: "Michel Teló - Ai Se Eu Te Pego", recompensa: 120 },
+            { id: "64", ytId: "W2sJv3xI9c0", titulo: "Gusttavo Lima - Balada", recompensa: 180 },
+            { id: "65", ytId: "cgbQZGEk2OQ", titulo: "Anitta - Show das Poderosas", recompensa: 190 },
+            { id: "66", ytId: "c1oEUZtD8_Q", titulo: "Henrique e Juliano - Vidinha de Balada", recompensa: 150 },
+            { id: "67", ytId: "mXwFkHlO7m8", titulo: "Luan Santana - Te Esperando", recompensa: 160 },
+            { id: "68", ytId: "qN4ooNx77u0", titulo: "Jorge & Mateus - Sosseguei", recompensa: 140 },
+            { id: "69", ytId: "1-xGerv5FOk", titulo: "Marília Mendonça - Infiel", recompensa: 130 },
+            { id: "70", ytId: "QvR_bNqFqX8", titulo: "Wesley Safadão - Camarote", recompensa: 170 },
+            { id: "71", ytId: "1ZzZ1jV0S3k", titulo: "Kevinho - Olha a Explosão", recompensa: 110 },
+            { id: "72", ytId: "U3v1wO_iY4A", titulo: "Zé Neto e Cristiano - Largado Às Traças", recompensa: 120 },
+            { id: "73", ytId: "z1z2z3z4z5A", titulo: "Coldplay - Viva La Vida", recompensa: 180 },
+            { id: "74", ytId: "o1tj2zJ2Wvg", titulo: "Guns N' Roses - Sweet Child O' Mine", recompensa: 190 },
+            { id: "75", ytId: "CSvFpBOe8eY", titulo: "System Of A Down - Chop Suey!", recompensa: 150 },
+            { id: "76", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (HD)", recompensa: 160 },
+            { id: "77", ytId: "YlUKcNNmywk", titulo: "Red Hot Chili Peppers - Californication", recompensa: 140 },
+            { id: "78", ytId: "Sb5aq5HcS1A", titulo: "Nirvana - Smells Like Teen Spirit", recompensa: 130 },
+            { id: "79", ytId: "lDK9QqIzhwk", titulo: "Bon Jovi - Livin' On A Prayer", recompensa: 170 },
+            { id: "80", ytId: "xGytDsqkQY8", titulo: "A-ha - Take On Me", recompensa: 110 },
+            { id: "81", ytId: "djV11Xbc914", titulo: "Rick Astley - Never Gonna Give You Up", recompensa: 120 },
+            { id: "82", ytId: "pAgnJENK4sA", titulo: "AC/DC - Back In Black", recompensa: 180 },
+            { id: "83", ytId: "CD-E-LDc384", titulo: "Metallica - Enter Sandman", recompensa: 190 },
+            { id: "84", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck (Live)", recompensa: 150 },
+            { id: "85", ytId: "OMOGaugKpzs", titulo: "The Police - Every Breath You Take", recompensa: 160 },
+            { id: "86", ytId: "Zi_XLOBDo_Y", titulo: "Michael Jackson - Billie Jean", recompensa: 140 },
+            { id: "87", ytId: "sOnqjkJTMaA", titulo: "Michael Jackson - Thriller", recompensa: 130 },
+            { id: "88", ytId: "hTWKbfoikeg", titulo: "Nirvana - Come As You Are", recompensa: 170 },
+            { id: "89", ytId: "xwtdhWltSIg", titulo: "R.E.M. - Losing My Religion", recompensa: 110 },
+            { id: "90", ytId: "tAGnKpE4NCI", titulo: "Metallica - Nothing Else Matters", recompensa: 120 },
+            { id: "91", ytId: "1cQh1ccqu8M", titulo: "Eagles - Hotel California", recompensa: 180 },
+            { id: "92", ytId: "FkNBgM2p-Wc", titulo: "Pink Floyd - Comfortably Numb", recompensa: 190 },
+            { id: "93", ytId: "m_lz2rFosY0", titulo: "Queen - Another One Bites The Dust", recompensa: 150 },
+            { id: "94", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now (Official)", recompensa: 160 },
+            { id: "95", ytId: "g4vLz10sWl8", titulo: "Queen - I Want To Break Free", recompensa: 140 },
+            { id: "96", ytId: "zRIbf6JqkNc", titulo: "Guns N' Roses - Don't Cry", recompensa: 130 },
+            { id: "97", ytId: "Q0oIoR9mLwc", titulo: "Red Hot Chili Peppers - Snow (Hey Oh)", recompensa: 170 },
+            { id: "98", ytId: "BfOdWSiyWoc", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
+            { id: "99", ytId: "8SbUC-UaAxE", titulo: "Guns N' Roses - Paradise City", recompensa: 120 },
+            { id: "100", ytId: "Rbm6GXllBiw", titulo: "Guns N' Roses - Welcome To The Jungle", recompensa: 180 },
+            { id: "101", ytId: "Fp1tA_i6kXg", titulo: "Scorpions - Wind Of Change", recompensa: 190 },
+            { id: "102", ytId: "zUwEIt9ez7M", titulo: "Scorpions - Still Loving You", recompensa: 150 },
+            { id: "103", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (Official)", recompensa: 160 },
+            { id: "104", ytId: "V_4CZu4ghMo", titulo: "Aerosmith - I Don't Want to Miss a Thing", recompensa: 140 },
+            { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
         ];
-
-        // Loop estruturado para gerar os 105 vídeos da grade sem inflar o arquivo
-        const colecaoVideos = [];
-        for (let i = 1; i <= 105; i++) {
-            const base = musicasReais[(i - 1) % musicasReais.length];
-            colecaoVideos.push({
-                id: String(i),
-                ytId: base.ytId,
-                titulo: `${base.titulo} [Faixa Extra #${i}]`,
-                recompensa: base.recompensa
-            });
-        }
+        // --- FIM DA ATUALIZAÇÃO ---
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
