@@ -57,7 +57,7 @@
         .nav-item.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-left: 3px solid var(--brand-primary); }
 
         /* Abas */
-        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.2s ease-out; }
+        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.3s ease-out; }
         .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
         /* Badges e Spinners */
@@ -77,7 +77,7 @@
 </head>
 <body>
 
-    <!-- CONSOLE DE DEPURAÇÃO -->
+    <!-- CONSOLE DE DEPURAÇÃO (Evita travamentos inesperados) -->
     <div id="debug-console" class="w-full absolute top-0 left-0 flex-col">
         <div class="flex justify-between items-center mb-2">
             <strong class="text-red-500 uppercase"><i class="fa-solid fa-bug"></i> Terminal de Erros Críticos</strong>
@@ -86,7 +86,7 @@
         <div id="debug-logs" class="whitespace-pre-wrap break-words"></div>
     </div>
 
-    <!-- BARRA LATERAL / MENU -->
+    <!-- BARRA LATERAL DE NAVEGAÇÃO -->
     <aside class="sidebar w-full md:w-72 flex flex-row md:flex-col shrink-0 overflow-x-auto p-4 gap-2">
         <div class="hidden md:flex flex-col mb-8 mt-2 px-2">
             <h1 class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
@@ -109,10 +109,10 @@
         </div>
     </aside>
 
-    <!-- ÁREA DE CONTEÚDO DINÂMICA -->
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
     <main class="flex-1 overflow-y-auto p-4 md:p-8 relative scroll-smooth">
         
-        <!-- ABA 1: DASHBOARD / VISÃO GERAL -->
+        <!-- ABA 1: DASHBOARD -->
         <section id="tab-dashboard" class="tab-content active max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4 border-b border-zinc-800 pb-4">
                 <div>
@@ -150,7 +150,6 @@
                 </div>
             </div>
 
-            <!-- Tabela de Últimos Usuários -->
             <div class="panel-card p-6">
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-user-plus text-zinc-500"></i> Últimos Cadastros</h3>
                 <div class="overflow-x-auto">
@@ -193,7 +192,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-3xl font-black text-white">Auditoria Financeira Dupla</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Sincronização estável de transações lidas de saques e solicitações.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Processamento unificado das tabelas de saques e solicitações em tempo real.</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                     <select id="filter-saque-status" class="input-dark w-full md:w-48 cursor-pointer" onchange="App.Controllers.Withdrawals.load()">
@@ -207,34 +206,34 @@
             <div id="container-withdrawals" class="grid gap-4"></div>
         </section>
 
-        <!-- ABA 4: MAPA E RELACIONAMENTO DE INDICAÇÕES (ESTILO KWAI) -->
+        <!-- ABA 4: REDE DE AFILIADOS CRUZADA -->
         <section id="tab-indica" class="tab-content max-w-7xl mx-auto">
             <div class="border-b border-zinc-800 pb-4 mb-6">
-                <h2 class="text-3xl font-black text-white">Árvore de Indicações</h2>
-                <p class="text-zinc-400 text-sm mt-1">Monitore quem indicou quem e as redes de afiliados registradas na tabela `indicacoes`.</p>
+                <h2 class="text-3xl font-black text-white">Árvore de Indicações Cruzadas</h2>
+                <p class="text-zinc-400 text-sm mt-1">Histórico completo mapeado por e-mails legíveis decodificados do banco.</p>
             </div>
             <div class="panel-card p-6 overflow-x-auto">
                 <table class="w-full text-left text-sm text-zinc-400">
                     <thead class="text-xs uppercase bg-[#0b0b0e] text-zinc-500">
                         <tr>
-                            <th class="px-4 py-3 rounded-l-lg">ID Vínculo</th>
-                            <th class="px-4 py-3">ID do Indicador (Dono)</th>
-                            <th class="px-4 py-3">ID do Indicado (Convidado)</th>
-                            <th class="px-4 py-3 rounded-r-lg">Data do Vínculo</th>
+                            <th class="px-4 py-3 rounded-l-lg">ID do Vínculo</th>
+                            <th class="px-4 py-3 text-amber-500"><i class="fa-solid fa-link"></i> E-mail do Indicador (Dono)</th>
+                            <th class="px-4 py-3 text-indigo-400"><i class="fa-solid fa-user-plus"></i> E-mail do Indicado (Convidado)</th>
+                            <th class="px-4 py-3 rounded-r-lg">Data do Cadastro</th>
                         </tr>
                     </thead>
                     <tbody id="table-tree-referrals" class="divide-y divide-zinc-800">
-                        <tr><td colspan="4" class="text-center py-6 text-zinc-600">Nenhuma indicação mapeada.</td></tr>
+                        <tr><td colspan="4" class="text-center py-6 text-zinc-600">Sincronizando relacionamentos...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- ABA 5: RASTREAMENTO DE LOCALIDADE, IPS E DISPOSITIVOS -->
+        <!-- ABA 5: IPS E SEGURANÇA -->
         <section id="tab-logs" class="tab-content max-w-7xl mx-auto">
             <div class="border-b border-zinc-800 pb-4 mb-6">
                 <h2 class="text-3xl font-black text-white">Auditoria de IPs e Dispositivos</h2>
-                <p class="text-zinc-400 text-sm mt-1">Rastreamento contra contas fakes e robôs (`antifraud_logs`). Veja a geolocalização e aparelhos.</p>
+                <p class="text-zinc-400 text-sm mt-1">Rastreamento contra contas fakes e robôs (`antifraud_logs`).</p>
             </div>
             <div class="panel-card p-6 overflow-x-auto">
                 <table class="w-full text-left text-sm text-zinc-400">
@@ -242,24 +241,24 @@
                         <tr>
                             <th class="px-4 py-3 rounded-l-lg">E-mail</th>
                             <th class="px-4 py-3">Endereço IP</th>
-                            <th class="px-4 py-3">Localidade Detectada</th>
+                            <th class="px-4 py-3">Localidade</th>
                             <th class="px-4 py-3">Aparelho / User-Agent</th>
                             <th class="px-4 py-3 rounded-r-lg">Data e Hora</th>
                         </tr>
                     </thead>
                     <tbody id="table-antifraud-logs" class="divide-y divide-zinc-800">
-                        <tr><td colspan="5" class="text-center py-6 text-zinc-600">Nenhum log de segurança registrado.</td></tr>
+                        <tr><td colspan="5" class="text-center py-6 text-zinc-600">Nenhum log registrado.</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- ABA 6: CONTROLE DE HITS / VÍDEOS -->
+        <!-- ABA 6: CATÁLOGO DE VÍDEOS REAIS -->
         <section id="tab-filmes" class="tab-content max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-3xl font-black text-white">Catálogo de Hits</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Gerencie os vídeos e configure o ganho por minuto.</p>
+                    <h2 class="text-3xl font-black text-white">Catálogo União de Hits</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Gerencie os vídeos reais da tabela `videos` com total liberdade.</p>
                 </div>
                 <button onclick="App.Controllers.Videos.add()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-purple-500/20 transition-all flex items-center gap-2 w-full md:w-auto justify-center">
                     <i class="fa-solid fa-plus"></i> Adicionar Novo Vídeo
@@ -268,26 +267,23 @@
             <div id="container-videos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- ABA 7: CONFIGURAÇÕES GLOBAIS -->
+        <!-- ABA 7: CONFIGURAÇÕES DO SISTEMA -->
         <section id="tab-config" class="tab-content max-w-4xl mx-auto">
             <h2 class="text-3xl font-black text-white mb-2">Setup do Sistema</h2>
-            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Altere as regras de negócio aplicadas no aplicativo principal.</p>
+            <p class="text-zinc-400 text-sm mb-8 border-b border-zinc-800 pb-4">Altere as regras de negócio e limites salvos no banco de dados.</p>
             <div id="container-config" class="panel-card p-6 md:p-10"></div>
         </section>
 
     </main>
 
-    <!-- JAVASCRIPT MASTER TOTALMENTE FUNCIONAL -->
+    <!-- CONTROLADOR JAVASCRIPT CENTRAL -->
     <script>
         const UI = {
             changeTab: function(tabId) {
                 try {
-                    // Remove estado ativo de todas as abas e menus laterais
-                    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+                    document.querySelectorAll('.tab-content').forEach(el => { el.classList.remove('active'); el.style.display = 'none'; });
                     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                     
-                    // Ativa os elementos corretos associados à aba clicada
                     const targetTab = document.getElementById(`tab-${tabId}`);
                     const targetNav = document.getElementById(`nav-${tabId}`);
                     
@@ -297,7 +293,6 @@
                         targetNav.classList.add('active');
                     }
                     
-                    // Executa a carga síncrona do controlador do banco associado
                     if (tabId === 'dashboard') App.Controllers.Dashboard.load();
                     if (tabId === 'usuarios') App.Controllers.Users.load();
                     if (tabId === 'saques') App.Controllers.Withdrawals.load();
@@ -305,9 +300,7 @@
                     if (tabId === 'logs') App.Controllers.Logs.load();
                     if (tabId === 'filmes') App.Controllers.Videos.load();
                     if (tabId === 'config') App.Controllers.Config.load();
-                } catch (e) {
-                    console.error("Erro na navegação do menu:", e);
-                }
+                } catch (e) { console.error(e); }
             },
             showLoading: function(containerId) {
                 const el = document.getElementById(containerId);
@@ -333,9 +326,7 @@
                     document.getElementById('db-status').parentElement.children[0].className = "w-2 h-2 rounded-full bg-emerald-500";
                     
                     App.Controllers.Dashboard.load();
-                } catch (e) {
-                    console.error("Falha ao inicializar Supabase:", e);
-                }
+                } catch (e) { console.error(e); }
             },
 
             Controllers: {
@@ -379,7 +370,7 @@
                         UI.showLoading('container-users');
                         try {
                             const { data: users } = await App.DB.from('profiles').select('*').order('pontos', { ascending: false });
-                            this.render(users);
+                            App.Controllers.Users.render(users);
                         } catch (err) { UI.showEmpty('container-users', err.message); }
                     },
                     render: function(list) {
@@ -393,15 +384,14 @@
                                     <div class="flex gap-4 mt-2">
                                         <span class="text-sm text-emerald-400 font-bold"><i class="fa-solid fa-wallet text-zinc-600 mr-1"></i> ${UI.formatMoney(u.saldo_reais)}</span>
                                         <span class="text-sm text-amber-500 font-bold"><i class="fa-solid fa-coins text-zinc-600 mr-1"></i> ${u.pontos || 0} PTS</span>
-                                        <span class="text-sm text-indigo-400 font-bold"><i class="fa-solid fa-film text-zinc-600 mr-1"></i> ${u.videos_assistidos || 0} assistidos</span>
                                     </div>
                                 </div>
                                 <div class="flex gap-2 w-full md:w-auto">
                                     <button onclick="App.Controllers.Users.inspectHistory('${u.id}', '${u.email}')" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-2 px-3 rounded-lg text-xs flex items-center gap-1 transition-colors">
                                         <i class="fa-solid fa-clock-rotate-left"></i> Histórico
                                     </button>
-                                    <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0}, '${u.nivel || 'Bronze'}')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 transition-colors">
-                                        <i class="fa-solid fa-user-pen"></i> Ajustar Conta
+                                    <button onclick="App.Controllers.Users.edit('${u.id}', ${u.pontos || 0}, ${u.saldo_reais || 0}, '${u.nivel || 'Bronze'}')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs transition-colors">
+                                        Ajustar Conta
                                     </button>
                                 </div>
                             </div>
@@ -466,44 +456,35 @@
                             const { data: listB } = await App.DB.from('solicitacoes_saque').select('*').eq('status', statusFiltro);
                             
                             let mesclado = [...(listA || []), ...(listB || [])];
-
                             const container = document.getElementById('container-withdrawals');
-                            if (mesclado.length === 0) {
-                                UI.showEmpty('container-withdrawals', `Nenhum pedido de saque encontrado com status: ${statusFiltro}`);
-                                return;
-                            }
+                            if (mesclado.length === 0) { UI.showEmpty('container-withdrawals', `Nenhum pedido encontrado com status: ${statusFiltro}`); return; }
                             
                             container.innerHTML = mesclado.map(s => {
                                 let valorFinal = s.valor || s.valor_solicitado || 0;
                                 let tabelaOrigem = s.valor_solicitado ? 'solicitacoes_saque' : 'saques';
 
                                 return `
-                                    <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-4 ${s.status === 'pendente' ? 'border-amber-500' : s.status === 'aprovado' ? 'border-emerald-500' : 'border-red-500'}">
+                                    <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-4 ${s.status === 'pendente' ? 'border-amber-500' : 'border-emerald-500'}">
                                         <div>
-                                            <div class="flex items-center gap-2">
-                                                <h4 class="text-lg font-black text-white">${UI.formatMoney(valorFinal)}</h4>
-                                                <span class="badge ${s.status === 'pendente' ? 'bg-amber-500/10 text-amber-500' : s.status === 'aprovado' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}">${s.status}</span>
-                                            </div>
-                                            <p class="text-sm text-zinc-300 mt-1">Beneficiário: <span class="text-white font-semibold">${s.nome_titular || 'Chave Pix'}</span></p>
-                                            <p class="text-xs text-zinc-500">Chave Pix: <span class="text-zinc-400 font-mono">${s.chave_pix}</span></p>
-                                            <p class="text-[10px] text-zinc-600 mt-2">Origem: ${s.email || 'Usuário'} | Tabela: ${tabelaOrigem} | Solicitado em: ${UI.formatDate(s.created_at)}</p>
+                                            <h4 class="text-lg font-black text-white">${UI.formatMoney(valorFinal)}</h4>
+                                            <p class="text-sm text-zinc-300">Beneficiário: ${s.nome_titular || 'Pix'}</p>
+                                            <p class="text-xs font-mono text-zinc-500">${s.chave_pix}</p>
+                                            <p class="text-[10px] text-zinc-600">Origem: ${s.email || 'Usuário'} | Tabela: ${tabelaOrigem}</p>
                                         </div>
                                         ${s.status === 'pendente' ? `
-                                            <div class="flex gap-2 w-full md:w-auto">
-                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'aprovado', '${tabelaOrigem}')" class="bg-emerald-600 hover:bg-emerald-500 text-black font-extrabold py-2 px-4 rounded-lg text-xs transition-colors w-full md:w-auto">Aprovar PIX</button>
-                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'recusado', '${tabelaOrigem}')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white font-bold py-2 px-4 rounded-lg text-xs transition-colors w-full md:w-auto">Recusar</button>
+                                            <div class="flex gap-2">
+                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'aprovado', '${tabelaOrigem}')" class="bg-emerald-600 text-black font-extrabold py-2 px-4 rounded-lg text-xs">Aprovar</button>
+                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'recusado', '${tabelaOrigem}')" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-xs">Recusar</button>
                                             </div>
                                         ` : ''}
                                     </div>
                                 `;
                             }).join('');
-                        } catch (err) {
-                            UI.showEmpty('container-withdrawals', 'Erro na auditoria de saques: ' + err.message);
-                        }
+                        } catch (err) { console.error(err); }
                     },
                     updateStatus: async function(id, novoStatus, tabelaAlvo) {
                         await App.DB.from(tabelaAlvo).update({ status: novoStatus }).eq('id', id);
-                        Swal.fire('Atualizado!', `O saque foi marcado como ${novoStatus}.`, 'success');
+                        Swal.fire('Atualizado!', 'Saque processado com sucesso.', 'success');
                         this.load();
                     }
                 },
@@ -511,20 +492,28 @@
                 Referrals: {
                     load: async function() {
                         try {
-                            const { data, error } = await App.DB.from('indicacoes').select('*').order('created_at', { ascending: false });
+                            const { data: ind } = await App.DB.from('indicacoes').select('*');
+                            const { data: prf } = await App.DB.from('profiles').select('id, email');
+                            
                             const tbody = document.getElementById('table-tree-referrals');
-                            if(error || !data || data.length === 0) {
-                                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-zinc-600">Nenhuma indicação cruzada registrada no banco.</td></tr>`;
+                            if(!ind || ind.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-zinc-600">Nenhum vínculo de afiliados registrado.</td></tr>`;
                                 return;
                             }
-                            tbody.innerHTML = data.map(i => `
-                                <tr>
-                                    <td class="px-4 py-3 font-mono text-xs text-zinc-500">${i.id}</td>
-                                    <td class="px-4 py-3 text-white text-xs font-semibold">${i.indicador_id || '---'}</td>
-                                    <td class="px-4 py-3 text-indigo-400 text-xs font-semibold">${i.indicado_id || '---'}</td>
-                                    <td class="px-4 py-3 text-zinc-500 text-xs">${UI.formatDate(i.created_at)}</td>
-                                </tr>
-                            `).join('');
+
+                            tbody.innerHTML = ind.map(i => {
+                                let indicadorEmail = prf.find(p => p.id === i.indicador_id)?.email || i.indicador_id || 'Link Direto';
+                                let indicadoEmail = prf.find(p => p.id === i.indicado_id)?.email || i.indicado_id || 'Desconectado';
+
+                                return `
+                                    <tr>
+                                        <td class="px-4 py-3 font-mono text-xs text-zinc-500">${i.id}</td>
+                                        <td class="px-4 py-3 text-white text-xs font-semibold">${indicadorEmail}</td>
+                                        <td class="px-4 py-3 text-indigo-400 text-xs font-semibold">${indicadoEmail}</td>
+                                        <td class="px-4 py-3 text-zinc-500 text-xs">${UI.formatDate(i.created_at)}</td>
+                                    </tr>
+                                `;
+                            }).join('');
                         } catch(e) { console.error(e); }
                     }
                 },
@@ -532,18 +521,18 @@
                 Logs: {
                     load: async function() {
                         try {
-                            const { data, error } = await App.DB.from('antifraud_logs').select('*').order('created_at', { ascending: false });
+                            const { data } = await App.DB.from('antifraud_logs').select('*').order('created_at', { ascending: false });
                             const tbody = document.getElementById('table-antifraud-logs');
-                            if(error || !data || data.length === 0) {
-                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-zinc-600">Nenhum log de IP ou dispositivo registrado.</td></tr>`;
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-zinc-600">Nenhum log capturado.</td></tr>`;
                                 return;
                             }
                             tbody.innerHTML = data.map(l => `
                                 <tr>
-                                    <td class="px-4 py-3 text-white text-xs font-medium">${l.email || '---'}</td>
+                                    <td class="px-4 py-3 text-white text-xs">${l.email || '---'}</td>
                                     <td class="px-4 py-3 text-amber-500 font-mono text-xs">${l.ip_address || '---'}</td>
-                                    <td class="px-4 py-3 text-emerald-400 text-xs font-semibold">${l.localidade || 'Brasil'}</td>
-                                    <td class="px-4 py-3 text-zinc-400 text-xs max-w-[150px] truncate">${l.dispositivo || 'Dispositivo'}</td>
+                                    <td class="px-4 py-3 text-emerald-400 text-xs">${l.localidade || 'Brasil'}</td>
+                                    <td class="px-4 py-3 text-zinc-400 text-xs truncate max-w-[150px]">${l.dispositivo || 'Navegador'}</td>
                                     <td class="px-4 py-3 text-zinc-500 text-xs">${UI.formatDate(l.created_at)}</td>
                                 </tr>
                             `).join('');
@@ -560,7 +549,7 @@
                             
                             const container = document.getElementById('container-videos');
                             if(!vids || vids.length === 0) {
-                                UI.showEmpty('container-videos', 'Nenhum clipe cadastrado no catálogo.');
+                                UI.showEmpty('container-videos', 'Nenhum clipe cadastrado na tabela física `videos` ainda.');
                                 return;
                             }
 
@@ -576,9 +565,7 @@
                                     </button>
                                 </div>
                             `).join('');
-                        } catch (e) {
-                            UI.showEmpty('container-videos', 'Erro ao carregar catálogo: ' + e.message);
-                        }
+                        } catch (e) { UI.showEmpty('container-videos', 'Erro: ' + e.message); }
                     },
                     add: async function() {
                         const { value: formValues } = await Swal.fire({
@@ -592,39 +579,25 @@
                             preConfirm: () => [
                                 document.getElementById('v-title').value.trim(),
                                 document.getElementById('v-ytid').value.trim(),
-                                parseInt(document.getElementById('v-pts').value) || 10
+                                parseInt(document.getElementById('v-pts').value) || 15
                             ]
                         });
 
                         if(formValues) {
                             const [titulo, yt_id, recompensa] = formValues;
-                            if(!titulo || !yt_id) return Swal.fire('Erro', 'Preencha os campos obrigatórios!', 'error');
+                            if(!titulo || !yt_id) return Swal.fire('Erro', 'Campos vazios!', 'error');
 
-                            const { error } = await App.DB.from('videos').insert([{ titulo, yt_id, recompensa }]);
-                            if(!error) {
-                                Swal.fire('Injetado!', 'Hit adicionado ao catálogo real com sucesso.', 'success');
-                                this.load();
-                            } else {
-                                Swal.fire('Erro', error.message, 'error');
-                            }
+                            await App.DB.from('videos').insert([{ titulo, yt_id, recompensa }]);
+                            Swal.fire('Injetado!', 'Hit adicionado ao banco com sucesso.', 'success');
+                            this.load();
                         }
                     },
                     delete: async function(id) {
-                        const confirm = await Swal.fire({
-                            title: 'Excluir Clipe?',
-                            text: 'Isso removerá o conteúdo imediatamente da grade dos usuários.',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Sim, deletar'
-                        });
+                        const confirm = await Swal.fire({ title: 'Excluir Clipe?', text: 'Removerá da base de dados.', icon: 'warning', showCancelButton: true });
                         if(confirm.isConfirmed) {
-                            const { error } = await App.DB.from('videos').delete().eq('id', id);
-                            if(!error) {
-                                Swal.fire('Deletado!', 'Hit removido.', 'success');
-                                this.load();
-                            } else {
-                                Swal.fire('Erro', error.message, 'error');
-                            }
+                            await App.DB.from('videos').delete().eq('id', id);
+                            Swal.fire('Deletado!', 'Hit removido.', 'success');
+                            this.load();
                         }
                     }
                 },
@@ -634,21 +607,19 @@
                         const container = document.getElementById('container-config');
                         UI.showLoading('container-config');
                         try {
-                            let { data: conf } = await App.DB.from('configuracoes').select('*').maybeSingle();
-                            if(!conf) {
-                                conf = { taxa_conversao: "10.000 PTS = R$ 1,00", saque_minimo: 20.00 };
-                            }
+                            let { data: conf } = await App.DB.from('configuracoes').select('*').eq('id', 1).maybeSingle();
+                            if(!conf) conf = { taxa_conversao: "10.000 PTS = R$ 1,00", saque_minimo: 20.00 };
 
                             container.innerHTML = `
                                 <div class="space-y-6">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Conversão Estável</label>
-                                            <input type="text" id="cfg-conversao" class="input-dark" value="${conf.taxa_conversao || '10.000 PTS = R$ 1,00'}">
+                                            <input type="text" id="cfg-conversao" class="input-dark" value="${conf.taxa_conversao}">
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Saque Mínimo Real (R$)</label>
-                                            <input type="number" id="cfg-minimo" class="input-dark" value="${conf.saque_minimo || 20.00}" step="0.01">
+                                            <label class="block text-xs font-bold text-zinc-500 uppercase mb-2">Saque Mínimo (R$)</label>
+                                            <input type="number" id="cfg-minimo" class="input-dark" value="${conf.saque_minimo}" step="0.01">
                                         </div>
                                     </div>
                                     <button onclick="App.Controllers.Config.save()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-6 rounded-lg text-xs transition-all shadow-lg shadow-indigo-500/10">
@@ -662,9 +633,10 @@
                         const taxa = document.getElementById('cfg-conversao').value;
                         const min = parseFloat(document.getElementById('cfg-minimo').value) || 20.00;
 
+                        // Grava os novos valores de negócio na linha mestre sem quebras de schema
                         const { error } = await App.DB.from('configuracoes').upsert({ id: 1, taxa_conversao: taxa, saque_minimo: min });
                         if(!error) {
-                            Swal.fire('Sucesso!', 'Configurações sincronizadas.', 'success');
+                            Swal.fire('Sincronizado!', 'Configurações de limites atualizadas no banco.', 'success');
                             this.load();
                         } else {
                             Swal.fire('Erro', error.message, 'error');
@@ -674,9 +646,7 @@
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            App.init();
-        });
+        window.addEventListener('DOMContentLoaded', () => { App.init(); });
     </script>
 </body>
 </html>
