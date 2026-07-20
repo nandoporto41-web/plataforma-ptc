@@ -357,17 +357,19 @@
                         try {
                             const { data: users, count: totalUsers } = await App.DB.from('profiles').select('*', { count: 'exact' });
                             
-                            const { count: countSaques } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'pendente');
-                            const { count: countSol } = await App.DB.from('solicitacoes_saque').select('*', { count: 'exact' }).eq('status', 'pendente');
+                            // Busca unificada independente da nomenclatura das duas tabelas
+                            const { data: sA } = await App.DB.from('saques').select('status');
+                            const { data: sB } = await App.DB.from('solicitacoes_saque').select('status');
                             
-                            const { count: approvedSaques } = await App.DB.from('saques').select('*', { count: 'exact' }).eq('status', 'aprovado');
-                            const { count: approvedSol } = await App.DB.from('solicitacoes_saque').select('*', { count: 'exact' }).eq('status', 'aprovado');
+                            let todosSaques = [...(sA || []), ...(sB || [])];
+                            let pendentes = todosSaques.filter(s => s.status === 'pendente').length;
+                            let aprovados = todosSaques.filter(s => s.status === 'aprovado').length;
 
                             const { count: totalVids } = await App.DB.from('videos').select('*', { count: 'exact' });
                             
                             document.getElementById('metric-users').innerText = totalUsers || 0;
-                            document.getElementById('metric-pending').innerText = (countSaques || 0) + (countSol || 0);
-                            document.getElementById('metric-approved').innerText = (approvedSaques || 0) + (approvedSol || 0);
+                            document.getElementById('metric-pending').innerText = pendentes;
+                            document.getElementById('metric-approved').innerText = aprovados;
                             document.getElementById('metric-videos').innerText = totalVids || 0;
 
                             const tbody = document.getElementById('table-latest-users');
@@ -477,32 +479,30 @@
                             const { data: listA } = await App.DB.from('saques').select('*').eq('status', statusFiltro);
                             const { data: listB } = await App.DB.from('solicitacoes_saque').select('*').eq('status', statusFiltro);
                             
-                            let mesclado = [...(listA || []), ...(listB || [])];
+                            // Normalização estrutural forçada para mesclar as tabelas antigas e novas
+                            let normA = (listA || []).map(item => ({ id: item.id, email: item.email || "Usuário", nome_titular: item.nome_titular || "Chave Pix", chave_pix: item.chave_pix, valor: item.valor || item.valor_solicitado || 0, created_at: item.created_at, status: item.status, tbl: 'saques' }));
+                            let normB = (listB || []).map(item => ({ id: item.id, email: item.email || "Usuário", nome_titular: item.nome_titular || "Chave Pix", chave_pix: item.chave_pix, valor: item.valor_solicitado || item.valor || 0, created_at: item.created_at, status: item.status, tbl: 'solicitacoes_saque' }));
+
+                            let mesclado = [...normA, ...normB];
                             const container = document.getElementById('container-withdrawals');
                             if (mesclado.length === 0) { UI.showEmpty('container-withdrawals', `Nenhum pedido encontrado com status: ${statusFiltro}`); return; }
                             
-                            container.innerHTML = mesclado.map(s => {
-                                // CORREÇÃO: Consolidando 'valor_solicitado' de forma mestre para bater com o input do site
-                                let valorFinal = s.valor_solicitado || s.valor || 0;
-                                let tabelaOrigem = s.valor_solicitado ? 'solicitacoes_saque' : 'saques';
-
-                                return `
+                            container.innerHTML = mesclado.map(s => `
                                     <div class="panel-card p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-l-4 ${s.status === 'pendente' ? 'border-amber-500' : 'border-emerald-500'}">
                                         <div>
-                                            <h4 class="text-lg font-black text-white">${UI.formatMoney(valorFinal)}</h4>
-                                            <p class="text-sm text-zinc-300">Beneficiário: ${s.nome_titular || 'Pix'}</p>
+                                            <h4 class="text-lg font-black text-white">${UI.formatMoney(s.valor)}</h4>
+                                            <p class="text-sm text-zinc-300">Beneficiário: ${s.nome_titular}</p>
                                             <p class="text-xs font-mono text-zinc-500">${s.chave_pix}</p>
-                                            <p class="text-[10px] text-zinc-600">Origem: ${s.email || 'Usuário'} | Tabela: ${tabelaOrigem}</p>
+                                            <p class="text-[10px] text-zinc-600">Origem: ${s.email} | Origem Física: ${s.tbl} | Data: ${UI.formatDate(s.created_at)}</p>
                                         </div>
                                         ${s.status === 'pendente' ? `
                                             <div class="flex gap-2">
-                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'aprovado', '${tabelaOrigem}')" class="bg-emerald-600 text-black font-extrabold py-2 px-4 rounded-lg text-xs">Aprovar</button>
-                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'recusado', '${tabelaOrigem}')" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-xs">Recusar</button>
+                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'aprovado', '${s.tbl}')" class="bg-emerald-600 text-black font-extrabold py-2 px-4 rounded-lg text-xs">Aprovar</button>
+                                                <button onclick="App.Controllers.Withdrawals.updateStatus('${s.id}', 'recusado', '${s.tbl}')" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg text-xs">Recusar</button>
                                             </div>
                                         ` : ''}
                                     </div>
-                                `;
-                            }).join('');
+                                `).join('');
                         } catch (err) { console.error(err); }
                     },
                     updateStatus: async function(id, novoStatus, tabelaAlvo) {
@@ -526,7 +526,7 @@
 
                             tbody.innerHTML = ind.map(i => {
                                 let indicadorEmail = prf.find(p => p.id === i.indicador_id)?.email || i.indicador_id || 'Link Direto';
-                                let indicadoEmail = prf.find(p => p.id === i.indicado_id)?.email || i.indicado_id || 'Desconectado';
+                                let indicadoEmail = prf.find(p => p.id === i.indicated_id || p.id === i.indicado_id)?.email || i.indicado_id || 'Desconectado';
 
                                 return `
                                     <tr>
@@ -658,7 +658,7 @@
 
                         const { error } = await App.DB.from('configuracoes').upsert({ id: '00000000-0000-0000-0000-000000000000', taxa_conversao: taxa, saque_minimo: min });
                         if(!error) {
-                            Swal.fire('Sincronizado!', 'Configurações de limites atualizadas no banco.', 'success');
+                            Swal.fire('Sincronizado!', 'Configurações de limites updated.', 'success');
                             this.load();
                         } else {
                             Swal.fire('Erro', error.message, 'error');
