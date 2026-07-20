@@ -546,6 +546,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
+        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_2](start_span)[span_2](end_span)
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -608,7 +609,7 @@
             { id: "59", ytId: "kOkQ4T5wVQY", titulo: "Rihanna - Diamonds", recompensa: 140 },
             { id: "60", ytId: "cvh0nX08nRw", titulo: "Rihanna - Umbrella", recompensa: 130 },
             { id: "61", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself (Acoustic)", recompensa: 170 },
-            { id: "62", ytId: "60ItHLz5WEA", fontId: "", titulo: "Alan Walker - Faded", recompensa: 110 },
+            { id: "62", ytId: "60ItHLz5WEA", titulo: "Alan Walker - Faded", recompensa: 110 },
             { id: "63", ytId: "hcm55lU9knw", titulo: "Michel Teló - Ai Se Eu Te Pego", recompensa: 120 },
             { id: "64", ytId: "W2sJv3xI9c0", titulo: "Gusttavo Lima - Balada", recompensa: 180 },
             { id: "65", ytId: "cgbQZGEk2OQ", titulo: "Anitta - Show das Poderosas", recompensa: 190 },
@@ -692,17 +693,14 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const indicadorId = urlParams.get('ref');
                     
-                    // Lógica de Indicação Ajustada Kwai: Gravação real e segura de e-mails na tabela `indicacoes`
                     if (indicadorId && indicadorId !== data.user.id) {
                         let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais, email').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
                             let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
                             let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
                             
-                            // Atualiza os bônus do indicador
                             await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: novoSaldo }).eq('id', indicadorId);
                             
-                            // Registra o relacionamento físico na tabela de rede
                             await _supabase.from('indicacoes').insert([{
                                 indicador_id: indicadorId,
                                 indicado_id: data.user.id,
@@ -742,7 +740,6 @@
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
-                // Injeção de Rastreio contra fraudes (Localidade / Dispositivos) estilo Kwai
                 if(navigator.geolocation) {
                     await _supabase.from('antifraud_logs').insert([{
                         user_id: user.id,
@@ -756,7 +753,8 @@
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
             } finally {
-                atualizarInterfaceDados(pontosLocaisMemoria, dineroLocalMemoria);
+                // CORREÇÃO: Variável mapeada corretamente como dinheiroLocalMemoria (com 'hi') para carregar o saldo
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
                 dispararNotificacoesSaqueFlutuante();
             }
@@ -848,6 +846,12 @@
             script1.dataset.zone = '11218300';
             containerScripts.appendChild(script1);
 
+            const script2 = document.createElement('script');
+            script2.async = true;
+            script2.src = 'https://nap5k.com/tag.min.js';
+            script2.dataset.zone = '11218299';
+            containerScripts.appendChild(script2);
+
             const layer = document.getElementById('adLayer');
             const timerTxt = document.getElementById('adTimerText');
             layer.classList.add('active');
@@ -906,19 +910,6 @@
             }
         };
 
-        function trocarVideoAtivo(id) {
-            const vData = colecaoVideos.find(v => v.id === id);
-            if(!vData || idVideoAtivo === id) return;
-
-            idVideoAtivo = id;
-            tempoAcumuladoSegundos = 0; 
-            document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
-            document.getElementById(`vcard-${id}`).classList.add('active');
-            if(youtubePlayer && youtubePlayer.loadVideoById) {
-                youtubePlayer.loadVideoById(vData.ytId);
-            }
-        }
-
         function gerenciarMudancaEstadoPlayer(ev) {
             if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) {
                 iniciarContagemGanhos();
@@ -954,7 +945,6 @@
                         
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        // Envia os ganhos e salva o histórico de retenção (watch_history) estilo Kwai para o Painel ADM ler
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
                         await _supabase.from('watch_history').insert([{
                             user_id: usuarioAtualId,
@@ -976,14 +966,13 @@
             alert("Link de indicação copiado com sucesso!");
         }
 
-        // Sistema de Auditoria Financeira unificado conectado ao Painel ADM
         async function executarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
             const key = document.getElementById('pixKey').value.trim();
             const name = document.getElementById('pixName').value.trim();
 
             if(!name || !key || isNaN(val) || val < 20) {
-                return alert("Preencha todos os dados. O valor mínimo para saque é R$ 20,00[span_1](start_span)[span_1](end_span).");
+                return alert("Preencha todos os dados. O valor mínimo para saque é R$ 20,00.");
             }
 
             if(dinheiroLocalMemoria < val) {
@@ -991,11 +980,9 @@
             }
 
             try {
-                // Deduz o saldo localmente e atualiza o banco imediatamente
                 let novoSaldo = dinheiroLocalMemoria - val;
                 await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
                 
-                // Grava a solicitação oficial com os dados de depósito para o painel ler
                 await _supabase.from('solicitacoes_saque').insert([{
                     user_id: usuarioAtualId,
                     email: usuarioEmail,
@@ -1005,7 +992,7 @@
                     status: 'pendente'
                 }]);
 
-                alert("Sua solicitação de saque foi enviada com sucesso para análise automática!");
+                alert("Sua solicitação foi enviada com sucesso para análise automática!");
                 location.reload();
             } catch(e) {
                 alert("Erro ao enviar pedido: " + e.message);
