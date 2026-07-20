@@ -6,7 +6,6 @@
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
     <!-- SDKs e Bibliotecas Core -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -404,7 +403,7 @@
             </div>
         </div>
 
-        <!-- ABA 1: FEED -->
+        <!-- FEED -->
         <div class="content-body" id="screen-home">
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
@@ -420,7 +419,7 @@
             </div>
         </div>
 
-        <!-- ABA 2: SAQUES -->
+        <!-- SAQUES -->
         <div class="sub-screen" id="screen-saque" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -446,7 +445,7 @@
             <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque</button>
         </div>
 
-        <!-- ABA 3: INDICAÇÕES -->
+        <!-- INDICAÇÕES -->
         <div class="sub-screen" id="screen-indica" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -469,7 +468,7 @@
             <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
         </div>
 
-        <!-- ABA 4: REGRAS -->
+        <!-- REGRAS -->
         <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
             <h3>Termos & Diretrizes da Plataforma</h3>
             
@@ -486,7 +485,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 hours úteis.
                 </div>
 
                 <div class="terms-item">
@@ -546,7 +545,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_2](start_span)[span_2](end_span)
+        // Grade de 105 HITS musicais originais preservada integralmente[span_2](start_span)[span_2](end_span)
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -573,7 +572,7 @@
             { id: "23", ytId: "bMpFmHSgC4Q", titulo: "Major Lazer - Lean On", recompensa: 160 },
             { id: "24", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend", recompensa: 140 },
             { id: "25", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 110 },
-            { id: "26", ytId: "hLQl3WQQoQ0", titulo: "Adele - Someone Like You", recompensa: 130 },
+            { id: "26", ytId: "hcm55lU9knw", titulo: "Adele - Someone Like You", recompensa: 130 },
             { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP THE FEELING!", recompensa: 120 },
             { id: "28", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up", recompensa: 180 },
             { id: "29", ytId: "kffacxfA7G4", titulo: "Justin Bieber - Baby", recompensa: 190 },
@@ -703,8 +702,8 @@
                             
                             await _supabase.from('indicacoes').insert([{
                                 indicador_id: indicadorId,
-                                indicado_id: data.user.id,
-                                created_at: new Date().toISOString()
+                                integrado_id: data.user.id,
+                                creado_em: new Date().toISOString()
                             }]);
                         }
                     }
@@ -753,7 +752,6 @@
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
             } finally {
-                // CORREÇÃO: Variável mapeada corretamente como dinheiroLocalMemoria (com 'hi') para carregar o saldo
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
                 dispararNotificacoesSaqueFlutuante();
@@ -909,6 +907,19 @@
                 });
             }
         };
+
+        function trocarVideoAtivo(id) {
+            const vData = colecaoVideos.find(v => v.id === id);
+            if(!vData || idVideoAtivo === id) return;
+
+            idVideoAtivo = id;
+            tempoAcumuladoSegundos = 0; 
+            document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`vcard-${id}`).classList.add('active');
+            if(youtubePlayer && youtubePlayer.loadVideoById) {
+                youtubePlayer.loadVideoById(vData.ytId);
+            }
+        }
 
         function gerenciarMudancaEstadoPlayer(ev) {
             if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) {
