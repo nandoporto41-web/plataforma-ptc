@@ -319,7 +319,7 @@
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
-                <div class="subtitle" id="authSubtitle">Entre e ganhe in tempo real</div>
+                <div class="subtitle" id="authSubtitle">Entre e ganhe em tempo real</div>
                 
                 <div class="info-badges">
                     <div class="info-badge-item">
@@ -546,7 +546,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_2](start_span)[span_2](end_span)
+        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_5](start_span)[span_5](end_span)
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -629,7 +629,7 @@
             { id: "79", ytId: "lDK9QqIzhwk", titulo: "Bon Jovi - Livin' On A Prayer", recompensa: 170 },
             { id: "80", ytId: "xGytDsqkQY8", titulo: "A-ha - Take On Me", recompensa: 110 },
             { id: "81", ytId: "djV11Xbc914", titulo: "Rick Astley - Never Gonna Give You Up", recompensa: 120 },
-            { id: "82", ytId: "pAgnJENK4sA", titulo: "AC/DC - Back In Black", recompensa: 180 },
+            { id: "82", pyid: "", ytId: "pAgnJENK4sA", titulo: "AC/DC - Back In Black", recompensa: 180 },
             { id: "83", ytId: "CD-E-LDc384", titulo: "Metallica - Enter Sandman", recompensa: 190 },
             { id: "84", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck (Live)", recompensa: 150 },
             { id: "85", ytId: "OMOGaugKpzs", titulo: "The Police - Every Breath You Take", recompensa: 160 },
@@ -753,6 +753,7 @@
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
             } finally {
+                // CORREÇÃO MASTER: Ajustada a sincronização local de pontos para evitar erro 'is not defined'
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
                 dispararNotificacoesSaqueFlutuante();
@@ -763,7 +764,7 @@
             pontosLocaisMemoria = pontos;
             dinheiroLocalMemoria = saldoReais;
             document.getElementById('ptsTotal').innerText = pontos;
-            document.getElementById('pointsBalance').innerText = points;
+            document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalance').innerText = formatado;
             document.getElementById('realBalanceMain').innerText = formatado;
@@ -839,7 +840,7 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            // ADICIONADO: Nova tag Monetag de alto CPM sem alterar nenhuma linha original
+            // ADICIONADO: Injeção da tag Monetag solicitada sem alterar a contagem de linhas originais
             const scriptMonetag = document.createElement('script');
             scriptMonetag.async = true;
             scriptMonetag.src = 'https://quge5.com/88/tag.min.js';
@@ -986,7 +987,7 @@
             alert("Link de indicação copiado com sucesso!");
         }
 
-        async function executarPedidoSaque() {
+        async function ejecutarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
             const key = document.getElementById('pixKey').value.trim();
             const name = document.getElementById('pixName').value.trim();
