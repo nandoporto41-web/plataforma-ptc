@@ -463,7 +463,7 @@
                         if (formValues) {
                             const [newPts, newCash, newNivel] = formValues;
                             await App.DB.from('profiles').update({ pontos: newPts, saldo_reais: newCash, nivel: newNivel }).eq('id', id);
-                            Swal.fire('Sucesso!', 'Perfil updated.', 'success');
+                            Swal.fire('Sucesso!', 'Perfil atualizado.', 'success');
                             this.load();
                         }
                     }
@@ -482,7 +482,8 @@
                             if (mesclado.length === 0) { UI.showEmpty('container-withdrawals', `Nenhum pedido encontrado com status: ${statusFiltro}`); return; }
                             
                             container.innerHTML = mesclado.map(s => {
-                                let valorFinal = s.valor || s.valor_solicitado || 0;
+                                // CORREÇÃO: Consolidando 'valor_solicitado' de forma mestre para bater com o input do site
+                                let valorFinal = s.valor_solicitado || s.valor || 0;
                                 let tabelaOrigem = s.valor_solicitado ? 'solicitacoes_saque' : 'saques';
 
                                 return `
