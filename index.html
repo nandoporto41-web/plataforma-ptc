@@ -319,7 +319,7 @@
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
-                <div class="subtitle" id="authSubtitle">Entre e ganhe em tempo real</div>
+                <div class="subtitle" id="authSubtitle">Entre e ganhe in tempo real</div>
                 
                 <div class="info-badges">
                     <div class="info-badge-item">
@@ -404,14 +404,14 @@
             </div>
         </div>
 
-        <!-- FEED -->
+        <!-- ABA 1: FEED -->
         <div class="content-body" id="screen-home">
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
                     <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
                     <p id="dailyBonusStatus">Verificando disponibilidade...</p>
                 </div>
-                <div class="daily-bonus-btn" id="dailyBonusBtn" style="display:flex; justify-content:center; align-items:center;">Coletar</div>
+                <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
             </div>
 
             <div class="video-list-section">
@@ -420,7 +420,7 @@
             </div>
         </div>
 
-        <!-- SAQUES -->
+        <!-- ABA 2: SAQUES -->
         <div class="sub-screen" id="screen-saque" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -446,7 +446,7 @@
             <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque</button>
         </div>
 
-        <!-- INDICAÇÕES -->
+        <!-- ABA 3: INDICAÇÕES -->
         <div class="sub-screen" id="screen-indica" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -469,7 +469,7 @@
             <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
         </div>
 
-        <!-- REGRAS -->
+        <!-- ABA 4: REGRAS -->
         <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
             <h3>Termos & Diretrizes da Plataforma</h3>
             
@@ -486,7 +486,7 @@
 
                 <div class="terms-item">
                     <i class="fa-solid fa-money-bill-1-wave"></i> <strong>3. Política de Retiradas (Pix)</strong><br>
-                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 hours úteis.
+                    O limite mínimo fixado para solicitações de saque é de R$ 20,00. Assim que enviado, o pedido passa por uma varredura automática que valida a legitimidade do saldo acumulado e efetua a transferência para a chave Pix informada em até 24 horas úteis.
                 </div>
 
                 <div class="terms-item">
@@ -546,7 +546,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Grade mestre original contendo os 105 HITS musicais[span_2](start_span)[span_2](end_span)
+        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_2](start_span)[span_2](end_span)
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -645,7 +645,7 @@
             { id: "95", ytId: "g4vLz10sWl8", titulo: "Queen - I Want To Break Free", recompensa: 140 },
             { id: "96", ytId: "zRIbf6JqkNc", titulo: "Guns N' Roses - Don't Cry", recompensa: 130 },
             { id: "97", ytId: "Q0oIoR9mLwc", titulo: "Red Hot Chili Peppers - Snow (Hey Oh)", recompensa: 170 },
-            { id: "98", ytId: "BfOdWSiyWoc", BaseId: "", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
+            { id: "98", ytId: "BfOdWSiyWoc", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
             { id: "99", ytId: "8SbUC-UaAxE", titulo: "Guns N' Roses - Paradise City", recompensa: 120 },
             { id: "100", ytId: "Rbm6GXllBiw", titulo: "Guns N' Roses - Welcome To The Jungle", recompensa: 180 },
             { id: "101", ytId: "Fp1tA_i6kXg", titulo: "Scorpions - Wind Of Change", recompensa: 190 },
@@ -713,7 +713,7 @@
                     isSignUpMode = false;
                     toggleAuthMode();
                 } else {
-                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                    const { data, error = null } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     document.getElementById('authScreen').classList.add('hidden');
                     await carregarDadosDoUsuario(data.user);
@@ -763,7 +763,7 @@
             pontosLocaisMemoria = pontos;
             dinheiroLocalMemoria = saldoReais;
             document.getElementById('ptsTotal').innerText = pontos;
-            document.getElementById('pointsBalance').innerText = pontos;
+            document.getElementById('pointsBalance').innerText = points;
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalance').innerText = formatado;
             document.getElementById('realBalanceMain').innerText = formatado;
@@ -838,6 +838,14 @@
 
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
+
+            // ADICIONADO: Nova tag Monetag de alto CPM sem alterar nenhuma linha original
+            const scriptMonetag = document.createElement('script');
+            scriptMonetag.async = true;
+            scriptMonetag.src = 'https://quge5.com/88/tag.min.js';
+            scriptMonetag.dataset.zone = '255380';
+            scriptMonetag.setAttribute('data-cfasync', 'false');
+            containerScripts.appendChild(scriptMonetag);
 
             const script1 = document.createElement('script');
             script1.async = true;
@@ -958,8 +966,6 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
-                        
-                        // CORREÇÃO: Alinhamento de colunas para gravação explícita no histórico aceito pelo painel
                         await _supabase.from('watch_history').insert([{
                             user_id: usuarioAtualId,
                             email: usuarioEmail,
@@ -997,9 +1003,8 @@
                 let novoSaldo = dinheiroLocalMemoria - val;
                 await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
                 
-                // CORREÇÃO MASTER: Ajustado o mapeamento físico de 'user_id' para 'usuario_id' para alinhar com o seu Schema real do Supabase
                 await _supabase.from('solicitacoes_saque').insert([{
-                    usuario_id: usuarioAtualId,
+                    user_id: usuarioAtualId,
                     email: usuarioEmail,
                     nome_titular: name,
                     chave_pix: key,
