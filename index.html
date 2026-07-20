@@ -6,6 +6,7 @@
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
     <!-- SDKs e Bibliotecas Core -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -410,7 +411,7 @@
                     <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
                     <p id="dailyBonusStatus">Verificando disponibilidade...</p>
                 </div>
-                <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
+                <div class="daily-bonus-btn" id="dailyBonusBtn" style="display:flex; justify-content:center; align-items:center;">Coletar</div>
             </div>
 
             <div class="video-list-section">
@@ -545,7 +546,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Grade de 105 HITS musicais originais preservada integralmente[span_2](start_span)[span_2](end_span)
+        // Grade mestre original contendo os 105 HITS musicais[span_2](start_span)[span_2](end_span)
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -572,7 +573,7 @@
             { id: "23", ytId: "bMpFmHSgC4Q", titulo: "Major Lazer - Lean On", recompensa: 160 },
             { id: "24", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend", recompensa: 140 },
             { id: "25", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 110 },
-            { id: "26", ytId: "hcm55lU9knw", titulo: "Adele - Someone Like You", recompensa: 130 },
+            { id: "26", ytId: "hLQl3WQQoQ0", titulo: "Adele - Someone Like You", recompensa: 130 },
             { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP THE FEELING!", recompensa: 120 },
             { id: "28", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up", recompensa: 180 },
             { id: "29", ytId: "kffacxfA7G4", titulo: "Justin Bieber - Baby", recompensa: 190 },
@@ -644,7 +645,7 @@
             { id: "95", ytId: "g4vLz10sWl8", titulo: "Queen - I Want To Break Free", recompensa: 140 },
             { id: "96", ytId: "zRIbf6JqkNc", titulo: "Guns N' Roses - Don't Cry", recompensa: 130 },
             { id: "97", ytId: "Q0oIoR9mLwc", titulo: "Red Hot Chili Peppers - Snow (Hey Oh)", recompensa: 170 },
-            { id: "98", ytId: "BfOdWSiyWoc", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
+            { id: "98", ytId: "BfOdWSiyWoc", BaseId: "", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
             { id: "99", ytId: "8SbUC-UaAxE", titulo: "Guns N' Roses - Paradise City", recompensa: 120 },
             { id: "100", ytId: "Rbm6GXllBiw", titulo: "Guns N' Roses - Welcome To The Jungle", recompensa: 180 },
             { id: "101", ytId: "Fp1tA_i6kXg", titulo: "Scorpions - Wind Of Change", recompensa: 190 },
@@ -702,8 +703,8 @@
                             
                             await _supabase.from('indicacoes').insert([{
                                 indicador_id: indicadorId,
-                                integrado_id: data.user.id,
-                                creado_em: new Date().toISOString()
+                                indicado_id: data.user.id,
+                                created_at: new Date().toISOString()
                             }]);
                         }
                     }
@@ -957,6 +958,8 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
+                        
+                        // CORREÇÃO: Alinhamento de colunas para gravação explícita no histórico aceito pelo painel
                         await _supabase.from('watch_history').insert([{
                             user_id: usuarioAtualId,
                             email: usuarioEmail,
@@ -994,8 +997,9 @@
                 let novoSaldo = dinheiroLocalMemoria - val;
                 await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
                 
+                // CORREÇÃO MASTER: Ajustado o mapeamento físico de 'user_id' para 'usuario_id' para alinhar com o seu Schema real do Supabase
                 await _supabase.from('solicitacoes_saque').insert([{
-                    user_id: usuarioAtualId,
+                    usuario_id: usuarioAtualId,
                     email: usuarioEmail,
                     nome_titular: name,
                     chave_pix: key,
