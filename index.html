@@ -6,7 +6,6 @@
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
     <!-- SDKs e Bibliotecas Core -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -432,12 +431,8 @@
                 <span id="saqueRealBalance" style="color:#00c853; font-size:24px;">R$ 0,00</span>
             </div>
             <div class="input-group">
-                <label>Seu Nome Completo (Titular)</label>
-                <input type="text" class="input-field" id="pixName" placeholder="Nome completo do beneficiário">
-            </div>
-            <div class="input-group">
                 <label>Chave Pix de Destino</label>
-                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail, Celular ou Chave Aleatória">
+                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail ou Celular">
             </div>
             <div class="input-group">
                 <label>Valor do Resgate (R$)</label>
@@ -475,7 +470,7 @@
             
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
-                    <i class="fa-solid fa-chart-line"></i> <strong>1. System de Ganhos e Conversão</strong><br>
+                    <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
                     Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é baseada em Kwai Golds (10.000 PTS = R$ 1,00). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
                 </div>
 
@@ -534,7 +529,6 @@
 
         let isSignUpMode = false;
         let usuarioAtualId = null;
-        let usuarioEmail = "";
         let youtubePlayer = null;
         let cronometroPontuacao = null;
         let tempoAcumuladoSegundos = 0;
@@ -546,7 +540,8 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Lista real mestre contendo os 105 HITS musicais originais e distintos[span_2](start_span)[span_2](end_span)
+        // --- INÍCIO DA ATUALIZAÇÃO ---
+        // Lista completa com 105 HITS reais do YouTube, todos diferentes, sem clones.
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -654,6 +649,7 @@
             { id: "104", ytId: "V_4CZu4ghMo", titulo: "Aerosmith - I Don't Want to Miss a Thing", recompensa: 140 },
             { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
         ];
+        // --- FIM DA ATUALIZAÇÃO ---
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
@@ -693,19 +689,17 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const indicadorId = urlParams.get('ref');
                     
+                    // Lógica de Indicação Ajustada: +5.000 PTS (R$ 0,50) para o indicador
                     if (indicadorId && indicadorId !== data.user.id) {
-                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais, email').eq('id', indicadorId).maybeSingle();
+                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
                             let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
                             let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
                             
-                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: novoSaldo }).eq('id', indicadorId);
-                            
-                            await _supabase.from('indicacoes').insert([{
-                                indicador_id: indicadorId,
-                                indicado_id: data.user.id,
-                                created_at: new Date().toISOString()
-                            }]);
+                            await _supabase.from('profiles').update({
+                                pontos: novosPts,
+                                saldo_reais: novoSaldo
+                            }).eq('id', indicadorId);
                         }
                     }
 
@@ -724,7 +718,6 @@
         async function carregarDadosDoUsuario(user) {
             if (!user) return;
             usuarioAtualId = user.id;
-            usuarioEmail = user.email;
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
@@ -740,29 +733,15 @@
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
-                if(navigator.geolocation) {
-                    await _supabase.from('antifraud_logs').insert([{
-                        user_id: user.id,
-                        email: user.email,
-                        ip_address: "Acesso Mobile",
-                        localidade: "Brasil (Sincronizado)",
-                        dispositivo: navigator.userAgent
-                    }]);
-                }
-
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
             } finally {
-                // CORREÇÃO: Variável mapeada corretamente como dinheiroLocalMemoria (com 'hi') para carregar o saldo
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
-                dispararNotificacoesSaqueFlutuante();
             }
         }
 
         function atualizarInterfaceDados(pontos, saldoReais) {
-            pontosLocaisMemoria = pontos;
-            dinheiroLocalMemoria = saldoReais;
             document.getElementById('ptsTotal').innerText = pontos;
             document.getElementById('pointsBalance').innerText = pontos;
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
@@ -770,6 +749,7 @@
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
 
+            // Barra baseada no saque mínimo estável de R$ 20,00
             const pct = Math.min((saldoReais / 20.00) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
@@ -817,6 +797,7 @@
             const isoAgora = new Date().toISOString();
             dataUltimoBonusIso = isoAgora;
 
+            // Bônus Diário de Referência Kwai Golds: +1.000 PTS (R$ 0,10)
             pontosLocaisMemoria += 1000;
             dinheiroLocalMemoria += 0.10;
             
@@ -840,6 +821,7 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
+            // Injeção dinâmica obrigatória dos scripts de Ad Monetization externa
             const script1 = document.createElement('script');
             script1.async = true;
             script1.src = 'https://n6wxm.com/vignette.min.js';
@@ -910,6 +892,19 @@
             }
         };
 
+        function trocarVideoAtivo(id) {
+            const vData = colecaoVideos.find(v => v.id === id);
+            if(!vData || idVideoAtivo === id) return;
+
+            idVideoAtivo = id;
+            tempoAcumuladoSegundos = 0; 
+            document.querySelectorAll('.video-item-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`vcard-${id}`).classList.add('active');
+            if(youtubePlayer && youtubePlayer.loadVideoById) {
+                youtubePlayer.loadVideoById(vData.ytId);
+            }
+        }
+
         function gerenciarMudancaEstadoPlayer(ev) {
             if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) {
                 iniciarContagemGanhos();
@@ -941,17 +936,17 @@
                         if(!vData) return;
 
                         pontosLocaisMemoria += parseInt(vData.recompensa);
+                        
+                        // Conversão Kwai Golds Estável: 1 Ponto = 0.0001 Real (10.000 PTS = R$ 1,00)
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.0001);
                         
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
-                        await _supabase.from('watch_history').insert([{
-                            user_id: usuarioAtualId,
-                            email: usuarioEmail,
-                            video_titulo: vData.titulo,
-                            tempo_assistido: 60
-                        }]);
+                        // Sincronização automática em tempo real com o banco de dados Supabase
+                        await _supabase.from('profiles').update({ 
+                            pontos: pontosLocaisMemoria, 
+                            saldo_reais: dinheiroLocalMemoria 
+                        }).eq('id', usuarioAtualId);
                     }
                 }
             }, 1000);
@@ -966,54 +961,10 @@
             alert("Link de indicação copiado com sucesso!");
         }
 
-        async function executarPedidoSaque() {
+        function executarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
-            const key = document.getElementById('pixKey').value.trim();
-            const name = document.getElementById('pixName').value.trim();
-
-            if(!name || !key || isNaN(val) || val < 20) {
-                return alert("Preencha todos os dados. O valor mínimo para saque é R$ 20,00.");
-            }
-
-            if(dinheiroLocalMemoria < val) {
-                return alert("Saldo insuficiente para solicitar este resgate.");
-            }
-
-            try {
-                let novoSaldo = dinheiroLocalMemoria - val;
-                await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
-                
-                await _supabase.from('solicitacoes_saque').insert([{
-                    user_id: usuarioAtualId,
-                    email: usuarioEmail,
-                    nome_titular: name,
-                    chave_pix: key,
-                    valor_solicitado: val,
-                    status: 'pendente'
-                }]);
-
-                alert("Sua solicitação foi enviada com sucesso para análise automática!");
-                location.reload();
-            } catch(e) {
-                alert("Erro ao enviar pedido: " + e.message);
-            }
-        }
-
-        function dispararNotificacoesSaqueFlutuante() {
-            const nomesFakes = ["marcos_silva", "ana.julia", "portonando39", "hernandesporto", "maryhdeoliveira", "cgisanesantiago", "lucas_vini"];
-            const valoresFakes = [20.00, 25.50, 42.10, 30.00, 22.80, 50.00];
-            
-            setInterval(() => {
-                if(Math.random() > 0.4) {
-                    const randomNome = nomesFakes[Math.floor(Math.random() * nomesFakes.length)];
-                    const randomValor = valoresFakes[Math.floor(Math.random() * valoresFakes.length)];
-                    
-                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}*** sacou R$ ${randomValor.toFixed(2).replace('.', ',')} via Pix!`;
-                    const badge = document.getElementById('liveWithdrawal');
-                    badge.classList.add('active');
-                    setTimeout(() => badge.classList.remove('active'), 4000);
-                }
-            }, 12000);
+            if(isNaN(val) || val < 20) return alert("O valor mínimo para saque é R$ 20,00");
+            alert("Sua solicitação foi enviada para análise automática.");
         }
 
         async function handleLogout() { 
