@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
+    <!-- TAGS DE APLICATIVO WEB (PWA) ADICIONADAS AQUI -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff9d00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <!-- SDKs e Bibliotecas Core -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -32,6 +39,14 @@
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
+        }
+
+        /* Efeito de Destaque para navegação por Controle Remoto (D-Pad) em TVs/Projetores */
+        :focus {
+            outline: 2px solid #ff9d00 !important;
+            outline-offset: 2px;
+            transform: scale(1.03);
+            transition: transform 0.2s ease;
         }
 
         .cinema-container {
@@ -948,8 +963,6 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            /* SCRIPT quge5.com REMOVIDO DAQUI */
-
             const script1 = document.createElement('script');
             script1.async = true;
             script1.src = 'https://n6wxm.com/vignette.min.js';
@@ -1189,6 +1202,15 @@
                 }
             });
         });
+
+        // Registra o Service Worker para habilitar a instalação do App
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado com sucesso!'))
+                    .catch(err => console.error('Erro ao registrar Service Worker:', err));
+            });
+        }
     </script>
 </body>
 </html>
