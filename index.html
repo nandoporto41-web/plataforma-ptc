@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CINE REWARDS</title>
     
-    <!-- TAGS DE APLICATIVO WEB (PWA) ATUALIZADAS -->
+    <!-- TAGS DE APLICATIVO WEB (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff9d00">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,13 +39,13 @@
             display: flex; 
             justify-content: center;
             align-items: center; 
-            /* Correção do Menu para Mobile: 100dvh se adapta à barra do navegador */
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a24 0%, #060608 70%);
         }
 
-        /* Efeito de Destaque para navegação por Controle Remoto (D-Pad) em TVs/Projetores */
+        /* Efeito D-Pad para TVs */
         :focus {
             outline: 2px solid #ff9d00 !important;
             outline-offset: 2px;
@@ -57,14 +57,39 @@
             position: relative;
             width: 100%;
             max-width: 450px;
-            /* Correção do Menu para Mobile */
             height: 100vh;
             height: 100dvh;
-            background: #0c0c0f;
+            background: rgba(12, 12, 15, 0.95);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* ----- MODO DESKTOP (COMPUTADOR E TABLET LARGO) ----- */
+        @media (min-width: 768px) {
+            .cinema-container {
+                max-width: 900px;
+                height: 95vh;
+                border-radius: 24px;
+                border: 1px solid rgba(255, 157, 0, 0.15);
+            }
+            .video-box {
+                max-height: 450px !important;
+                height: 450px !important;
+            }
+            .playlist-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Duas colunas no PC */
+                gap: 15px;
+            }
+            .content-body {
+                padding-bottom: 90px !important;
+            }
+            .bottom-nav {
+                border-radius: 0 0 24px 24px;
+            }
         }
 
         .live-withdrawal {
@@ -95,17 +120,18 @@
             top: 15px; left: 15px; right: 15px;
             display: flex; justify-content: space-between; align-items: center;
             z-index: 20;
-            background: rgba(12, 12, 15, 0.9);
-            padding: 10px 15px;
+            background: rgba(18, 18, 22, 0.85);
+            padding: 12px 18px;
             border-radius: 30px;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 157, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             gap: 5px;
         }
 
         .logo-text {
-            font-weight: 800; font-size: 13px;
-            background: linear-gradient(90deg, #ff9d00, #ffb700);
+            font-weight: 800; font-size: 14px;
+            background: linear-gradient(90deg, #ff9d00, #ffce54);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
         }
@@ -120,15 +146,15 @@
         .score-box {
             display: flex; align-items: center; gap: 4px;
             background: linear-gradient(135deg, #ff9d00, #ffb700);
-            padding: 4px 10px; border-radius: 20px;
-            color: #000; font-weight: 800; font-size: 10px;
-            box-shadow: 0 4px 10px rgba(255, 157, 0, 0.2);
+            padding: 4px 12px; border-radius: 20px;
+            color: #000; font-weight: 800; font-size: 11px;
+            box-shadow: 0 4px 10px rgba(255, 157, 0, 0.3);
         }
         
         .real-box-main {
-            font-size: 11px;
-            font-weight: 700;
-            color: #00c853;
+            font-size: 12px;
+            font-weight: 800;
+            color: #00e676;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
@@ -138,8 +164,8 @@
             max-height: 253px;
             background: #000;
             margin-top: 85px;
-            border-bottom: 2px solid rgba(255,255,255,0.03);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-bottom: 3px solid #ff9d00;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
             position: relative;
             z-index: 15;
         }
@@ -164,12 +190,34 @@
             flex-direction: column;
             gap: 16px;
             overflow-y: auto;
-            padding-bottom: 120px;
+            padding-bottom: 100px;
+        }
+
+        /* Estilo da Barra de Pesquisa */
+        .search-bar-container {
+            display: flex;
+            align-items: center;
+            background: #121216;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            transition: border-color 0.3s;
+        }
+        .search-bar-container:focus-within { border-color: #ff9d00; }
+        .search-bar-container i { color: #8e8e93; margin-right: 10px; }
+        .search-bar-container input {
+            background: transparent; border: none; outline: none; color: #fff;
+            width: 100%; font-size: 13px;
+        }
+
+        .cards-ganhos-row {
+            display: flex; gap: 10px; flex-direction: column;
         }
 
         .daily-bonus-card {
             background: linear-gradient(135deg, #1e1b4b, #311042);
-            border: 1px solid rgba(236, 72, 153, 0.3);
+            border: 1px solid rgba(236, 72, 153, 0.4);
             padding: 15px; border-radius: 16px;
             display: flex; justify-content: space-between; align-items: center;
             cursor: pointer; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15);
@@ -185,35 +233,47 @@
         }
         .daily-bonus-btn:disabled { background: #27272a; color: #71717a; box-shadow: none; cursor: not-allowed; }
 
+        .tarefas-card {
+            background: linear-gradient(135deg, #0f172a, #082f49);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 15px; border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);
+            transition: transform 0.2s;
+        }
+        .tarefas-card:active { transform: scale(0.98); }
+
         .video-list-section h3 {
             font-size: 13px; color: #8e8e93; text-transform: uppercase;
             letter-spacing: 0.8px; margin-bottom: 10px; font-weight: 600;
         }
         .playlist-container { display: flex; flex-direction: column; gap: 10px; }
         .video-item-card {
-            background: #121216; border: 1px solid rgba(255,255,255,0.02);
+            background: #121216; border: 1px solid rgba(255,255,255,0.04);
             border-radius: 14px; padding: 12px; display: flex; gap: 12px;
             cursor: pointer; transition: background 0.2s, border-color 0.2s;
         }
         .video-item-card:hover, .video-item-card.active {
-            background: #181822; border-color: rgba(255, 157, 0, 0.3);
+            background: #1a1a24; border-color: #ff9d00;
+            box-shadow: 0 4px 15px rgba(255, 157, 0, 0.1);
         }
         .video-thumb-placeholder {
-            width: 90px; height: 60px; background: #1c1c24; border-radius: 8px;
-            display: flex; justify-content: center; align-items: center; color: #ff9d00; font-size: 16px;
+            width: 100px; height: 65px; background: #1c1c24; border-radius: 8px;
+            display: flex; justify-content: center; align-items: center; color: #ff9d00; font-size: 18px;
             flex-shrink: 0; position: relative; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .video-thumb-placeholder img { width: 100%; height: 100%; object-fit: cover; }
-        .video-meta-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; overflow: hidden; }
-        .video-meta-info h5 { font-size: 11px; color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .video-reward-badge { font-size: 10px; color: #00c853; font-weight: 700; display: flex; align-items: center; gap: 3px; }
+        .video-meta-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; overflow: hidden; }
+        .video-meta-info h5 { font-size: 12px; color: #fff; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .video-reward-badge { font-size: 10px; color: #00e676; font-weight: 700; display: flex; align-items: center; gap: 4px; }
 
         .menu-drawer {
-            position: absolute; top: 0; left: -100%; width: 85%; height: 100%;
+            position: absolute; top: 0; left: -100%; width: 85%; max-width: 350px; height: 100%;
             background: #0c0c0f; border-right: 1px solid rgba(255,157,0,0.2);
             z-index: 40; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 20px 15px 30px 15px; display: flex; flex-direction: column; gap: 14px;
-            overflow-y: auto;
+            overflow-y: auto; box-shadow: 20px 0 50px rgba(0,0,0,0.8);
         }
         .menu-drawer.active { left: 0; }
         
@@ -234,15 +294,16 @@
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ff9d00, #00c853); transition: width 0.4s ease; }
 
         .btn-saque {
-            background: linear-gradient(90deg, #00bfa5, #00c853); color: #000;
+            background: linear-gradient(90deg, #00bfa5, #00e676); color: #000;
             font-weight: 800; border: none; padding: 14px; border-radius: 10px;
             cursor: pointer; width: 100%; font-size: 13px; gap: 8px;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.2); transition: transform 0.2s;
         }
+        .btn-saque:active { transform: scale(0.98); }
 
         .btn-indicar-menu {
-            background: linear-gradient(90deg, #ff9d00, #ffb700); color: #000;
+            background: linear-gradient(90deg, #ff9d00, #ffce54); color: #000;
             font-weight: 800; border: none; padding: 12px; border-radius: 10px;
             cursor: pointer; width: 100%; font-size: 12px; gap: 8px;
             display: flex; justify-content: center; align-items: center; margin-top: 5px;
@@ -257,18 +318,19 @@
 
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0; height: 75px;
-            background: rgba(12, 12, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(12, 12, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.08);
             display: flex; justify-content: space-around; align-items: center; z-index: 30;
             backdrop-filter: blur(20px);
-            /* Correção para barra de navegação dos celulares mais recentes */
-            padding-bottom: env(safe-area-inset-bottom, 10px); 
+            padding-bottom: env(safe-area-inset-bottom, 5px); 
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: #8e8e93; font-size: 10px; font-weight: 500; cursor: pointer; width: 60px;
+            transition: color 0.3s;
         }
         .nav-item.active { color: #ff9d00; font-weight: 700; }
-        .nav-item i { font-size: 18px; }
+        .nav-item i { font-size: 18px; transition: transform 0.3s; }
+        .nav-item.active i { transform: scale(1.1); }
 
         .sub-screen {
             position: absolute; top: 85px; left: 0; width: 100%; bottom: 75px;
@@ -282,33 +344,22 @@
         .input-group label { font-size: 11px; color: #8e8e93; text-transform: uppercase; font-weight: 600; }
         .input-field {
             background: #121216; border: 1px solid rgba(255,255,255,0.06);
-            padding: 14px; border-radius: 10px; color: #fff; font-size: 13px; outline: none;
+            padding: 14px; border-radius: 10px; color: #fff; font-size: 13px; outline: none; transition: border-color 0.3s;
         }
         .input-field:focus { border-color: #ff9d00; }
 
         .terms-box {
-            background: #111116;
-            border-left: 3px solid #ff9d00;
-            padding: 12px;
-            border-radius: 4px 12px 12px 4px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            background: #111116; border-left: 3px solid #ff9d00;
+            padding: 12px; border-radius: 4px 12px 12px 4px;
+            display: flex; flex-direction: column; gap: 8px;
         }
-        .terms-item {
-            font-size: 11px;
-            color: #b3b3b3;
-            line-height: 1.4;
-        }
-        .terms-item strong {
-            color: #ffb700;
-        }
+        .terms-item { font-size: 11px; color: #b3b3b3; line-height: 1.4; }
+        .terms-item strong { color: #ffb700; }
 
         .auth-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #060608; z-index: 50; display: flex; flex-direction: column;
-            justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease;
-            overflow-y: auto;
+            justify-content: flex-start; padding: 30px 20px; transition: opacity 0.3s ease; overflow-y: auto;
         }
         .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
         .auth-box { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
@@ -392,14 +443,14 @@
                     <p>Saldo Convertido</p>
                     <span id="progressPercent" style="font-size:10px; color:#8e8e93;">0% para saque</span>
                 </div>
-                <span id="realBalance" style="color: #00c853;">R$ 0,00</span>
+                <span id="realBalance" style="color: #00e676;">R$ 0,00</span>
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                 </div>
             </div>
 
             <button class="btn-saque" onclick="navegarParaAba('saque')"><i class="fa-solid fa-bolt"></i> Sacar via Pix (Mínimo R$ 20)</button>
-            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffb700);" onclick="navegarParaAba('indica')"><i class="fa-solid fa-gift"></i> Convide e Ganhe (R$ 0,50)</button>
+            <button class="btn-indicar-menu" style="background: linear-gradient(90deg, #ff9d00, #ffce54);" onclick="navegarParaAba('indica')"><i class="fa-solid fa-gift"></i> Convide e Ganhe (R$ 0,50)</button>
             <button class="btn-indicar-menu" style="background: #1c1c24; color: #fff; border: 1px solid rgba(255,255,255,0.1);" onclick="navegarParaAba('regras')"><i class="fa-solid fa-shield-halved"></i> Diretrizes e Regras</button>
             <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair da Conta</button>
         </div>
@@ -431,24 +482,49 @@
 
         <!-- ABA 1: FEED HITS -->
         <div class="content-body" id="screen-home">
-            <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
-                <div class="daily-bonus-info">
-                    <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
-                    <p id="dailyBonusStatus">Verificando disponibilidade...</p>
+            <div class="cards-ganhos-row">
+                <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
+                    <div class="daily-bonus-info">
+                        <h4><i class="fa-solid fa-box-open"></i> Recompensa Diária</h4>
+                        <p id="dailyBonusStatus">Verificando disponibilidade...</p>
+                    </div>
+                    <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
                 </div>
-                <button class="daily-bonus-btn" id="dailyBonusBtn" disabled>Coletar</button>
+                
+                <!-- Novo Bloco de Ganhos: Tarefas Extras -->
+                <div class="tarefas-card" onclick="alert('As novas tarefas e downloads patrocinados estarão disponíveis na próxima atualização!')">
+                    <div class="daily-bonus-info">
+                        <h4 style="color: #38bdf8;"><i class="fa-solid fa-gamepad"></i> Tarefas Extras</h4>
+                        <p style="color: #bae6fd;">Baixe apps e ganhe +10.000 PTS</p>
+                    </div>
+                    <button class="daily-bonus-btn" style="background: #0284c7; color: #fff;">Em breve</button>
+                </div>
             </div>
 
-            <div class="video-list-section">
-                <h3>Grade de Hits Musicais (+100 Conteúdos)</h3>
+            <div class="video-list-section" style="margin-top: 10px;">
+                <h3 style="margin-bottom: 5px;">Grade de Hits Musicais (+100 Conteúdos)</h3>
+                
+                <!-- Barra de Pesquisa de Hits -->
+                <div class="search-bar-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="buscaHits" onkeyup="filtrarLista('hits')" placeholder="Pesquisar um artista ou música...">
+                </div>
+
                 <div class="playlist-container" id="playlistContainer"></div>
             </div>
         </div>
 
-        <!-- ABA 2: FILMES COMPLETOS (NOVA SEÇÃO) -->
+        <!-- ABA 2: FILMES COMPLETOS -->
         <div class="content-body" id="screen-filmes" style="display: none;">
             <div class="video-list-section">
-                <h3>Catálogo de Filmes Completos</h3>
+                <h3 style="margin-bottom: 5px;">Catálogo de Filmes Completos</h3>
+
+                <!-- Barra de Pesquisa de Filmes -->
+                <div class="search-bar-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="buscaFilmes" onkeyup="filtrarLista('filmes')" placeholder="Pesquisar título do filme...">
+                </div>
+
                 <div class="playlist-container" id="playlistFilmesContainer"></div>
             </div>
         </div>
@@ -460,9 +536,9 @@
             </button>
 
             <h3>Solicitar Retirada Pix</h3>
-            <div class="data-card" style="background:#1c1c24; border-color:rgba(0,200,83,0.2); margin-top:5px;">
+            <div class="data-card" style="background:#1c1c24; border-color:rgba(0,230,118,0.2); margin-top:5px;">
                 <p>Seu Saldo Disponível</p>
-                <span id="saqueRealBalance" style="color:#00c853; font-size:24px;">R$ 0,00</span>
+                <span id="saqueRealBalance" style="color:#00e676; font-size:24px;">R$ 0,00</span>
             </div>
             <div class="input-group">
                 <label>Seu Nome Completo (Titular)</label>
@@ -584,7 +660,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // Lista real mestre contendo os 105 HITS musicais originais e distintos
+        // Lista de HITS
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -693,7 +769,7 @@
             { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
         ];
 
-        // NOVA COLEÇÃO DE FILMES INSERIDA DIRETAMENTE NA ESTRUTURA
+        // Lista de FILMES
         const colecaoFilmes = [
             { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200 },
             { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200 },
@@ -783,6 +859,22 @@
             { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
             { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 }
         ];
+
+        // FUNÇÃO DE BUSCA/FILTRO
+        function filtrarLista(tipo) {
+            const input = document.getElementById(tipo === 'hits' ? 'buscaHits' : 'buscaFilmes').value.toLowerCase();
+            const container = document.getElementById(tipo === 'hits' ? 'playlistContainer' : 'playlistFilmesContainer');
+            const cards = container.getElementsByClassName('video-item-card');
+            
+            for (let i = 0; i < cards.length; i++) {
+                let titulo = cards[i].querySelector('h5').innerText.toLowerCase();
+                if (titulo.includes(input)) {
+                    cards[i].style.display = "flex";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
@@ -967,17 +1059,14 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
+            /* SCRIPT SECUNDÁRIO (BANNER DUPLO) REMOVIDO PARA NÃO COBRIR O VÍDEO */
+
+            // Mantido apenas a Vignette limpa da Monetag
             const script1 = document.createElement('script');
             script1.async = true;
             script1.src = 'https://n6wxm.com/vignette.min.js';
             script1.dataset.zone = '11218300';
             containerScripts.appendChild(script1);
-
-            const script2 = document.createElement('script');
-            script2.async = true;
-            script2.src = 'https://nap5k.com/tag.min.js';
-            script2.dataset.zone = '11218299';
-            containerScripts.appendChild(script2);
 
             const layer = document.getElementById('adLayer');
             const timerTxt = document.getElementById('adTimerText');
@@ -1026,7 +1115,6 @@
             });
             idVideoAtivo = colecaoVideos[0].id;
 
-            // Renderiza a nova grade de filmes na aba "Filmes"
             const containerFilmes = document.getElementById('playlistFilmesContainer');
             containerFilmes.innerHTML = "";
             colecaoFilmes.forEach((vid) => {
@@ -1061,7 +1149,6 @@
         };
 
         function trocarVideoAtivo(id) {
-            // Busca o id tanto na coleção de vídeos (Hits) quanto na de filmes
             const vData = colecaoVideos.find(v => v.id === id) || colecaoFilmes.find(v => v.id === id);
             if(!vData || idVideoAtivo === id) return;
 
@@ -1110,7 +1197,6 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
-                        // Salva o histórico do clipe ou filme recém visualizado no painel adm
                         await _supabase.from('watch_history').insert([{
                             user_id: usuarioAtualId,
                             email: usuarioEmail,
