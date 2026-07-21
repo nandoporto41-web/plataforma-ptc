@@ -28,7 +28,9 @@
             display: flex; 
             justify-content: center;
             align-items: center; 
-            min-height: 100vh; 
+            /* Correção do Menu para Mobile: 100dvh se adapta à barra do navegador */
+            height: 100vh;
+            height: 100dvh; 
             overflow: hidden;
         }
 
@@ -36,7 +38,9 @@
             position: relative;
             width: 100%;
             max-width: 450px;
+            /* Correção do Menu para Mobile */
             height: 100vh;
+            height: 100dvh;
             background: #0c0c0f;
             display: flex;
             flex-direction: column;
@@ -236,7 +240,9 @@
             position: absolute; bottom: 0; left: 0; right: 0; height: 75px;
             background: rgba(12, 12, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.05);
             display: flex; justify-content: space-around; align-items: center; z-index: 30;
-            backdrop-filter: blur(20px); padding-bottom: 10px;
+            backdrop-filter: blur(20px);
+            /* Correção para barra de navegação dos celulares mais recentes */
+            padding-bottom: env(safe-area-inset-bottom, 10px); 
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -843,6 +849,16 @@
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
 
+                if(navigator.geolocation) {
+                    await _supabase.from('antifraud_logs').insert([{
+                        user_id: user.id,
+                        email: user.email,
+                        ip_address: "Acesso Mobile",
+                        localidade: "Brasil (Sincronizado)",
+                        dispositivo: navigator.userAgent
+                    }]);
+                }
+
             } catch (e) {
                 console.error("Erro na leitura de dados sincronizados:", e.message);
             } finally {
@@ -932,12 +948,7 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            const scriptMonetag = document.createElement('script');
-            scriptMonetag.async = true;
-            scriptMonetag.src = 'https://quge5.com/88/tag.min.js';
-            scriptMonetag.dataset.zone = '255380';
-            scriptMonetag.setAttribute('data-cfasync', 'false');
-            containerScripts.appendChild(scriptMonetag);
+            /* SCRIPT quge5.com REMOVIDO DAQUI */
 
             const script1 = document.createElement('script');
             script1.async = true;
