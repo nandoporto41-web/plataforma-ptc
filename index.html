@@ -6,6 +6,7 @@
     <title>CineRewards Premium - Entretenimento Oficial</title>
     
     <!-- SDKs e Bibliotecas Core -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -318,7 +319,7 @@
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CineRewards Pro</h2>
-                <div class="subtitle" id="authSubtitle">Entre e ganhe em tempo real</div>
+                <div class="subtitle" id="authSubtitle">Entre e ganhe in tempo real</div>
                 
                 <div class="info-badges">
                     <div class="info-badge-item">
@@ -403,7 +404,7 @@
             </div>
         </div>
 
-        <!-- ABA 1: FEED -->
+        <!-- ABA 1: FEED HITS -->
         <div class="content-body" id="screen-home">
             <div class="daily-bonus-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
                 <div class="daily-bonus-info">
@@ -419,7 +420,15 @@
             </div>
         </div>
 
-        <!-- ABA 2: SAQUES -->
+        <!-- ABA 2: FILMES COMPLETOS (NOVA SEÇÃO) -->
+        <div class="content-body" id="screen-filmes" style="display: none;">
+            <div class="video-list-section">
+                <h3>Catálogo de Filmes Completos</h3>
+                <div class="playlist-container" id="playlistFilmesContainer"></div>
+            </div>
+        </div>
+
+        <!-- ABA 3: SAQUES -->
         <div class="sub-screen" id="screen-saque" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -431,8 +440,12 @@
                 <span id="saqueRealBalance" style="color:#00c853; font-size:24px;">R$ 0,00</span>
             </div>
             <div class="input-group">
+                <label>Seu Nome Completo (Titular)</label>
+                <input type="text" class="input-field" id="pixName" placeholder="Nome completo do beneficiário">
+            </div>
+            <div class="input-group">
                 <label>Chave Pix de Destino</label>
-                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail ou Celular">
+                <input type="text" class="input-field" id="pixKey" placeholder="CPF, E-mail, Celular ou Chave Aleatória">
             </div>
             <div class="input-group">
                 <label>Valor do Resgate (R$)</label>
@@ -441,7 +454,7 @@
             <button class="btn-saque" style="margin-top:10px;" onclick="executarPedidoSaque()"><i class="fa-solid fa-money-bill-wave"></i> Confirmar Saque</button>
         </div>
 
-        <!-- ABA 3: INDICAÇÕES -->
+        <!-- ABA 4: INDICAÇÕES -->
         <div class="sub-screen" id="screen-indica" style="padding-top: 25px;">
             <button class="btn-indicar-menu" style="background:#121216; color:#fff; border: 1px solid rgba(255,157,0,0.3); margin-bottom: 10px; padding: 10px;" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-arrow-left"></i> Voltar para os Vídeos
@@ -464,13 +477,13 @@
             <button class="btn-indicar-menu" style="padding:14px;" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
         </div>
 
-        <!-- ABA 4: REGRAS -->
+        <!-- ABA 5: REGRAS -->
         <div class="sub-screen" id="screen-regras" style="padding-top: 25px;">
             <h3>Termos & Diretrizes da Plataforma</h3>
             
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
-                    <i class="fa-solid fa-chart-line"></i> <strong>1. Sistema de Ganhos e Conversão</strong><br>
+                    <i class="fa-solid fa-chart-line"></i> <strong>1. System de Ganhos e Conversão</strong><br>
                     Cada vídeo assistido gera pontos (PTS) calculados por minuto de referência. A taxa de conversão padrão estabelecida é baseada em Kwai Golds (10.000 PTS = R$ 1,00). Os pontos são creditados de forma automática em seu perfil assim que cada ciclo de reprodução é concluído com sucesso.
                 </div>
 
@@ -504,7 +517,12 @@
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-play"></i>
-                <span>Assistir</span>
+                <span>Hits</span>
+            </div>
+            <!-- NOVA ABA FILMES -->
+            <div class="nav-item" id="nav-filmes" onclick="navegarParaAba('filmes')">
+                <i class="fa-solid fa-film"></i>
+                <span>Filmes</span>
             </div>
             <div class="nav-item" id="nav-saque" onclick="navegarParaAba('saque')">
                 <i class="fa-solid fa-wallet"></i>
@@ -529,6 +547,7 @@
 
         let isSignUpMode = false;
         let usuarioAtualId = null;
+        let usuarioEmail = "";
         let youtubePlayer = null;
         let cronometroPontuacao = null;
         let tempoAcumuladoSegundos = 0;
@@ -540,8 +559,7 @@
         let dataUltimoBonusIso = null;
         let intervaloCronometroBonus = null;
 
-        // --- INÍCIO DA ATUALIZAÇÃO ---
-        // Lista completa com 105 HITS reais do YouTube, todos diferentes, sem clones.
+        // Lista real mestre contendo os 105 HITS musicais originais e distintos
         const colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -647,30 +665,105 @@
             { id: "102", ytId: "zUwEIt9ez7M", titulo: "Scorpions - Still Loving You", recompensa: 150 },
             { id: "103", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (Official)", recompensa: 160 },
             { id: "104", ytId: "V_4CZu4ghMo", titulo: "Aerosmith - I Don't Want to Miss a Thing", recompensa: 140 },
-            { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 },    // --- NOVOS HITS 2025/2026 ADICIONADOS ---
-    { id: "106", ytId: "NwyVNhqwsfs", titulo: "MC Paulin da Capital - Quando Te Falarem Que Você Não Vai Vencer", recompensa: 200 },
-    { id: "107", ytId: "fJ9rUzIMcZQ", titulo: "Queen - We Will Rock You (Remastered)", recompensa: 150 },
-    { id: "108", ytId: "hT_nvWreIhg", titulo: "OneRepublic - Counting Stars (Live Performance)", recompensa: 160 },
-    { id: "109", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar (Video Edit)", recompensa: 170 },
-    { id: "110", ytId: "3AtDnEC4zak", titulo: "Charlie Puth - We Don't Talk Anymore (Acoustic)", recompensa: 140 },
-    { id: "111", ytId: "ALZHF5UqnU4", titulo: "Marshmello - Alone (VIP Mix)", recompensa: 180 },
-    { id: "112", ytId: "PT2_F-1esPk", titulo: "The Chainsmokers - Closer (Remix)", recompensa: 150 },
-    { id: "113", ytId: "bMpFmHSgC4Q", titulo: "Major Lazer - Lean On (Official Audio)", recompensa: 160 },
-    { id: "114", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend (Seeb Remix)", recompensa: 170 },
-    { id: "115", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up (Radio Edit)", recompensa: 190 },
-    { id: "116", ytId: "Dkk9gvTmCXY", titulo: "Imagine Dragons - Believer (Live)", recompensa: 180 },
-    { id: "117", ytId: "kTJczUoc26U", titulo: "The Kid LAROI, Justin Bieber - STAY (Official Edit)", recompensa: 170 },
-    { id: "118", ytId: "MWPniCRnRoE", titulo: "The Weeknd - Blinding Lights (Super Bowl Edit)", recompensa: 200 },
-    { id: "119", ytId: "SYM-RJwSGQ8", titulo: "Tones and I - Dance Monkey (Official Dance)", recompensa: 150 },
-    { id: "120", ytId: "60ItHLz5WEA", titulo: "Alan Walker - Faded (Restrung)", recompensa: 160 }
-
+            { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
         ];
-        // --- FIM DA ATUALIZAÇÃO ---
+
+        // NOVA COLEÇÃO DE FILMES INSERIDA DIRETAMENTE NA ESTRUTURA
+        const colecaoFilmes = [
+            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200 },
+            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200 },
+            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200 },
+            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200 },
+            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200 },
+            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200 },
+            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200 },
+            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200 },
+            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200 },
+            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200 },
+            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200 },
+            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200 },
+            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200 },
+            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200 },
+            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200 },
+            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200 },
+            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200 },
+            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200 },
+            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200 },
+            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200 },
+            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200 },
+            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200 },
+            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200 },
+            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200 },
+            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200 },
+            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200 },
+            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200 },
+            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200 },
+            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200 },
+            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200 },
+            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200 },
+            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200 },
+            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200 },
+            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200 },
+            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200 },
+            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200 },
+            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200 },
+            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200 },
+            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200 },
+            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200 },
+            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200 },
+            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200 },
+            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200 },
+            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200 },
+            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200 },
+            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200 },
+            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200 },
+            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200 },
+            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200 },
+            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200 },
+            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200 },
+            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200 },
+            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200 },
+            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200 },
+            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200 },
+            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200 },
+            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200 },
+            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200 },
+            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200 },
+            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200 },
+            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200 },
+            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200 },
+            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200 },
+            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200 },
+            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200 },
+            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200 },
+            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200 },
+            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200 },
+            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200 },
+            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200 },
+            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200 },
+            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200 },
+            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200 },
+            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200 },
+            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200 },
+            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200 },
+            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200 },
+            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200 },
+            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200 },
+            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200 },
+            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200 },
+            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200 },
+            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200 },
+            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200 },
+            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
+            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
+            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 }
+        ];
 
         function navegarParaAba(alvo) {
             document.getElementById('menuDrawer').classList.remove('active');
             
             document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
+            document.getElementById('screen-filmes').style.display = alvo === 'filmes' ? 'flex' : 'none';
             document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
             document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
             document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
@@ -678,8 +771,6 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
-            
-            if(alvo === 'home') document.getElementById('nav-home').classList.add('active');
         }
 
         function toggleAuthMode() {
@@ -705,17 +796,19 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const indicadorId = urlParams.get('ref');
                     
-                    // Lógica de Indicação Ajustada: +5.000 PTS (R$ 0,50) para o indicador
                     if (indicadorId && indicadorId !== data.user.id) {
-                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
+                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais, email').eq('id', indicadorId).maybeSingle();
                         if (dadosIndicador) {
                             let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
                             let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
                             
-                            await _supabase.from('profiles').update({
-                                pontos: novosPts,
-                                saldo_reais: novoSaldo
-                            }).eq('id', indicadorId);
+                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: novoSaldo }).eq('id', indicadorId);
+                            
+                            await _supabase.from('indicacoes').insert([{
+                                indicador_id: indicadorId,
+                                indicado_id: data.user.id,
+                                created_at: new Date().toISOString()
+                            }]);
                         }
                     }
 
@@ -723,7 +816,7 @@
                     isSignUpMode = false;
                     toggleAuthMode();
                 } else {
-                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                    const { data, error = null } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     document.getElementById('authScreen').classList.add('hidden');
                     await carregarDadosDoUsuario(data.user);
@@ -734,6 +827,7 @@
         async function carregarDadosDoUsuario(user) {
             if (!user) return;
             usuarioAtualId = user.id;
+            usuarioEmail = user.email;
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
@@ -754,18 +848,20 @@
             } finally {
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                 gerenciarCronometroBonusDiario();
+                dispararNotificacoesSaqueFlutuante();
             }
         }
 
         function atualizarInterfaceDados(pontos, saldoReais) {
+            pontosLocaisMemoria = pontos;
+            dinheiroLocalMemoria = saldoReais;
             document.getElementById('ptsTotal').innerText = pontos;
-            document.getElementById('pointsBalance').innerText = pontos;
+            document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalance').innerText = formatado;
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
 
-            // Barra baseada no saque mínimo estável de R$ 20,00
             const pct = Math.min((saldoReais / 20.00) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
@@ -813,7 +909,6 @@
             const isoAgora = new Date().toISOString();
             dataUltimoBonusIso = isoAgora;
 
-            // Bônus Diário de Referência Kwai Golds: +1.000 PTS (R$ 0,10)
             pontosLocaisMemoria += 1000;
             dinheiroLocalMemoria += 0.10;
             
@@ -837,7 +932,13 @@
             const containerScripts = document.getElementById('adScriptContainer');
             containerScripts.innerHTML = "";
 
-            // Injeção dinâmica obrigatória dos scripts de Ad Monetization externa
+            const scriptMonetag = document.createElement('script');
+            scriptMonetag.async = true;
+            scriptMonetag.src = 'https://quge5.com/88/tag.min.js';
+            scriptMonetag.dataset.zone = '255380';
+            scriptMonetag.setAttribute('data-cfasync', 'false');
+            containerScripts.appendChild(scriptMonetag);
+
             const script1 = document.createElement('script');
             script1.async = true;
             script1.src = 'https://n6wxm.com/vignette.min.js';
@@ -896,6 +997,29 @@
                 container.appendChild(card);
             });
             idVideoAtivo = colecaoVideos[0].id;
+
+            // Renderiza a nova grade de filmes na aba "Filmes"
+            const containerFilmes = document.getElementById('playlistFilmesContainer');
+            containerFilmes.innerHTML = "";
+            colecaoFilmes.forEach((vid) => {
+                const card = document.createElement('div');
+                card.className = `video-item-card`;
+                card.id = `vcard-${vid.id}`;
+                card.onclick = () => {
+                    intermediarAnuncio(() => trocarVideoAtivo(vid.id));
+                };
+                card.innerHTML = `
+                    <div class="video-thumb-placeholder">
+                        <img src="https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg" alt="thumb">
+                        <i class="fa-solid fa-play" style="position:absolute;"></i>
+                    </div>
+                    <div class="video-meta-info">
+                        <h5>${vid.titulo}</h5>
+                        <div class="video-reward-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> +${vid.recompensa} PTS / min</div>
+                    </div>
+                `;
+                containerFilmes.appendChild(card);
+            });
         }
 
         window.onYouTubeIframeAPIReady = function() {
@@ -909,7 +1033,8 @@
         };
 
         function trocarVideoAtivo(id) {
-            const vData = colecaoVideos.find(v => v.id === id);
+            // Busca o id tanto na coleção de vídeos (Hits) quanto na de filmes
+            const vData = colecaoVideos.find(v => v.id === id) || colecaoFilmes.find(v => v.id === id);
             if(!vData || idVideoAtivo === id) return;
 
             idVideoAtivo = id;
@@ -948,21 +1073,22 @@
                     if (tempoAcumuladoSegundos >= 60) {
                         tempoAcumuladoSegundos = 0; 
                         
-                        const vData = colecaoVideos.find(v => v.id === idVideoAtivo);
+                        const vData = colecaoVideos.find(v => v.id === idVideoAtivo) || colecaoFilmes.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
 
                         pontosLocaisMemoria += parseInt(vData.recompensa);
-                        
-                        // Conversão Kwai Golds Estável: 1 Ponto = 0.0001 Real (10.000 PTS = R$ 1,00)
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) * 0.0001);
                         
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria);
                         
-                        // Sincronização automática em tempo real com o banco de dados Supabase
-                        await _supabase.from('profiles').update({ 
-                            pontos: pontosLocaisMemoria, 
-                            saldo_reais: dinheiroLocalMemoria 
-                        }).eq('id', usuarioAtualId);
+                        await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
+                        // Salva o histórico do clipe ou filme recém visualizado no painel adm
+                        await _supabase.from('watch_history').insert([{
+                            user_id: usuarioAtualId,
+                            email: usuarioEmail,
+                            video_titulo: vData.titulo,
+                            tempo_assistido: 60
+                        }]);
                     }
                 }
             }, 1000);
@@ -977,10 +1103,54 @@
             alert("Link de indicação copiado com sucesso!");
         }
 
-        function executarPedidoSaque() {
+        async function executarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value);
-            if(isNaN(val) || val < 20) return alert("O valor mínimo para saque é R$ 20,00");
-            alert("Sua solicitação foi enviada para análise automática.");
+            const key = document.getElementById('pixKey').value.trim();
+            const name = document.getElementById('pixName').value.trim();
+
+            if(!name || !key || isNaN(val) || val < 20) {
+                return alert("Preencha todos os dados. O valor mínimo para saque é R$ 20,00.");
+            }
+
+            if(dinheiroLocalMemoria < val) {
+                return alert("Saldo insuficiente para solicitar este resgate.");
+            }
+
+            try {
+                let novoSaldo = dinheiroLocalMemoria - val;
+                await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
+                
+                await _supabase.from('solicitacoes_saque').insert([{
+                    user_id: usuarioAtualId,
+                    email: usuarioEmail,
+                    nome_titular: name,
+                    chave_pix: key,
+                    valor_solicitado: val,
+                    status: 'pendente'
+                }]);
+
+                alert("Sua solicitação foi enviada com sucesso para análise automática!");
+                location.reload();
+            } catch(e) {
+                alert("Erro ao enviar pedido: " + e.message);
+            }
+        }
+
+        function dispararNotificacoesSaqueFlutuante() {
+            const nomesFakes = ["marcos_silva", "ana.julia", "portonando39", "hernandesporto", "maryhdeoliveira", "cgisanesantiago", "lucas_vini"];
+            const valoresFakes = [20.00, 25.50, 42.10, 30.00, 22.80, 50.00];
+            
+            setInterval(() => {
+                if(Math.random() > 0.4) {
+                    const randomNome = nomesFakes[Math.floor(Math.random() * nomesFakes.length)];
+                    const randomValor = valoresFakes[Math.floor(Math.random() * valoresFakes.length)];
+                    
+                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}*** sacou R$ ${randomValor.toFixed(2).replace('.', ',')} via Pix!`;
+                    const badge = document.getElementById('liveWithdrawal');
+                    badge.classList.add('active');
+                    setTimeout(() => badge.classList.remove('active'), 4000);
+                }
+            }, 12000);
         }
 
         async function handleLogout() { 
