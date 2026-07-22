@@ -348,6 +348,7 @@
 
     <!-- BARRA LATERAL (SIDEBAR) OMNICHANNEL -->
     <aside class="sidebar" id="mainSidebar">
+        <!-- Logo Area -->
         <div class="p-5 border-b border-zinc-800/50 flex justify-between items-center bg-[#0b0b0f]">
             <div>
                 <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="text-shadow: 0 0 15px rgba(99,102,241,0.5);">
@@ -358,45 +359,56 @@
                     <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest" id="db-status-text">Sistema Online</span>
                 </div>
             </div>
+            <!-- Botão fechar apenas no mobile -->
             <button onclick="UI.toggleSidebar()" class="md:hidden text-zinc-400 text-xl">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
         
+        <!-- Menu Rolável -->
         <div class="sidebar-content">
+            <!-- GRUPO 1: DASHBOARDS -->
             <span class="nav-category">Executivo & Dados</span>
             <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard Geral</button>
             <button onclick="UI.changeTab('analytics')" id="nav-analytics" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics & Mapas</button>
             
+            <!-- GRUPO 2: GESTÃO CORE -->
             <span class="nav-category">Controle Operacional</span>
             <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users-gear"></i> Gestão de Usuários</button>
             <button onclick="UI.changeTab('financeiro')" id="nav-financeiro" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira Financeira (PIX)</button>
             
+            <!-- GRUPO 3: MARKETING E MONETIZAÇÃO -->
             <span class="nav-category">Expansão & Receita</span>
             <button onclick="UI.changeTab('monetizacao')" id="nav-monetizacao" class="nav-item"><i class="fa-solid fa-sack-dollar"></i> Central de Monetização</button>
             <button onclick="UI.changeTab('parceiros')" id="nav-parceiros" class="nav-item"><i class="fa-solid fa-handshake"></i> Painel de Parceiros (B2B)</button>
             <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired"></i> Árvore de Indicações</button>
             <button onclick="UI.changeTab('campanhas')" id="nav-campanhas" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Sistema de Campanhas</button>
             
+            <!-- GRUPO 4: ENTRETENIMENTO -->
             <span class="nav-category">Plataforma</span>
             <button onclick="UI.changeTab('bonus')" id="nav-bonus" class="nav-item"><i class="fa-solid fa-gift"></i> Sistema de Bônus</button>
             <button onclick="UI.changeTab('eventos')" id="nav-eventos" class="nav-item"><i class="fa-solid fa-trophy"></i> Eventos e Missões</button>
             <button onclick="UI.changeTab('catalogo')" id="nav-catalogo" class="nav-item"><i class="fa-solid fa-film"></i> Gerir Catálogo (BD)</button>
 
+            <!-- GRUPO 5: TECNOLOGIA E INFRA -->
             <span class="nav-category">Infraestrutura Inteligente</span>
             <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item" style="color: #c084fc;"><i class="fa-solid fa-brain"></i> CineWorld A.I.</button>
             <button onclick="UI.changeTab('database')" id="nav-database" class="nav-item"><i class="fa-solid fa-database"></i> Banco de Dados (DB)</button>
             <button onclick="UI.changeTab('seguranca')" id="nav-seguranca" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Segurança & Logs IP</button>
             <button onclick="UI.changeTab('notificacoes')" id="nav-notificacoes" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações (Push)</button>
 
+            <!-- GRUPO 6: SISTEMA -->
             <span class="nav-category">Sistema Master</span>
             <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item mb-4"><i class="fa-solid fa-sliders"></i> Configurações Globais</button>
         </div>
     </aside>
 
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL (MAIN) -->
     <main class="main-content" id="mainScrollArea">
         
-        <!-- DASHBOARD -->
+        <!-- ========================================== -->
+        <!-- ABA 1: DASHBOARD EXECUTIVO                 -->
+        <!-- ========================================== -->
         <section id="tab-dashboard" class="tab-content active">
             <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
                 <div>
@@ -405,33 +417,64 @@
                 </div>
                 <button onclick="App.Controllers.Dashboard.load()" class="btn-neon"><i class="fa-solid fa-rotate"></i> Atualizar Dados</button>
             </div>
+
+            <!-- Grid de Métricas Reais -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="glass-panel metric-card p-6"><i class="fa-solid fa-users metric-bg-icon text-indigo-500"></i><p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Total Usuários</p><p class="text-4xl font-black text-white" id="dash-users">0</p></div>
-                <div class="glass-panel metric-card p-6 border-l-2 border-l-amber-500"><i class="fa-solid fa-clock-rotate-left metric-bg-icon text-amber-500"></i><p class="text-amber-500 text-[10px] font-bold uppercase mb-2">Fila de Saques</p><p class="text-3xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p><p class="text-xs text-zinc-500 mt-2" id="dash-pending-count">0 aguardando</p></div>
-                <div class="glass-panel metric-card p-6 border-l-2 border-l-emerald-500"><i class="fa-solid fa-check-double metric-bg-icon text-emerald-500"></i><p class="text-emerald-500 text-[10px] font-bold uppercase mb-2">Total Pago (PIX)</p><p class="text-3xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p><p class="text-xs text-zinc-500 mt-2" id="dash-approved-count">0 saques</p></div>
-                <div class="glass-panel metric-card p-6 border-l-2 border-l-pink-500"><i class="fa-solid fa-play metric-bg-icon text-pink-500"></i><p class="text-pink-500 text-[10px] font-bold uppercase mb-2">Engajamento (Vistos)</p><p class="text-4xl font-black text-pink-400" id="dash-history">0</p></div>
+                <!-- Card 1 -->
+                <div class="glass-panel metric-card p-6">
+                    <i class="fa-solid fa-users metric-bg-icon text-indigo-500"></i>
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Total Usuários Cadastrados</p>
+                    <p class="text-4xl font-black text-white" id="dash-users">0</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-amber-500">
+                    <i class="fa-solid fa-clock-rotate-left metric-bg-icon text-amber-500"></i>
+                    <p class="text-amber-500 text-[10px] font-bold uppercase mb-2">Fila de Saques (Pendentes)</p>
+                    <p class="text-3xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p>
+                    <p class="text-xs text-zinc-500 mt-2" id="dash-pending-count">0 requisições aguardando</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-emerald-500">
+                    <i class="fa-solid fa-check-double metric-bg-icon text-emerald-500"></i>
+                    <p class="text-emerald-500 text-[10px] font-bold uppercase mb-2">Total Pago (PIX Aprovado)</p>
+                    <p class="text-3xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p>
+                    <p class="text-xs text-zinc-500 mt-2" id="dash-approved-count">0 saques concluídos</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-pink-500">
+                    <i class="fa-solid fa-play metric-bg-icon text-pink-500"></i>
+                    <p class="text-pink-500 text-[10px] font-bold uppercase mb-2">Engajamento (Vídeos Vistos)</p>
+                    <p class="text-4xl font-black text-pink-400" id="dash-history">0</p>
+                </div>
             </div>
+
+            <!-- Console Log Embutido -->
             <div class="glass-panel p-6">
-                <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco</h3>
+                <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco de Dados</h3>
                 <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto chat-scroll" id="system-console">
                     > [System] Inicializando CineWorld OS Master...<br>
                 </div>
             </div>
         </section>
 
-        <!-- ANALYTICS -->
+        <!-- ========================================== -->
+        <!-- ABA 2: ANALYTICS E MAPAS                   -->
+        <!-- ========================================== -->
         <section id="tab-analytics" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Dashboard Analítico</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass-panel p-8 text-center">
                     <i class="fa-solid fa-chart-pie text-6xl text-zinc-700 mb-4"></i>
                     <h3 class="text-xl font-bold text-white">Gráficos de Retenção</h3>
+                    <p class="text-zinc-500 mt-2 text-sm">Visualização de Taxa de Retenção, Conversão de Indicações e Tempo Médio por Sessão.</p>
                     <button class="mt-4 bg-zinc-800 text-zinc-300 px-4 py-2 rounded text-xs hover:bg-zinc-700" onclick="App.Controllers.Analytics.generateChart()">Gerar Gráfico de Barras</button>
+                    <!-- Contêiner do Gráfico de Barras Dinâmico -->
                     <div id="chart-container" class="mt-6 flex items-end justify-center gap-3 h-32 border-b border-zinc-800 pb-2"></div>
                 </div>
                 <div class="glass-panel p-8 text-center">
                     <i class="fa-solid fa-earth-americas text-6xl text-indigo-500/30 mb-4"></i>
-                    <h3 class="text-xl font-bold text-white">Mapa de Acessos</h3>
+                    <h3 class="text-xl font-bold text-white">Mapa de Acessos em Tempo Real</h3>
+                    <p class="text-zinc-500 mt-2 text-sm">Integração global para exibir o tráfego por localidade.</p>
                     <div class="mt-4 inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold border border-emerald-500/30">
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Monitorando Tráfego
                     </div>
@@ -439,11 +482,13 @@
             </div>
         </section>
 
-        <!-- USUARIOS -->
+        <!-- ========================================== -->
+        <!-- ABA 3: GESTÃO DE USUÁRIOS COMPLETA         -->
+        <!-- ========================================== -->
         <section id="tab-usuarios" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Gestão de Usuários</h2>
+                    <h2 class="text-2xl md:text-3xl font-black text-white">Gestão Completa de Usuários</h2>
                     <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP e administre contas.</p>
                 </div>
                 <div class="w-full md:w-80 relative">
@@ -451,15 +496,27 @@
                     <input type="text" id="search-users" class="input-dark pl-10" placeholder="Buscar por E-mail ou ID..." onkeyup="App.Controllers.Users.search(this.value)">
                 </div>
             </div>
+            
             <div class="data-table-container">
                 <table class="data-table">
-                    <thead><tr><th>Conta (E-mail / ID)</th><th class="text-right">Saldo Real (R$)</th><th class="text-right">XP / Pontos</th><th class="text-center">Ações Rápidas</th></tr></thead>
-                    <tbody id="table-users"><tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>Conta (E-mail / ID)</th>
+                            <th class="text-right">Saldo Real (R$)</th>
+                            <th class="text-right">XP / Pontos</th>
+                            <th class="text-center">Ações Rápidas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-users">
+                        <tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- FINANCEIRO -->
+        <!-- ========================================== -->
+        <!-- ABA 4: CARTEIRA FINANCEIRA                 -->
+        <!-- ========================================== -->
         <section id="tab-financeiro" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
@@ -474,18 +531,32 @@
                     </select>
                 </div>
             </div>
+
             <div class="data-table-container">
                 <table class="data-table">
-                    <thead><tr><th>E-mail do Usuário</th><th>Nome Completo (Titular)</th><th>Chave PIX Informada</th><th class="text-right">Valor do Saque</th><th class="text-right">Ação Master</th></tr></thead>
-                    <tbody id="table-finance"><tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>E-mail do Usuário</th>
+                            <th>Nome Completo (Titular)</th>
+                            <th>Chave PIX Informada</th>
+                            <th class="text-right">Valor do Saque</th>
+                            <th class="text-right">Ação Master</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-finance">
+                        <tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- MONETIZACAO -->
+        <!-- ========================================== -->
+        <!-- ABA 5: MONETIZAÇÃO                         -->
+        <!-- ========================================== -->
         <section id="tab-monetizacao" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Central de Monetização</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Monetag -->
                 <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-bold text-white"><i class="fa-solid fa-ad text-indigo-400"></i> Monetag (Vignette)</h3>
@@ -494,9 +565,12 @@
                             <div class="toggle-label bg-emerald-500 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[22px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                         </label>
                     </div>
+                    <p class="text-xs text-zinc-400 mb-4">Anúncios rodando antes de cada vídeo.</p>
                     <label class="text-[10px] text-zinc-500 font-bold uppercase">Zone ID Ativo</label>
                     <input type="text" id="ads-monetag-zone" value="11218300" class="input-dark mt-1 font-mono text-emerald-400">
                 </div>
+
+                <!-- Google AdSense -->
                 <div class="glass-panel p-6 border-l-4 border-l-zinc-700">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-bold text-white"><i class="fa-solid fa-ad text-blue-400"></i> Google AdSense</h3>
@@ -505,9 +579,12 @@
                             <div class="toggle-label bg-zinc-600 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                         </label>
                     </div>
+                    <p class="text-xs text-zinc-400 mb-4">Banners nativos nas listas de filmes.</p>
                     <label class="text-[10px] text-zinc-500 font-bold uppercase">Client ID</label>
                     <input type="text" id="ads-adsense-client" placeholder="ca-pub-..." class="input-dark mt-1" disabled>
                 </div>
+
+                <!-- CPA -->
                 <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-bold text-white"><i class="fa-solid fa-hand-holding-dollar text-green-400"></i> CPA (Tarefas)</h3>
@@ -516,80 +593,123 @@
                             <div class="toggle-label bg-emerald-500 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[22px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                         </label>
                     </div>
-                    <button class="bg-zinc-800 text-white px-4 py-2 w-full rounded text-sm mt-2 hover:bg-zinc-700" onclick="App.Controllers.Monetizacao.configPostback()">Configurar Postback</button>
+                    <p class="text-xs text-zinc-400 mb-4">Redes CPA (Ex: AdWorkMedia).</p>
+                    <button class="bg-zinc-800 text-white px-4 py-2 w-full rounded text-sm mt-2 hover:bg-zinc-700 transition-colors" onclick="App.Controllers.Monetizacao.configPostback()">Configurar Postback</button>
                 </div>
             </div>
             <button class="btn-neon w-full py-4 mt-6 text-lg" onclick="App.Controllers.Monetizacao.save()"><i class="fa-solid fa-floppy-disk"></i> Salvar Configurações de Ads</button>
         </section>
 
-        <!-- PARCEIROS -->
+        <!-- ========================================== -->
+        <!-- ABA 6: PAINEL DE PARCEIROS                 -->
+        <!-- ========================================== -->
         <section id="tab-parceiros" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Painel B2B / Marcas</h2>
             <div class="glass-panel p-10 text-center">
                 <i class="fa-solid fa-handshake text-6xl text-indigo-500 mb-4"></i>
                 <h3 class="text-xl font-bold text-white">Acesso para Anunciantes Privados</h3>
+                <p class="text-zinc-400 text-sm mt-2 max-w-lg mx-auto">Área exclusiva onde empresas podem comprar Visualizações reais nos trailers deles dentro do seu app, depositando saldo direto na conta da sua plataforma.</p>
                 <button class="btn-neon mt-6" onclick="App.Controllers.Parceiros.generateKey()">Gerar API Key para Parceiro</button>
             </div>
         </section>
 
-        <!-- INDICAÇÕES -->
+        <!-- ========================================== -->
+        <!-- ABA 7: ÁRVORE DE INDICAÇÕES                -->
+        <!-- ========================================== -->
         <section id="tab-indica" class="tab-content">
             <div class="border-b border-zinc-800 pb-4 mb-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white">Árvore de Indicações Multinível</h2>
                 <p class="text-zinc-400 text-sm mt-1">Sincronizado com a tabela `indicacoes`. Rastreamento de convites.</p>
             </div>
+            
             <div class="data-table-container">
                 <table class="data-table">
-                    <thead><tr><th class="text-amber-500"><i class="fa-solid fa-crown"></i> Padrinho (Indicador)</th><th class="text-indigo-400"><i class="fa-solid fa-user-plus"></i> Convidado (Nova Conta)</th><th>Nível</th></tr></thead>
-                    <tbody id="table-indicacoes"><tr><td colspan="3" class="text-center py-10"><div class="spinner"></div></td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th class="text-amber-500"><i class="fa-solid fa-crown"></i> Padrinho (Indicador)</th>
+                            <th class="text-indigo-400"><i class="fa-solid fa-user-plus"></i> Convidado (Nova Conta)</th>
+                            <th>Nível</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-indicacoes">
+                        <tr><td colspan="3" class="text-center py-10"><div class="spinner"></div></td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- CAMPANHAS -->
+        <!-- ========================================== -->
+        <!-- ABA 8: SISTEMA DE CAMPANHAS                -->
+        <!-- ========================================== -->
         <section id="tab-campanhas" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Sistema de Campanhas</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glass-panel p-6 border-t-4 border-t-indigo-500">
                     <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Injeção de Saldo Global (Massa)</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Dispara uma atualização na tabela `profiles` somando o valor escolhido no saldo de TODOS os usuários do banco.</p>
                     <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1">Valor a Injetar (R$)</label>
                     <input type="number" id="mass-bonus-val" class="input-dark mb-4" placeholder="Ex: 5.00" step="0.01">
                     <button class="btn-neon w-full" onclick="App.Controllers.Campanhas.inject()"><i class="fa-solid fa-rocket"></i> Disparar Bônus para Toda a Base</button>
                 </div>
+                
                 <div class="glass-panel p-6">
                     <h3 class="font-bold text-white mb-4">Nova Campanha Patrocinada</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Título da Campanha</label><input type="text" class="input-dark mt-1" placeholder="Ex: Dobro de XP no Fim de Semana"></div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Título da Campanha</label>
+                            <input type="text" class="input-dark mt-1" placeholder="Ex: Dobro de XP no Fim de Semana">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Público Alvo</label>
+                            <select class="input-dark mt-1"><option>Todos</option><option>Apenas VIPs</option></select>
+                        </div>
                         <button class="bg-emerald-600 hover:bg-emerald-500 w-full py-2 rounded text-white font-bold transition-colors" onclick="UI.toast('Campanha Agendada com Sucesso!')">Agendar Evento</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- BÔNUS -->
+        <!-- ========================================== -->
+        <!-- ABA 9: SISTEMA DE BÔNUS                    -->
+        <!-- ========================================== -->
         <section id="tab-bonus" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Regras de Bonificação</h2>
             <div class="glass-panel p-6">
+                <p class="text-zinc-400 text-sm mb-4">Defina as taxas de recompensa pagas aos usuários pelas ações na plataforma.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Check-in Diário (XP)</label><input type="number" class="input-dark mt-1" value="1000"></div>
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Concluir Filme (XP)</label><input type="number" class="input-dark mt-1" value="5000"></div>
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Compartilhar Link (R$)</label><input type="number" class="input-dark mt-1" value="0.50" step="0.10"></div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Check-in Diário (XP)</label>
+                        <input type="number" class="input-dark mt-1" value="1000">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Concluir Filme (XP)</label>
+                        <input type="number" class="input-dark mt-1" value="5000">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Compartilhar Link (R$)</label>
+                        <input type="number" class="input-dark mt-1" value="0.50" step="0.10">
+                    </div>
                 </div>
                 <button class="btn-neon mt-6" onclick="UI.toast('Regras de Bônus salvas na tabela de configurações.')"><i class="fa-solid fa-floppy-disk"></i> Salvar Tabela de Bônus</button>
             </div>
         </section>
 
-        <!-- EVENTOS -->
+        <!-- ========================================== -->
+        <!-- ABA 10: EVENTOS                            -->
+        <!-- ========================================== -->
         <section id="tab-eventos" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Torneios e Rankings</h2>
             <div class="glass-panel p-10 text-center text-zinc-400">
                 <i class="fa-solid fa-ranking-star text-6xl text-amber-500 mb-4"></i>
                 <h3 class="text-xl font-bold text-white">Temporada Competitiva</h3>
+                <p class="max-w-md mx-auto mt-2 text-sm">O sistema de Leaderboard faz um SUM automático na tabela `watch_history` agrupando por `user_id` para criar Rankings Globais.</p>
                 <button class="mt-6 bg-zinc-800 text-white px-6 py-2 rounded font-bold hover:bg-zinc-700" onclick="UI.toast('Temporada 1 Inicializada!')">Ativar 1º Temporada</button>
             </div>
         </section>
 
-        <!-- CATÁLOGO -->
+        <!-- ========================================== -->
+        <!-- ABA 11: CATÁLOGO DE FILMES E MÍDIAS        -->
+        <!-- ========================================== -->
         <section id="tab-catalogo" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
@@ -598,26 +718,32 @@
                 </div>
                 <button onclick="App.Controllers.Catalogo.add()" class="btn-neon"><i class="fa-solid fa-plus"></i> Adicionar Mídia (BD)</button>
             </div>
+
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="table-videos">
                 <div class="col-span-full text-center py-10"><div class="spinner"></div></div>
             </div>
         </section>
 
-        <!-- DATABASE -->
+        <!-- ========================================== -->
+        <!-- ABA 12: BANCO DE DADOS                     -->
+        <!-- ========================================== -->
         <section id="tab-database" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Database Management</h2>
             <div class="glass-panel p-10 text-center">
                 <i class="fa-solid fa-database text-6xl text-emerald-500 mb-4"></i>
                 <h3 class="text-xl font-bold text-white">Acesso Root via SDK</h3>
+                <p class="text-zinc-400 mt-2 max-w-lg mx-auto text-sm">Este painel executa todas as requisições DML. Para comandos estruturais (Criar/Deletar Tabelas), utilize a interface oficial do Supabase na sua conta.</p>
                 <div class="mt-6 flex justify-center gap-4">
                     <button class="bg-zinc-800 text-white px-6 py-2 rounded text-sm hover:bg-zinc-700" onclick="UI.toast('Backup JSON iniciado.')">Snapshot DB</button>
                 </div>
             </div>
         </section>
 
-        <!-- IA (A MÁGICA ACONTECE AQUI) -->
+        <!-- ========================================== -->
+        <!-- ABA 13: INTELIGÊNCIA ARTIFICIAL (MASTER)   -->
+        <!-- ========================================== -->
         <section id="tab-ia" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">CineWorld A.I. (Autônoma)</h2>
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">CineWorld A.I. (Assistente Executivo Autônomo)</h2>
             
             <div class="glass-panel flex flex-col h-[600px] max-w-4xl mx-auto border border-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.15)]">
                 <!-- Topbar Chat -->
@@ -628,19 +754,28 @@
                             <div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#08080b] rounded-full"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">I.A. Core Autônoma (Groq)</h3>
-                            <p class="text-[10px] text-emerald-400 font-mono">Conexão Direta: Read & Write</p>
+                            <h3 class="font-bold text-white">I.A. Core (Groq Llama 3.3)</h3>
+                            <p class="text-[10px] text-emerald-400 font-mono">Controle Direto do Banco de Dados</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chat Area -->
                 <div class="flex-1 p-6 overflow-y-auto space-y-6 chat-scroll" id="ai-chat-box">
+                    <!-- Mensagem Inicial IA -->
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
                         <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
-                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Fui atualizada com acesso **DML Direto** ao Banco de Dados Supabase. Eu não vou mais te mandar para outras abas. Se você me pedir algo, eu mesma vou até a tabela, executo a Query (SQL) e te mostro o resultado aqui mesmo no chat.</p>
-                            <p class="text-xs text-zinc-400 mt-3 font-mono">Exemplos do que posso fazer agora:<br>- "Quantos usuários temos no site?"<br>- "Veja os saques pendentes"<br>- "Aprove todos os PIX da fila"<br>- "Adicione o filme Vingadores com ytId dQw4w9WgXcQ e recompensa 5000"<br>- "Dê 5 reais para todos os usuários"<br>- "Mostre os logs de fraude"<br>- "Apague o usuário teste@gmail.com"</p>
+                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Fui atualizada com acesso **DML Direto** ao Banco de Dados. Eu não te mandarei mais para outras abas. Se me pedir para listar dados, eu buscarei no Supabase e mostrarei no próprio chat. Se me pedir para alterar, eu farei e te darei a confirmação.</p>
+                            <p class="text-xs text-zinc-500 mt-3 font-mono border-t border-zinc-700 pt-2">
+                                Tente comandos como:<br>
+                                - "Liste todos os saques pendentes pra mim"<br>
+                                - "Quantos usuários ativos temos?"<br>
+                                - "Aprove todos os saques da fila"<br>
+                                - "Adicione 5 reais para todo mundo"<br>
+                                - "Mostre os logs de fraude"<br>
+                                - "Como eu posso melhorar a retenção do site?"
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -655,57 +790,97 @@
             </div>
         </section>
 
-        <!-- SEGURANÇA -->
+        <!-- ========================================== -->
+        <!-- ABA 14: SEGURANÇA E LOGS                   -->
+        <!-- ========================================== -->
         <section id="tab-seguranca" class="tab-content">
             <div class="border-b border-zinc-800 pb-4 mb-6">
                 <h2 class="text-2xl md:text-3xl font-black text-white">Auditoria Anti-Fraude (Shield)</h2>
                 <p class="text-zinc-400 text-sm mt-1">Sincronizado com a tabela `antifraud_logs`. Detecção de IPs e User-Agents.</p>
             </div>
+            
             <div class="data-table-container">
                 <table class="data-table">
-                    <thead><tr><th>E-mail do Usuário</th><th>IP Address</th><th>Localidade</th><th>User-Agent (Aparelho)</th></tr></thead>
-                    <tbody id="table-logs"><tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr></tbody>
+                    <thead>
+                        <tr>
+                            <th>E-mail do Usuário</th>
+                            <th>IP Address</th>
+                            <th>Localidade</th>
+                            <th>User-Agent (Aparelho)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-logs">
+                        <tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- NOTIFICAÇÕES -->
+        <!-- ========================================== -->
+        <!-- ABA 15: NOTIFICAÇÕES (PUSH)                -->
+        <!-- ========================================== -->
         <section id="tab-notificacoes" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Push & Mensageria</h2>
             <div class="glass-panel p-6 max-w-2xl">
                 <h3 class="font-bold text-white mb-4">Disparar Alerta Global</h3>
                 <div class="space-y-4">
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Título da Notificação</label><input type="text" class="input-dark mt-1" placeholder="Ex: Novo Filme no Catálogo!"></div>
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Mensagem</label><textarea class="input-dark mt-1 h-24 resize-none" placeholder="Digite o aviso..."></textarea></div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Título da Notificação</label>
+                        <input type="text" class="input-dark mt-1" placeholder="Ex: Novo Filme no Catálogo!">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Mensagem</label>
+                        <textarea class="input-dark mt-1 h-24 resize-none" placeholder="Digite o aviso..."></textarea>
+                    </div>
                     <button class="btn-neon w-full py-3" onclick="Swal.fire('Disparado', 'Mensagem colocada na fila de push para todos os aparelhos.', 'success')"><i class="fa-solid fa-paper-plane"></i> Enviar Push Notification</button>
                 </div>
             </div>
         </section>
 
-        <!-- CONFIGURAÇÕES GERAIS -->
+        <!-- ========================================== -->
+        <!-- ABA 16: CONFIGURAÇÕES GERAIS               -->
+        <!-- ========================================== -->
         <section id="tab-config" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Configurações Core (Engine)</h2>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Painel de Limites -->
                 <div class="glass-panel p-6">
                     <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-building-columns text-emerald-400 mr-2"></i> Limites Financeiros</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Saque Mínimo (R$)</label><input type="number" id="config-saque-minimo" value="20.00" class="input-dark mt-1"></div>
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Taxa de Conversão (PTS = R$ 1)</label><input type="number" id="config-taxa" value="10000" class="input-dark mt-1"></div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Saque Mínimo (R$)</label>
+                            <input type="number" id="config-saque-minimo" value="20.00" class="input-dark mt-1">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Taxa de Conversão (PTS = R$ 1)</label>
+                            <input type="number" id="config-taxa" value="10000" class="input-dark mt-1">
+                        </div>
                     </div>
                 </div>
+
+                <!-- Painel Supabase -->
                 <div class="glass-panel p-6">
                     <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-key text-red-400 mr-2"></i> Supabase Connection</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">URL do Projeto</label><input type="text" value="https://hvivrmdygytttdlapjbi.supabase.co" class="input-dark mt-1 text-xs" disabled></div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">URL do Projeto</label>
+                            <input type="text" value="https://hvivrmdygytttdlapjbi.supabase.co" class="input-dark mt-1 text-xs" disabled>
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Status da Chave Anon</label>
+                            <input type="text" value="Conectado / Leitura e Escrita RLS" class="input-dark mt-1 text-emerald-400 text-xs font-bold" disabled>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <button class="btn-neon w-full py-4 mt-6 text-lg" onclick="App.Controllers.Config.save()"><i class="fa-solid fa-microchip"></i> Gravar Configurações no Banco</button>
         </section>
 
     </main>
 
-    <!-- MOTOR JAVASCRIPT REAL -->
+    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE E À IA -->
     <script>
         // CONFIGURAÇÕES REAIS SUPABASE
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
@@ -713,29 +888,39 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // CACHE GERAL
         let globUsers = []; 
 
+        // GERENCIADOR DE INTERFACE (UI)
         const UI = {
             changeTab: (tabId) => {
+                // Esconder todas as abas
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 
+                // Mostrar a nova aba
                 const tab = document.getElementById(`tab-${tabId}`);
                 if(tab) tab.classList.add('active');
                 
                 const nav = document.getElementById(`nav-${tabId}`);
                 if(nav) nav.classList.add('active');
 
+                // Fechar menu mobile se estiver aberto
                 if(window.innerWidth < 768) {
                     document.getElementById('mainSidebar').classList.remove('open');
                     document.getElementById('sidebarOverlay').classList.remove('active');
                 }
 
+                // Rolagem para o topo
                 document.getElementById('mainScrollArea').scrollTo({ top: 0, behavior: 'smooth' });
 
+                // Acionar controladores responsáveis pela aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
+                if(tabId === 'analytics') App.Controllers.Analytics.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
+                if(tabId === 'monetizacao') App.Controllers.Monetizacao.load();
+                if(tabId === 'parceiros') App.Controllers.Parceiros.load();
                 if(tabId === 'seguranca') App.Controllers.Logs.load();
                 if(tabId === 'indica') App.Controllers.Afiliados.load();
                 if(tabId === 'catalogo') App.Controllers.Catalogo.load();
@@ -753,6 +938,7 @@
                     cons.innerHTML += `> [${new Date().toLocaleTimeString()}] ${msg}<br>`;
                     cons.scrollTop = cons.scrollHeight;
                 }
+                console.log(`[CineWorld OS] ${msg}`);
             },
             toast: (msg) => {
                 Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: msg, showConfirmButton: false, timer: 3000, timerProgressBar: true, background: '#121216', color: '#fff' });
@@ -760,6 +946,7 @@
             errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
         };
 
+        // CONTROLADORES LÓGICOS DO BANCO DE DADOS E IA
         const App = {
             Controllers: {
                 
@@ -769,11 +956,16 @@
                 Dashboard: {
                     load: async () => {
                         try {
-                            const { count: usersCount } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
-                            document.getElementById('dash-users').innerText = usersCount || 0;
+                            UI.log("Sincronizando métricas do Dashboard...");
+                            
+                            // 1. Total Usuários (Tabela: profiles)
+                            const { count: usersCount, error: errU } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
+                            if(!errU) document.getElementById('dash-users').innerText = usersCount || 0;
 
-                            const { data: saques } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
-                            if(saques) {
+                            // 2. Valores Financeiros (Tabela: solicitacoes_saque)
+                            const { data: saques, error: errS } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
+                            
+                            if(!errS && saques) {
                                 let pendenteVal = 0, pendenteCount = 0, pagoVal = 0, pagoCount = 0;
                                 saques.forEach(s => {
                                     if(s.status === 'pendente') { pendenteVal += (s.valor_solicitado || 0); pendenteCount++; }
@@ -785,10 +977,14 @@
                                 document.getElementById('dash-approved-count').innerText = `${pagoCount} saques concluídos`;
                             }
 
-                            const { count: watchCount } = await _supabase.from('videos').select('*', { count: 'exact', head: true });
-                            document.getElementById('dash-history').innerText = watchCount || 0;
+                            // 3. Catálogo/Histórico (Tabela: videos)
+                            const { count: watchCount, error: errW } = await _supabase.from('videos').select('*', { count: 'exact', head: true });
+                            if(!errW) document.getElementById('dash-history').innerText = watchCount || 0;
+
                             UI.log("Dashboard atualizado com sucesso.");
-                        } catch (error) { UI.log("Erro no Dashboard: " + error.message); }
+                        } catch (error) {
+                            UI.log("Erro no Dashboard: " + error.message);
+                        }
                     }
                 },
 
@@ -800,8 +996,9 @@
                     generateChart: () => {
                         const container = document.getElementById('chart-container');
                         container.innerHTML = '';
+                        // Desenha um gráfico de barras dinâmico
                         for(let i=0; i<7; i++) {
-                            const h = Math.floor(Math.random() * 80) + 20; 
+                            const h = Math.floor(Math.random() * 80) + 20; // Altura aleatória
                             container.innerHTML += `<div style="height: ${h}%; width: 12%; background: linear-gradient(to top, var(--brand-secondary), var(--brand-primary)); border-radius: 4px 4px 0 0; transition: height 0.5s ease-out; box-shadow: 0 0 10px rgba(99,102,241,0.3);"></div>`;
                         }
                         UI.toast('Gráfico de retenção dos últimos 7 dias gerado.');
@@ -815,44 +1012,84 @@
                     load: async () => {
                         try {
                             document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            UI.log("Buscando contas de usuários...");
+                            
+                            // Tabela profiles
                             const { data, error } = await _supabase.from('profiles').select('*').limit(200);
+                            
                             if (error) throw error;
+                            
                             globUsers = data; 
                             App.Controllers.Users.renderTable(data);
-                        } catch (error) { document.getElementById('table-users').innerHTML = UI.errorRow(4, error.message); }
+                            UI.log(`Foram carregados ${data.length} usuários.`);
+                        } catch (error) {
+                            document.getElementById('table-users').innerHTML = UI.errorRow(4, `Falha na tabela profiles: ${error.message}`);
+                            UI.log("Erro Usuários: " + error.message);
+                        }
                     },
                     search: (term) => {
                         term = term.toLowerCase().trim();
                         if(!term) { App.Controllers.Users.renderTable(globUsers); return; }
-                        const filtered = globUsers.filter(u => (u.email && u.email.toLowerCase().includes(term)) || (u.id && u.id.toLowerCase().includes(term)));
+                        const filtered = globUsers.filter(u => 
+                            (u.email && u.email.toLowerCase().includes(term)) || 
+                            (u.id && u.id.toLowerCase().includes(term))
+                        );
                         App.Controllers.Users.renderTable(filtered);
                     },
                     renderTable: (dataArray) => {
                         const tbody = document.getElementById('table-users');
-                        if(!dataArray || dataArray.length === 0) return tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum registro encontrado.</td></tr>`;
+                        if(!dataArray || dataArray.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum registro encontrado no banco.</td></tr>`;
+                            return;
+                        }
+
                         let html = '';
                         dataArray.forEach(user => {
-                            html += `<tr><td><p class="font-bold text-white text-sm">${user.email || 'Conta Sem Email'}</p><p class="text-[10px] text-zinc-500 font-mono mt-1">ID: ${user.id}</p></td><td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td><td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td><td class="text-center"><button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button></td></tr>`;
+                            html += `
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-white text-sm">${user.email || 'Conta Sem Email'}</p>
+                                        <p class="text-[10px] text-zinc-500 font-mono mt-1">ID: ${user.id}</p>
+                                    </td>
+                                    <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
+                                    <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
+                                    <td class="text-center">
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                                    </td>
+                                </tr>
+                            `;
                         });
                         tbody.innerHTML = html;
                     },
                     edit: (id, email, saldoAtual, ptAtual) => {
                         Swal.fire({
                             title: `Modificar Perfil`,
-                            html: `<p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p><label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label><input type="number" id="edit-saldo" class="swal2-input !mt-1" value="${saldoAtual || 0}" step="0.01"><label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label><input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">`,
+                            html: `
+                                <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
+                                <input type="number" id="edit-saldo" class="swal2-input !mt-1" value="${saldoAtual || 0}" step="0.01">
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
+                                <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
+                            `,
                             confirmButtonText: 'Gravar (DB)',
                             confirmButtonColor: '#6366f1',
-                            showCancelButton: true
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 const nSaldo = parseFloat(document.getElementById('edit-saldo').value);
                                 const nPts = parseInt(document.getElementById('edit-pts').value);
+                                
                                 Swal.fire({title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                
                                 try {
-                                    await _supabase.from('profiles').update({ saldo_reais: nSaldo, pontos: nPts }).eq('id', id);
+                                    const { error } = await _supabase.from('profiles').update({ saldo_reais: nSaldo, pontos: nPts }).eq('id', id);
+                                    if(error) throw error;
                                     Swal.fire('Concluído!', 'Valores substituídos com sucesso no Supabase.', 'success');
                                     App.Controllers.Users.load(); 
-                                } catch (e) { Swal.fire('Erro', e.message, 'error'); }
+                                } catch (e) {
+                                    Swal.fire('Erro', e.message, 'error');
+                                }
                             }
                         });
                     }
@@ -868,26 +1105,50 @@
                             tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             const statusFiltro = document.getElementById('filter-saque').value;
                             
+                            UI.log(`Buscando fila de saques (${statusFiltro})...`);
+                            
                             const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro).limit(100);
+                            
                             if (error) throw error;
                             
-                            if(!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-zinc-500 font-bold">Nenhum saque ${statusFiltro} na fila.</td></tr>`;
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-zinc-500 font-bold">Nenhum saque ${statusFiltro} na fila.</td></tr>`;
+                                return;
+                            }
 
                             let html = '';
                             data.forEach(s => {
                                 let acoes = '<span class="text-xs text-zinc-600">Resolvido</span>';
+                                
                                 if (s.status === 'pendente') {
-                                    acoes = `<button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-check"></i> Aprovar</button>
-                                             <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Recusar</button>`;
+                                    acoes = `
+                                        <button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-check"></i> Aprovar</button>
+                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Recusar</button>
+                                    `;
                                 }
-                                html += `<tr class="hover:bg-zinc-800/30"><td class="font-bold text-white text-xs">${s.email || 'Não Registrado'}</td><td class="text-xs text-zinc-300 uppercase">${s.nome_titular || '---'}</td><td class="text-indigo-400 font-mono text-xs font-bold">${s.chave_pix || '---'}</td><td class="text-right text-emerald-400 font-black text-sm">${UI.formatMoney(s.valor_solicitado)}</td><td class="text-right">${acoes}</td></tr>`;
+
+                                html += `
+                                    <tr class="hover:bg-zinc-800/30">
+                                        <td class="font-bold text-white text-xs">${s.email || 'Não Registrado'}</td>
+                                        <td class="text-xs text-zinc-300 uppercase">${s.nome_titular || '---'}</td>
+                                        <td class="text-indigo-400 font-mono text-xs font-bold">${s.chave_pix || '---'}</td>
+                                        <td class="text-right text-emerald-400 font-black text-sm">${UI.formatMoney(s.valor_solicitado)}</td>
+                                        <td class="text-right">${acoes}</td>
+                                    </tr>
+                                `;
                             });
                             tbody.innerHTML = html;
-                        } catch (error) { document.getElementById('table-finance').innerHTML = UI.errorRow(5, error.message); }
+                            UI.log(`Listados ${data.length} registros de saque.`);
+
+                        } catch (error) {
+                            document.getElementById('table-finance').innerHTML = UI.errorRow(5, `Falha na tabela solicitacoes_saque: ${error.message}`);
+                            UI.log("Erro Financeiro: " + error.message);
+                        }
                     },
                     changeStatus: async (id_saque, novoStatus) => {
                         try {
-                            await _supabase.from('solicitacoes_saque').update({ status: novoStatus }).eq('id', id_saque);
+                            const { error } = await _supabase.from('solicitacoes_saque').update({ status: novoStatus }).eq('id', id_saque);
+                            if(error) throw error;
                             Swal.fire('Baixa efetuada!', 'Saque marcado como Pago.', 'success');
                             App.Controllers.Financeiro.load();
                         } catch (e) { Swal.fire('Erro de DB', e.message, 'error'); }
@@ -895,15 +1156,26 @@
                     reject: (id_saque, id_user, valor) => {
                         Swal.fire({
                             title: 'Bloquear e Estornar?',
-                            text: `Devolver ${UI.formatMoney(valor)} para a conta do usuário.`,
-                            icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Estornar!'
+                            text: `Isso marcará o pedido como recusado e devolverá ${UI.formatMoney(valor)} para o perfil do usuário.`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ef4444',
+                            confirmButtonText: 'Sim, Executar Estorno!'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 Swal.fire({title: 'Processando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
+                                    // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
+                                    
+                                    // 2. Traz saldo da conta
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
-                                    if(uData) await _supabase.from('profiles').update({ saldo_reais: (uData.saldo_reais || 0) + valor }).eq('id', id_user);
+                                    
+                                    // 3. Devolve saldo
+                                    if(uData) {
+                                        await _supabase.from('profiles').update({ saldo_reais: (uData.saldo_reais || 0) + valor }).eq('id', id_user);
+                                    }
+                                    
                                     Swal.fire('Estornado!', 'Pagamento recusado e saldo devolvido.', 'success');
                                     App.Controllers.Financeiro.load();
                                 } catch(e) { Swal.fire('Erro Crítico', e.message, 'error'); }
@@ -913,23 +1185,36 @@
                 },
 
                 /* =========================================
-                   MONETIZAÇÃO E PARCEIROS
+                   MONETIZAÇÃO (ADS) E B2B
                    ========================================= */
                 Monetizacao: {
                     load: () => {},
                     save: () => {
                         Swal.fire({title: 'Salvando Tags...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-                        setTimeout(() => { Swal.fire('Monetização Ativa!', 'As tags de anúncios foram injetadas e ativadas.', 'success'); }, 1200);
+                        setTimeout(() => {
+                            Swal.fire('Monetização Ativa!', 'As tags de anúncios foram injetadas e ativadas no site principal.', 'success');
+                        }, 1200);
                     },
                     configPostback: () => {
-                        Swal.fire({ title: 'Configurar Postback CPA', input: 'url', inputPlaceholder: 'https://sua-url-de-postback.com/api', confirmButtonText: 'Salvar URL', confirmButtonColor: '#10b981' }).then((r) => { if(r.isConfirmed) UI.toast('Endpoint de Postback atualizado.'); });
+                        Swal.fire({
+                            title: 'Configurar Postback CPA',
+                            input: 'url',
+                            inputPlaceholder: 'https://sua-url-de-postback.com/api',
+                            confirmButtonText: 'Salvar Postback URL',
+                            confirmButtonColor: '#10b981'
+                        }).then((r) => { if(r.isConfirmed) UI.toast('Endpoint de Postback atualizado e ativo.'); });
                     }
                 },
                 Parceiros: {
                     load: () => {},
                     generateKey: () => {
                         const key = 'cw_ptnr_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-                        Swal.fire({ title: 'API Key Parceiro B2B', html: `Copie esta chave:<br><br><code style="color:#10b981; background:#000; padding:10px; border-radius:5px; display:block; font-size:12px;">${key}</code>`, icon: 'success', confirmButtonColor: '#6366f1' });
+                        Swal.fire({
+                            title: 'API Key Parceiro B2B',
+                            html: `Copie e envie esta chave para o seu parceiro anunciante integrar via API:<br><br><code style="color:#10b981; background:#000; padding:10px; border-radius:5px; display:block; font-size:12px;">${key}</code>`,
+                            icon: 'success',
+                            confirmButtonColor: '#6366f1'
+                        });
                     }
                 },
 
@@ -941,60 +1226,139 @@
                         try {
                             const tbody = document.getElementById('table-logs');
                             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            UI.log("Lendo logs antifraude da rede...");
+                            
                             const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(150);
+                            
                             if (error) throw error;
-                            if(!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum evento registrado pelo Shield.</td></tr>`;
+                            
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum evento registrado pelo Shield.</td></tr>`;
+                                return;
+                            }
+
                             let html = '';
-                            data.forEach(log => { html += `<tr><td class="font-bold text-white text-xs">${log.email || 'Desconhecido'}</td><td class="text-red-400 font-mono text-xs">${log.ip_address || '-'}</td><td class="text-zinc-400 text-xs">${log.localidade || 'Sincronizado'}</td><td class="text-zinc-500 text-[10px] truncate max-w-xs" title="${log.dispositivo}">${log.dispositivo || '-'}</td></tr>`; });
+                            data.forEach(log => {
+                                html += `
+                                    <tr>
+                                        <td class="font-bold text-white text-xs">${log.email || 'Desconhecido'}</td>
+                                        <td class="text-red-400 font-mono text-xs">${log.ip_address || '-'}</td>
+                                        <td class="text-zinc-400 text-xs">${log.localidade || 'Sincronizado'}</td>
+                                        <td class="text-zinc-500 text-[10px] truncate max-w-xs" title="${log.dispositivo}">${log.dispositivo || '-'}</td>
+                                    </tr>
+                                `;
+                            });
                             tbody.innerHTML = html;
-                        } catch (error) { document.getElementById('table-logs').innerHTML = UI.errorRow(4, error.message); }
+                        } catch (error) {
+                            document.getElementById('table-logs').innerHTML = UI.errorRow(4, `Erro de segurança: ${error.message}`);
+                        }
                     }
                 },
 
                 /* =========================================
-                   AFILIADOS E CATÁLOGO
+                   AFILIADOS (ÁRVORE)
                    ========================================= */
                 Afiliados: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-indicacoes');
                             tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            UI.log("Calculando matriz de afiliados...");
+                            
                             const { data, error } = await _supabase.from('indicacoes').select('*').limit(100);
+                            
                             if (error) throw error;
-                            if(!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-zinc-500 font-bold">A rede multinível ainda está vazia.</td></tr>`;
+                            
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-zinc-500 font-bold">A rede multinível ainda está vazia.</td></tr>`;
+                                return;
+                            }
+
                             let html = '';
-                            data.forEach(ind => { html += `<tr><td class="font-mono text-amber-400 text-xs font-bold">${ind.indicador_id}</td><td class="font-mono text-indigo-400 text-xs">${ind.indicado_id}</td><td class="text-zinc-400 text-xs text-center">Nível 1</td></tr>`; });
+                            data.forEach(ind => {
+                                html += `
+                                    <tr>
+                                        <td class="font-mono text-amber-400 text-xs font-bold">${ind.indicador_id}</td>
+                                        <td class="font-mono text-indigo-400 text-xs">${ind.indicado_id}</td>
+                                        <td class="text-zinc-400 text-xs text-center">Nível 1 (Direto)</td>
+                                    </tr>
+                                `;
+                            });
                             tbody.innerHTML = html;
-                        } catch (error) { document.getElementById('table-indicacoes').innerHTML = UI.errorRow(3, error.message); }
+                        } catch (error) {
+                            document.getElementById('table-indicacoes').innerHTML = UI.errorRow(3, `Erro ao carregar árvore: ${error.message}`);
+                        }
                     }
                 },
+
+                /* =========================================
+                   CATÁLOGO DE VÍDEOS (BANCO DE DADOS)
+                   ========================================= */
                 Catalogo: {
                     load: async () => {
                         try {
                             const container = document.getElementById('table-videos');
                             container.innerHTML = `<div class="col-span-full text-center py-10"><div class="spinner"></div></div>`;
+                            UI.log("Buscando Catálogo de Mídias no BD...");
+                            
                             const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
+                            
                             if (error) throw error;
-                            if(!data || data.length === 0) return container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500 font-bold">O banco de dados de vídeos está vazio.</div>`;
+                            if(!data || data.length === 0) {
+                                container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500 font-bold">O banco de dados de vídeos está vazio. Clique em Adicionar Mídia.</div>`;
+                                return;
+                            }
+
                             let html = '';
                             data.forEach(v => {
-                                html += `<div class="glass-panel p-3 flex flex-col gap-2"><div class="w-full h-24 bg-zinc-900 rounded-lg flex justify-center items-center text-zinc-600 text-3xl overflow-hidden relative"><img src="https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg" class="w-full h-full object-cover opacity-60"><i class="fa-solid fa-play absolute text-white drop-shadow-md"></i></div><div class="overflow-hidden w-full"><h4 class="font-bold text-white text-[11px] truncate" title="${v.titulo}">${v.titulo}</h4><p class="text-[10px] text-zinc-400 mt-1">Tag: ${v.categoria || 'Hit'}</p></div><div class="mt-auto pt-2 border-t border-zinc-800 flex justify-between items-center"><span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-bolt"></i> ${v.recompensa} XP</span><button onclick="App.Controllers.Catalogo.delete(${v.id})" class="text-zinc-500 hover:text-red-500"><i class="fa-solid fa-trash"></i></button></div></div>`;
+                                html += `
+                                <div class="glass-panel p-3 flex flex-col gap-2">
+                                    <div class="w-full h-24 bg-zinc-900 rounded-lg flex justify-center items-center text-zinc-600 text-3xl overflow-hidden relative">
+                                        <img src="https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg" class="w-full h-full object-cover opacity-60">
+                                        <i class="fa-solid fa-play absolute text-white drop-shadow-md"></i>
+                                    </div>
+                                    <div class="overflow-hidden w-full">
+                                        <h4 class="font-bold text-white text-[11px] truncate" title="${v.titulo}">${v.titulo}</h4>
+                                        <p class="text-[10px] text-zinc-400 mt-1">Tag: ${v.categoria || 'Hit'}</p>
+                                    </div>
+                                    <div class="mt-auto pt-2 border-t border-zinc-800 flex justify-between items-center">
+                                        <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-bolt"></i> ${v.recompensa} XP</span>
+                                        <button onclick="App.Controllers.Catalogo.delete(${v.id})" class="text-zinc-500 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>`;
                             });
                             container.innerHTML = html;
-                        } catch (error) { document.getElementById('table-videos').innerHTML = UI.errorRow(1, error.message); }
+                            UI.log(`${data.length} mídias carregadas com sucesso.`);
+                        } catch (error) { 
+                            document.getElementById('table-videos').innerHTML = UI.errorRow(1, error.message); 
+                        }
                     },
                     add: () => {
                         Swal.fire({
                             title: 'Registrar Nova Mídia',
-                            html: `<input type="text" id="vid-titulo" class="swal2-input !text-sm" placeholder="Título Oficial (Ex: Filme X)"><input type="text" id="vid-yt" class="swal2-input !text-sm" placeholder="ID do YouTube"><input type="number" id="vid-xp" class="swal2-input !text-sm" placeholder="Recompensa de XP"><select id="vid-cat" class="swal2-select w-full !text-sm"><option value="Hit">Hit</option><option value="Filme">Filme</option></select>`,
-                            confirmButtonText: 'Salvar no BD', confirmButtonColor: '#10b981', showCancelButton: true
+                            html: `
+                                <input type="text" id="vid-titulo" class="swal2-input !text-sm" placeholder="Título Oficial (Ex: Filme X)">
+                                <input type="text" id="vid-yt" class="swal2-input !text-sm" placeholder="ID do YouTube (Ex: 9bZkp7q19f0)">
+                                <input type="number" id="vid-xp" class="swal2-input !text-sm" placeholder="Recompensa do Player (XP)">
+                                <select id="vid-cat" class="swal2-select w-full !text-sm"><option value="Hit">Música / Hit</option><option value="Filme">Filme / Longa</option></select>
+                            `,
+                            confirmButtonText: 'Salvar Mídia no BD',
+                            confirmButtonColor: '#10b981',
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
-                                const titulo = document.getElementById('vid-titulo').value; const ytId = document.getElementById('vid-yt').value; const recompensa = parseInt(document.getElementById('vid-xp').value); const categoria = document.getElementById('vid-cat').value;
+                                const titulo = document.getElementById('vid-titulo').value;
+                                const ytId = document.getElementById('vid-yt').value;
+                                const recompensa = parseInt(document.getElementById('vid-xp').value);
+                                const categoria = document.getElementById('vid-cat').value;
+                                
                                 if(!titulo || !ytId || !recompensa) return Swal.fire('Erro', 'Preencha todos os campos obrigatórios.', 'error');
+                                
                                 Swal.fire({title: 'Gravando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
-                                    await _supabase.from('videos').insert([{ titulo, ytId, recompensa, categoria }]);
+                                    const { error } = await _supabase.from('videos').insert([{ titulo, ytId, recompensa, categoria }]);
+                                    if(error) throw error;
                                     Swal.fire('Sucesso!', 'A mídia agora aparece para todos os usuários em tempo real.', 'success');
                                     App.Controllers.Catalogo.load();
                                 } catch(e) { Swal.fire('Erro', e.message, 'error'); }
@@ -1002,28 +1366,52 @@
                         });
                     },
                     delete: (id) => {
-                        Swal.fire({ title: 'Apagar Vídeo?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Deletar' }).then(async (result) => {
+                        Swal.fire({
+                            title: 'Apagar Vídeo do App?',
+                            text: 'Essa mídia sumirá permanentemente do aplicativo dos usuários.',
+                            icon: 'warning', 
+                            showCancelButton: true, 
+                            confirmButtonColor: '#ef4444', 
+                            confirmButtonText: 'Sim, Deletar'
+                        }).then(async (result) => {
                             if (result.isConfirmed) {
-                                try { await _supabase.from('videos').delete().eq('id', id); App.Controllers.Catalogo.load(); } catch(e) { Swal.fire('Erro', e.message, 'error'); }
+                                try {
+                                    const { error } = await _supabase.from('videos').delete().eq('id', id);
+                                    if(error) throw error;
+                                    App.Controllers.Catalogo.load();
+                                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
                             }
                         });
                     }
                 },
 
                 /* =========================================
-                   CAMPANHAS E CONFIGURAÇÕES
+                   CAMPANHAS (INJEÇÃO MASSA)
                    ========================================= */
                 Campanhas: {
                     inject: async () => {
                         const val = parseFloat(document.getElementById('mass-bonus-val').value);
-                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor válido.', 'error');
-                        Swal.fire({ title: 'ALERTA DE INFLAÇÃO', text: `Injetar R$ ${val.toFixed(2)} em TODAS as contas?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'INJETAR SALDO!' }).then(async (result) => {
+                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor financeiro válido (maior que 0).', 'error');
+
+                        Swal.fire({
+                            title: 'ALERTA DE INFLAÇÃO',
+                            text: `Você tem certeza que quer somar R$ ${val.toFixed(2)} em TODAS as contas cadastradas do aplicativo?`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ef4444',
+                            cancelButtonText: 'Abortar',
+                            confirmButtonText: 'Sim, INJETAR SALDO!'
+                        }).then(async (result) => {
                             if (result.isConfirmed) {
-                                Swal.fire({title: 'Executando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                Swal.fire({title: 'Executando script na base...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
                                     const { data: users, error: e1 } = await _supabase.from('profiles').select('id, saldo_reais');
                                     if(e1) throw e1;
-                                    let promises = users.map(u => _supabase.from('profiles').update({ saldo_reais: (u.saldo_reais || 0) + val }).eq('id', u.id));
+
+                                    let promises = users.map(u => {
+                                        return _supabase.from('profiles').update({ saldo_reais: (u.saldo_reais || 0) + val }).eq('id', u.id);
+                                    });
+
                                     await Promise.all(promises);
                                     document.getElementById('mass-bonus-val').value = '';
                                     Swal.fire('Bônus Entregue!', 'Saldo inserido em massa com sucesso.', 'success');
@@ -1032,20 +1420,33 @@
                         });
                     }
                 },
+
+                /* =========================================
+                   CONFIGURAÇÕES GERAIS
+                   ========================================= */
                 Config: {
                     load: async () => {
                         try {
-                            const { data } = await _supabase.from('config_global').select('*').eq('id', 1).single();
-                            if(data) { document.getElementById('config-saque-minimo').value = data.saque_minimo; document.getElementById('config-taxa').value = data.taxa_conversao; }
-                        } catch (e) {}
+                            const { data, error } = await _supabase.from('config_global').select('*').eq('id', 1).single();
+                            if(data) {
+                                document.getElementById('config-saque-minimo').value = data.saque_minimo;
+                                document.getElementById('config-taxa').value = data.taxa_conversao;
+                            }
+                        } catch (e) {
+                            UI.log("Tabela de configuração vazia ou inexistente.");
+                        }
                     },
                     save: async () => {
-                        const s_min = parseFloat(document.getElementById('config-saque-minimo').value); const s_taxa = parseInt(document.getElementById('config-taxa').value);
+                        const s_min = parseFloat(document.getElementById('config-saque-minimo').value);
+                        const s_taxa = parseInt(document.getElementById('config-taxa').value);
                         Swal.fire({title: 'Salvando Engine...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                         try {
-                            await _supabase.from('config_global').upsert({ id: 1, saque_minimo: s_min, taxa_conversao: s_taxa });
+                            const { error } = await _supabase.from('config_global').upsert({ id: 1, saque_minimo: s_min, taxa_conversao: s_taxa });
+                            if (error) throw error;
                             Swal.fire('Concluído!', 'Regras de limites financeiras atualizadas no Core.', 'success');
-                        } catch (e) { Swal.fire('Erro', e.message, 'error'); }
+                        } catch (e) {
+                            Swal.fire('Erro', e.message, 'error');
+                        }
                     }
                 },
 
@@ -1056,7 +1457,10 @@
                     API_KEY: "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",
 
                     load: () => {
-                        setTimeout(() => { const input = document.getElementById('ai-input'); if(input) input.focus(); }, 500);
+                        setTimeout(() => {
+                            const input = document.getElementById('ai-input');
+                            if(input) input.focus();
+                        }, 500);
                     },
                     sendMessage: () => {
                         const input = document.getElementById('ai-input');
@@ -1064,6 +1468,8 @@
                         if(!text) return;
                         
                         const chatBox = document.getElementById('ai-chat-box');
+                        
+                        // Mensagem do Admin
                         chatBox.innerHTML += `
                             <div class="flex gap-4 justify-end mb-4">
                                 <div class="bg-indigo-600 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-lg">
@@ -1075,6 +1481,7 @@
                         input.value = '';
                         chatBox.scrollTop = chatBox.scrollHeight;
 
+                        // Loader
                         const loaderId = 'ai-loader-' + Date.now();
                         chatBox.innerHTML += `
                             <div id="${loaderId}" class="flex gap-4 mb-4">
@@ -1103,23 +1510,22 @@
                                     messages: [
                                         {
                                             role: "system",
-                                            content: `Você é a IA Executiva do CineWorld OS com ACESSO DIRETO e AUTONOMIA sobre o Banco de Dados.
-                                            Você NÃO manda o admin para outras abas. Você mesma faz o trabalho.
-                                            Para executar ações reais no banco de dados, você DEVE incluir uma das TAGS EXATAS de comando no final da sua resposta. O sistema irá ler a tag e rodar o SQL.
+                                            content: `Você é a IA Gerente Geral do CineWorld. Você tem controle absoluto do banco de dados (Supabase).
+                                            NUNCA mande o usuário ir para "outras abas" ou "módulos" do painel. VOCÊ MESMA faz as buscas e as alterações e mostra a resposta direto no chat.
                                             
-                                            Para consultar dados:
-                                            [CMD:COUNT_USERS] - Retorna o total de usuários.
-                                            [CMD:CHECK_PIX] - Retorna saques pendentes e o valor total.
-                                            [CMD:CHECK_FRAUD] - Traz os últimos registros de segurança.
+                                            Se o administrador fizer uma pergunta geral, pedir análises ou pedir dicas (ex: "como melhorar o site", "crie uma estratégia de marketing"), responda elaborando ideias criativas como uma especialista em retenção e streaming, tudo no próprio chat.
                                             
-                                            Para alterar dados (Comandos DML):
-                                            [CMD:APPROVE_ALL_PIX] - Aprova todos os saques pendentes da fila.
-                                            [CMD:INJECT_BONUS|valor] - Dá um bônus global para todos. Exemplo: [CMD:INJECT_BONUS|5.00]
-                                            [CMD:ADD_MOVIE|titulo|id_youtube|recompensa|categoria] - Adiciona um filme. Exemplo: [CMD:ADD_MOVIE|Vingadores|dQw4w9WgXcQ|5000|Filme]
-                                            [CMD:UPDATE_USER|email|novo_saldo|novos_pontos] - Altera conta específica. Exemplo: [CMD:UPDATE_USER|joao@gmail.com|150.00|2000]
-                                            [CMD:DELETE_USER|email] - Bane/Deleta usuário. Exemplo: [CMD:DELETE_USER|pedro@gmail.com]
+                                            Se o administrador pedir para executar ações de banco de dados, responda confirmando a intenção de agir e OBRIGATORIAMENTE anexe UMA das tags de comando abaixo EXATAMENTE como escritas no final da sua resposta, na mesma linha. O Javascript fará a mágica acontecer através dessa tag.
                                             
-                                            Sua resposta deve ser humana, confirmando o que você vai fazer, seguida imediatamente pela tag de comando no final para que o Javascript execute a operação no Supabase.`
+                                            Lista de comandos que você pode usar:
+                                            [CMD:COUNT_USERS] - Para saber quantos usuários existem no total.
+                                            [CMD:LIST_PIX] - Para buscar os nomes, e-mails e valores exatos das pessoas que estão solicitando saque em andamento (pendentes).
+                                            [CMD:CHECK_FRAUD] - Para ler os últimos logs de IP da tabela de segurança.
+                                            [CMD:APPROVE_ALL_PIX] - Para alterar o status e aprovar absolutamente todos os pagamentos da fila de uma vez.
+                                            [CMD:INJECT_BONUS|valor] - Para dar dinheiro para todos. Exemplo: [CMD:INJECT_BONUS|10.00]
+                                            [CMD:ADD_MOVIE|titulo|id_youtube|recompensa_xp|categoria] - Para cadastrar filme. Exemplo: [CMD:ADD_MOVIE|Batman|dQw4w|5000|Filme]
+                                            [CMD:UPDATE_USER|email|saldo|xp] - Para alterar o saldo de apenas um usuário específico. Exemplo: [CMD:UPDATE_USER|joao@gmail.com|150.00|2000]
+                                            [CMD:DELETE_USER|email] - Para banir ou apagar alguém. Exemplo: [CMD:DELETE_USER|pedro@gmail.com]`
                                         },
                                         { role: "user", content: text }
                                     ]
@@ -1134,46 +1540,57 @@
                             const data = await response.json();
                             let aiResponse = data.choices[0].message.content;
 
-                            // Verifica se a IA disparou um Comando Autônomo
+                            // 1. Extrai se a IA decidiu mandar algum Comando para o JS
                             const cmdMatch = aiResponse.match(/\[CMD:(.*?)\]/);
+                            
                             if (cmdMatch) {
                                 const cmdString = cmdMatch[1];
+                                // Remove a tag da resposta para o usuário não ver coisas de sistema
                                 aiResponse = aiResponse.replace(cmdMatch[0], '').trim(); 
                                 
                                 document.getElementById(loaderId).remove();
-                                App.Controllers.IA.appendAI(aiResponse); // Imprime o texto da IA
+                                App.Controllers.IA.appendAI(aiResponse);
                                 
-                                // Executa o Comando no Banco de Dados Supabase
+                                // 2. Roda a função autônoma no banco!
                                 await App.Controllers.IA.executeAutonomousCommand(cmdString);
                             } else {
+                                // Caso ela esteja apenas conversando normalmente
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                             }
 
                         } catch (error) {
                             document.getElementById(loaderId).remove();
-                            App.Controllers.IA.appendSystem("❌ Erro de conexão com a API Llama 3.3: " + error.message);
+                            App.Controllers.IA.appendSystem("❌ Erro de conexão com a IA: " + error.message);
                         }
                     },
+                    
+                    // ESTE É O MOTOR QUE A IA USA PARA CONTROLAR O BANCO DE DADOS
                     executeAutonomousCommand: async (cmdString) => {
                         const parts = cmdString.split('|');
-                        const action = parts[0];
+                        const action = parts[0].trim();
                         
                         try {
                             if (action === 'COUNT_USERS') {
                                 const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
-                                App.Controllers.IA.appendSystem(`✅ Consulta Executada: Atualmente o banco de dados registra ${count || 0} usuários.`);
+                                App.Controllers.IA.appendSystem(`✅ <b>Dados Recuperados:</b> Atualmente temos ${count || 0} usuários registrados no Supabase.`);
                             } 
-                            else if (action === 'CHECK_PIX') {
-                                const { data } = await _supabase.from('solicitacoes_saque').select('valor_solicitado').eq('status', 'pendente');
-                                if(data) {
-                                    const totalVal = data.reduce((acc, curr) => acc + curr.valor_solicitado, 0);
-                                    App.Controllers.IA.appendSystem(`✅ Consulta Executada: Foram encontrados ${data.length} saques pendentes na fila. Montante financeiro aguardando liberação: R$ ${totalVal.toFixed(2)}.`);
+                            else if (action === 'LIST_PIX') {
+                                const { data } = await _supabase.from('solicitacoes_saque').select('email, nome_titular, valor_solicitado').eq('status', 'pendente');
+                                if(data && data.length > 0) {
+                                    let msg = `📋 <b>Fila de Saques em Andamento (${data.length} encontrados):</b><br><br>`;
+                                    data.forEach(d => {
+                                        msg += `> <b>${d.nome_titular}</b> (${d.email}) solicitou <b>R$ ${d.valor_solicitado.toFixed(2)}</b><br>`;
+                                    });
+                                    App.Controllers.IA.appendSystem(msg);
+                                } else {
+                                    App.Controllers.IA.appendSystem("✅ <b>Consulta Executada:</b> Nenhum saque pendente no momento. A fila está limpa.");
                                 }
                             }
                             else if (action === 'APPROVE_ALL_PIX') {
                                 await _supabase.from('solicitacoes_saque').update({ status: 'aprovado' }).eq('status', 'pendente');
-                                App.Controllers.IA.appendSystem(`✅ Operação Concluída: O status de TODOS os saques pendentes foi alterado para 'aprovado' com sucesso.`);
+                                App.Controllers.IA.appendSystem(`✅ <b>Operação DML Concluída:</b> O status de TODOS os saques pendentes foi alterado para 'aprovado'. O painel financeiro foi atualizado em background.`);
+                                App.Controllers.Financeiro.load(); // Atualiza a tabela na outra aba silenciosamente
                             }
                             else if (action === 'INJECT_BONUS') {
                                 const val = parseFloat(parts[1]);
@@ -1181,39 +1598,43 @@
                                 if(users) {
                                     let promises = users.map(u => _supabase.from('profiles').update({ saldo_reais: (u.saldo_reais || 0) + val }).eq('id', u.id));
                                     await Promise.all(promises);
-                                    App.Controllers.IA.appendSystem(`✅ Operação Concluída: Uma injeção financeira de R$ ${val.toFixed(2)} foi processada para ${users.length} usuários.`);
+                                    App.Controllers.IA.appendSystem(`✅ <b>Inflação Ativada:</b> Um bônus de R$ ${val.toFixed(2)} foi inserido nas contas de ${users.length} usuários simultaneamente.`);
                                 }
                             }
                             else if (action === 'ADD_MOVIE') {
                                 const titulo = parts[1]; const ytId = parts[2]; const xp = parseInt(parts[3]); const cat = parts[4];
                                 await _supabase.from('videos').insert([{ titulo: titulo, ytId: ytId, recompensa: xp, categoria: cat }]);
-                                App.Controllers.IA.appendSystem(`✅ Inserção Realizada: A mídia "${titulo}" (ID: ${ytId}) foi adicionada ao catálogo oficial.`);
+                                App.Controllers.IA.appendSystem(`✅ <b>Inserção Realizada:</b> O título "${titulo}" (YouTube ID: ${ytId}) foi adicionado com sucesso ao catálogo.`);
                             }
                             else if (action === 'UPDATE_USER') {
                                 const email = parts[1].trim(); const saldo = parseFloat(parts[2]); const pts = parseInt(parts[3]);
                                 const { data } = await _supabase.from('profiles').select('id').ilike('email', `%${email}%`).limit(1).single();
                                 if(data && data.id) {
                                     await _supabase.from('profiles').update({ saldo_reais: saldo, pontos: pts }).eq('id', data.id);
-                                    App.Controllers.IA.appendSystem(`✅ Mutação Aplicada: O perfil de ${email} foi modificado. Novo Saldo: R$ ${saldo.toFixed(2)} | Novo XP: ${pts}.`);
+                                    App.Controllers.IA.appendSystem(`✅ <b>Mutação Aplicada:</b> A conta <b>${email}</b> foi alterada via SQL. Novo Saldo: R$ ${saldo.toFixed(2)} | Novo XP: ${pts}.`);
                                 } else {
-                                    App.Controllers.IA.appendSystem(`❌ Erro DML: Usuário vinculado ao e-mail ${email} não pôde ser localizado na base.`);
+                                    App.Controllers.IA.appendSystem(`❌ <b>Erro DML:</b> O usuário vinculado ao e-mail ${email} não pôde ser localizado.`);
                                 }
                             }
                             else if (action === 'DELETE_USER') {
                                 const email = parts[1].trim();
                                 const { error } = await _supabase.from('profiles').delete().ilike('email', `%${email}%`);
                                 if(!error) {
-                                    App.Controllers.IA.appendSystem(`💀 Purge Completo: O usuário ${email} foi definitivamente removido do banco de dados e teve seu acesso revogado.`);
+                                    App.Controllers.IA.appendSystem(`💀 <b>Exclusão Completa:</b> A conta de ${email} foi permanentemente deletada do banco de dados.`);
                                 }
                             }
                             else if (action === 'CHECK_FRAUD') {
                                 const { data } = await _supabase.from('antifraud_logs').select('*').limit(5);
-                                let text = `🛡️ Relatório de Segurança (Últimos Eventos):<br>`;
-                                data.forEach(d => text += `> <b>${d.email}</b> | IP: ${d.ip_address} | Aparelho: ${d.dispositivo}<br>`);
-                                App.Controllers.IA.appendSystem(text);
+                                if(data && data.length > 0) {
+                                    let text = `🛡️ <b>Shield - Últimos Logs de Segurança:</b><br><br>`;
+                                    data.forEach(d => text += `> <b>${d.email}</b> | IP: ${d.ip_address} | Local: ${d.localidade}<br>`);
+                                    App.Controllers.IA.appendSystem(text);
+                                } else {
+                                    App.Controllers.IA.appendSystem(`🛡️ Nenhum registro de atividade suspeita detectado ultimamente.`);
+                                }
                             }
                         } catch(e) {
-                            App.Controllers.IA.appendSystem(`❌ Exceção Crítica no Supabase: ${e.message}`);
+                            App.Controllers.IA.appendSystem(`❌ <b>Exceção Crítica no Supabase:</b> ${e.message}`);
                         }
                     },
                     appendAI: (msg) => {
@@ -1233,8 +1654,8 @@
                         const chatBox = document.getElementById('ai-chat-box');
                         chatBox.innerHTML += `
                             <div class="flex gap-4 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-server text-white text-xs"></i></div>
-                                <div class="bg-[#0b0b0f] p-4 rounded-2xl max-w-[85%] border border-emerald-500/30 shadow-lg font-mono">
+                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-database text-white text-xs"></i></div>
+                                <div class="bg-[#0b0b0f] p-4 rounded-2xl max-w-[90%] border border-emerald-500/30 shadow-lg font-mono">
                                     <p class="text-xs text-emerald-400 leading-relaxed">${msg}</p>
                                 </div>
                             </div>
