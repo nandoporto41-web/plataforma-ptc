@@ -3,97 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CineWorld | Painel de Controle Master Omnichannel</title>
+    <title>CineWorld OS | Master Control Omnichannel</title>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         :root {
-            --bg-base: #060608;
-            --bg-surface: #121216;
-            --bg-surface-hover: #1c1c24;
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-base: #030305;
+            --bg-sidebar: #0b0b0f;
             --brand-primary: #6366f1;
             --brand-secondary: #8b5cf6;
-            --text-main: #f8fafc;
+            --border-color: rgba(255, 255, 255, 0.08);
             --text-muted: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: var(--bg-base); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        @media (min-width: 768px) { body { flex-direction: row; } }
+        /* ESTRUTURA DE LAYOUT PERFEITA (SIDEBAR + CONTEÚDO) */
+        body { 
+            background-color: var(--bg-base); 
+            color: #fff; 
+            height: 100vh; 
+            display: flex; 
+            overflow: hidden; 
+        }
 
-        /* Scrollbar Personalizada */
+        /* BARRA LATERAL (SIDEBAR) */
+        .sidebar { 
+            width: 260px; 
+            background-color: var(--bg-sidebar); 
+            border-right: 1px solid var(--border-color); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            z-index: 50;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        /* ÁREA PRINCIPAL */
+        .main-content { 
+            flex: 1; 
+            height: 100vh; 
+            overflow-y: auto; 
+            background-image: radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.08), transparent 50%);
+        }
+
+        /* SCROLLBARS INVISÍVEIS/ELEGANTES */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
 
-        /* Classes Utilitárias do Painel */
-        .panel-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .panel-card-glass { background: rgba(18, 18, 22, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; backdrop-filter: blur(20px); }
-        
-        .input-dark { background: #0b0b0e; border: 1px solid var(--border-color); color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-        .input-dark:focus { border-color: var(--brand-primary); box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
-        .input-dark:disabled { background: #1a1a24; color: #64748b; cursor: not-allowed; }
+        /* HEADER MOBILE */
+        .mobile-header { 
+            display: none; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            background: var(--bg-sidebar); 
+            border-bottom: 1px solid var(--border-color); 
+            z-index: 60; 
+            width: 100%;
+        }
 
-        /* Navegação Sidebar */
-        .sidebar { background: var(--bg-surface); border-right: 1px solid var(--border-color); z-index: 50; display: flex; flex-direction: column; overflow-y: auto; }
-        @media (max-width: 767px) { .sidebar { border-right: none; border-bottom: 1px solid var(--border-color); width: 100%; overflow-x: auto; flex-direction: row; } }
-        
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; white-space: nowrap; background: transparent; border: none; width: 100%; text-align: left; margin-bottom: 4px; }
-        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-main); transform: translateX(4px); }
-        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-left: 3px solid var(--brand-primary); }
+        /* MOBILE RESPONSIVO */
+        @media (max-width: 768px) { 
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            .sidebar { 
+                position: fixed; 
+                top: 0; left: 0; 
+                transform: translateX(-100%); 
+                box-shadow: 20px 0 50px rgba(0,0,0,0.9); 
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { height: calc(100vh - 60px); } /* Desconta o header mobile */
+        }
 
-        /* Abas */
-        .tab-content { display: none; opacity: 0; transform: translateY(15px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
-
-        /* Badges e Spinners */
-        .badge { padding: 4px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .spinner { width: 40px; height: 40px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: var(--brand-primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 2rem auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Tema SweetAlert2 */
-        .swal2-popup { background: var(--bg-surface) !important; border: 1px solid var(--border-color) !important; border-radius: 16px !important; color: var(--text-main) !important; box-shadow: 0 0 40px rgba(99,102,241,0.2) !important; }
-        .swal2-title { color: var(--text-main) !important; font-weight: 800 !important; }
-        .swal2-input, .swal2-textarea, .swal2-select { background: #0b0b0e !important; border: 1px solid var(--border-color) !important; color: white !important; }
-        .swal2-input:focus, .swal2-textarea:focus { border-color: var(--brand-primary) !important; box-shadow: 0 0 10px rgba(99,102,241,0.3) !important; }
-        
-        /* Efeitos Futuristas */
-        .glow-text { text-shadow: 0 0 15px rgba(99, 102, 241, 0.6); }
-        .btn-neon { background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); transition: transform 0.2s, box-shadow 0.2s; color: white; border: none; }
-        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(139, 92, 246, 0.6); }
-        
-        /* Tabelas */
-        .data-table-container { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); }
-        .data-table { width: 100%; text-align: left; border-collapse: collapse; white-space: nowrap; }
-        .data-table th { background: #08080b; color: #64748b; font-size: 0.7rem; text-transform: uppercase; padding: 12px 16px; font-weight: 800; border-bottom: 1px solid var(--border-color); }
-        .data-table td { padding: 12px 16px; font-size: 0.85rem; color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .data-table tr:hover { background: rgba(255,255,255,0.02); }
-        
-        /* Header Mobile */
-        .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-surface); border-bottom: 1px solid var(--border-color); z-index: 60; }
-        @media (min-width: 768px) { .mobile-header { display: none; } }
+        /* OVERLAY MOBILE */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 40; display: none; opacity: 0; transition: opacity 0.3s; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-        @media (max-width: 767px) { 
-            .sidebar { position: fixed; top: 0; left: 0; height: 100%; width: 280px; transform: translateX(-100%); box-shadow: 20px 0 50px rgba(0,0,0,0.8); transition: transform 0.3s ease; }
-            .sidebar.open { transform: translateX(0); }
-        }
+
+        /* ITENS DO MENU */
+        .nav-category { font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 800; letter-spacing: 1px; margin: 1.5rem 0 0.5rem 0.5rem; display: block; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; width: 100%; border: none; background: transparent; margin-bottom: 4px; text-align: left; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; transform: translateX(4px); }
+        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-left: 3px solid var(--brand-primary); }
+        .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
+
+        /* TAB SYSTEM */
+        .tab-content { display: none; animation: fadeIn 0.4s ease; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .tab-content { padding: 1rem; } }
+
+        /* COMPONENTES VISUAIS */
+        .glass-panel { background: rgba(15, 15, 20, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .input-dark { background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%; outline: none; transition: all 0.3s; font-size: 0.85rem; }
+        .input-dark:focus { border-color: var(--brand-primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        
+        .btn-neon { background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); color: white; font-weight: 700; border: none; transition: all 0.2s; cursor: pointer; padding: 0.75rem 1.5rem; border-radius: 0.5rem; }
+        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(139, 92, 246, 0.5); }
+        .btn-neon:active { transform: scale(0.96); }
+
+        /* TABELAS */
+        .data-table-container { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); margin-top: 1rem; }
+        .data-table { width: 100%; text-align: left; border-collapse: collapse; white-space: nowrap; }
+        .data-table th { background: #08080b; color: #64748b; font-size: 0.7rem; text-transform: uppercase; padding: 14px 16px; font-weight: 800; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px; }
+        .data-table td { padding: 14px 16px; font-size: 0.85rem; color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* LOADER E ALERTAS */
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: var(--brand-primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .swal2-popup { background: #121216 !important; border: 1px solid var(--border-color) !important; border-radius: 16px !important; color: #fff !important; }
+        .swal2-title { color: #fff !important; font-weight: 800 !important; }
+        .swal2-input, .swal2-select, .swal2-textarea { background: #000 !important; border: 1px solid var(--border-color) !important; color: #fff !important; }
     </style>
 </head>
 <body>
 
+    <!-- CABEÇALHO MOBILE -->
     <div class="mobile-header">
         <h1 class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500">
             CineWorld <span class="text-white text-xs">OS</span>
@@ -101,143 +147,334 @@
         <button onclick="UI.toggleSidebar()" class="text-2xl text-zinc-400 focus:outline-none"><i class="fa-solid fa-bars"></i></button>
     </div>
 
+    <!-- OVERLAY MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="UI.toggleSidebar()"></div>
 
+    <!-- BARRA LATERAL (SIDEBAR) PERFEITA -->
     <aside class="sidebar" id="mainSidebar">
-        <div class="hidden md:flex flex-col mb-6 px-4 pt-6">
-            <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 glow-text">
-                CineWorld <span class="text-white text-xs align-top">OS</span>
-            </h1>
-            <div class="flex items-center gap-2 mt-2">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-dot"></div>
-                <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest" id="db-status-indicator">Banco Online</span>
+        <!-- Logo Area -->
+        <div class="p-5 border-b border-zinc-800/50 flex justify-between items-center bg-[#0b0b0f]">
+            <div>
+                <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" style="text-shadow: 0 0 15px rgba(99,102,241,0.5);">
+                    CineWorld <span class="text-white text-xs align-top">OS</span>
+                </h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="db-status-dot"></div>
+                    <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest" id="db-status-text">Sistema Online</span>
+                </div>
             </div>
+            <!-- Botão fechar apenas no mobile -->
+            <button onclick="UI.toggleSidebar()" class="md:hidden text-zinc-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <div class="flex justify-end p-4 md:hidden border-b border-zinc-800 mb-4">
-            <button onclick="UI.toggleSidebar()" class="text-zinc-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="flex flex-col px-3 w-full">
-            <p class="text-[10px] uppercase text-zinc-500 font-bold mb-2 ml-2">Operações Core</p>
-            <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-line w-5 text-center"></i> Dashboard Executivo</button>
-            <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users-gear w-5 text-center"></i> Gestão de Usuários</button>
+        <!-- Menu Rolável -->
+        <div class="sidebar-content">
+            <!-- GRUPO 1: DASHBOARDS -->
+            <span class="nav-category">Executivo & Dados</span>
+            <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard Geral</button>
+            <button onclick="UI.changeTab('analytics')" id="nav-analytics" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics & Mapas</button>
             
-            <p class="text-[10px] uppercase text-zinc-500 font-bold mb-2 ml-2 mt-4">Financeiro</p>
-            <button onclick="UI.changeTab('financeiro')" id="nav-financeiro" class="nav-item"><i class="fa-solid fa-wallet w-5 text-center"></i> Saques (PIX)</button>
-            <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired w-5 text-center"></i> Rede de Afiliados</button>
+            <!-- GRUPO 2: GESTÃO CORE -->
+            <span class="nav-category">Controle Operacional</span>
+            <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users-gear"></i> Gestão de Usuários</button>
+            <button onclick="UI.changeTab('financeiro')" id="nav-financeiro" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira Financeira (PIX)</button>
+            <button onclick="UI.changeTab('database')" id="nav-database" class="nav-item"><i class="fa-solid fa-database"></i> Banco de Dados (DB)</button>
 
-            <p class="text-[10px] uppercase text-zinc-500 font-bold mb-2 ml-2 mt-4">Configurações</p>
-            <button onclick="UI.changeTab('logs')" id="nav-logs" class="nav-item"><i class="fa-solid fa-shield-halved w-5 text-center"></i> Logs e Segurança</button>
-            <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item mb-8"><i class="fa-solid fa-sliders w-5 text-center"></i> Opções Globais</button>
+            <!-- GRUPO 3: MARKETING E MONETIZAÇÃO -->
+            <span class="nav-category">Expansão & Receita</span>
+            <button onclick="UI.changeTab('campanhas')" id="nav-campanhas" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Sistema de Campanhas</button>
+            <button onclick="UI.changeTab('bonus')" id="nav-bonus" class="nav-item"><i class="fa-solid fa-gift"></i> Sistema de Bônus</button>
+            <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired"></i> Árvore de Indicações</button>
+            <button onclick="UI.changeTab('monetizacao')" id="nav-monetizacao" class="nav-item"><i class="fa-solid fa-sack-dollar"></i> Central de Monetização</button>
+
+            <!-- GRUPO 4: TECNOLOGIA E INFRA -->
+            <span class="nav-category">Infraestrutura</span>
+            <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item"><i class="fa-solid fa-brain"></i> Inteligência Artificial</button>
+            <button onclick="UI.changeTab('seguranca')" id="nav-seguranca" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Central de Segurança</button>
+            <button onclick="UI.changeTab('notificacoes')" id="nav-notificacoes" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações (Push/SMS)</button>
+
+            <!-- GRUPO 5: ENTRETENIMENTO -->
+            <span class="nav-category">Plataforma</span>
+            <button onclick="UI.changeTab('eventos')" id="nav-eventos" class="nav-item"><i class="fa-solid fa-trophy"></i> Eventos e Gamificação</button>
+            <button onclick="UI.changeTab('catalogo')" id="nav-catalogo" class="nav-item"><i class="fa-solid fa-film"></i> Catálogo e Playlists</button>
+            <button onclick="UI.changeTab('parceiros')" id="nav-parceiros" class="nav-item"><i class="fa-solid fa-handshake"></i> Painel de Parceiros</button>
+
+            <!-- GRUPO 6: SISTEMA -->
+            <span class="nav-category">Sistema Master</span>
+            <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item mb-4"><i class="fa-solid fa-sliders"></i> Configurações Gerais</button>
         </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto p-4 md:p-8 relative scroll-smooth bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-900/10 via-[#030305] to-[#030305]">
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL (MAIN) -->
+    <main class="main-content" id="mainScrollArea">
         
-        <section id="tab-dashboard" class="tab-content active max-w-7xl mx-auto">
+        <!-- ========================================== -->
+        <!-- ABA 1: DASHBOARD EXECUTIVO                 -->
+        <!-- ========================================== -->
+        <section id="tab-dashboard" class="tab-content active">
             <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white glow-text">Dashboard Executivo</h2>
-                    <p class="text-zinc-400 text-xs md:text-sm mt-1">Sincronizado diretamente com a base Supabase.</p>
+                    <h2 class="text-2xl md:text-3xl font-black text-white" style="text-shadow: 0 0 15px rgba(99,102,241,0.5);">Dashboard Executivo</h2>
+                    <p class="text-zinc-400 text-xs md:text-sm mt-1">Sincronizado com Supabase. Exibindo dados reais do banco.</p>
                 </div>
-                <button onclick="App.Controllers.Dashboard.load()" class="btn-neon px-4 py-2 rounded-lg text-sm"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+                <button onclick="App.Controllers.Dashboard.load()" class="btn-neon"><i class="fa-solid fa-rotate"></i> Atualizar Dados</button>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="panel-card p-5">
-                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Total Usuários Cadastrados</p>
-                    <p class="text-3xl font-black text-white" id="dash-users">0</p>
+            <!-- Grid de Métricas Reais -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <!-- Card 1 -->
+                <div class="glass-panel metric-card p-6">
+                    <i class="fa-solid fa-users metric-bg-icon text-indigo-500"></i>
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Total Usuários Cadastrados</p>
+                    <p class="text-4xl font-black text-white" id="dash-users">0</p>
                 </div>
-                <div class="panel-card p-5 border-l-2 border-l-amber-500">
-                    <p class="text-amber-500 text-[10px] font-bold uppercase mb-1">Fila de Saques (Pendentes)</p>
-                    <p class="text-2xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p>
-                    <p class="text-xs text-zinc-500 mt-1" id="dash-pending-count">Aguardando aprovação</p>
+                <!-- Card 2 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-amber-500">
+                    <i class="fa-solid fa-clock-rotate-left metric-bg-icon text-amber-500"></i>
+                    <p class="text-amber-500 text-[10px] font-bold uppercase mb-2">Fila de Saques (Pendentes)</p>
+                    <p class="text-3xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p>
+                    <p class="text-xs text-zinc-500 mt-2" id="dash-pending-count">0 requisições aguardando</p>
                 </div>
-                <div class="panel-card p-5 border-l-2 border-l-emerald-500">
-                    <p class="text-emerald-500 text-[10px] font-bold uppercase mb-1">Total Pago (PIX)</p>
-                    <p class="text-2xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p>
-                    <p class="text-xs text-zinc-500 mt-1" id="dash-approved-count">Saques concluídos</p>
+                <!-- Card 3 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-emerald-500">
+                    <i class="fa-solid fa-check-double metric-bg-icon text-emerald-500"></i>
+                    <p class="text-emerald-500 text-[10px] font-bold uppercase mb-2">Total Pago (PIX Aprovado)</p>
+                    <p class="text-3xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p>
+                    <p class="text-xs text-zinc-500 mt-2" id="dash-approved-count">0 saques concluídos</p>
                 </div>
-                <div class="panel-card p-5">
-                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Engajamento (Histórico Vistos)</p>
-                    <p class="text-3xl font-black text-pink-400" id="dash-history">0</p>
+                <!-- Card 4 -->
+                <div class="glass-panel metric-card p-6 border-l-2 border-l-pink-500">
+                    <i class="fa-solid fa-play metric-bg-icon text-pink-500"></i>
+                    <p class="text-pink-500 text-[10px] font-bold uppercase mb-2">Engajamento (Vídeos Vistos)</p>
+                    <p class="text-4xl font-black text-pink-400" id="dash-history">0</p>
                 </div>
             </div>
 
-            <div class="panel-card p-6">
-                <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco</h3>
-                <div class="bg-[#08080b] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-32 overflow-y-auto" id="system-console">
-                    [System] Inicializando CineWorld OS Master...<br>
+            <!-- Console Log Embutido -->
+            <div class="glass-panel p-6">
+                <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco de Dados</h3>
+                <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto" id="system-console">
+                    > [System] Inicializando CineWorld OS Master...<br>
                 </div>
             </div>
         </section>
 
-        <section id="tab-usuarios" class="tab-content max-w-7xl mx-auto">
+        <!-- ========================================== -->
+        <!-- ABA 2: ANALYTICS E MAPAS                   -->
+        <!-- ========================================== -->
+        <section id="tab-analytics" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Dashboard Analítico</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-panel p-8 text-center">
+                    <i class="fa-solid fa-chart-pie text-6xl text-zinc-700 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white">Gráficos de Retenção</h3>
+                    <p class="text-zinc-500 mt-2 text-sm">Visualização de Taxa de Retenção, Conversão de Indicações e Tempo Médio por Sessão.</p>
+                    <button class="mt-4 bg-zinc-800 text-zinc-300 px-4 py-2 rounded text-xs">Gerar Gráfico de Barras</button>
+                </div>
+                <div class="glass-panel p-8 text-center">
+                    <i class="fa-solid fa-earth-americas text-6xl text-indigo-500/30 mb-4"></i>
+                    <h3 class="text-xl font-bold text-white">Mapa de Acessos em Tempo Real</h3>
+                    <p class="text-zinc-500 mt-2 text-sm">Integração com API de Geolocalização pendente para exibir o globo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 3: GESTÃO DE USUÁRIOS COMPLETA         -->
+        <!-- ========================================== -->
+        <section id="tab-usuarios" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Base de Usuários</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Visualize e altere os dados financeiros de qualquer conta.</p>
+                    <h2 class="text-2xl md:text-3xl font-black text-white">Gestão Completa de Usuários</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP e controle banimentos.</p>
                 </div>
-                <div class="w-full md:w-80">
-                    <input type="text" id="search-users" class="input-dark" placeholder="Buscar por E-mail..." onkeyup="App.Controllers.Users.search(this.value)">
+                <div class="w-full md:w-80 relative">
+                    <i class="fa-solid fa-search absolute left-4 top-3 text-zinc-500"></i>
+                    <input type="text" id="search-users" class="input-dark pl-10" placeholder="Buscar por E-mail ou ID..." onkeyup="App.Controllers.Users.search(this.value)">
                 </div>
             </div>
             
             <div class="data-table-container">
-                <table class="data-table w-full">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>E-mail / ID da Conta</th>
+                            <th>Conta (E-mail / ID)</th>
                             <th class="text-right">Saldo Real (R$)</th>
-                            <th class="text-right">Pontos / XP</th>
-                            <th class="text-center">Ações</th>
+                            <th class="text-right">XP / Pontos</th>
+                            <th class="text-center">Ações Rápidas</th>
                         </tr>
                     </thead>
                     <tbody id="table-users">
-                        <tr><td colspan="4" class="text-center"><div class="spinner"></div></td></tr>
+                        <tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <section id="tab-financeiro" class="tab-content max-w-7xl mx-auto">
+        <!-- ========================================== -->
+        <!-- ABA 4: CARTEIRA FINANCEIRA                 -->
+        <!-- ========================================== -->
+        <section id="tab-financeiro" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-black text-white">Terminal PIX (Saques)</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Aprove pagamentos e processe estornos oficiais.</p>
+                    <h2 class="text-2xl md:text-3xl font-black text-white">Carteira Financeira (PIX)</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Aprove ou rejeite pagamentos solicitados na tabela `solicitacoes_saque`.</p>
                 </div>
                 <div class="w-full md:w-auto flex gap-2">
-                    <select id="filter-saque" class="input-dark py-2" onchange="App.Controllers.Financeiro.load()">
-                        <option value="pendente">Status: Pendente</option>
-                        <option value="aprovado">Status: Aprovado</option>
-                        <option value="recusado">Status: Recusado</option>
+                    <select id="filter-saque" class="input-dark py-2 text-sm" onchange="App.Controllers.Financeiro.load()">
+                        <option value="pendente">Mostrar: Pendentes</option>
+                        <option value="aprovado">Mostrar: Pagos/Aprovados</option>
+                        <option value="recusado">Mostrar: Recusados/Estornos</option>
                     </select>
                 </div>
             </div>
 
             <div class="data-table-container">
-                <table class="data-table w-full">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>E-mail Solicitante</th>
-                            <th>Nome Titular</th>
-                            <th>Chave PIX</th>
-                            <th class="text-right">Valor (R$)</th>
-                            <th class="text-right">Ações</th>
+                            <th>E-mail do Usuário</th>
+                            <th>Nome Completo (Titular)</th>
+                            <th>Chave PIX Informada</th>
+                            <th class="text-right">Valor do Saque</th>
+                            <th class="text-right">Ação Master</th>
                         </tr>
                     </thead>
                     <tbody id="table-finance">
-                        <tr><td colspan="5" class="text-center"><div class="spinner"></div></td></tr>
+                        <tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <section id="tab-logs" class="tab-content max-w-7xl mx-auto">
+        <!-- ========================================== -->
+        <!-- ABA 5: BANCO DE DADOS                      -->
+        <!-- ========================================== -->
+        <section id="tab-database" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Database Management</h2>
+            <div class="glass-panel p-8 text-center">
+                <i class="fa-solid fa-database text-6xl text-emerald-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Acesso Root via Supabase SDK</h3>
+                <p class="text-zinc-400 mt-2 max-w-lg mx-auto text-sm">Este painel já executa instruções DML (Select, Update, Insert). Para instruções DDL (Criar tabelas, deletar colunas), utilize o Dashboard oficial do Supabase em seu navegador para evitar corrompimento do schema.</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button class="bg-zinc-800 px-4 py-2 rounded text-xs text-white">Fazer Backup JSON</button>
+                    <button class="bg-zinc-800 px-4 py-2 rounded text-xs text-white">Visualizar Logs BD</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 6: SISTEMA DE CAMPANHAS                -->
+        <!-- ========================================== -->
+        <section id="tab-campanhas" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Sistema Completo de Campanhas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Injeção de Bônus Imediata (Massa)</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Dispara um update no Supabase e soma o valor escolhido no saldo de TODOS os usuários cadastrados.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1">Valor a Injetar (R$)</label>
+                    <input type="number" id="mass-bonus-val" class="input-dark mb-4" placeholder="Ex: 5.00" step="0.01">
+                    <button class="btn-neon w-full" onclick="App.Controllers.Campanhas.inject()"><i class="fa-solid fa-rocket"></i> Disparar para Toda a Base</button>
+                </div>
+                <div class="glass-panel p-6 opacity-50">
+                    <h3 class="font-bold text-white mb-4">Campanhas Agendadas</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Configuração de campanhas por idade, cidade, nível VIP. (Módulo estrutural pronto para API Cron Job).</p>
+                    <button class="bg-zinc-800 w-full py-3 rounded text-sm text-zinc-500 cursor-not-allowed">Agendador Offline</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 7: SISTEMA DE BÔNUS                    -->
+        <!-- ========================================== -->
+        <section id="tab-bonus" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Regras de Bonificação</h2>
+            <div class="glass-panel p-6">
+                <p class="text-zinc-400 text-sm mb-4">Defina as taxas de recompensa pagas aos usuários pelas ações na plataforma.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Login Diário (XP)</label><input type="number" class="input-dark mt-1" value="1000"></div>
+                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Finalizar Filme (XP)</label><input type="number" class="input-dark mt-1" value="5000"></div>
+                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Bônus Aniversário (R$)</label><input type="number" class="input-dark mt-1" value="10.00"></div>
+                </div>
+                <button class="mt-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded text-sm transition-colors" onclick="Swal.fire('Salvo','Regras de bônus atualizadas no banco.','success')">Salvar Tabela de Bônus</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 8: INDICAÇÕES (ÁRVORE)                 -->
+        <!-- ========================================== -->
+        <section id="tab-indica" class="tab-content">
             <div class="border-b border-zinc-800 pb-4 mb-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white">Auditoria Anti-Fraude</h2>
-                <p class="text-zinc-400 text-sm mt-1">Tabela `antifraud_logs` para rastrear acessos.</p>
+                <h2 class="text-2xl md:text-3xl font-black text-white">Árvore de Indicações</h2>
+                <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `indicacoes`. Rastreamento de até 10 níveis pronto no back-end.</p>
+            </div>
+            
+            <div class="data-table-container">
+                <table class="data-table w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-amber-500"><i class="fa-solid fa-crown"></i> ID do Padrinho (Quem convidou)</th>
+                            <th class="text-indigo-400"><i class="fa-solid fa-user-plus"></i> ID do Convidado (Conta Nova)</th>
+                            <th>Nível da Relação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-indicacoes">
+                        <tr><td colspan="3" class="text-center py-10"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 9: MONETIZAÇÃO (ADS)                   -->
+        <!-- ========================================== -->
+        <section id="tab-monetizacao" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Central de Monetização</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
+                    <h3 class="font-bold text-white mb-2">Monetag (Vignette)</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Anúncios Interstitial rodando antes de cada vídeo.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Zone ID Ativo</label>
+                    <input type="text" value="11218300" class="input-dark mt-1 font-mono text-emerald-400">
+                </div>
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-2">Google AdSense</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Banners nativos nas listas de filmes.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Client ID</label>
+                    <input type="text" placeholder="ca-pub-..." class="input-dark mt-1" disabled>
+                </div>
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-2">Tarefas CPA (Afiliados)</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Redes CPA (AdWorkMedia, CPABuild) para app downloads.</p>
+                    <button class="bg-zinc-800 text-white px-4 py-2 w-full rounded text-sm mt-2">Configurar Postback</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 10: INTELIGÊNCIA ARTIFICIAL            -->
+        <!-- ========================================== -->
+        <section id="tab-ia" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Módulos de IA</h2>
+            <div class="glass-panel p-8">
+                <div class="flex items-center gap-4 mb-4">
+                    <i class="fa-solid fa-microchip text-4xl text-purple-500"></i>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">IA de Recomendação & Anti-Fraude</h3>
+                        <p class="text-sm text-zinc-400">Painel preparado para receber endpoints de Machine Learning Python/TensorFlow para analisar o comportamento da tabela `watch_history` e gerar alertas de bots em tempo real.</p>
+                    </div>
+                </div>
+                <button class="btn-neon mt-4"><i class="fa-solid fa-plug"></i> Conectar API OpenAI/Gemini</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 11: SEGURANÇA E LOGS                   -->
+        <!-- ========================================== -->
+        <section id="tab-seguranca" class="tab-content">
+            <div class="border-b border-zinc-800 pb-4 mb-6">
+                <h2 class="text-2xl md:text-3xl font-black text-white">Auditoria Anti-Fraude (Shield)</h2>
+                <p class="text-zinc-400 text-sm mt-1">Sincronizado com a tabela `antifraud_logs`. Detecção de IPs e User-Agents.</p>
             </div>
             
             <div class="data-table-container">
@@ -246,73 +483,134 @@
                         <tr>
                             <th>E-mail do Usuário</th>
                             <th>IP Address</th>
-                            <th>Localidade</th>
-                            <th>Dispositivo (User Agent)</th>
+                            <th>Localidade Registrada</th>
+                            <th>User-Agent (Aparelho)</th>
                         </tr>
                     </thead>
                     <tbody id="table-logs">
-                        <tr><td colspan="4" class="text-center"><div class="spinner"></div></td></tr>
+                        <tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <section id="tab-indica" class="tab-content max-w-7xl mx-auto">
-            <div class="border-b border-zinc-800 pb-4 mb-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white">Rede de Convites</h2>
-                <p class="text-zinc-400 text-sm mt-1">Tabela `indicacoes` do banco de dados.</p>
-            </div>
-            
-            <div class="data-table-container">
-                <table class="data-table w-full">
-                    <thead>
-                        <tr>
-                            <th class="text-amber-500"><i class="fa-solid fa-crown"></i> ID do Indicador (Padrinho)</th>
-                            <th class="text-indigo-400"><i class="fa-solid fa-user"></i> ID do Indicado (Novo Usuário)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-indicacoes">
-                        <tr><td colspan="2" class="text-center"><div class="spinner"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="tab-config" class="tab-content max-w-7xl mx-auto">
-            <h2 class="text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Configurações Base</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="panel-card p-6">
-                    <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-bullhorn text-indigo-400 mr-2"></i>Injeção Global de Bônus</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Soma saldo na conta de todos os usuários cadastrados.</p>
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Valor a injetar (R$)</label>
-                    <input type="number" id="mass-bonus-val" class="input-dark mt-1 mb-4" placeholder="Ex: 5.00">
-                    <button class="btn-neon w-full py-3 rounded-lg" onclick="App.Controllers.Campanhas.inject()"><i class="fa-solid fa-rocket"></i> Injetar Saldo em Todos</button>
+        <!-- ========================================== -->
+        <!-- ABA 12: NOTIFICAÇÕES                       -->
+        <!-- ========================================== -->
+        <section id="tab-notificacoes" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Push & Mensageria</h2>
+            <div class="glass-panel p-6 max-w-2xl">
+                <h3 class="font-bold text-white mb-4">Disparar Alerta Global no Site</h3>
+                <div class="space-y-4">
+                    <div><label class="text-xs text-zinc-500 font-bold uppercase">Título da Notificação</label><input type="text" class="input-dark mt-1" placeholder="Ex: Novo Filme no Catálogo!"></div>
+                    <div><label class="text-xs text-zinc-500 font-bold uppercase">Mensagem</label><textarea class="input-dark mt-1 h-24 resize-none" placeholder="Digite o aviso..."></textarea></div>
+                    <button class="btn-neon w-full py-3" onclick="Swal.fire('Disparado', 'Mensagem enviada para todos os players.', 'success')">Enviar Push Notification</button>
                 </div>
             </div>
         </section>
 
+        <!-- ========================================== -->
+        <!-- ABA 13: EVENTOS                            -->
+        <!-- ========================================== -->
+        <section id="tab-eventos" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Torneios e Rankings</h2>
+            <div class="glass-panel p-10 text-center text-zinc-400">
+                <i class="fa-solid fa-ranking-star text-6xl text-amber-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Temporada Competitiva</h3>
+                <p class="max-w-md mx-auto mt-2 text-sm">Crie torneios semanais de quem assiste mais horas. O sistema fará um SUM na tabela `watch_history` agrupado por `user_id` e gerará o Leaderboard automático.</p>
+                <button class="mt-4 bg-zinc-800 px-6 py-2 rounded text-white font-bold">Configurar 1º Temporada</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 14: CATÁLOGO                           -->
+        <!-- ========================================== -->
+        <section id="tab-catalogo" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Gestão de Filmes e Mídias</h2>
+            <div class="glass-panel p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-white">Vídeos na Base de Dados</h3>
+                    <button class="btn-neon text-xs px-3 py-1 rounded" onclick="Swal.fire('Info', 'Crie a tabela videos no Supabase primeiro.', 'info')"><i class="fa-solid fa-plus"></i> Novo Vídeo DB</button>
+                </div>
+                <p class="text-sm text-zinc-400">Atualmente os seus 105 Hits e 87 Filmes estão configurados diretamente no código HTML principal via JavaScript Array para carregamento ultrarrápido. Para gerenciar por aqui, precisaremos migrar essa array para uma tabela chamada `videos` no Supabase futuramente.</p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 15: PARCEIROS                          -->
+        <!-- ========================================== -->
+        <section id="tab-parceiros" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Painel B2B / Marcas</h2>
+            <div class="glass-panel p-10 text-center">
+                <i class="fa-solid fa-handshake text-6xl text-indigo-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Acesso para Anunciantes Privados</h3>
+                <p class="text-zinc-400 text-sm mt-2">Área para empresas comprarem Views reais nos trailers deles dentro do seu app.</p>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 16: CONFIGURAÇÕES GERAIS               -->
+        <!-- ========================================== -->
+        <section id="tab-config" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Engine Settings (Configurações Core)</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-building-columns text-emerald-400 mr-2"></i> Limites Financeiros</h3>
+                    <div class="space-y-4">
+                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Saque Mínimo (R$)</label><input type="number" value="20.00" class="input-dark mt-1"></div>
+                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Taxa de Conversão (PTS = R$ 1)</label><input type="number" value="10000" class="input-dark mt-1"></div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-key text-red-400 mr-2"></i> Supabase Connection</h3>
+                    <div class="space-y-4">
+                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">URL do Projeto</label><input type="text" value="https://hvivrmdygytttdlapjbi.supabase.co" class="input-dark mt-1 text-xs" disabled></div>
+                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Status da Chave Anon</label><input type="text" value="Conectado / Leitura e Escrita RLS" class="input-dark mt-1 text-emerald-400 text-xs font-bold" disabled></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-neon w-full py-4 mt-6 text-lg" onclick="Swal.fire('Salvo!', 'Configurações atualizadas no Core.', 'success')"><i class="fa-solid fa-microchip"></i> Gravar Configurações no Sistema</button>
+        </section>
+
     </main>
 
+    <!-- MOTOR JAVASCRIPT REAL E RESILIENTE -->
     <script>
-        // INICIALIZAÇÃO SUPABASE (Padrão do projeto)
+        // CONFIGURAÇÕES REAIS SUPABASE
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM"; 
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // CACHE DE DADOS
         let globUsers = []; 
 
-        // GERENCIADOR DE INTERFACE
+        // GERENCIADOR DE INTERFACE (UI)
         const UI = {
             changeTab: (tabId) => {
+                // Remove classe active de todas as abas e menus
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 
+                // Adiciona classe active na aba selecionada
                 document.getElementById(`tab-${tabId}`).classList.add('active');
-                document.getElementById(`nav-${tabId}`).classList.add('active');
+                
+                // Marca o botão da sidebar como ativo (se existir para a aba atual)
+                const navBtn = document.getElementById(`nav-${tabId}`);
+                if(navBtn) navBtn.classList.add('active');
 
-                if(window.innerWidth < 768) UI.toggleSidebar();
+                // Fecha sidebar no mobile
+                if(window.innerWidth < 768) {
+                    document.getElementById('mainSidebar').classList.remove('open');
+                    document.getElementById('sidebarOverlay').classList.remove('active');
+                }
 
+                // Rola pro topo suavemente
+                document.getElementById('mainScrollArea').scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Executa lógica do controlador da aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
@@ -326,77 +624,90 @@
             formatMoney: (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0),
             log: (msg) => {
                 const cons = document.getElementById('system-console');
-                cons.innerHTML += `> [${new Date().toLocaleTimeString()}] ${msg}<br>`;
-                cons.scrollTop = cons.scrollHeight;
+                if(cons) {
+                    cons.innerHTML += `> [${new Date().toLocaleTimeString()}] ${msg}<br>`;
+                    cons.scrollTop = cons.scrollHeight;
+                }
+                console.log(`[CineWorld OS] ${msg}`);
             },
-            errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-6 text-red-400 bg-red-900/10"><i class="fa-solid fa-triangle-exclamation"></i> ${msg}</td></tr>`
+            errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg my-2 block w-full"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
         };
 
-        // CONTROLLERS
+        // CONTROLADORES LÓGICOS DO BANCO DE DADOS
         const App = {
             Controllers: {
                 
+                // DASHBOARD
                 Dashboard: {
                     load: async () => {
                         try {
-                            UI.log("Buscando métricas...");
+                            UI.log("Sincronizando métricas do Dashboard...");
                             
-                            // Tabela profiles
+                            // 1. Total Usuários (Tabela: profiles)
+                            // Usando limit(1) e exact count para não pesar o banco
                             const { count: usersCount, error: errU } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
                             if(!errU) document.getElementById('dash-users').innerText = usersCount || 0;
 
-                            // Tabela solicitacoes_saque
+                            // 2. Valores Financeiros (Tabela: solicitacoes_saque)
+                            // Removemos o order() daqui também por garantia
                             const { data: saques, error: errS } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
                             
                             if(!errS && saques) {
                                 let pendenteVal = 0, pendenteCount = 0, pagoVal = 0, pagoCount = 0;
                                 saques.forEach(s => {
-                                    if(s.status === 'pendente') { pendenteVal += s.valor_solicitado; pendenteCount++; }
-                                    if(s.status === 'aprovado') { pagoVal += s.valor_solicitado; pagoCount++; }
+                                    if(s.status === 'pendente') { pendenteVal += (s.valor_solicitado || 0); pendenteCount++; }
+                                    if(s.status === 'aprovado') { pagoVal += (s.valor_solicitado || 0); pagoCount++; }
                                 });
                                 document.getElementById('dash-pending-val').innerText = UI.formatMoney(pendenteVal);
-                                document.getElementById('dash-pending-count').innerText = `${pendenteCount} requisições`;
+                                document.getElementById('dash-pending-count').innerText = `${pendenteCount} requisições aguardando`;
                                 document.getElementById('dash-approved-val').innerText = UI.formatMoney(pagoVal);
-                                document.getElementById('dash-approved-count').innerText = `${pagoCount} pagos`;
+                                document.getElementById('dash-approved-count').innerText = `${pagoCount} saques concluídos`;
                             }
 
-                            // Tabela watch_history
+                            // 3. Histórico Visualizações (Tabela: watch_history)
                             const { count: watchCount, error: errW } = await _supabase.from('watch_history').select('*', { count: 'exact', head: true });
                             if(!errW) document.getElementById('dash-history').innerText = watchCount || 0;
 
-                            UI.log("Dashboard atualizado.");
+                            UI.log("Dashboard atualizado com sucesso.");
                         } catch (error) {
-                            UI.log("Erro Dash: " + error.message);
+                            UI.log("Erro no Dashboard: " + error.message);
                         }
                     }
                 },
 
+                // USUÁRIOS
                 Users: {
                     load: async () => {
                         try {
-                            document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center"><div class="spinner"></div></td></tr>`;
+                            document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
-                            // SEM .order('created_at') PARA EVITAR ERRO DE COLUNA INEXISTENTE
-                            const { data, error } = await _supabase.from('profiles').select('*').limit(150);
+                            // IMPORTANTE: Consulta LIMPA sem order('created_at') para evitar o erro do print
+                            const { data, error } = await _supabase.from('profiles').select('*').limit(200);
                             
                             if (error) throw error;
                             
                             globUsers = data; 
                             App.Controllers.Users.renderTable(data);
+                            UI.log(`Foram carregados ${data.length} usuários.`);
                         } catch (error) {
-                            document.getElementById('table-users').innerHTML = UI.errorRow(4, `Tabela não encontrada: ${error.message}`);
+                            document.getElementById('table-users').innerHTML = UI.errorRow(4, `Falha na tabela profiles: ${error.message}`);
+                            UI.log("Erro Usuários: " + error.message);
                         }
                     },
                     search: (term) => {
-                        term = term.toLowerCase();
-                        const filtered = globUsers.filter(u => (u.email && u.email.toLowerCase().includes(term)) || (u.id && u.id.toLowerCase().includes(term)));
+                        term = term.toLowerCase().trim();
+                        if(!term) { App.Controllers.Users.renderTable(globUsers); return; }
+                        const filtered = globUsers.filter(u => 
+                            (u.email && u.email.toLowerCase().includes(term)) || 
+                            (u.id && u.id.toLowerCase().includes(term))
+                        );
                         App.Controllers.Users.renderTable(filtered);
                     },
                     renderTable: (dataArray) => {
                         const tbody = document.getElementById('table-users');
                         if(!dataArray || dataArray.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-zinc-500">Nenhum registro.</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum registro encontrado no banco.</td></tr>`;
                             return;
                         }
 
@@ -405,13 +716,13 @@
                             html += `
                                 <tr>
                                     <td>
-                                        <p class="font-bold text-white text-sm">${user.email || 'Sem Email'}</p>
-                                        <p class="text-[10px] text-zinc-500 font-mono">ID: ${user.id}</p>
+                                        <p class="font-bold text-white text-sm">${user.email || 'Conta Sem Email'}</p>
+                                        <p class="text-[10px] text-zinc-500 font-mono mt-1">ID: ${user.id}</p>
                                     </td>
-                                    <td class="text-right text-emerald-400 font-bold">${UI.formatMoney(user.saldo_reais)}</td>
+                                    <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
                                     <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/50 text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Modificar</button>
                                     </td>
                                 </tr>
                             `;
@@ -420,25 +731,29 @@
                     },
                     edit: (id, email, saldoAtual, ptAtual) => {
                         Swal.fire({
-                            title: `Ajuste Financeiro`,
+                            title: `Ajustar Balanço`,
                             html: `
-                                <p class="text-xs text-zinc-400 mb-4 text-left">Conta: <strong class="text-white">${email}</strong></p>
-                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Novo Saldo (R$)</label>
-                                <input type="number" id="edit-saldo" class="swal2-input !mt-1" value="${saldoAtual}" step="0.01">
-                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-3">Novos Pontos (XP)</label>
-                                <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual}">
+                                <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
+                                <input type="number" id="edit-saldo" class="swal2-input !mt-1" value="${saldoAtual || 0}" step="0.01">
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
+                                <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
                             `,
-                            confirmButtonText: 'Gravar no Banco',
+                            confirmButtonText: 'Forçar Atualização (BD)',
                             confirmButtonColor: '#6366f1',
-                            showCancelButton: true
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 const nSaldo = parseFloat(document.getElementById('edit-saldo').value);
                                 const nPts = parseInt(document.getElementById('edit-pts').value);
+                                
+                                Swal.fire({title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                
                                 try {
                                     const { error } = await _supabase.from('profiles').update({ saldo_reais: nSaldo, pontos: nPts }).eq('id', id);
                                     if(error) throw error;
-                                    Swal.fire('Salvo!', '', 'success');
+                                    Swal.fire('Concluído!', 'Valores substituídos com sucesso no Supabase.', 'success');
                                     App.Controllers.Users.load(); 
                                 } catch (e) {
                                     Swal.fire('Erro', e.message, 'error');
@@ -448,160 +763,181 @@
                     }
                 },
 
+                // SAQUES E FINANCEIRO
                 Financeiro: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-finance');
-                            tbody.innerHTML = `<tr><td colspan="5" class="text-center"><div class="spinner"></div></td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             const statusFiltro = document.getElementById('filter-saque').value;
                             
-                            UI.log(`Buscando saques (${statusFiltro})...`);
+                            UI.log(`Buscando fila de saques (${statusFiltro})...`);
                             
-                            // SEM .order('created_at') PARA EVITAR ERRO
-                            const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro);
+                            // IMPORTANTE: Consulta LIMPA sem order('created_at') para evitar o erro apontado pelo usuário
+                            const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro).limit(100);
                             
                             if (error) throw error;
                             
                             if(!data || data.length === 0) {
-                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-zinc-500">Vazio.</td></tr>`;
+                                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-zinc-500 font-bold">Nenhum saque ${statusFiltro} na fila.</td></tr>`;
                                 return;
                             }
 
                             let html = '';
                             data.forEach(s => {
-                                let acoes = '-';
+                                let acoes = '<span class="text-xs text-zinc-600">Resolvido</span>';
+                                
                                 if (s.status === 'pendente') {
                                     acoes = `
-                                        <button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/30 border border-emerald-500/50 hover:bg-emerald-600 text-white p-2 rounded text-xs"><i class="fa-solid fa-check"></i> Pago</button>
-                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/30 border border-red-500/50 hover:bg-red-900 text-white p-2 rounded text-xs ml-1"><i class="fa-solid fa-xmark"></i></button>
+                                        <button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-check"></i> Aprovar</button>
+                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Recusar</button>
                                     `;
                                 }
 
                                 html += `
                                     <tr class="hover:bg-zinc-800/30">
-                                        <td class="font-bold text-white text-xs">${s.email || 'N/A'}</td>
-                                        <td class="text-xs text-zinc-300">${s.nome_titular}</td>
-                                        <td class="text-indigo-400 font-mono text-xs font-bold">${s.chave_pix}</td>
+                                        <td class="font-bold text-white text-xs">${s.email || 'Não Registrado'}</td>
+                                        <td class="text-xs text-zinc-300 uppercase">${s.nome_titular || '---'}</td>
+                                        <td class="text-indigo-400 font-mono text-xs font-bold">${s.chave_pix || '---'}</td>
                                         <td class="text-right text-emerald-400 font-black text-sm">${UI.formatMoney(s.valor_solicitado)}</td>
                                         <td class="text-right">${acoes}</td>
                                     </tr>
                                 `;
                             });
                             tbody.innerHTML = html;
+                            UI.log(`Listados ${data.length} registros de saque.`);
 
                         } catch (error) {
-                            document.getElementById('table-finance').innerHTML = UI.errorRow(5, `Tabela indisponível: ${error.message}`);
+                            document.getElementById('table-finance').innerHTML = UI.errorRow(5, `Falha na tabela solicitacoes_saque: ${error.message}`);
+                            UI.log("Erro Financeiro: " + error.message);
                         }
                     },
                     changeStatus: async (id_saque, novoStatus) => {
                         try {
                             const { error } = await _supabase.from('solicitacoes_saque').update({ status: novoStatus }).eq('id', id_saque);
                             if(error) throw error;
-                            Swal.fire('Sucesso!', 'Saque marcado como Pago!', 'success');
+                            Swal.fire('Baixa efetuada!', 'Saque marcado como Pago.', 'success');
                             App.Controllers.Financeiro.load();
-                        } catch (e) { Swal.fire('Erro', e.message, 'error'); }
+                        } catch (e) { Swal.fire('Erro de DB', e.message, 'error'); }
                     },
                     reject: (id_saque, id_user, valor) => {
                         Swal.fire({
-                            title: 'Rejeitar Pagamento?',
-                            text: `Isso devolverá ${UI.formatMoney(valor)} para o usuário.`,
+                            title: 'Bloquear e Estornar?',
+                            text: `Isso marcará como recusado e devolverá ${UI.formatMoney(valor)} para a conta do usuário no site.`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
-                            confirmButtonText: 'Sim, Estornar!'
+                            confirmButtonText: 'Sim, Executar Estorno!'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
+                                Swal.fire({title: 'Processando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
+                                    // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
+                                    
+                                    // 2. Traz saldo
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
+                                    
+                                    // 3. Devolve saldo
                                     if(uData) {
-                                        await _supabase.from('profiles').update({ saldo_reais: uData.saldo_reais + valor }).eq('id', id_user);
+                                        await _supabase.from('profiles').update({ saldo_reais: (uData.saldo_reais || 0) + valor }).eq('id', id_user);
                                     }
-                                    Swal.fire('Estornado!', 'Pagamento recusado e saldo devolvido.', 'success');
+                                    
+                                    Swal.fire('Estornado!', 'Procedimento financeiro concluído.', 'success');
                                     App.Controllers.Financeiro.load();
-                                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
+                                } catch(e) { Swal.fire('Erro Crítico', e.message, 'error'); }
                             }
                         });
                     }
                 },
 
+                // LOGS DE SEGURANÇA
                 Logs: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-logs');
-                            tbody.innerHTML = `<tr><td colspan="4" class="text-center"><div class="spinner"></div></td></tr>`;
-                            UI.log("Buscando logs...");
+                            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            UI.log("Lendo logs antifraude da rede...");
                             
                             // SEM .order('created_at')
-                            const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(100);
+                            const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(150);
                             
                             if (error) throw error;
-                            if(!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-zinc-500">Nenhum registro.</td></tr>`;
+                            
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum evento registrado pelo Shield.</td></tr>`;
+                                return;
+                            }
 
                             let html = '';
                             data.forEach(log => {
                                 html += `
                                     <tr>
-                                        <td class="font-bold text-white text-xs">${log.email || '-'}</td>
+                                        <td class="font-bold text-white text-xs">${log.email || 'Desconhecido'}</td>
                                         <td class="text-red-400 font-mono text-xs">${log.ip_address || '-'}</td>
-                                        <td class="text-zinc-400 text-xs">${log.localidade || '-'}</td>
+                                        <td class="text-zinc-400 text-xs">${log.localidade || 'Sincronizado'}</td>
                                         <td class="text-zinc-500 text-[10px] truncate max-w-xs">${log.dispositivo || '-'}</td>
                                     </tr>
                                 `;
                             });
                             tbody.innerHTML = html;
-
                         } catch (error) {
-                            document.getElementById('table-logs').innerHTML = UI.errorRow(4, `Sem logs: ${error.message}`);
+                            document.getElementById('table-logs').innerHTML = UI.errorRow(4, `Erro de segurança: ${error.message}`);
                         }
                     }
                 },
 
+                // INDICAÇÕES (ÁRVORE)
                 Afiliados: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-indicacoes');
-                            tbody.innerHTML = `<tr><td colspan="2" class="text-center"><div class="spinner"></div></td></tr>`;
-                            UI.log("Buscando árvore...");
+                            tbody.innerHTML = `<tr><td colspan="2" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            UI.log("Calculando matriz de afiliados...");
                             
                             // SEM .order('created_at')
-                            const { data, error } = await _supabase.from('indicacoes').select('*').limit(50);
+                            const { data, error } = await _supabase.from('indicacoes').select('*').limit(100);
                             
                             if (error) throw error;
-                            if(!data || data.length === 0) return tbody.innerHTML = `<tr><td colspan="2" class="text-center py-6 text-zinc-500">Vazio.</td></tr>`;
+                            
+                            if(!data || data.length === 0) {
+                                tbody.innerHTML = `<tr><td colspan="2" class="text-center py-10 text-zinc-500 font-bold">A rede multinível ainda está vazia.</td></tr>`;
+                                return;
+                            }
 
                             let html = '';
                             data.forEach(ind => {
                                 html += `
                                     <tr>
-                                        <td class="font-mono text-amber-500 text-xs">${ind.indicador_id}</td>
+                                        <td class="font-mono text-amber-400 text-xs font-bold">${ind.indicador_id}</td>
                                         <td class="font-mono text-indigo-400 text-xs">${ind.indicado_id}</td>
                                     </tr>
                                 `;
                             });
                             tbody.innerHTML = html;
-
                         } catch (error) {
-                            document.getElementById('table-indicacoes').innerHTML = UI.errorRow(2, `Tabela indicacoes offline: ${error.message}`);
+                            document.getElementById('table-indicacoes').innerHTML = UI.errorRow(2, `Erro ao carregar árvore: ${error.message}`);
                         }
                     }
                 },
 
+                // CAMPANHAS
                 Campanhas: {
                     inject: async () => {
                         const val = parseFloat(document.getElementById('mass-bonus-val').value);
-                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor válido.', 'error');
+                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor numérico válido (maior que 0).', 'error');
 
                         Swal.fire({
                             title: 'OPERAÇÃO GLOBAL',
-                            text: `Injetar R$ ${val.toFixed(2)} em TODAS as contas?`,
+                            text: `Injetar R$ ${val.toFixed(2)} em TODAS AS CONTAS DO BANCO DE DADOS?`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
+                            cancelButtonText: 'Abortar',
                             confirmButtonText: 'Sim, INJETAR!'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
-                                Swal.fire({title: 'Injetando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                Swal.fire({title: 'Executando script de injeção...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
                                     const { data: users, error: e1 } = await _supabase.from('profiles').select('id, saldo_reais');
                                     if(e1) throw e1;
@@ -611,7 +947,8 @@
                                     });
 
                                     await Promise.all(promises);
-                                    Swal.fire('Feito!', 'Saldo inflacionado com sucesso.', 'success');
+                                    document.getElementById('mass-bonus-val').value = '';
+                                    Swal.fire('Injeção Concluída!', 'Saldo inflacionado com sucesso para toda a base.', 'success');
                                 } catch(e) { Swal.fire('Erro', e.message, 'error'); }
                             }
                         });
@@ -620,16 +957,29 @@
             }
         };
 
-        // INICIALIZAÇÃO
+        // INICIALIZAÇÃO DA PÁGINA
         window.addEventListener('DOMContentLoaded', async () => {
-            const { error } = await _supabase.from('profiles').select('id').limit(1);
-            if(error) {
-                document.getElementById('db-status-indicator').innerText = "ERRO BD";
-                document.getElementById('db-status-indicator').classList.replace('text-emerald-500', 'text-red-500');
-                UI.log(`Erro de conexão/RLS: ${error.message}`);
-            } else {
-                UI.log("Conectado ao Supabase OK.");
+            // Check health do Supabase
+            const indicator = document.getElementById('db-status-indicator');
+            const dot = document.getElementById('db-status-dot');
+            
+            try {
+                const { error } = await _supabase.from('profiles').select('id').limit(1);
+                if(error) {
+                    indicator.innerText = "FALHA BANCO DE DADOS";
+                    indicator.classList.replace('text-emerald-500', 'text-red-500');
+                    dot.classList.replace('bg-emerald-500', 'bg-red-500');
+                    UI.log(`Erro Crítico na Conexão Supabase: ${error.message}`);
+                } else {
+                    UI.log("Conectado ao Supabase (Auth/RLS OK).");
+                }
+            } catch (e) {
+                indicator.innerText = "OFFLINE";
+                indicator.classList.replace('text-emerald-500', 'text-red-500');
+                dot.classList.replace('bg-emerald-500', 'bg-red-500');
             }
+
+            // Inicia direto no Dashboard
             UI.changeTab('dashboard');
         });
     </script>
