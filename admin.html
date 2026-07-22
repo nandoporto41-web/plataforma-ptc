@@ -748,7 +748,7 @@
                             <div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#08080b] rounded-full"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">I.A. Core</h3>
+                            <h3 class="font-bold text-white">I.A. Core (Groq Llama 3)</h3>
                             <p class="text-[10px] text-emerald-400 font-mono">Conectada ao Banco de Dados</p>
                         </div>
                     </div>
@@ -760,7 +760,7 @@
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
                         <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
-                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Sou a IA Executiva do CineWorld. Tenho controle total sobre o Supabase, mas ajo apenas sob seu comando. Posso <strong class="text-purple-400">remover/editar usuários</strong>, <strong class="text-purple-400">injetar filmes no catálogo</strong>, <strong class="text-purple-400">monitorar fraudes e burladores</strong>, <strong class="text-purple-400">verificar os saques em andamento</strong> ou <strong class="text-purple-400">lançar campanhas e bônus</strong>.</p>
+                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Sou a IA Executiva do CineWorld. Tenho controle total sobre o Supabase e estou operando com a sua chave da Groq. Posso <strong class="text-purple-400">remover/editar usuários</strong>, <strong class="text-purple-400">injetar filmes no catálogo</strong>, <strong class="text-purple-400">monitorar fraudes e burladores</strong>, <strong class="text-purple-400">verificar os saques em andamento</strong> ou <strong class="text-purple-400">lançar campanhas e bônus</strong>.</p>
                             <p class="text-xs text-zinc-500 mt-2 font-mono">Tente dizer: "Adicionar filme", "Monitorar fraudes", "Ver saques" ou "Injetar bônus".</p>
                         </div>
                     </div>
@@ -866,7 +866,7 @@
 
     </main>
 
-    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE E À IA -->
+    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE -->
     <script>
         // CONFIGURAÇÕES REAIS SUPABASE
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
@@ -880,26 +880,31 @@
         // GERENCIADOR DE INTERFACE (UI)
         const UI = {
             changeTab: (tabId) => {
+                // Esconder todas as abas
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 
+                // Mostrar a nova aba
                 const tab = document.getElementById(`tab-${tabId}`);
                 if(tab) tab.classList.add('active');
                 
                 const nav = document.getElementById(`nav-${tabId}`);
                 if(nav) nav.classList.add('active');
 
+                // Fechar menu mobile se estiver aberto
                 if(window.innerWidth < 768) {
                     document.getElementById('mainSidebar').classList.remove('open');
                     document.getElementById('sidebarOverlay').classList.remove('active');
                 }
 
+                // Rolagem para o topo
                 document.getElementById('mainScrollArea').scrollTo({ top: 0, behavior: 'smooth' });
 
+                // Acionar controladores responsáveis pela aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
-                if(tabId === 'seguranca') App.Controllers.Logs.load(); // tab-seguranca carrega os logs agora
+                if(tabId === 'seguranca') App.Controllers.Logs.load();
                 if(tabId === 'indica') App.Controllers.Afiliados.load();
                 if(tabId === 'catalogo') App.Controllers.Catalogo.load();
                 if(tabId === 'config') App.Controllers.Config.load();
@@ -924,7 +929,7 @@
             errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
         };
 
-        // CONTROLADORES LÓGICOS DO BANCO DE DADOS
+        // CONTROLADORES LÓGICOS DO BANCO DE DADOS E IA
         const App = {
             Controllers: {
                 
@@ -936,9 +941,11 @@
                         try {
                             UI.log("Sincronizando métricas do Dashboard...");
                             
+                            // 1. Total Usuários (Tabela: profiles)
                             const { count: usersCount, error: errU } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
                             if(!errU) document.getElementById('dash-users').innerText = usersCount || 0;
 
+                            // 2. Valores Financeiros (Tabela: solicitacoes_saque)
                             const { data: saques, error: errS } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
                             
                             if(!errS && saques) {
@@ -953,6 +960,7 @@
                                 document.getElementById('dash-approved-count').innerText = `${pagoCount} saques concluídos`;
                             }
 
+                            // 3. Catálogo/Histórico (Tabela: videos)
                             const { count: watchCount, error: errW } = await _supabase.from('videos').select('*', { count: 'exact', head: true });
                             if(!errW) document.getElementById('dash-history').innerText = watchCount || 0;
 
@@ -972,6 +980,7 @@
                             document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
+                            // Tabela profiles
                             const { data, error } = await _supabase.from('profiles').select('*').limit(200);
                             
                             if (error) throw error;
@@ -1011,7 +1020,7 @@
                                     <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
                                     <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Modificar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                                     </td>
                                 </tr>
                             `;
@@ -1020,7 +1029,7 @@
                     },
                     edit: (id, email, saldoAtual, ptAtual) => {
                         Swal.fire({
-                            title: `Ajustar Balanço`,
+                            title: `Modificar Perfil`,
                             html: `
                                 <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
@@ -1028,7 +1037,7 @@
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
                                 <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
                             `,
-                            confirmButtonText: 'Forçar Atualização (BD)',
+                            confirmButtonText: 'Gravar (DB)',
                             confirmButtonColor: '#6366f1',
                             showCancelButton: true,
                             cancelButtonText: 'Cancelar'
@@ -1113,7 +1122,7 @@
                     reject: (id_saque, id_user, valor) => {
                         Swal.fire({
                             title: 'Bloquear e Estornar?',
-                            text: `Isso marcará como recusado e devolverá ${UI.formatMoney(valor)} para a conta do usuário no site.`,
+                            text: `Isso marcará o pedido como recusado e devolverá ${UI.formatMoney(valor)} para o perfil do usuário.`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
@@ -1125,7 +1134,7 @@
                                     // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
                                     
-                                    // 2. Traz saldo
+                                    // 2. Traz saldo da conta
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
                                     
                                     // 3. Devolve saldo
@@ -1374,11 +1383,12 @@
                 },
 
                 /* =========================================
-                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (IA)
+                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (GROQ API - LLAMA 3)
                    ========================================= */
                 IA: {
+                    API_KEY: "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",
+
                     load: () => {
-                        // Apenas foca no input quando a aba abre
                         setTimeout(() => {
                             const input = document.getElementById('ai-input');
                             if(input) input.focus();
@@ -1391,7 +1401,6 @@
                         
                         const chatBox = document.getElementById('ai-chat-box');
                         
-                        // Adiciona a mensagem do Admin
                         chatBox.innerHTML += `
                             <div class="flex gap-4 justify-end mb-4">
                                 <div class="bg-indigo-600 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-lg">
@@ -1403,7 +1412,6 @@
                         input.value = '';
                         chatBox.scrollTop = chatBox.scrollHeight;
 
-                        // Adiciona loader da IA
                         const loaderId = 'ai-loader-' + Date.now();
                         chatBox.innerHTML += `
                             <div id="${loaderId}" class="flex gap-4 mb-4">
@@ -1417,73 +1425,71 @@
                         `;
                         chatBox.scrollTop = chatBox.scrollHeight;
 
-                        // Simula processamento NLP e processa a ação
-                        setTimeout(() => {
-                            document.getElementById(loaderId).remove();
-                            App.Controllers.IA.processResponse(text);
-                        }, 1200);
+                        App.Controllers.IA.processRealAPI(text, loaderId);
                     },
-                    processResponse: async (text) => {
-                        const lowerText = text.toLowerCase();
-                        let response = "Desculpe, não identifiquei um comando exato. Tente usar palavras como **'adicionar filme'**, **'ver saques'**, **'monitorar fraudes'** ou **'injetar bônus'**.";
-                        let actionToExecute = null;
+                    processRealAPI: async (text, loaderId) => {
+                        try {
+                            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${App.Controllers.IA.API_KEY}`
+                                },
+                                body: JSON.stringify({
+                                    model: "llama3-70b-8192", 
+                                    messages: [
+                                        {
+                                            role: "system",
+                                            content: `Você é a IA Executiva e gerente de operações do painel CineWorld OS.
+                                            Você ajuda o administrador a gerenciar a plataforma de streaming e recompensas.
+                                            Responda de forma extremamente profissional, analítica, assertiva e sem enrolação.
+                                            
+                                            O painel possui as seguintes abas que você pode controlar: 
+                                            dashboard, usuarios, financeiro, monetizacao, parceiros, indica, campanhas, bonus, eventos, catalogo, database, seguranca, notificacoes, config.
+                                            
+                                            Se o admin pedir para realizar uma ação que exige abrir uma dessas abas (ex: "ver os pagamentos", "analisar os logs de fraude", "adicionar filmes", "gerar alertas", "ver usuários"), você DEVE obrigatoriamente incluir a tag exata no final da sua resposta no formato: [TAB:nome_da_aba].
+                                            
+                                            Exemplo do admin: "Quero punir os fraudadores"
+                                            Exemplo de sua resposta: "Entendido, mestre. Identificando anomalias de IP e padrões de Auto-Clicker. Redirecionando para o módulo de Segurança agora. [TAB:seguranca]"`
+                                        },
+                                        { role: "user", content: text }
+                                    ]
+                                })
+                            });
 
-                        // NLP Condicional (Engine Interna)
-                        if (lowerText.includes('filme') || lowerText.includes('catálogo') || lowerText.includes('midia') || lowerText.includes('mídia')) {
-                            if(lowerText.includes('adicionar') || lowerText.includes('injetar') || lowerText.includes('colocar')) {
-                                response = "Comando recebido. Estou abrindo o módulo de injeção do Catálogo no Supabase para você...";
-                                actionToExecute = () => { UI.changeTab('catalogo'); setTimeout(() => App.Controllers.Catalogo.add(), 600); };
-                            } else {
-                                response = "Você quer gerenciar o catálogo? Vou abrir a interface visual do Banco de Dados de vídeos.";
-                                actionToExecute = () => { UI.changeTab('catalogo'); };
+                            if (!response.ok) {
+                                const err = await response.json();
+                                throw new Error(err.error?.message || "Erro na API da Groq");
                             }
-                        } 
-                        else if (lowerText.includes('saque') || lowerText.includes('pix') || lowerText.includes('dinheiro') || lowerText.includes('pagamento')) {
-                            response = "Buscando o status financeiro na tabela `solicitacoes_saque`...";
-                            actionToExecute = async () => {
-                                const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', 'pendente');
-                                if(!error && data) {
-                                    App.Controllers.IA.appendAI(`Mestre, encontrei **${data.length} saques pendentes** na fila. Vou redirecioná-lo para o Terminal Financeiro para que você possa aprovar ou estornar.`);
-                                    setTimeout(() => { UI.changeTab('financeiro'); }, 3000);
-                                } else {
-                                    App.Controllers.IA.appendAI(`Ocorreu um erro ao checar o financeiro ou a fila está vazia.`);
-                                }
-                            };
-                        }
-                        else if (lowerText.includes('fraude') || lowerText.includes('hack') || lowerText.includes('monitorar') || lowerText.includes('segurança')) {
-                            response = "Iniciando varredura no Shield (tabela `antifraud_logs`) em busca de anomalias, VPNs ou bots de Auto-Clicker...";
-                            actionToExecute = async () => {
-                                const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(50);
-                                if(!error && data) {
-                                    App.Controllers.IA.appendAI(`Escaneamento concluído. Capturei as últimas ${data.length} atividades de rede. Vou abrir o painel de Auditoria de Segurança para você analisar as localidades e IPs.`);
-                                    setTimeout(() => { UI.changeTab('seguranca'); }, 3000);
-                                }
-                            };
-                        }
-                        else if (lowerText.includes('bônus') || lowerText.includes('campanha') || lowerText.includes('injetar saldo') || lowerText.includes('saldo')) {
-                            response = "Preparando a Engine de Injeção em Massa. Por favor, acesse o painel de Campanhas e defina o valor que deseja enviar para toda a base.";
-                            actionToExecute = () => { UI.changeTab('campanhas'); };
-                        }
-                        else if (lowerText.includes('usuário') || lowerText.includes('remover') || lowerText.includes('banir') || lowerText.includes('editar conta')) {
-                            response = "Entendido. Abrindo o Gestor de Contas. Use a barra de pesquisa lá para localizar a conta que deseja penalizar ou bonificar.";
-                            actionToExecute = () => { UI.changeTab('usuarios'); };
-                        }
 
-                        // Imprime resposta da IA
-                        App.Controllers.IA.appendAI(response);
-                        
-                        // Executa a ação atrelada ao comando
-                        if(actionToExecute) {
-                            setTimeout(actionToExecute, 800);
+                            const data = await response.json();
+                            let aiResponse = data.choices[0].message.content;
+
+                            const actionMatch = aiResponse.match(/\[TAB:([a-zA-Z0-9_]+)\]/);
+                            if (actionMatch) {
+                                const tabName = actionMatch[1];
+                                aiResponse = aiResponse.replace(actionMatch[0], '').trim(); 
+                                setTimeout(() => UI.changeTab(tabName), 1500); 
+                            }
+
+                            document.getElementById(loaderId).remove();
+                            App.Controllers.IA.appendAI(aiResponse);
+
+                        } catch (error) {
+                            document.getElementById(loaderId).remove();
+                            App.Controllers.IA.appendAI("⚠️ **Erro crítico na conexão neural:** " + error.message);
                         }
                     },
                     appendAI: (msg) => {
                         const chatBox = document.getElementById('ai-chat-box');
+                        let formattedMsg = msg.replace(/\n/g, '<br>');
+                        formattedMsg = formattedMsg.replace(/\*\*(.*?)\*\*/g, '<strong class="text-purple-400">$1</strong>');
+
                         chatBox.innerHTML += `
                             <div class="flex gap-4 mb-4">
                                 <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
                                 <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
-                                    <p class="text-sm text-zinc-200 leading-relaxed">${msg}</p>
+                                    <p class="text-sm text-zinc-200 leading-relaxed">${formattedMsg}</p>
                                 </div>
                             </div>
                         `;
