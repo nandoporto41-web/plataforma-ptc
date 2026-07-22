@@ -326,6 +326,9 @@
         .metric-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-3px); }
         .metric-bg-icon { position: absolute; right: -15px; bottom: -15px; font-size: 6rem; opacity: 0.05; transition: transform 0.3s; }
         .metric-card:hover .metric-bg-icon { transform: scale(1.1); color: var(--brand-primary); opacity: 0.1; }
+
+        /* CHAT IA SCROLL */
+        .chat-scroll::-webkit-scrollbar { width: 4px; }
     </style>
 </head>
 <body>
@@ -388,9 +391,9 @@
             <button onclick="UI.changeTab('catalogo')" id="nav-catalogo" class="nav-item"><i class="fa-solid fa-film"></i> Gerir Catálogo (BD)</button>
 
             <!-- GRUPO 5: TECNOLOGIA E INFRA -->
-            <span class="nav-category">Infraestrutura</span>
+            <span class="nav-category">Infraestrutura Inteligente</span>
+            <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item" style="color: #c084fc;"><i class="fa-solid fa-brain"></i> CineWorld A.I.</button>
             <button onclick="UI.changeTab('database')" id="nav-database" class="nav-item"><i class="fa-solid fa-database"></i> Banco de Dados (DB)</button>
-            <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item"><i class="fa-solid fa-brain"></i> Inteligência Artificial</button>
             <button onclick="UI.changeTab('seguranca')" id="nav-seguranca" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Segurança & Logs IP</button>
             <button onclick="UI.changeTab('notificacoes')" id="nav-notificacoes" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações (Push)</button>
 
@@ -415,24 +418,29 @@
                 <button onclick="App.Controllers.Dashboard.load()" class="btn-neon"><i class="fa-solid fa-rotate"></i> Atualizar Dados</button>
             </div>
 
+            <!-- Grid de Métricas Reais -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <!-- Card 1 -->
                 <div class="glass-panel metric-card p-6">
                     <i class="fa-solid fa-users metric-bg-icon text-indigo-500"></i>
                     <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Total Usuários Cadastrados</p>
                     <p class="text-4xl font-black text-white" id="dash-users">0</p>
                 </div>
+                <!-- Card 2 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-amber-500">
                     <i class="fa-solid fa-clock-rotate-left metric-bg-icon text-amber-500"></i>
                     <p class="text-amber-500 text-[10px] font-bold uppercase mb-2">Fila de Saques (Pendentes)</p>
                     <p class="text-3xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p>
                     <p class="text-xs text-zinc-500 mt-2" id="dash-pending-count">0 requisições aguardando</p>
                 </div>
+                <!-- Card 3 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-emerald-500">
                     <i class="fa-solid fa-check-double metric-bg-icon text-emerald-500"></i>
                     <p class="text-emerald-500 text-[10px] font-bold uppercase mb-2">Total Pago (PIX Aprovado)</p>
                     <p class="text-3xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p>
                     <p class="text-xs text-zinc-500 mt-2" id="dash-approved-count">0 saques concluídos</p>
                 </div>
+                <!-- Card 4 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-pink-500">
                     <i class="fa-solid fa-play metric-bg-icon text-pink-500"></i>
                     <p class="text-pink-500 text-[10px] font-bold uppercase mb-2">Engajamento (Vídeos Vistos)</p>
@@ -440,9 +448,10 @@
                 </div>
             </div>
 
+            <!-- Console Log Embutido -->
             <div class="glass-panel p-6">
                 <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco de Dados</h3>
-                <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto" id="system-console">
+                <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto chat-scroll" id="system-console">
                     > [System] Inicializando CineWorld OS Master...<br>
                 </div>
             </div>
@@ -725,19 +734,45 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 13: INTELIGÊNCIA ARTIFICIAL            -->
+        <!-- ABA 13: INTELIGÊNCIA ARTIFICIAL (MASTER)   -->
         <!-- ========================================== -->
         <section id="tab-ia" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Módulos de IA</h2>
-            <div class="glass-panel p-8">
-                <div class="flex items-center gap-4 mb-4">
-                    <i class="fa-solid fa-microchip text-4xl text-purple-500"></i>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">IA de Recomendação & Suporte</h3>
-                        <p class="text-sm text-zinc-400">Integração preparada para analisar a `watch_history` e gerar alertas de bots, além de respostas automáticas aos tickets de suporte.</p>
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">CineWorld A.I. (Assistente Executivo)</h2>
+            
+            <div class="glass-panel flex flex-col h-[600px] max-w-4xl mx-auto border border-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.15)]">
+                <!-- Topbar Chat -->
+                <div class="p-4 border-b border-zinc-800 bg-[#08080b] rounded-t-[16px] flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center relative">
+                            <i class="fa-solid fa-robot text-white text-lg"></i>
+                            <div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#08080b] rounded-full"></div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white">I.A. Core</h3>
+                            <p class="text-[10px] text-emerald-400 font-mono">Conectada ao Banco de Dados</p>
+                        </div>
                     </div>
                 </div>
-                <button class="btn-neon mt-4" onclick="UI.toast('Conectando a endpoint da OpenAI...')"><i class="fa-solid fa-plug"></i> Ligar Engine de IA</button>
+
+                <!-- Chat Area -->
+                <div class="flex-1 p-6 overflow-y-auto space-y-6 chat-scroll" id="ai-chat-box">
+                    <!-- Mensagem Inicial IA -->
+                    <div class="flex gap-4">
+                        <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                        <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
+                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Sou a IA Executiva do CineWorld. Tenho controle total sobre o Supabase, mas ajo apenas sob seu comando. Posso <strong class="text-purple-400">remover/editar usuários</strong>, <strong class="text-purple-400">injetar filmes no catálogo</strong>, <strong class="text-purple-400">monitorar fraudes e burladores</strong>, <strong class="text-purple-400">verificar os saques em andamento</strong> ou <strong class="text-purple-400">lançar campanhas e bônus</strong>.</p>
+                            <p class="text-xs text-zinc-500 mt-2 font-mono">Tente dizer: "Adicionar filme", "Monitorar fraudes", "Ver saques" ou "Injetar bônus".</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-4 border-t border-zinc-800 bg-[#08080b] rounded-b-[16px]">
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-input" class="input-dark bg-[#121216] focus:border-purple-500 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] text-sm" placeholder="Dê uma ordem para a I.A..." onkeypress="if(event.key === 'Enter') App.Controllers.IA.sendMessage()">
+                        <button class="bg-purple-600 hover:bg-purple-500 text-white px-6 rounded-lg transition-colors" onclick="App.Controllers.IA.sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -831,7 +866,7 @@
 
     </main>
 
-    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE -->
+    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE E À IA -->
     <script>
         // CONFIGURAÇÕES REAIS SUPABASE
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
@@ -845,34 +880,30 @@
         // GERENCIADOR DE INTERFACE (UI)
         const UI = {
             changeTab: (tabId) => {
-                // Esconder todas as abas
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 
-                // Mostrar a nova aba
                 const tab = document.getElementById(`tab-${tabId}`);
                 if(tab) tab.classList.add('active');
                 
                 const nav = document.getElementById(`nav-${tabId}`);
                 if(nav) nav.classList.add('active');
 
-                // Fechar menu mobile se estiver aberto
                 if(window.innerWidth < 768) {
                     document.getElementById('mainSidebar').classList.remove('open');
                     document.getElementById('sidebarOverlay').classList.remove('active');
                 }
 
-                // Rolagem para o topo
                 document.getElementById('mainScrollArea').scrollTo({ top: 0, behavior: 'smooth' });
 
-                // Acionar controladores responsáveis pela aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
-                if(tabId === 'logs') App.Controllers.Logs.load();
+                if(tabId === 'seguranca') App.Controllers.Logs.load(); // tab-seguranca carrega os logs agora
                 if(tabId === 'indica') App.Controllers.Afiliados.load();
                 if(tabId === 'catalogo') App.Controllers.Catalogo.load();
                 if(tabId === 'config') App.Controllers.Config.load();
+                if(tabId === 'ia') App.Controllers.IA.load();
             },
             toggleSidebar: () => {
                 document.getElementById('mainSidebar').classList.toggle('open');
@@ -888,7 +919,7 @@
                 console.log(`[CineWorld OS] ${msg}`);
             },
             toast: (msg) => {
-                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: msg, showConfirmButton: false, timer: 3000, timerProgressBar: true });
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: msg, showConfirmButton: false, timer: 3000, timerProgressBar: true, background: '#121216', color: '#fff' });
             },
             errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
         };
@@ -905,11 +936,9 @@
                         try {
                             UI.log("Sincronizando métricas do Dashboard...");
                             
-                            // 1. Total Usuários (Tabela: profiles)
                             const { count: usersCount, error: errU } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
                             if(!errU) document.getElementById('dash-users').innerText = usersCount || 0;
 
-                            // 2. Valores Financeiros (Tabela: solicitacoes_saque)
                             const { data: saques, error: errS } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
                             
                             if(!errS && saques) {
@@ -924,7 +953,6 @@
                                 document.getElementById('dash-approved-count').innerText = `${pagoCount} saques concluídos`;
                             }
 
-                            // 3. Catálogo/Histórico (Tabela: videos)
                             const { count: watchCount, error: errW } = await _supabase.from('videos').select('*', { count: 'exact', head: true });
                             if(!errW) document.getElementById('dash-history').innerText = watchCount || 0;
 
@@ -944,7 +972,6 @@
                             document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
-                            // Tabela profiles
                             const { data, error } = await _supabase.from('profiles').select('*').limit(200);
                             
                             if (error) throw error;
@@ -984,7 +1011,7 @@
                                     <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
                                     <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Modificar</button>
                                     </td>
                                 </tr>
                             `;
@@ -993,7 +1020,7 @@
                     },
                     edit: (id, email, saldoAtual, ptAtual) => {
                         Swal.fire({
-                            title: `Modificar Perfil`,
+                            title: `Ajustar Balanço`,
                             html: `
                                 <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
@@ -1001,7 +1028,7 @@
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
                                 <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
                             `,
-                            confirmButtonText: 'Gravar (DB)',
+                            confirmButtonText: 'Forçar Atualização (BD)',
                             confirmButtonColor: '#6366f1',
                             showCancelButton: true,
                             cancelButtonText: 'Cancelar'
@@ -1026,7 +1053,7 @@
                 },
 
                 /* =========================================
-                   FINANCEIRO E SAQUES
+                   SAQUES E FINANCEIRO
                    ========================================= */
                 Financeiro: {
                     load: async () => {
@@ -1053,7 +1080,7 @@
                                 if (s.status === 'pendente') {
                                     acoes = `
                                         <button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-check"></i> Aprovar</button>
-                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Estornar</button>
+                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Recusar</button>
                                     `;
                                 }
 
@@ -1086,7 +1113,7 @@
                     reject: (id_saque, id_user, valor) => {
                         Swal.fire({
                             title: 'Bloquear e Estornar?',
-                            text: `Isso marcará o pedido como recusado e devolverá ${UI.formatMoney(valor)} para o perfil do usuário.`,
+                            text: `Isso marcará como recusado e devolverá ${UI.formatMoney(valor)} para a conta do usuário no site.`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
@@ -1098,7 +1125,7 @@
                                     // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
                                     
-                                    // 2. Traz saldo da conta
+                                    // 2. Traz saldo
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
                                     
                                     // 3. Devolve saldo
@@ -1122,7 +1149,7 @@
                         try {
                             const tbody = document.getElementById('table-logs');
                             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
-                            UI.log("Lendo logs antifraude...");
+                            UI.log("Lendo logs antifraude da rede...");
                             
                             const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(150);
                             
@@ -1140,7 +1167,7 @@
                                         <td class="font-bold text-white text-xs">${log.email || 'Desconhecido'}</td>
                                         <td class="text-red-400 font-mono text-xs">${log.ip_address || '-'}</td>
                                         <td class="text-zinc-400 text-xs">${log.localidade || 'Sincronizado'}</td>
-                                        <td class="text-zinc-500 text-[10px] truncate max-w-xs">${log.dispositivo || '-'}</td>
+                                        <td class="text-zinc-500 text-[10px] truncate max-w-xs" title="${log.dispositivo}">${log.dispositivo || '-'}</td>
                                     </tr>
                                 `;
                             });
@@ -1201,7 +1228,7 @@
                             
                             if (error) throw error;
                             if(!data || data.length === 0) {
-                                container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500">O banco de dados de vídeos está vazio. Clique em Adicionar Mídia.</div>`;
+                                container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500 font-bold">O banco de dados de vídeos está vazio. Clique em Adicionar Mídia.</div>`;
                                 return;
                             }
 
@@ -1240,7 +1267,8 @@
                             `,
                             confirmButtonText: 'Salvar Mídia no BD',
                             confirmButtonColor: '#10b981',
-                            showCancelButton: true
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
                                 const titulo = document.getElementById('vid-titulo').value;
@@ -1343,6 +1371,124 @@
                             Swal.fire('Erro', e.message, 'error');
                         }
                     }
+                },
+
+                /* =========================================
+                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (IA)
+                   ========================================= */
+                IA: {
+                    load: () => {
+                        // Apenas foca no input quando a aba abre
+                        setTimeout(() => {
+                            const input = document.getElementById('ai-input');
+                            if(input) input.focus();
+                        }, 500);
+                    },
+                    sendMessage: () => {
+                        const input = document.getElementById('ai-input');
+                        const text = input.value.trim();
+                        if(!text) return;
+                        
+                        const chatBox = document.getElementById('ai-chat-box');
+                        
+                        // Adiciona a mensagem do Admin
+                        chatBox.innerHTML += `
+                            <div class="flex gap-4 justify-end mb-4">
+                                <div class="bg-indigo-600 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-lg">
+                                    <p class="text-sm text-white">${text}</p>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-user"></i></div>
+                            </div>
+                        `;
+                        input.value = '';
+                        chatBox.scrollTop = chatBox.scrollHeight;
+
+                        // Adiciona loader da IA
+                        const loaderId = 'ai-loader-' + Date.now();
+                        chatBox.innerHTML += `
+                            <div id="${loaderId}" class="flex gap-4 mb-4">
+                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                                <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg flex items-center gap-2">
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                </div>
+                            </div>
+                        `;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+
+                        // Simula processamento NLP e processa a ação
+                        setTimeout(() => {
+                            document.getElementById(loaderId).remove();
+                            App.Controllers.IA.processResponse(text);
+                        }, 1200);
+                    },
+                    processResponse: async (text) => {
+                        const lowerText = text.toLowerCase();
+                        let response = "Desculpe, não identifiquei um comando exato. Tente usar palavras como **'adicionar filme'**, **'ver saques'**, **'monitorar fraudes'** ou **'injetar bônus'**.";
+                        let actionToExecute = null;
+
+                        // NLP Condicional (Engine Interna)
+                        if (lowerText.includes('filme') || lowerText.includes('catálogo') || lowerText.includes('midia') || lowerText.includes('mídia')) {
+                            if(lowerText.includes('adicionar') || lowerText.includes('injetar') || lowerText.includes('colocar')) {
+                                response = "Comando recebido. Estou abrindo o módulo de injeção do Catálogo no Supabase para você...";
+                                actionToExecute = () => { UI.changeTab('catalogo'); setTimeout(() => App.Controllers.Catalogo.add(), 600); };
+                            } else {
+                                response = "Você quer gerenciar o catálogo? Vou abrir a interface visual do Banco de Dados de vídeos.";
+                                actionToExecute = () => { UI.changeTab('catalogo'); };
+                            }
+                        } 
+                        else if (lowerText.includes('saque') || lowerText.includes('pix') || lowerText.includes('dinheiro') || lowerText.includes('pagamento')) {
+                            response = "Buscando o status financeiro na tabela `solicitacoes_saque`...";
+                            actionToExecute = async () => {
+                                const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', 'pendente');
+                                if(!error && data) {
+                                    App.Controllers.IA.appendAI(`Mestre, encontrei **${data.length} saques pendentes** na fila. Vou redirecioná-lo para o Terminal Financeiro para que você possa aprovar ou estornar.`);
+                                    setTimeout(() => { UI.changeTab('financeiro'); }, 3000);
+                                } else {
+                                    App.Controllers.IA.appendAI(`Ocorreu um erro ao checar o financeiro ou a fila está vazia.`);
+                                }
+                            };
+                        }
+                        else if (lowerText.includes('fraude') || lowerText.includes('hack') || lowerText.includes('monitorar') || lowerText.includes('segurança')) {
+                            response = "Iniciando varredura no Shield (tabela `antifraud_logs`) em busca de anomalias, VPNs ou bots de Auto-Clicker...";
+                            actionToExecute = async () => {
+                                const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(50);
+                                if(!error && data) {
+                                    App.Controllers.IA.appendAI(`Escaneamento concluído. Capturei as últimas ${data.length} atividades de rede. Vou abrir o painel de Auditoria de Segurança para você analisar as localidades e IPs.`);
+                                    setTimeout(() => { UI.changeTab('seguranca'); }, 3000);
+                                }
+                            };
+                        }
+                        else if (lowerText.includes('bônus') || lowerText.includes('campanha') || lowerText.includes('injetar saldo') || lowerText.includes('saldo')) {
+                            response = "Preparando a Engine de Injeção em Massa. Por favor, acesse o painel de Campanhas e defina o valor que deseja enviar para toda a base.";
+                            actionToExecute = () => { UI.changeTab('campanhas'); };
+                        }
+                        else if (lowerText.includes('usuário') || lowerText.includes('remover') || lowerText.includes('banir') || lowerText.includes('editar conta')) {
+                            response = "Entendido. Abrindo o Gestor de Contas. Use a barra de pesquisa lá para localizar a conta que deseja penalizar ou bonificar.";
+                            actionToExecute = () => { UI.changeTab('usuarios'); };
+                        }
+
+                        // Imprime resposta da IA
+                        App.Controllers.IA.appendAI(response);
+                        
+                        // Executa a ação atrelada ao comando
+                        if(actionToExecute) {
+                            setTimeout(actionToExecute, 800);
+                        }
+                    },
+                    appendAI: (msg) => {
+                        const chatBox = document.getElementById('ai-chat-box');
+                        chatBox.innerHTML += `
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
+                                <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
+                                    <p class="text-sm text-zinc-200 leading-relaxed">${msg}</p>
+                                </div>
+                            </div>
+                        `;
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
                 }
             }
         };
@@ -1358,7 +1504,7 @@
                 if(error) {
                     indicator.innerText = "FALHA BANCO DE DADOS (RLS)";
                     indicator.classList.replace('text-emerald-500', 'text-red-500');
-                    dot.classList.replace('bg-emerald-500', 'bg-red-500');
+                    if(dot) dot.classList.replace('bg-emerald-500', 'bg-red-500');
                     UI.log(`Erro Crítico na Conexão Supabase: ${error.message}`);
                 } else {
                     UI.log("Conectado ao Supabase (Auth/RLS OK).");
@@ -1366,7 +1512,7 @@
             } catch (e) {
                 indicator.innerText = "OFFLINE";
                 indicator.classList.replace('text-emerald-500', 'text-red-500');
-                dot.classList.replace('bg-emerald-500', 'bg-red-500');
+                if(dot) dot.classList.replace('bg-emerald-500', 'bg-red-500');
             }
 
             // Inicia na aba Dashboard executando as queries corretas
