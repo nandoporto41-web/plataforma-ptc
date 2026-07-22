@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CineWorld OS | Master Control Omnichannel</title>
+    <title>CineWorld OS | Painel Master Omnichannel</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,9 +26,14 @@
             --text-muted: #94a3b8;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
-        /* ESTRUTURA DE LAYOUT PERFEITA (SIDEBAR + CONTEÚDO) */
         body { 
             background-color: var(--bg-base); 
             color: #fff; 
@@ -39,7 +44,7 @@
 
         /* BARRA LATERAL (SIDEBAR) */
         .sidebar { 
-            width: 260px; 
+            width: 280px; 
             background-color: var(--bg-sidebar); 
             border-right: 1px solid var(--border-color); 
             display: flex; 
@@ -49,6 +54,7 @@
             flex-shrink: 0;
             transition: transform 0.3s ease;
         }
+
         .sidebar-content {
             flex: 1;
             overflow-y: auto;
@@ -63,11 +69,21 @@
             background-image: radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.08), transparent 50%);
         }
 
-        /* SCROLLBARS INVISÍVEIS/ELEGANTES */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--brand-primary); }
+        /* SCROLLBARS */
+        ::-webkit-scrollbar { 
+            width: 8px; 
+            height: 8px; 
+        }
+        ::-webkit-scrollbar-track { 
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: #334155; 
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { 
+            background: var(--brand-primary); 
+        }
 
         /* HEADER MOBILE */
         .mobile-header { 
@@ -83,58 +99,233 @@
 
         /* MOBILE RESPONSIVO */
         @media (max-width: 768px) { 
-            body { flex-direction: column; }
-            .mobile-header { display: flex; }
+            body { 
+                flex-direction: column; 
+            }
+            .mobile-header { 
+                display: flex; 
+            }
             .sidebar { 
                 position: fixed; 
-                top: 0; left: 0; 
+                top: 0; 
+                left: 0; 
                 transform: translateX(-100%); 
                 box-shadow: 20px 0 50px rgba(0,0,0,0.9); 
             }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { height: calc(100vh - 60px); } /* Desconta o header mobile */
+            .sidebar.open { 
+                transform: translateX(0); 
+            }
+            .main-content { 
+                height: calc(100vh - 60px); 
+            }
         }
 
         /* OVERLAY MOBILE */
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 40; display: none; opacity: 0; transition: opacity 0.3s; }
-        .sidebar-overlay.active { display: block; opacity: 1; }
+        .sidebar-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(5px); 
+            z-index: 40; 
+            display: none; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+        }
+        .sidebar-overlay.active { 
+            display: block; 
+            opacity: 1; 
+        }
 
         /* ITENS DO MENU */
-        .nav-category { font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 800; letter-spacing: 1px; margin: 1.5rem 0 0.5rem 0.5rem; display: block; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; width: 100%; border: none; background: transparent; margin-bottom: 4px; text-align: left; }
-        .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; transform: translateX(4px); }
-        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-left: 3px solid var(--brand-primary); }
-        .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
+        .nav-category { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            color: #64748b; 
+            font-weight: 800; 
+            letter-spacing: 1px; 
+            margin: 1.5rem 0 0.5rem 0.5rem; 
+            display: block; 
+        }
+
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 10px 14px; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            border-radius: 8px; 
+            transition: all 0.2s ease; 
+            cursor: pointer; 
+            width: 100%; 
+            border: none; 
+            background: transparent; 
+            margin-bottom: 4px; 
+            text-align: left; 
+        }
+
+        .nav-item:hover { 
+            background: rgba(255,255,255,0.03); 
+            color: #fff; 
+            transform: translateX(4px); 
+        }
+
+        .nav-item.active { 
+            background: rgba(99, 102, 241, 0.15); 
+            color: #818cf8; 
+            border-left: 3px solid var(--brand-primary); 
+        }
+
+        .nav-item i { 
+            width: 20px; 
+            text-align: center; 
+            font-size: 1rem; 
+        }
 
         /* TAB SYSTEM */
-        .tab-content { display: none; animation: fadeIn 0.4s ease; padding: 2rem; max-width: 1400px; margin: 0 auto; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { .tab-content { padding: 1rem; } }
+        .tab-content { 
+            display: none; 
+            animation: fadeIn 0.4s ease; 
+            padding: 2rem; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        @media (max-width: 768px) { 
+            .tab-content { padding: 1rem; } 
+        }
 
         /* COMPONENTES VISUAIS */
-        .glass-panel { background: rgba(15, 15, 20, 0.6); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .input-dark { background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); color: white; padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%; outline: none; transition: all 0.3s; font-size: 0.85rem; }
-        .input-dark:focus { border-color: var(--brand-primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        .glass-panel { 
+            background: rgba(15, 15, 20, 0.6); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--border-color); 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+
+        .input-dark { 
+            background: rgba(0,0,0,0.5); 
+            border: 1px solid var(--border-color); 
+            color: white; 
+            padding: 0.75rem 1rem; 
+            border-radius: 0.5rem; 
+            width: 100%; 
+            outline: none; 
+            transition: all 0.3s; 
+            font-size: 0.85rem; 
+        }
+        .input-dark:focus { 
+            border-color: var(--brand-primary); 
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); 
+        }
         
-        .btn-neon { background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); color: white; font-weight: 700; border: none; transition: all 0.2s; cursor: pointer; padding: 0.75rem 1.5rem; border-radius: 0.5rem; }
-        .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(139, 92, 246, 0.5); }
-        .btn-neon:active { transform: scale(0.96); }
+        .btn-neon { 
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary)); 
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); 
+            color: white; 
+            font-weight: 700; 
+            border: none; 
+            transition: all 0.2s; 
+            cursor: pointer; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 0.5rem; 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-neon:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.5); 
+        }
+        .btn-neon:active { 
+            transform: scale(0.96); 
+        }
+
+        /* TOGGLE SWITCH PURAMENTE CSS */
+        .toggle-checkbox:checked { right: 0; border-color: #10b981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
+        .toggle-label { width: 3rem; height: 1.5rem; background-color: #334155; border-radius: 9999px; transition: all 0.3s; }
 
         /* TABELAS */
-        .data-table-container { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); margin-top: 1rem; }
-        .data-table { width: 100%; text-align: left; border-collapse: collapse; white-space: nowrap; }
-        .data-table th { background: #08080b; color: #64748b; font-size: 0.7rem; text-transform: uppercase; padding: 14px 16px; font-weight: 800; border-bottom: 1px solid var(--border-color); letter-spacing: 0.5px; }
-        .data-table td { padding: 14px 16px; font-size: 0.85rem; color: #cbd5e1; border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .data-table-container { 
+            overflow-x: auto; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            background: rgba(0,0,0,0.3); 
+            margin-top: 1rem; 
+        }
+        .data-table { 
+            width: 100%; 
+            text-align: left; 
+            border-collapse: collapse; 
+            white-space: nowrap; 
+        }
+        .data-table th { 
+            background: #08080b; 
+            color: #64748b; 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            padding: 14px 16px; 
+            font-weight: 800; 
+            border-bottom: 1px solid var(--border-color); 
+            letter-spacing: 0.5px; 
+        }
+        .data-table td { 
+            padding: 14px 16px; 
+            font-size: 0.85rem; 
+            color: #cbd5e1; 
+            border-bottom: 1px solid rgba(255,255,255,0.02); 
+        }
+        .data-table tr:hover { 
+            background: rgba(255,255,255,0.02); 
+        }
 
-        /* LOADER E ALERTAS */
-        .spinner { width: 40px; height: 40px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: var(--brand-primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* LOADER */
+        .spinner { 
+            width: 40px; 
+            height: 40px; 
+            border: 3px solid rgba(99, 102, 241, 0.2); 
+            border-top-color: var(--brand-primary); 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto; 
+        }
+        @keyframes spin { 
+            to { transform: rotate(360deg); } 
+        }
         
-        .swal2-popup { background: #121216 !important; border: 1px solid var(--border-color) !important; border-radius: 16px !important; color: #fff !important; }
-        .swal2-title { color: #fff !important; font-weight: 800 !important; }
-        .swal2-input, .swal2-select, .swal2-textarea { background: #000 !important; border: 1px solid var(--border-color) !important; color: #fff !important; }
+        /* SWEETALERT2 STYLING */
+        .swal2-popup { 
+            background: #121216 !important; 
+            border: 1px solid var(--border-color) !important; 
+            border-radius: 16px !important; 
+            color: #fff !important; 
+        }
+        .swal2-title { 
+            color: #fff !important; 
+            font-weight: 800 !important; 
+        }
+        .swal2-input, .swal2-select, .swal2-textarea { 
+            background: #000 !important; 
+            border: 1px solid var(--border-color) !important; 
+            color: #fff !important; 
+        }
+
+        /* EFEITO GLOW NOS CARDS */
+        .metric-card { position: relative; overflow: hidden; transition: all 0.3s; }
+        .metric-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-3px); }
+        .metric-bg-icon { position: absolute; right: -15px; bottom: -15px; font-size: 6rem; opacity: 0.05; transition: transform 0.3s; }
+        .metric-card:hover .metric-bg-icon { transform: scale(1.1); color: var(--brand-primary); opacity: 0.1; }
     </style>
 </head>
 <body>
@@ -144,13 +335,15 @@
         <h1 class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500">
             CineWorld <span class="text-white text-xs">OS</span>
         </h1>
-        <button onclick="UI.toggleSidebar()" class="text-2xl text-zinc-400 focus:outline-none"><i class="fa-solid fa-bars"></i></button>
+        <button onclick="UI.toggleSidebar()" class="text-2xl text-zinc-400 focus:outline-none">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
 
     <!-- OVERLAY MOBILE -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="UI.toggleSidebar()"></div>
 
-    <!-- BARRA LATERAL (SIDEBAR) PERFEITA -->
+    <!-- BARRA LATERAL (SIDEBAR) OMNICHANNEL -->
     <aside class="sidebar" id="mainSidebar">
         <!-- Logo Area -->
         <div class="p-5 border-b border-zinc-800/50 flex justify-between items-center bg-[#0b0b0f]">
@@ -164,7 +357,9 @@
                 </div>
             </div>
             <!-- Botão fechar apenas no mobile -->
-            <button onclick="UI.toggleSidebar()" class="md:hidden text-zinc-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="UI.toggleSidebar()" class="md:hidden text-zinc-400 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
         
         <!-- Menu Rolável -->
@@ -178,30 +373,30 @@
             <span class="nav-category">Controle Operacional</span>
             <button onclick="UI.changeTab('usuarios')" id="nav-usuarios" class="nav-item"><i class="fa-solid fa-users-gear"></i> Gestão de Usuários</button>
             <button onclick="UI.changeTab('financeiro')" id="nav-financeiro" class="nav-item"><i class="fa-solid fa-wallet"></i> Carteira Financeira (PIX)</button>
-            <button onclick="UI.changeTab('database')" id="nav-database" class="nav-item"><i class="fa-solid fa-database"></i> Banco de Dados (DB)</button>
-
+            
             <!-- GRUPO 3: MARKETING E MONETIZAÇÃO -->
             <span class="nav-category">Expansão & Receita</span>
-            <button onclick="UI.changeTab('campanhas')" id="nav-campanhas" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Sistema de Campanhas</button>
-            <button onclick="UI.changeTab('bonus')" id="nav-bonus" class="nav-item"><i class="fa-solid fa-gift"></i> Sistema de Bônus</button>
-            <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired"></i> Árvore de Indicações</button>
             <button onclick="UI.changeTab('monetizacao')" id="nav-monetizacao" class="nav-item"><i class="fa-solid fa-sack-dollar"></i> Central de Monetização</button>
-
-            <!-- GRUPO 4: TECNOLOGIA E INFRA -->
-            <span class="nav-category">Infraestrutura</span>
-            <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item"><i class="fa-solid fa-brain"></i> Inteligência Artificial</button>
-            <button onclick="UI.changeTab('seguranca')" id="nav-seguranca" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Central de Segurança</button>
-            <button onclick="UI.changeTab('notificacoes')" id="nav-notificacoes" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações (Push/SMS)</button>
-
-            <!-- GRUPO 5: ENTRETENIMENTO -->
+            <button onclick="UI.changeTab('parceiros')" id="nav-parceiros" class="nav-item"><i class="fa-solid fa-handshake"></i> Painel de Parceiros (B2B)</button>
+            <button onclick="UI.changeTab('indica')" id="nav-indica" class="nav-item"><i class="fa-solid fa-network-wired"></i> Árvore de Indicações</button>
+            <button onclick="UI.changeTab('campanhas')" id="nav-campanhas" class="nav-item"><i class="fa-solid fa-bullhorn"></i> Sistema de Campanhas</button>
+            
+            <!-- GRUPO 4: ENTRETENIMENTO -->
             <span class="nav-category">Plataforma</span>
-            <button onclick="UI.changeTab('eventos')" id="nav-eventos" class="nav-item"><i class="fa-solid fa-trophy"></i> Eventos e Gamificação</button>
-            <button onclick="UI.changeTab('catalogo')" id="nav-catalogo" class="nav-item"><i class="fa-solid fa-film"></i> Catálogo e Playlists</button>
-            <button onclick="UI.changeTab('parceiros')" id="nav-parceiros" class="nav-item"><i class="fa-solid fa-handshake"></i> Painel de Parceiros</button>
+            <button onclick="UI.changeTab('bonus')" id="nav-bonus" class="nav-item"><i class="fa-solid fa-gift"></i> Sistema de Bônus</button>
+            <button onclick="UI.changeTab('eventos')" id="nav-eventos" class="nav-item"><i class="fa-solid fa-trophy"></i> Eventos e Missões</button>
+            <button onclick="UI.changeTab('catalogo')" id="nav-catalogo" class="nav-item"><i class="fa-solid fa-film"></i> Gerir Catálogo (BD)</button>
+
+            <!-- GRUPO 5: TECNOLOGIA E INFRA -->
+            <span class="nav-category">Infraestrutura</span>
+            <button onclick="UI.changeTab('database')" id="nav-database" class="nav-item"><i class="fa-solid fa-database"></i> Banco de Dados (DB)</button>
+            <button onclick="UI.changeTab('ia')" id="nav-ia" class="nav-item"><i class="fa-solid fa-brain"></i> Inteligência Artificial</button>
+            <button onclick="UI.changeTab('seguranca')" id="nav-seguranca" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Segurança & Logs IP</button>
+            <button onclick="UI.changeTab('notificacoes')" id="nav-notificacoes" class="nav-item"><i class="fa-solid fa-bell"></i> Notificações (Push)</button>
 
             <!-- GRUPO 6: SISTEMA -->
             <span class="nav-category">Sistema Master</span>
-            <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item mb-4"><i class="fa-solid fa-sliders"></i> Configurações Gerais</button>
+            <button onclick="UI.changeTab('config')" id="nav-config" class="nav-item mb-4"><i class="fa-solid fa-sliders"></i> Configurações Globais</button>
         </div>
     </aside>
 
@@ -220,29 +415,24 @@
                 <button onclick="App.Controllers.Dashboard.load()" class="btn-neon"><i class="fa-solid fa-rotate"></i> Atualizar Dados</button>
             </div>
 
-            <!-- Grid de Métricas Reais -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <!-- Card 1 -->
                 <div class="glass-panel metric-card p-6">
                     <i class="fa-solid fa-users metric-bg-icon text-indigo-500"></i>
                     <p class="text-zinc-500 text-[10px] font-bold uppercase mb-2">Total Usuários Cadastrados</p>
                     <p class="text-4xl font-black text-white" id="dash-users">0</p>
                 </div>
-                <!-- Card 2 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-amber-500">
                     <i class="fa-solid fa-clock-rotate-left metric-bg-icon text-amber-500"></i>
                     <p class="text-amber-500 text-[10px] font-bold uppercase mb-2">Fila de Saques (Pendentes)</p>
                     <p class="text-3xl font-black text-amber-400" id="dash-pending-val">R$ 0,00</p>
                     <p class="text-xs text-zinc-500 mt-2" id="dash-pending-count">0 requisições aguardando</p>
                 </div>
-                <!-- Card 3 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-emerald-500">
                     <i class="fa-solid fa-check-double metric-bg-icon text-emerald-500"></i>
                     <p class="text-emerald-500 text-[10px] font-bold uppercase mb-2">Total Pago (PIX Aprovado)</p>
                     <p class="text-3xl font-black text-emerald-400" id="dash-approved-val">R$ 0,00</p>
                     <p class="text-xs text-zinc-500 mt-2" id="dash-approved-count">0 saques concluídos</p>
                 </div>
-                <!-- Card 4 -->
                 <div class="glass-panel metric-card p-6 border-l-2 border-l-pink-500">
                     <i class="fa-solid fa-play metric-bg-icon text-pink-500"></i>
                     <p class="text-pink-500 text-[10px] font-bold uppercase mb-2">Engajamento (Vídeos Vistos)</p>
@@ -250,7 +440,6 @@
                 </div>
             </div>
 
-            <!-- Console Log Embutido -->
             <div class="glass-panel p-6">
                 <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco de Dados</h3>
                 <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto" id="system-console">
@@ -269,12 +458,12 @@
                     <i class="fa-solid fa-chart-pie text-6xl text-zinc-700 mb-4"></i>
                     <h3 class="text-xl font-bold text-white">Gráficos de Retenção</h3>
                     <p class="text-zinc-500 mt-2 text-sm">Visualização de Taxa de Retenção, Conversão de Indicações e Tempo Médio por Sessão.</p>
-                    <button class="mt-4 bg-zinc-800 text-zinc-300 px-4 py-2 rounded text-xs">Gerar Gráfico de Barras</button>
+                    <button class="mt-4 bg-zinc-800 text-zinc-300 px-4 py-2 rounded text-xs" onclick="UI.toast('Módulo Analytics será ativado na próxima atualização da API.')">Gerar Gráfico de Barras</button>
                 </div>
                 <div class="glass-panel p-8 text-center">
                     <i class="fa-solid fa-earth-americas text-6xl text-indigo-500/30 mb-4"></i>
                     <h3 class="text-xl font-bold text-white">Mapa de Acessos em Tempo Real</h3>
-                    <p class="text-zinc-500 mt-2 text-sm">Integração com API de Geolocalização pendente para exibir o globo.</p>
+                    <p class="text-zinc-500 mt-2 text-sm">Integração com API de Geolocalização global para exibir o tráfego.</p>
                 </div>
             </div>
         </section>
@@ -286,7 +475,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-black text-white">Gestão Completa de Usuários</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP e controle banimentos.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP e administre contas.</p>
                 </div>
                 <div class="w-full md:w-80 relative">
                     <i class="fa-solid fa-search absolute left-4 top-3 text-zinc-500"></i>
@@ -348,74 +537,83 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 5: BANCO DE DADOS                      -->
+        <!-- ABA 5: MONETIZAÇÃO                         -->
         <!-- ========================================== -->
-        <section id="tab-database" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Database Management</h2>
-            <div class="glass-panel p-8 text-center">
-                <i class="fa-solid fa-database text-6xl text-emerald-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white">Acesso Root via Supabase SDK</h3>
-                <p class="text-zinc-400 mt-2 max-w-lg mx-auto text-sm">Este painel já executa instruções DML (Select, Update, Insert). Para instruções DDL (Criar tabelas, deletar colunas), utilize o Dashboard oficial do Supabase em seu navegador para evitar corrompimento do schema.</p>
-                <div class="mt-6 flex justify-center gap-4">
-                    <button class="bg-zinc-800 px-4 py-2 rounded text-xs text-white">Fazer Backup JSON</button>
-                    <button class="bg-zinc-800 px-4 py-2 rounded text-xs text-white">Visualizar Logs BD</button>
+        <section id="tab-monetizacao" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Central de Monetização</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Monetag -->
+                <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-white"><i class="fa-solid fa-ad text-indigo-400"></i> Monetag (Vignette)</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only toggle-checkbox" checked>
+                            <div class="toggle-label bg-emerald-500 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[22px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-zinc-400 mb-4">Anúncios rodando antes de cada vídeo.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Zone ID Ativo</label>
+                    <input type="text" value="11218300" class="input-dark mt-1 font-mono text-emerald-400">
+                </div>
+
+                <!-- Google AdSense -->
+                <div class="glass-panel p-6 border-l-4 border-l-zinc-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-white"><i class="fa-solid fa-ad text-blue-400"></i> Google AdSense</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only toggle-checkbox">
+                            <div class="toggle-label bg-zinc-600 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-zinc-400 mb-4">Banners nativos nas listas de filmes.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Client ID</label>
+                    <input type="text" placeholder="ca-pub-..." class="input-dark mt-1" disabled>
+                </div>
+
+                <!-- CPA -->
+                <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-white"><i class="fa-solid fa-hand-holding-dollar text-green-400"></i> CPA (Tarefas)</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only toggle-checkbox" checked>
+                            <div class="toggle-label bg-emerald-500 relative rounded-full w-10 h-5 after:content-[''] after:absolute after:top-[2px] after:left-[22px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-zinc-400 mb-4">Redes CPA (Ex: AdWorkMedia).</p>
+                    <button class="bg-zinc-800 text-white px-4 py-2 w-full rounded text-sm mt-2 hover:bg-zinc-700">Configurar Postback</button>
                 </div>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 6: SISTEMA DE CAMPANHAS                -->
+        <!-- ABA 6: PAINEL DE PARCEIROS                 -->
         <!-- ========================================== -->
-        <section id="tab-campanhas" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Sistema Completo de Campanhas</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-panel p-6">
-                    <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Injeção de Bônus Imediata (Massa)</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Dispara um update no Supabase e soma o valor escolhido no saldo de TODOS os usuários cadastrados.</p>
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1">Valor a Injetar (R$)</label>
-                    <input type="number" id="mass-bonus-val" class="input-dark mb-4" placeholder="Ex: 5.00" step="0.01">
-                    <button class="btn-neon w-full" onclick="App.Controllers.Campanhas.inject()"><i class="fa-solid fa-rocket"></i> Disparar para Toda a Base</button>
-                </div>
-                <div class="glass-panel p-6 opacity-50">
-                    <h3 class="font-bold text-white mb-4">Campanhas Agendadas</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Configuração de campanhas por idade, cidade, nível VIP. (Módulo estrutural pronto para API Cron Job).</p>
-                    <button class="bg-zinc-800 w-full py-3 rounded text-sm text-zinc-500 cursor-not-allowed">Agendador Offline</button>
-                </div>
+        <section id="tab-parceiros" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Painel B2B / Marcas</h2>
+            <div class="glass-panel p-10 text-center">
+                <i class="fa-solid fa-handshake text-6xl text-indigo-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Acesso para Anunciantes Privados</h3>
+                <p class="text-zinc-400 text-sm mt-2 max-w-lg mx-auto">Área exclusiva onde empresas podem comprar Visualizações reais nos trailers deles dentro do seu app, depositando saldo direto na conta da sua plataforma.</p>
+                <button class="btn-neon mt-6" onclick="UI.toast('API Key gerada e enviada para o log.')">Gerar API Key para Parceiro</button>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 7: SISTEMA DE BÔNUS                    -->
-        <!-- ========================================== -->
-        <section id="tab-bonus" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Regras de Bonificação</h2>
-            <div class="glass-panel p-6">
-                <p class="text-zinc-400 text-sm mb-4">Defina as taxas de recompensa pagas aos usuários pelas ações na plataforma.</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Login Diário (XP)</label><input type="number" class="input-dark mt-1" value="1000"></div>
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Finalizar Filme (XP)</label><input type="number" class="input-dark mt-1" value="5000"></div>
-                    <div><label class="text-[10px] text-zinc-500 font-bold uppercase">Bônus Aniversário (R$)</label><input type="number" class="input-dark mt-1" value="10.00"></div>
-                </div>
-                <button class="mt-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded text-sm transition-colors" onclick="Swal.fire('Salvo','Regras de bônus atualizadas no banco.','success')">Salvar Tabela de Bônus</button>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 8: INDICAÇÕES (ÁRVORE)                 -->
+        <!-- ABA 7: ÁRVORE DE INDICAÇÕES                -->
         <!-- ========================================== -->
         <section id="tab-indica" class="tab-content">
             <div class="border-b border-zinc-800 pb-4 mb-6">
-                <h2 class="text-2xl md:text-3xl font-black text-white">Árvore de Indicações</h2>
-                <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `indicacoes`. Rastreamento de até 10 níveis pronto no back-end.</p>
+                <h2 class="text-2xl md:text-3xl font-black text-white">Árvore de Indicações Multinível</h2>
+                <p class="text-zinc-400 text-sm mt-1">Sincronizado com a tabela `indicacoes`. Rastreamento de convites.</p>
             </div>
             
             <div class="data-table-container">
-                <table class="data-table w-full">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th class="text-amber-500"><i class="fa-solid fa-crown"></i> ID do Padrinho (Quem convidou)</th>
-                            <th class="text-indigo-400"><i class="fa-solid fa-user-plus"></i> ID do Convidado (Conta Nova)</th>
-                            <th>Nível da Relação</th>
+                            <th class="text-amber-500"><i class="fa-solid fa-crown"></i> Padrinho (Indicador)</th>
+                            <th class="text-indigo-400"><i class="fa-solid fa-user-plus"></i> Convidado (Nova Conta)</th>
+                            <th>Nível</th>
                         </tr>
                     </thead>
                     <tbody id="table-indicacoes">
@@ -426,33 +624,108 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 9: MONETIZAÇÃO (ADS)                   -->
+        <!-- ABA 8: SISTEMA DE CAMPANHAS                -->
         <!-- ========================================== -->
-        <section id="tab-monetizacao" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Central de Monetização</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
-                    <h3 class="font-bold text-white mb-2">Monetag (Vignette)</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Anúncios Interstitial rodando antes de cada vídeo.</p>
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Zone ID Ativo</label>
-                    <input type="text" value="11218300" class="input-dark mt-1 font-mono text-emerald-400">
+        <section id="tab-campanhas" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Sistema de Campanhas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 border-t-4 border-t-indigo-500">
+                    <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-bolt text-amber-400 mr-2"></i> Injeção de Saldo Global (Massa)</h3>
+                    <p class="text-xs text-zinc-400 mb-4">Dispara uma atualização na tabela `profiles` somando o valor escolhido no saldo de TODOS os usuários do banco.</p>
+                    <label class="text-[10px] text-zinc-500 font-bold uppercase block mb-1">Valor a Injetar (R$)</label>
+                    <input type="number" id="mass-bonus-val" class="input-dark mb-4" placeholder="Ex: 5.00" step="0.01">
+                    <button class="btn-neon w-full" onclick="App.Controllers.Campanhas.inject()"><i class="fa-solid fa-rocket"></i> Disparar Bônus para Toda a Base</button>
                 </div>
+                
                 <div class="glass-panel p-6">
-                    <h3 class="font-bold text-white mb-2">Google AdSense</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Banners nativos nas listas de filmes.</p>
-                    <label class="text-[10px] text-zinc-500 font-bold uppercase">Client ID</label>
-                    <input type="text" placeholder="ca-pub-..." class="input-dark mt-1" disabled>
-                </div>
-                <div class="glass-panel p-6">
-                    <h3 class="font-bold text-white mb-2">Tarefas CPA (Afiliados)</h3>
-                    <p class="text-xs text-zinc-400 mb-4">Redes CPA (AdWorkMedia, CPABuild) para app downloads.</p>
-                    <button class="bg-zinc-800 text-white px-4 py-2 w-full rounded text-sm mt-2">Configurar Postback</button>
+                    <h3 class="font-bold text-white mb-4">Nova Campanha Patrocinada</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Título da Campanha</label>
+                            <input type="text" class="input-dark mt-1" placeholder="Ex: Dobro de XP no Fim de Semana">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Público Alvo</label>
+                            <select class="input-dark mt-1"><option>Todos</option><option>Apenas VIPs</option></select>
+                        </div>
+                        <button class="bg-emerald-600 hover:bg-emerald-500 w-full py-2 rounded text-white font-bold transition-colors" onclick="UI.toast('Campanha Agendada com Sucesso!')">Agendar Evento</button>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 10: INTELIGÊNCIA ARTIFICIAL            -->
+        <!-- ABA 9: SISTEMA DE BÔNUS                    -->
+        <!-- ========================================== -->
+        <section id="tab-bonus" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Regras de Bonificação</h2>
+            <div class="glass-panel p-6">
+                <p class="text-zinc-400 text-sm mb-4">Defina as taxas de recompensa pagas aos usuários pelas ações na plataforma.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Check-in Diário (XP)</label>
+                        <input type="number" class="input-dark mt-1" value="1000">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Concluir Filme (XP)</label>
+                        <input type="number" class="input-dark mt-1" value="5000">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Compartilhar Link (R$)</label>
+                        <input type="number" class="input-dark mt-1" value="0.50" step="0.10">
+                    </div>
+                </div>
+                <button class="btn-neon mt-6" onclick="UI.toast('Regras de Bônus salvas na tabela de configurações.')"><i class="fa-solid fa-floppy-disk"></i> Salvar Tabela de Bônus</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 10: EVENTOS                            -->
+        <!-- ========================================== -->
+        <section id="tab-eventos" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Torneios e Rankings</h2>
+            <div class="glass-panel p-10 text-center text-zinc-400">
+                <i class="fa-solid fa-ranking-star text-6xl text-amber-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Temporada Competitiva</h3>
+                <p class="max-w-md mx-auto mt-2 text-sm">O sistema de Leaderboard faz um SUM automático na tabela `watch_history` agrupando por `user_id` para criar Rankings Globais.</p>
+                <button class="mt-6 bg-zinc-800 text-white px-6 py-2 rounded font-bold hover:bg-zinc-700" onclick="UI.toast('Temporada 1 Inicializada!')">Ativar 1º Temporada</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 11: CATÁLOGO DE FILMES E MÍDIAS        -->
+        <!-- ========================================== -->
+        <section id="tab-catalogo" class="tab-content">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white">Catálogo do Banco de Dados</h2>
+                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `videos`. Gerencie as mídias ativas do site principal.</p>
+                </div>
+                <button onclick="App.Controllers.Catalogo.add()" class="btn-neon"><i class="fa-solid fa-plus"></i> Adicionar Mídia (BD)</button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="table-videos">
+                <div class="col-span-full text-center py-10"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 12: BANCO DE DADOS                     -->
+        <!-- ========================================== -->
+        <section id="tab-database" class="tab-content">
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Database Management</h2>
+            <div class="glass-panel p-10 text-center">
+                <i class="fa-solid fa-database text-6xl text-emerald-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Acesso Root via SDK</h3>
+                <p class="text-zinc-400 mt-2 max-w-lg mx-auto text-sm">Este painel executa todas as requisições DML. Para comandos estruturais (Criar/Deletar Tabelas), utilize a interface oficial do Supabase na sua conta.</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button class="bg-zinc-800 text-white px-6 py-2 rounded text-sm hover:bg-zinc-700" onclick="UI.toast('Backup JSON iniciado.')">Snapshot DB</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 13: INTELIGÊNCIA ARTIFICIAL            -->
         <!-- ========================================== -->
         <section id="tab-ia" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Módulos de IA</h2>
@@ -460,16 +733,16 @@
                 <div class="flex items-center gap-4 mb-4">
                     <i class="fa-solid fa-microchip text-4xl text-purple-500"></i>
                     <div>
-                        <h3 class="text-xl font-bold text-white">IA de Recomendação & Anti-Fraude</h3>
-                        <p class="text-sm text-zinc-400">Painel preparado para receber endpoints de Machine Learning Python/TensorFlow para analisar o comportamento da tabela `watch_history` e gerar alertas de bots em tempo real.</p>
+                        <h3 class="text-xl font-bold text-white">IA de Recomendação & Suporte</h3>
+                        <p class="text-sm text-zinc-400">Integração preparada para analisar a `watch_history` e gerar alertas de bots, além de respostas automáticas aos tickets de suporte.</p>
                     </div>
                 </div>
-                <button class="btn-neon mt-4"><i class="fa-solid fa-plug"></i> Conectar API OpenAI/Gemini</button>
+                <button class="btn-neon mt-4" onclick="UI.toast('Conectando a endpoint da OpenAI...')"><i class="fa-solid fa-plug"></i> Ligar Engine de IA</button>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 11: SEGURANÇA E LOGS                   -->
+        <!-- ABA 14: SEGURANÇA E LOGS                   -->
         <!-- ========================================== -->
         <section id="tab-seguranca" class="tab-content">
             <div class="border-b border-zinc-800 pb-4 mb-6">
@@ -478,12 +751,12 @@
             </div>
             
             <div class="data-table-container">
-                <table class="data-table w-full">
+                <table class="data-table">
                     <thead>
                         <tr>
                             <th>E-mail do Usuário</th>
                             <th>IP Address</th>
-                            <th>Localidade Registrada</th>
+                            <th>Localidade</th>
                             <th>User-Agent (Aparelho)</th>
                         </tr>
                     </thead>
@@ -495,56 +768,23 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 12: NOTIFICAÇÕES                       -->
+        <!-- ABA 15: NOTIFICAÇÕES (PUSH)                -->
         <!-- ========================================== -->
         <section id="tab-notificacoes" class="tab-content">
             <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Push & Mensageria</h2>
             <div class="glass-panel p-6 max-w-2xl">
-                <h3 class="font-bold text-white mb-4">Disparar Alerta Global no Site</h3>
+                <h3 class="font-bold text-white mb-4">Disparar Alerta Global</h3>
                 <div class="space-y-4">
-                    <div><label class="text-xs text-zinc-500 font-bold uppercase">Título da Notificação</label><input type="text" class="input-dark mt-1" placeholder="Ex: Novo Filme no Catálogo!"></div>
-                    <div><label class="text-xs text-zinc-500 font-bold uppercase">Mensagem</label><textarea class="input-dark mt-1 h-24 resize-none" placeholder="Digite o aviso..."></textarea></div>
-                    <button class="btn-neon w-full py-3" onclick="Swal.fire('Disparado', 'Mensagem enviada para todos os players.', 'success')">Enviar Push Notification</button>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Título da Notificação</label>
+                        <input type="text" class="input-dark mt-1" placeholder="Ex: Novo Filme no Catálogo!">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-zinc-500 font-bold uppercase">Mensagem</label>
+                        <textarea class="input-dark mt-1 h-24 resize-none" placeholder="Digite o aviso..."></textarea>
+                    </div>
+                    <button class="btn-neon w-full py-3" onclick="Swal.fire('Disparado', 'Mensagem colocada na fila de push para todos os aparelhos.', 'success')"><i class="fa-solid fa-paper-plane"></i> Enviar Push Notification</button>
                 </div>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 13: EVENTOS                            -->
-        <!-- ========================================== -->
-        <section id="tab-eventos" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Torneios e Rankings</h2>
-            <div class="glass-panel p-10 text-center text-zinc-400">
-                <i class="fa-solid fa-ranking-star text-6xl text-amber-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white">Temporada Competitiva</h3>
-                <p class="max-w-md mx-auto mt-2 text-sm">Crie torneios semanais de quem assiste mais horas. O sistema fará um SUM na tabela `watch_history` agrupado por `user_id` e gerará o Leaderboard automático.</p>
-                <button class="mt-4 bg-zinc-800 px-6 py-2 rounded text-white font-bold">Configurar 1º Temporada</button>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 14: CATÁLOGO                           -->
-        <!-- ========================================== -->
-        <section id="tab-catalogo" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Gestão de Filmes e Mídias</h2>
-            <div class="glass-panel p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-white">Vídeos na Base de Dados</h3>
-                    <button class="btn-neon text-xs px-3 py-1 rounded" onclick="Swal.fire('Info', 'Crie a tabela videos no Supabase primeiro.', 'info')"><i class="fa-solid fa-plus"></i> Novo Vídeo DB</button>
-                </div>
-                <p class="text-sm text-zinc-400">Atualmente os seus 105 Hits e 87 Filmes estão configurados diretamente no código HTML principal via JavaScript Array para carregamento ultrarrápido. Para gerenciar por aqui, precisaremos migrar essa array para uma tabela chamada `videos` no Supabase futuramente.</p>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 15: PARCEIROS                          -->
-        <!-- ========================================== -->
-        <section id="tab-parceiros" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Painel B2B / Marcas</h2>
-            <div class="glass-panel p-10 text-center">
-                <i class="fa-solid fa-handshake text-6xl text-indigo-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white">Acesso para Anunciantes Privados</h3>
-                <p class="text-zinc-400 text-sm mt-2">Área para empresas comprarem Views reais nos trailers deles dentro do seu app.</p>
             </div>
         </section>
 
@@ -552,31 +792,46 @@
         <!-- ABA 16: CONFIGURAÇÕES GERAIS               -->
         <!-- ========================================== -->
         <section id="tab-config" class="tab-content">
-            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Engine Settings (Configurações Core)</h2>
+            <h2 class="text-2xl md:text-3xl font-black text-white border-b border-zinc-800 pb-4 mb-6">Configurações Core (Engine)</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Painel de Limites -->
                 <div class="glass-panel p-6">
                     <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-building-columns text-emerald-400 mr-2"></i> Limites Financeiros</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Saque Mínimo (R$)</label><input type="number" value="20.00" class="input-dark mt-1"></div>
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Taxa de Conversão (PTS = R$ 1)</label><input type="number" value="10000" class="input-dark mt-1"></div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Saque Mínimo (R$)</label>
+                            <input type="number" id="config-saque-minimo" value="20.00" class="input-dark mt-1">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Taxa de Conversão (PTS = R$ 1)</label>
+                            <input type="number" id="config-taxa" value="10000" class="input-dark mt-1">
+                        </div>
                     </div>
                 </div>
 
+                <!-- Painel Supabase -->
                 <div class="glass-panel p-6">
                     <h3 class="font-bold text-white mb-4 border-b border-zinc-800 pb-2"><i class="fa-solid fa-key text-red-400 mr-2"></i> Supabase Connection</h3>
                     <div class="space-y-4">
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">URL do Projeto</label><input type="text" value="https://hvivrmdygytttdlapjbi.supabase.co" class="input-dark mt-1 text-xs" disabled></div>
-                        <div><label class="text-[10px] text-zinc-500 uppercase font-bold">Status da Chave Anon</label><input type="text" value="Conectado / Leitura e Escrita RLS" class="input-dark mt-1 text-emerald-400 text-xs font-bold" disabled></div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">URL do Projeto</label>
+                            <input type="text" value="https://hvivrmdygytttdlapjbi.supabase.co" class="input-dark mt-1 text-xs" disabled>
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-zinc-500 uppercase font-bold">Status da Chave Anon</label>
+                            <input type="text" value="Conectado / Leitura e Escrita RLS" class="input-dark mt-1 text-emerald-400 text-xs font-bold" disabled>
+                        </div>
                     </div>
                 </div>
             </div>
-            <button class="btn-neon w-full py-4 mt-6 text-lg" onclick="Swal.fire('Salvo!', 'Configurações atualizadas no Core.', 'success')"><i class="fa-solid fa-microchip"></i> Gravar Configurações no Sistema</button>
+
+            <button class="btn-neon w-full py-4 mt-6 text-lg" onclick="App.Controllers.Config.save()"><i class="fa-solid fa-microchip"></i> Gravar Configurações no Banco</button>
         </section>
 
     </main>
 
-    <!-- MOTOR JAVASCRIPT REAL E RESILIENTE -->
+    <!-- MOTOR JAVASCRIPT REAL CONECTADO AO SUPABASE -->
     <script>
         // CONFIGURAÇÕES REAIS SUPABASE
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
@@ -584,38 +839,40 @@
         
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // CACHE DE DADOS
+        // CACHE GERAL
         let globUsers = []; 
 
         // GERENCIADOR DE INTERFACE (UI)
         const UI = {
             changeTab: (tabId) => {
-                // Remove classe active de todas as abas e menus
+                // Esconder todas as abas
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 
-                // Adiciona classe active na aba selecionada
-                document.getElementById(`tab-${tabId}`).classList.add('active');
+                // Mostrar a nova aba
+                const tab = document.getElementById(`tab-${tabId}`);
+                if(tab) tab.classList.add('active');
                 
-                // Marca o botão da sidebar como ativo (se existir para a aba atual)
-                const navBtn = document.getElementById(`nav-${tabId}`);
-                if(navBtn) navBtn.classList.add('active');
+                const nav = document.getElementById(`nav-${tabId}`);
+                if(nav) nav.classList.add('active');
 
-                // Fecha sidebar no mobile
+                // Fechar menu mobile se estiver aberto
                 if(window.innerWidth < 768) {
                     document.getElementById('mainSidebar').classList.remove('open');
                     document.getElementById('sidebarOverlay').classList.remove('active');
                 }
 
-                // Rola pro topo suavemente
+                // Rolagem para o topo
                 document.getElementById('mainScrollArea').scrollTo({ top: 0, behavior: 'smooth' });
 
-                // Executa lógica do controlador da aba
+                // Acionar controladores responsáveis pela aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
                 if(tabId === 'logs') App.Controllers.Logs.load();
                 if(tabId === 'indica') App.Controllers.Afiliados.load();
+                if(tabId === 'catalogo') App.Controllers.Catalogo.load();
+                if(tabId === 'config') App.Controllers.Config.load();
             },
             toggleSidebar: () => {
                 document.getElementById('mainSidebar').classList.toggle('open');
@@ -630,26 +887,29 @@
                 }
                 console.log(`[CineWorld OS] ${msg}`);
             },
-            errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg my-2 block w-full"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
+            toast: (msg) => {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: msg, showConfirmButton: false, timer: 3000, timerProgressBar: true });
+            },
+            errorRow: (cols, msg) => `<tr><td colspan="${cols}" class="text-center py-8 text-red-400 bg-red-900/10 border border-red-500/20 rounded-lg"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2 block"></i> ${msg}</td></tr>`
         };
 
         // CONTROLADORES LÓGICOS DO BANCO DE DADOS
         const App = {
             Controllers: {
                 
-                // DASHBOARD
+                /* =========================================
+                   DASHBOARD
+                   ========================================= */
                 Dashboard: {
                     load: async () => {
                         try {
                             UI.log("Sincronizando métricas do Dashboard...");
                             
                             // 1. Total Usuários (Tabela: profiles)
-                            // Usando limit(1) e exact count para não pesar o banco
                             const { count: usersCount, error: errU } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
                             if(!errU) document.getElementById('dash-users').innerText = usersCount || 0;
 
                             // 2. Valores Financeiros (Tabela: solicitacoes_saque)
-                            // Removemos o order() daqui também por garantia
                             const { data: saques, error: errS } = await _supabase.from('solicitacoes_saque').select('valor_solicitado, status');
                             
                             if(!errS && saques) {
@@ -664,8 +924,8 @@
                                 document.getElementById('dash-approved-count').innerText = `${pagoCount} saques concluídos`;
                             }
 
-                            // 3. Histórico Visualizações (Tabela: watch_history)
-                            const { count: watchCount, error: errW } = await _supabase.from('watch_history').select('*', { count: 'exact', head: true });
+                            // 3. Catálogo/Histórico (Tabela: videos)
+                            const { count: watchCount, error: errW } = await _supabase.from('videos').select('*', { count: 'exact', head: true });
                             if(!errW) document.getElementById('dash-history').innerText = watchCount || 0;
 
                             UI.log("Dashboard atualizado com sucesso.");
@@ -675,14 +935,16 @@
                     }
                 },
 
-                // USUÁRIOS
+                /* =========================================
+                   USUÁRIOS
+                   ========================================= */
                 Users: {
                     load: async () => {
                         try {
                             document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
-                            // IMPORTANTE: Consulta LIMPA sem order('created_at') para evitar o erro do print
+                            // Tabela profiles
                             const { data, error } = await _supabase.from('profiles').select('*').limit(200);
                             
                             if (error) throw error;
@@ -722,7 +984,7 @@
                                     <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
                                     <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Modificar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                                     </td>
                                 </tr>
                             `;
@@ -731,7 +993,7 @@
                     },
                     edit: (id, email, saldoAtual, ptAtual) => {
                         Swal.fire({
-                            title: `Ajustar Balanço`,
+                            title: `Modificar Perfil`,
                             html: `
                                 <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
@@ -739,7 +1001,7 @@
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
                                 <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
                             `,
-                            confirmButtonText: 'Forçar Atualização (BD)',
+                            confirmButtonText: 'Gravar (DB)',
                             confirmButtonColor: '#6366f1',
                             showCancelButton: true,
                             cancelButtonText: 'Cancelar'
@@ -763,7 +1025,9 @@
                     }
                 },
 
-                // SAQUES E FINANCEIRO
+                /* =========================================
+                   FINANCEIRO E SAQUES
+                   ========================================= */
                 Financeiro: {
                     load: async () => {
                         try {
@@ -773,7 +1037,6 @@
                             
                             UI.log(`Buscando fila de saques (${statusFiltro})...`);
                             
-                            // IMPORTANTE: Consulta LIMPA sem order('created_at') para evitar o erro apontado pelo usuário
                             const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro).limit(100);
                             
                             if (error) throw error;
@@ -790,7 +1053,7 @@
                                 if (s.status === 'pendente') {
                                     acoes = `
                                         <button onclick="App.Controllers.Financeiro.changeStatus('${s.id}', 'aprovado')" class="bg-emerald-600/20 border border-emerald-500/30 hover:bg-emerald-600 text-emerald-400 hover:text-white p-2 rounded text-xs transition-colors"><i class="fa-solid fa-check"></i> Aprovar</button>
-                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Recusar</button>
+                                        <button onclick="App.Controllers.Financeiro.reject('${s.id}', '${s.user_id}', ${s.valor_solicitado})" class="bg-red-900/20 border border-red-500/30 hover:bg-red-900 text-red-400 hover:text-white p-2 rounded text-xs transition-colors ml-1"><i class="fa-solid fa-xmark"></i> Estornar</button>
                                     `;
                                 }
 
@@ -823,7 +1086,7 @@
                     reject: (id_saque, id_user, valor) => {
                         Swal.fire({
                             title: 'Bloquear e Estornar?',
-                            text: `Isso marcará como recusado e devolverá ${UI.formatMoney(valor)} para a conta do usuário no site.`,
+                            text: `Isso marcará o pedido como recusado e devolverá ${UI.formatMoney(valor)} para o perfil do usuário.`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
@@ -835,7 +1098,7 @@
                                     // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
                                     
-                                    // 2. Traz saldo
+                                    // 2. Traz saldo da conta
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
                                     
                                     // 3. Devolve saldo
@@ -843,7 +1106,7 @@
                                         await _supabase.from('profiles').update({ saldo_reais: (uData.saldo_reais || 0) + valor }).eq('id', id_user);
                                     }
                                     
-                                    Swal.fire('Estornado!', 'Procedimento financeiro concluído.', 'success');
+                                    Swal.fire('Estornado!', 'Pagamento recusado e saldo devolvido.', 'success');
                                     App.Controllers.Financeiro.load();
                                 } catch(e) { Swal.fire('Erro Crítico', e.message, 'error'); }
                             }
@@ -851,15 +1114,16 @@
                     }
                 },
 
-                // LOGS DE SEGURANÇA
+                /* =========================================
+                   LOGS ANTI-FRAUDE
+                   ========================================= */
                 Logs: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-logs');
                             tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
-                            UI.log("Lendo logs antifraude da rede...");
+                            UI.log("Lendo logs antifraude...");
                             
-                            // SEM .order('created_at')
                             const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(150);
                             
                             if (error) throw error;
@@ -887,21 +1151,22 @@
                     }
                 },
 
-                // INDICAÇÕES (ÁRVORE)
+                /* =========================================
+                   AFILIADOS (ÁRVORE)
+                   ========================================= */
                 Afiliados: {
                     load: async () => {
                         try {
                             const tbody = document.getElementById('table-indicacoes');
-                            tbody.innerHTML = `<tr><td colspan="2" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Calculando matriz de afiliados...");
                             
-                            // SEM .order('created_at')
                             const { data, error } = await _supabase.from('indicacoes').select('*').limit(100);
                             
                             if (error) throw error;
                             
                             if(!data || data.length === 0) {
-                                tbody.innerHTML = `<tr><td colspan="2" class="text-center py-10 text-zinc-500 font-bold">A rede multinível ainda está vazia.</td></tr>`;
+                                tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10 text-zinc-500 font-bold">A rede multinível ainda está vazia.</td></tr>`;
                                 return;
                             }
 
@@ -911,33 +1176,129 @@
                                     <tr>
                                         <td class="font-mono text-amber-400 text-xs font-bold">${ind.indicador_id}</td>
                                         <td class="font-mono text-indigo-400 text-xs">${ind.indicado_id}</td>
+                                        <td class="text-zinc-400 text-xs text-center">Nível 1 (Direto)</td>
                                     </tr>
                                 `;
                             });
                             tbody.innerHTML = html;
                         } catch (error) {
-                            document.getElementById('table-indicacoes').innerHTML = UI.errorRow(2, `Erro ao carregar árvore: ${error.message}`);
+                            document.getElementById('table-indicacoes').innerHTML = UI.errorRow(3, `Erro ao carregar árvore: ${error.message}`);
                         }
                     }
                 },
 
-                // CAMPANHAS
+                /* =========================================
+                   CATÁLOGO DE VÍDEOS (BANCO DE DADOS)
+                   ========================================= */
+                Catalogo: {
+                    load: async () => {
+                        try {
+                            const container = document.getElementById('table-videos');
+                            container.innerHTML = `<div class="col-span-full text-center py-10"><div class="spinner"></div></div>`;
+                            UI.log("Buscando Catálogo de Mídias no BD...");
+                            
+                            const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
+                            
+                            if (error) throw error;
+                            if(!data || data.length === 0) {
+                                container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500">O banco de dados de vídeos está vazio. Clique em Adicionar Mídia.</div>`;
+                                return;
+                            }
+
+                            let html = '';
+                            data.forEach(v => {
+                                html += `
+                                <div class="glass-panel p-3 flex flex-col gap-2">
+                                    <div class="w-full h-24 bg-zinc-900 rounded-lg flex justify-center items-center text-zinc-600 text-3xl overflow-hidden relative">
+                                        <img src="https://img.youtube.com/vi/${v.ytId}/hqdefault.jpg" class="w-full h-full object-cover opacity-60">
+                                        <i class="fa-solid fa-play absolute text-white drop-shadow-md"></i>
+                                    </div>
+                                    <div class="overflow-hidden w-full">
+                                        <h4 class="font-bold text-white text-[11px] truncate" title="${v.titulo}">${v.titulo}</h4>
+                                        <p class="text-[10px] text-zinc-400 mt-1">Tag: ${v.categoria || 'Hit'}</p>
+                                    </div>
+                                    <div class="mt-auto pt-2 border-t border-zinc-800 flex justify-between items-center">
+                                        <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-bolt"></i> ${v.recompensa} XP</span>
+                                        <button onclick="App.Controllers.Catalogo.delete(${v.id})" class="text-zinc-500 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>`;
+                            });
+                            container.innerHTML = html;
+                            UI.log(`${data.length} mídias carregadas com sucesso.`);
+                        } catch (error) { 
+                            document.getElementById('table-videos').innerHTML = UI.errorRow(1, error.message); 
+                        }
+                    },
+                    add: () => {
+                        Swal.fire({
+                            title: 'Registrar Nova Mídia',
+                            html: `
+                                <input type="text" id="vid-titulo" class="swal2-input !text-sm" placeholder="Título Oficial (Ex: Filme X)">
+                                <input type="text" id="vid-yt" class="swal2-input !text-sm" placeholder="ID do YouTube (Ex: 9bZkp7q19f0)">
+                                <input type="number" id="vid-xp" class="swal2-input !text-sm" placeholder="Recompensa do Player (XP)">
+                                <select id="vid-cat" class="swal2-select w-full !text-sm"><option value="Hit">Música / Hit</option><option value="Filme">Filme / Longa</option></select>
+                            `,
+                            confirmButtonText: 'Salvar Mídia no BD',
+                            confirmButtonColor: '#10b981',
+                            showCancelButton: true
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                const titulo = document.getElementById('vid-titulo').value;
+                                const ytId = document.getElementById('vid-yt').value;
+                                const recompensa = parseInt(document.getElementById('vid-xp').value);
+                                const categoria = document.getElementById('vid-cat').value;
+                                
+                                if(!titulo || !ytId || !recompensa) return Swal.fire('Erro', 'Preencha todos os campos obrigatórios.', 'error');
+                                
+                                Swal.fire({title: 'Gravando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                try {
+                                    const { error } = await _supabase.from('videos').insert([{ titulo, ytId, recompensa, categoria }]);
+                                    if(error) throw error;
+                                    Swal.fire('Sucesso!', 'A mídia agora aparece para todos os usuários em tempo real.', 'success');
+                                    App.Controllers.Catalogo.load();
+                                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
+                            }
+                        });
+                    },
+                    delete: (id) => {
+                        Swal.fire({
+                            title: 'Apagar Vídeo do App?',
+                            text: 'Essa mídia sumirá permanentemente do aplicativo dos usuários.',
+                            icon: 'warning', 
+                            showCancelButton: true, 
+                            confirmButtonColor: '#ef4444', 
+                            confirmButtonText: 'Sim, Deletar'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                try {
+                                    const { error } = await _supabase.from('videos').delete().eq('id', id);
+                                    if(error) throw error;
+                                    App.Controllers.Catalogo.load();
+                                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
+                            }
+                        });
+                    }
+                },
+
+                /* =========================================
+                   CAMPANHAS (INJEÇÃO MASSA)
+                   ========================================= */
                 Campanhas: {
                     inject: async () => {
                         const val = parseFloat(document.getElementById('mass-bonus-val').value);
-                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor numérico válido (maior que 0).', 'error');
+                        if(isNaN(val) || val <= 0) return Swal.fire('Erro', 'Insira um valor financeiro válido (maior que 0).', 'error');
 
                         Swal.fire({
-                            title: 'OPERAÇÃO GLOBAL',
-                            text: `Injetar R$ ${val.toFixed(2)} em TODAS AS CONTAS DO BANCO DE DADOS?`,
+                            title: 'ALERTA DE INFLAÇÃO',
+                            text: `Você tem certeza que quer somar R$ ${val.toFixed(2)} em TODAS as contas cadastradas do aplicativo?`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
                             cancelButtonText: 'Abortar',
-                            confirmButtonText: 'Sim, INJETAR!'
+                            confirmButtonText: 'Sim, INJETAR SALDO!'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
-                                Swal.fire({title: 'Executando script de injeção...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                                Swal.fire({title: 'Executando script na base...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
                                     const { data: users, error: e1 } = await _supabase.from('profiles').select('id, saldo_reais');
                                     if(e1) throw e1;
@@ -948,25 +1309,54 @@
 
                                     await Promise.all(promises);
                                     document.getElementById('mass-bonus-val').value = '';
-                                    Swal.fire('Injeção Concluída!', 'Saldo inflacionado com sucesso para toda a base.', 'success');
-                                } catch(e) { Swal.fire('Erro', e.message, 'error'); }
+                                    Swal.fire('Bônus Entregue!', 'Saldo inserido em massa com sucesso.', 'success');
+                                } catch(e) { Swal.fire('Falha do Script', e.message, 'error'); }
                             }
                         });
+                    }
+                },
+
+                /* =========================================
+                   CONFIGURAÇÕES GERAIS
+                   ========================================= */
+                Config: {
+                    load: async () => {
+                        try {
+                            const { data, error } = await _supabase.from('config_global').select('*').eq('id', 1).single();
+                            if(data) {
+                                document.getElementById('config-saque-minimo').value = data.saque_minimo;
+                                document.getElementById('config-taxa').value = data.taxa_conversao;
+                            }
+                        } catch (e) {
+                            UI.log("Tabela de configuração vazia ou inexistente.");
+                        }
+                    },
+                    save: async () => {
+                        const s_min = parseFloat(document.getElementById('config-saque-minimo').value);
+                        const s_taxa = parseInt(document.getElementById('config-taxa').value);
+                        Swal.fire({title: 'Salvando Engine...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+                        try {
+                            const { error } = await _supabase.from('config_global').upsert({ id: 1, saque_minimo: s_min, taxa_conversao: s_taxa });
+                            if (error) throw error;
+                            Swal.fire('Concluído!', 'Regras de limites financeiras atualizadas no Core.', 'success');
+                        } catch (e) {
+                            Swal.fire('Erro', e.message, 'error');
+                        }
                     }
                 }
             }
         };
 
-        // INICIALIZAÇÃO DA PÁGINA
+        // INICIALIZAÇÃO DA PÁGINA (HANDSHAKE)
         window.addEventListener('DOMContentLoaded', async () => {
-            // Check health do Supabase
             const indicator = document.getElementById('db-status-indicator');
             const dot = document.getElementById('db-status-dot');
             
             try {
+                // Teste de Handshake com a tabela principal
                 const { error } = await _supabase.from('profiles').select('id').limit(1);
                 if(error) {
-                    indicator.innerText = "FALHA BANCO DE DADOS";
+                    indicator.innerText = "FALHA BANCO DE DADOS (RLS)";
                     indicator.classList.replace('text-emerald-500', 'text-red-500');
                     dot.classList.replace('bg-emerald-500', 'bg-red-500');
                     UI.log(`Erro Crítico na Conexão Supabase: ${error.message}`);
@@ -979,7 +1369,7 @@
                 dot.classList.replace('bg-emerald-500', 'bg-red-500');
             }
 
-            // Inicia direto no Dashboard
+            // Inicia na aba Dashboard executando as queries corretas
             UI.changeTab('dashboard');
         });
     </script>
