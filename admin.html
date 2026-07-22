@@ -1058,7 +1058,7 @@
                                     <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
                                     <td class="text-right text-purple-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos}, ${nivel})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais || 0}, ${user.pontos || 0}, ${nivel})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                                     </td>
                                 </tr>
                             `;
@@ -1393,7 +1393,7 @@
                 },
 
                 /* =========================================
-                   CAMPANHAS E INJEÇÃO MASSA
+                   CAMPANHAS (INJEÇÃO MASSA)
                    ========================================= */
                 Campanhas: {
                     inject: async () => {
@@ -1523,7 +1523,7 @@
 
                                             Se o administrador pedir uma opinião sobre o site (como marketing, campanhas, retenção), não mande tags, apenas responda com uma estratégia genial detalhada.
                                             
-                                            Se o administrador pedir para ler ou alterar o banco de dados (ex: mudar nível de alguém, ver quem está sacando, dar dinheiro, banir), você OBRIGATORIAMENTE DEVE colocar uma única TAG JSON de comando exata no final da sua resposta, no formato [CMD:ACAO|{JSON}]. O Javascript invisível vai ler sua tag e fazer a alteração no banco.
+                                            Se o administrador pedir para ler ou alterar o banco de dados (ex: mudar nível de alguém, ver quem está sacando, dar dinheiro, banir), você OBRIGATORIAMENTE DEVE colocar uma única TAG JSON de comando exata no final da sua resposta, na mesma linha. O Javascript fará a mágica acontecer através dessa tag.
 
                                             LISTA DE TAGS QUE VOCÊ DEVE USAR (escolha a que mais combina com o pedido):
                                             [CMD:COUNT_USERS|{}] -> Quando ele perguntar quantos usuários tem no site.
@@ -1547,7 +1547,7 @@
                             const data = await response.json();
                             let aiResponse = data.choices[0].message.content;
 
-                            // Verifica se a IA disparou um Comando Autônomo para o Javascript ler
+                            // 1. Extrai se a IA decidiu mandar algum Comando para o JS
                             const cmdMatch = aiResponse.match(/\[CMD:(.*?)\]/);
                             
                             if (cmdMatch) {
@@ -1558,10 +1558,10 @@
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                                 
-                                // O Motor vai acionar o Supabase e responder na tela
+                                // 2. Roda a função autônoma no banco!
                                 await App.Controllers.IA.executeAutonomousCommand(cmdString);
                             } else {
-                                // Se for apenas um conselho ou conversa normal sem banco de dados
+                                // Caso ela esteja apenas conversando normalmente
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                             }
