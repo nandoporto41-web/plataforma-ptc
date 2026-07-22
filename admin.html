@@ -754,7 +754,7 @@
                             <div class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#08080b] rounded-full"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">I.A. Core (Groq Llama 3.1)</h3>
+                            <h3 class="font-bold text-white">I.A. Core (Groq Llama 3.3)</h3>
                             <p class="text-[10px] text-emerald-400 font-mono">Conectada ao Banco de Dados</p>
                         </div>
                     </div>
@@ -1443,7 +1443,7 @@
                 },
 
                 /* =========================================
-                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (GROQ API - LLAMA 3.1)
+                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (GROQ API)
                    ========================================= */
                 IA: {
                     API_KEY: "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",
@@ -1496,7 +1496,7 @@
                                     "Authorization": `Bearer ${App.Controllers.IA.API_KEY}`
                                 },
                                 body: JSON.stringify({
-                                    model: "llama3-8b-8192", // Motor base atualizado e estável Llama 3
+                                    model: "llama-3.3-70b-versatile", // Motor mais recente e poderoso (Llama 3.3)
                                     messages: [
                                         {
                                             role: "system",
