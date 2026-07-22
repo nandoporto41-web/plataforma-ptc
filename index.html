@@ -17,6 +17,7 @@
     <!-- SDKs e Bibliotecas Core -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -40,6 +41,7 @@
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
+            /* Fundo Premium estilo Netflix/HBO */
             background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 80%);
         }
 
@@ -50,6 +52,7 @@
             transition: transform 0.2s ease;
         }
 
+        /* EFEITO GLASSMORPHISM PRINCIPAL */
         .cinema-container {
             position: relative;
             width: 100%;
@@ -67,7 +70,9 @@
         }
 
         @media (min-width: 768px) {
-            .cinema-container { max-width: 900px; height: 95vh; border-radius: 24px; }
+            .cinema-container {
+                max-width: 900px; height: 95vh; border-radius: 24px;
+            }
             .video-box { max-height: 450px !important; height: 450px !important; }
             .playlist-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
             .content-body { padding-bottom: 90px !important; }
@@ -153,7 +158,7 @@
         /* SCROLL HORIZONTAL CATEGORIAS */
         .category-scroll {
             display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 5px;
-            scrollbar-width: none;
+            scrollbar-width: none; /* Firefox */
         }
         .category-scroll::-webkit-scrollbar { display: none; }
         .cat-pill {
@@ -176,8 +181,9 @@
         .gamification-card:active { transform: scale(0.95); }
         .gamification-card h4 { font-size: 12px; color: #f472b6; font-weight: 800; display: flex; align-items: center; gap: 6px; text-shadow: 0 0 10px rgba(236,72,153,0.5); }
         .gamification-card p { font-size: 9px; color: #a5b4fc; }
-        .gamification-card.roleta { background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(8, 47, 73, 0.8)); border-color: rgba(56, 189, 248, 0.3); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.1); }
-        .gamification-card.roleta h4 { color: #38bdf8; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
+        
+        .gamification-card.mission { background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(8, 47, 73, 0.8)); border-color: rgba(56, 189, 248, 0.3); box-shadow: 0 4px 15px rgba(56, 189, 248, 0.1); }
+        .gamification-card.mission h4 { color: #38bdf8; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
 
         .video-list-section h3 { font-size: 13px; color: #fff; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; font-weight: 700; }
         
@@ -203,7 +209,7 @@
         .video-meta-info h5 { font-size: 12px; color: #fff; font-weight: 700; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .video-reward-badge { font-size: 10px; color: #00e676; font-weight: 800; display: flex; align-items: center; gap: 4px; background: rgba(0,230,118,0.1); padding: 4px 8px; border-radius: 8px; width: fit-content; }
 
-        /* MENU PREMIUM COM SISTEMA DE XP */
+        /* MENU PREMIUM COM SISTEMA DE XP E NÍVEIS VIP */
         .menu-drawer {
             position: absolute; top: 0; left: -100%; width: 85%; max-width: 350px; height: 100%;
             background: rgba(10,10,15,0.95); border-right: 1px solid rgba(255,157,0,0.2);
@@ -334,7 +340,7 @@
             
             <div class="xp-card">
                 <div class="xp-header">
-                    <span class="lvl-badge" id="userLevelBadge">LVL 1</span>
+                    <span class="lvl-badge" id="userLevelBadge">LVL 1 (Bronze)</span>
                     <span class="xp-text" id="userXpText">0 / 5000 XP</span>
                 </div>
                 <div style="font-size: 11px; color: #fff; word-break: break-all; font-weight: 600;" id="userDisplay">Desconectado</div>
@@ -400,12 +406,14 @@
                     <button class="daily-bonus-btn" id="dailyBonusBtn" disabled style="width: 100%; margin-top: 4px; background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px; border-radius: 5px;">Coletar</button>
                 </div>
                 
-                <!-- Roleta (Em breve) -->
-                <div class="gamification-card roleta" onclick="alert('O Sistema de Roleta e Baús será desbloqueado no Nível 5!')">
-                    <i class="fa-solid fa-dharmachakra" style="font-size: 24px; color: #38bdf8; text-shadow: 0 0 15px rgba(56,189,248,0.5);"></i>
-                    <h4>Roleta da Sorte</h4>
-                    <p>Gire para ganhar Prêmios</p>
-                    <button class="daily-bonus-btn" style="background: #0284c7; color: #fff; width: 100%; margin-top: 4px; border: none; padding: 5px; border-radius: 5px;">Bloqueado</button>
+                <!-- Missão Diária (NOVO RECURSO DE RETENÇÃO) -->
+                <div class="gamification-card mission" onclick="coletarMissaoDiaria()" id="missionCard">
+                    <i class="fa-solid fa-gift" style="font-size: 24px; color: #38bdf8; text-shadow: 0 0 15px rgba(56,189,248,0.5);"></i>
+                    <h4>Missão Diária</h4>
+                    <p id="missionStatusText">Assista 5 mídias</p>
+                    <div style="width: 100%; background: #000; height: 4px; border-radius: 2px; margin-top: 4px; overflow:hidden;">
+                        <div id="missionProgressBar" style="width: 0%; height: 100%; background: #38bdf8; box-shadow: 0 0 5px #38bdf8;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -505,15 +513,15 @@
             <div class="terms-box" style="display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; margin-bottom: 5px;">
                 <div class="terms-item">
                     <i class="fa-solid fa-server"></i> <strong>1. Algoritmo de Ganhos</strong><br>
-                    O sistema monetiza seu tempo de tela. Os pontos são sincronizados via Supabase com o banco de dados em tempo real após cada ciclo de reprodução.
+                    O sistema monetiza seu tempo de tela. Os pontos e níveis são sincronizados via Supabase em tempo real.
                 </div>
                 <div class="terms-item">
                     <i class="fa-solid fa-shield-halved"></i> <strong>2. Anti-Fraude e Segurança</strong><br>
-                    A plataforma utiliza verificação de IP e detecção de background. Minimizar o aplicativo ou usar auto-clickers desativará o motor de contagem temporariamente. Contas clonadas sofrem banimento de IP.
+                    A plataforma utiliza verificação de IP e detecção de background. Minimizar o aplicativo ou usar auto-clickers desativará o motor de contagem temporariamente.
                 </div>
                 <div class="terms-item">
                     <i class="fa-solid fa-building-columns"></i> <strong>3. Gateway de Pagamento</strong><br>
-                    Solicitações de saque passam por esteira de aprovação para evitar lavagem de pontos. O Pix é despachado em D+1 após validação de integridade.
+                    Solicitações de saque passam por esteira de aprovação para evitar fraudes. O Pix é processado após validação de integridade.
                 </div>
             </div>
 
@@ -544,29 +552,229 @@
     </div>
 
     <script>
+        // CONEXÃO COM O BANCO DE DADOS
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: { persistSession: true, autoRefreshToken: true }
         });
 
+        // VARIÁVEIS DE SISTEMA
         let isSignUpMode = false; let usuarioAtualId = null; let usuarioEmail = "";
         let youtubePlayer = null; let cronometroPontuacao = null; let tempoAcumuladoSegundos = 0;
         let idVideoAtivo = null; let emExibicaoAnuncio = false;
         
-        // VARIÁVEIS DE SISTEMA SINCRONIZADAS COM O DB
+        // VARIÁVEIS DE USUÁRIO (Sincronizadas com o Supabase)
         let pontosLocaisMemoria = 0; 
         let dinheiroLocalMemoria = 0.00;
         let nivelLocalMemoria = 1;
         
+        // MISSÃO E BÔNUS
         let dataUltimoBonusIso = null; let intervaloCronometroBonus = null;
-
-        // CONFIGURAÇÕES GLOBAIS DO PAINEL ADMIN
+        let videosAssistidosHoje = 0;
+        
+        // CONFIGURAÇÕES DO PAINEL ADMIN (Dinâmico)
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
-        // ARRAYS VAZIAS PARA RECEBER DO SUPABASE
-        let colecaoVideos = [];
-        let colecaoFilmes = [];
+        // SISTEMA DE BACKUP: AS 192 MÍDIAS INTACAS NO CÓDIGO
+        // Se o Supabase falhar, o site puxa daqui e não fica vazio.
+        let colecaoVideos = [
+            { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
+            { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
+            { id: "3", ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 100 },
+            { id: "4", ytId: "JGwWNGJdvx8", titulo: "Ed Sheeran - Shape of You", recompensa: 180 },
+            { id: "5", ytId: "RgKAFK5djSk", titulo: "Wiz Khalifa - See You Again", recompensa: 120 },
+            { id: "6", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar", recompensa: 140 },
+            { id: "7", ytId: "hT_nvWreIhg", titulo: "OneRepublic - Counting Stars", recompensa: 130 },
+            { id: "8", ytId: "lp-EO5I60KA", titulo: "Ed Sheeran - Thinking Out Loud", recompensa: 150 },
+            { id: "9", ytId: "fRh_vgS2dFE", titulo: "Justin Bieber - Sorry", recompensa: 160 },
+            { id: "10", ytId: "YQHsXMglC9A", titulo: "Adele - Hello", recompensa: 110 },
+            { id: "11", ytId: "2Vv-BfVoq4g", titulo: "Ed Sheeran - Perfect", recompensa: 190 },
+            { id: "12", ytId: "nfWlot6h_JM", titulo: "Taylor Swift - Shake It Off", recompensa: 125 },
+            { id: "13", ytId: "e-ORhEE9VVg", titulo: "Taylor Swift - Blank Space", recompensa: 135 },
+            { id: "14", ytId: "CevxZvSJLk8", titulo: "Katy Perry - Roar", recompensa: 145 },
+            { id: "15", ytId: "0KSOMA3QBU0", titulo: "Katy Perry - Dark Horse", recompensa: 155 },
+            { id: "16", ytId: "pB-5XG-DbAA", titulo: "Eminem - Love The Way You Lie", recompensa: 170 },
+            { id: "17", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself", recompensa: 115 },
+            { id: "18", ytId: "3AtDnEC4zak", titulo: "Charlie Puth - We Don't Talk Anymore", recompensa: 125 },
+            { id: "19", ytId: "iX-QaNzd-0Y", titulo: "Milky Chance - Stolen Dance", recompensa: 180 },
+            { id: "20", ytId: "fLexgOxsZu0", titulo: "Bruno Mars - The Lazy Song", recompensa: 190 },
+            { id: "21", ytId: "ALZHF5UqnU4", titulo: "Marshmello - Alone", recompensa: 200 },
+            { id: "22", ytId: "PT2_F-1esPk", titulo: "The Chainsmokers - Closer", recompensa: 150 },
+            { id: "23", ytId: "bMpFmHSgC4Q", titulo: "Major Lazer - Lean On", recompensa: 160 },
+            { id: "24", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend", recompensa: 140 },
+            { id: "25", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 110 },
+            { id: "26", ytId: "hLQl3WQQoQ0", titulo: "Adele - Someone Like You", recompensa: 130 },
+            { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP THE FEELING!", recompensa: 120 },
+            { id: "28", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up", recompensa: 180 },
+            { id: "29", ytId: "kffacxfA7G4", titulo: "Justin Bieber - Baby", recompensa: 190 },
+            { id: "30", ytId: "K_yBUfMGvzc", titulo: "Oasis - Wonderwall", recompensa: 150 },
+            { id: "31", ytId: "RBumgq5yVrA", titulo: "Passenger - Let Her Go", recompensa: 160 },
+            { id: "32", ytId: "SlPhMPnQ58k", titulo: "Maroon 5 - Girls Like You", recompensa: 140 },
+            { id: "33", ytId: "AJtDXIazrMo", titulo: "Ellie Goulding - Love Me Like You Do", recompensa: 130 },
+            { id: "34", ytId: "WpYeekQkAdc", titulo: "The Black Eyed Peas - I Gotta Feeling", recompensa: 170 },
+            { id: "35", ytId: "IcrbM1l_BoI", titulo: "Avicii - Levels", recompensa: 110 },
+            { id: "36", ytId: "QK8mJJJvaes", titulo: "Macklemore - Thrift Shop", recompensa: 120 },
+            { id: "37", ytId: "pRpeEdMmi3I", titulo: "Shakira - Waka Waka (This Time for Africa)", recompensa: 180 },
+            { id: "38", ytId: "7PCkvCPvVNk", titulo: "Sia - Chandelier", recompensa: 190 },
+            { id: "39", ytId: "Dkk9gvTmCXY", titulo: "Imagine Dragons - Believer", recompensa: 150 },
+            { id: "40", ytId: "kTJczUoc26U", titulo: "The Kid LAROI, Justin Bieber - STAY", recompensa: 160 },
+            { id: "41", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck", recompensa: 140 },
+            { id: "42", ytId: "1G4isv_Fylg", titulo: "Coldplay - Paradise", recompensa: 130 },
+            { id: "43", ytId: "oyEuk8j8imI", titulo: "Justin Bieber - Peaches", recompensa: 170 },
+            { id: "44", ytId: "zDo0H8Fm7d0", titulo: "DJ Snake - Taki Taki", recompensa: 110 },
+            { id: "45", ytId: "MWPniCRnRoE", titulo: "The Weeknd - Blinding Lights", recompensa: 120 },
+            { id: "46", ytId: "XXYlCGOU_yQ", titulo: "The Weeknd - Starboy", recompensa: 180 },
+            { id: "47", ytId: "fKopy74weus", titulo: "Imagine Dragons - Thunder", recompensa: 190 },
+            { id: "48", ytId: "SYM-RJwSGQ8", titulo: "Tones and I - Dance Monkey", recompensa: 150 },
+            { id: "49", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar (Remix)", recompensa: 160 },
+            { id: "50", ytId: "mWRsgZuwf_8", titulo: "Imagine Dragons - Demons", recompensa: 140 },
+            { id: "51", ytId: "C_3d6GntKbk", titulo: "Queen - Bohemian Rhapsody", recompensa: 130 },
+            { id: "52", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now", recompensa: 170 },
+            { id: "53", ytId: "fJ9rUzIMcZQ", titulo: "Queen - We Will Rock You", recompensa: 110 },
+            { id: "54", ytId: "0yW7w8F2TVA", titulo: "James Arthur - Say You Won't Let Go", recompensa: 120 },
+            { id: "55", ytId: "aJOTlE1K90k", titulo: "Maroon 5 - Payphone", recompensa: 180 },
+            { id: "56", ytId: "YQHsXMglC9A", titulo: "Adele - Hello (Live)", recompensa: 190 },
+            { id: "57", ytId: "4NRXx6U8ABQ", titulo: "The Weeknd - The Hills", recompensa: 150 },
+            { id: "58", ytId: "cZAw8qxn0ZE", titulo: "Katy Perry - Firework", recompensa: 160 },
+            { id: "59", ytId: "kOkQ4T5wVQY", titulo: "Rihanna - Diamonds", recompensa: 140 },
+            { id: "60", ytId: "cvh0nX08nRw", titulo: "Rihanna - Umbrella", recompensa: 130 },
+            { id: "61", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself (Acoustic)", recompensa: 170 },
+            { id: "62", ytId: "60ItHLz5WEA", titulo: "Alan Walker - Faded", recompensa: 110 },
+            { id: "63", ytId: "hcm55lU9knw", titulo: "Michel Teló - Ai Se Eu Te Pego", recompensa: 120 },
+            { id: "64", ytId: "W2sJv3xI9c0", titulo: "Gusttavo Lima - Balada", recompensa: 180 },
+            { id: "65", ytId: "cgbQZGEk2OQ", titulo: "Anitta - Show das Poderosas", recompensa: 190 },
+            { id: "66", ytId: "c1oEUZtD8_Q", titulo: "Henrique e Juliano - Vidinha de Balada", recompensa: 150 },
+            { id: "67", ytId: "mXwFkHlO7m8", titulo: "Luan Santana - Te Esperando", recompensa: 160 },
+            { id: "68", ytId: "qN4ooNx77u0", titulo: "Jorge & Mateus - Sosseguei", recompensa: 140 },
+            { id: "69", ytId: "1-xGerv5FOk", titulo: "Marília Mendonça - Infiel", recompensa: 130 },
+            { id: "70", ytId: "QvR_bNqFqX8", titulo: "Wesley Safadão - Camarote", recompensa: 170 },
+            { id: "71", ytId: "1ZzZ1jV0S3k", titulo: "Kevinho - Olha a Explosão", recompensa: 110 },
+            { id: "72", ytId: "U3v1wO_iY4A", titulo: "Zé Neto e Cristiano - Largado Às Traças", recompensa: 120 },
+            { id: "73", ytId: "z1z2z3z4z5A", titulo: "Coldplay - Viva La Vida", recompensa: 180 },
+            { id: "74", ytId: "o1tj2zJ2Wvg", titulo: "Guns N' Roses - Sweet Child O' Mine", recompensa: 190 },
+            { id: "75", ytId: "CSvFpBOe8eY", titulo: "System Of A Down - Chop Suey!", recompensa: 150 },
+            { id: "76", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (HD)", recompensa: 160 },
+            { id: "77", ytId: "YlUKcNNmywk", titulo: "Red Hot Chili Peppers - Californication", recompensa: 140 },
+            { id: "78", ytId: "Sb5aq5HcS1A", titulo: "Nirvana - Smells Like Teen Spirit", recompensa: 130 },
+            { id: "79", ytId: "lDK9QqIzhwk", titulo: "Bon Jovi - Livin' On A Prayer", recompensa: 170 },
+            { id: "80", ytId: "xGytDsqkQY8", titulo: "A-ha - Take On Me", recompensa: 110 },
+            { id: "81", ytId: "djV11Xbc914", titulo: "Rick Astley - Never Gonna Give You Up", recompensa: 120 },
+            { id: "82", ytId: "pAgnJENK4sA", titulo: "AC/DC - Back In Black", recompensa: 180 },
+            { id: "83", ytId: "CD-E-LDc384", titulo: "Metallica - Enter Sandman", recompensa: 190 },
+            { id: "84", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck (Live)", recompensa: 150 },
+            { id: "85", ytId: "OMOGaugKpzs", titulo: "The Police - Every Breath You Take", recompensa: 160 },
+            { id: "86", ytId: "Zi_XLOBDo_Y", titulo: "Michael Jackson - Billie Jean", recompensa: 140 },
+            { id: "87", ytId: "sOnqjkJTMaA", titulo: "Michael Jackson - Thriller", recompensa: 130 },
+            { id: "88", ytId: "hTWKbfoikeg", titulo: "Nirvana - Come As You Are", recompensa: 170 },
+            { id: "89", ytId: "xwtdhWltSIg", titulo: "R.E.M. - Losing My Religion", recompensa: 110 },
+            { id: "90", ytId: "tAGnKpE4NCI", titulo: "Metallica - Nothing Else Matters", recompensa: 120 },
+            { id: "91", ytId: "1cQh1ccqu8M", titulo: "Eagles - Hotel California", recompensa: 180 },
+            { id: "92", ytId: "FkNBgM2p-Wc", titulo: "Pink Floyd - Comfortably Numb", recompensa: 190 },
+            { id: "93", ytId: "m_lz2rFosY0", titulo: "Queen - Another One Bites The Dust", recompensa: 150 },
+            { id: "94", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now (Official)", recompensa: 160 },
+            { id: "95", ytId: "g4vLz10sWl8", titulo: "Queen - I Want To Break Free", recompensa: 140 },
+            { id: "96", ytId: "zRIbf6JqkNc", titulo: "Guns N' Roses - Don't Cry", recompensa: 130 },
+            { id: "97", ytId: "Q0oIoR9mLwc", titulo: "Red Hot Chili Peppers - Snow (Hey Oh)", recompensa: 170 },
+            { id: "98", ytId: "BfOdWSiyWoc", titulo: "Red Hot Chili Peppers - Under The Bridge", recompensa: 110 },
+            { id: "99", ytId: "8SbUC-UaAxE", titulo: "Guns N' Roses - Paradise City", recompensa: 120 },
+            { id: "100", ytId: "Rbm6GXllBiw", titulo: "Guns N' Roses - Welcome To The Jungle", recompensa: 180 },
+            { id: "101", ytId: "Fp1tA_i6kXg", titulo: "Scorpions - Wind Of Change", recompensa: 190 },
+            { id: "102", ytId: "zUwEIt9ez7M", titulo: "Scorpions - Still Loving You", recompensa: 150 },
+            { id: "103", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (Official)", recompensa: 160 },
+            { id: "104", ytId: "V_4CZu4ghMo", titulo: "Aerosmith - I Don't Want to Miss a Thing", recompensa: 140 },
+            { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
+        ];
+
+        let colecaoFilmes = [
+            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200 },
+            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200 },
+            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200 },
+            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200 },
+            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200 },
+            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200 },
+            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200 },
+            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200 },
+            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200 },
+            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200 },
+            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200 },
+            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200 },
+            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200 },
+            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200 },
+            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200 },
+            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200 },
+            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200 },
+            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200 },
+            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200 },
+            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200 },
+            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200 },
+            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200 },
+            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200 },
+            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200 },
+            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200 },
+            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200 },
+            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200 },
+            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200 },
+            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200 },
+            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200 },
+            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200 },
+            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200 },
+            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200 },
+            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200 },
+            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200 },
+            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200 },
+            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200 },
+            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200 },
+            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200 },
+            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200 },
+            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200 },
+            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200 },
+            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200 },
+            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200 },
+            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200 },
+            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200 },
+            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200 },
+            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200 },
+            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200 },
+            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200 },
+            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200 },
+            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200 },
+            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200 },
+            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200 },
+            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200 },
+            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200 },
+            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200 },
+            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200 },
+            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200 },
+            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200 },
+            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200 },
+            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200 },
+            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200 },
+            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200 },
+            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200 },
+            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200 },
+            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200 },
+            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200 },
+            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200 },
+            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200 },
+            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200 },
+            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200 },
+            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200 },
+            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200 },
+            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200 },
+            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200 },
+            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200 },
+            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200 },
+            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200 },
+            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200 },
+            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200 },
+            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200 },
+            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200 },
+            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200 },
+            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
+            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
+            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 }
+        ];
 
         function filtrarLista(tipo) {
             const input = document.getElementById(tipo === 'hits' ? 'buscaHits' : 'buscaFilmes').value.toLowerCase();
@@ -640,7 +848,7 @@
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
-            // PREENCHIMENTO AUTOMÁTICO DO PIX DA MEMÓRIA DO APARELHO
+            // CARREGA A MEMÓRIA DO PIX SALVO NO CELULAR DO USUÁRIO
             document.getElementById('pixName').value = localStorage.getItem('userPixName') || '';
             document.getElementById('pixKey').value = localStorage.getItem('userPixKey') || '';
             
@@ -670,34 +878,51 @@
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
             pontosLocaisMemoria = pontos; dinheiroLocalMemoria = saldoReais; nivelLocalMemoria = nivel;
             
-            // Atualiza Pontos
+            // Textos básicos
             document.getElementById('ptsTotal').innerText = pontos;
             document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
             
-            // Atualiza Saldo Real
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalance').innerText = formatado;
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
             
-            // Atualiza Barra de XP e Nível
-            document.getElementById('userLevelBadge').innerText = `LVL ${nivelLocalMemoria}`;
+            // SISTEMA VIP COLORIDO NO MENU
+            const badgeLvl = document.getElementById('userLevelBadge');
+            let tierName = "Bronze";
+            badgeLvl.style.background = "linear-gradient(90deg, #b87333, #e69138)"; // Padrão bronze
+            badgeLvl.style.color = "#fff";
             
+            if(nivelLocalMemoria >= 6 && nivelLocalMemoria <= 10) {
+                tierName = "Prata";
+                badgeLvl.style.background = "linear-gradient(90deg, #9ca3af, #e2e8f0)";
+                badgeLvl.style.color = "#000";
+            } else if (nivelLocalMemoria > 10) {
+                tierName = "Ouro";
+                badgeLvl.style.background = "linear-gradient(90deg, #ff9d00, #ffce54)";
+                badgeLvl.style.color = "#000";
+            }
+            badgeLvl.innerText = `LVL ${nivelLocalMemoria} (${tierName})`;
+            
+            // BARRA DE PROGRESSO DE NÍVEL
             let xpProximoNivel = nivelLocalMemoria * 5000;
             let xpRestante = pontosLocaisMemoria;
-            
-            // Lógica simples de barra: Se passou, reseta a visualização pra base do lvl atual
             if(xpRestante > xpProximoNivel) xpRestante = xpProximoNivel;
             
             document.getElementById('userXpText').innerText = `${pontosLocaisMemoria} / ${xpProximoNivel} XP`;
             const xpPct = Math.min((pontosLocaisMemoria / xpProximoNivel) * 100, 100);
             document.getElementById('userXpBar').style.width = `${xpPct}%`;
 
-            // Atualiza Barra de Saque
-            const minSaque = configGlobal.saque_minimo;
+            // BARRA DE PROGRESSO DE SAQUE (BASEADA NO PAINEL ADMIN)
+            const minSaque = configGlobal.saque_minimo || 20.00;
             const pct = Math.min((saldoReais / minSaque) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
+            
+            // MISSÃO DIÁRIA PROGRESSO
+            const pctMissao = Math.min((videosAssistidosHoje / 10) * 100, 100);
+            document.getElementById('missionProgressBar').style.width = `${pctMissao}%`;
+            document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Mídias`;
         }
 
         function gerenciarCronometroBonusDiario() {
@@ -706,7 +931,10 @@
             const textoStatus = document.getElementById('dailyBonusStatus');
 
             if (!dataUltimoBonusIso) {
-                botao.disabled = false; textoStatus.innerText = "Disponível! Resgate agora.";
+                botao.disabled = false;
+                botao.style.background = "#ff9d00";
+                botao.style.color = "#000";
+                textoStatus.innerText = "Disponível! Resgate agora.";
                 return;
             }
 
@@ -716,9 +944,16 @@
                 const diferencaMs = proximaColeta - agora;
 
                 if (diferencaMs <= 0) {
-                    clearInterval(intervaloCronometroBonus); botao.disabled = false; dataUltimoBonusIso = null; textoStatus.innerText = "Disponível! Resgate agora.";
+                    clearInterval(intervaloCronometroBonus); 
+                    botao.disabled = false; 
+                    botao.style.background = "#ff9d00";
+                    botao.style.color = "#000";
+                    dataUltimoBonusIso = null; 
+                    textoStatus.innerText = "Disponível! Resgate agora.";
                 } else {
                     botao.disabled = true;
+                    botao.style.background = "rgba(255,255,255,0.1)";
+                    botao.style.color = "#fff";
                     const h = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0');
                     const m = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
                     const s = String(Math.floor((diferencaMs % (1000 * 60)) / 1000)).padStart(2, '0');
@@ -733,13 +968,29 @@
             const isoAgora = new Date().toISOString(); dataUltimoBonusIso = isoAgora;
             pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
             
-            // Verifica se subiu de nível com o bônus
+            // Checa Nível
             let xpProximoNivel = nivelLocalMemoria * 5000;
             if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
 
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
             gerenciarCronometroBonusDiario();
             await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, ultimo_bonus: isoAgora }).eq('id', usuarioAtualId);
+        }
+
+        async function coletarMissaoDiaria() {
+            if(videosAssistidosHoje >= 10) {
+                videosAssistidosHoje = 0;
+                pontosLocaisMemoria += 5000; dinheiroLocalMemoria += 0.50;
+                
+                let xpProximoNivel = nivelLocalMemoria * 5000;
+                if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
+                
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
+                await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
+                Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Missão Cumprida! +5000 XP', showConfirmButton: false, timer: 3000 });
+            } else {
+                Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'Assista mais vídeos para concluir!', showConfirmButton: false, timer: 3000 });
+            }
         }
 
         function intermediarAnuncio(callback) {
@@ -763,14 +1014,15 @@
 
         async function buscarFilmesDoBanco() {
             try {
-                // Tenta puxar os vídeos reais do Supabase inseridos pelo Painel Admin/IA
+                // Tenta puxar os vídeos reais do Supabase (onde a IA insere)
                 const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
                 if (!error && data && data.length > 0) {
                     colecaoVideos = data.filter(v => v.categoria === 'Hit');
                     colecaoFilmes = data.filter(v => v.categoria === 'Filme');
                 }
             } catch (e) {
-                console.log("Mantendo arrays antigos devido a falha no DB");
+                // Se der erro de conexão, usa o backup das listas gigantes
+                console.log("Mantendo arrays locais como backup");
             }
         }
 
@@ -829,19 +1081,21 @@
                     tempoAcumuladoSegundos++;
                     if (tempoAcumuladoSegundos >= 60) {
                         tempoAcumuladoSegundos = 0; 
+                        videosAssistidosHoje++; // Conta para a missão
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo) || colecaoFilmes.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
                         
                         pontosLocaisMemoria += parseInt(vData.recompensa); 
                         
-                        // Conversão dinâmica usando config do painel master
+                        // Conversão dinâmica via Painel Master
                         let taxa = configGlobal.taxa_conversao || 10000;
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) / taxa);
                         
-                        // Lógica Automática de Up de Nível
+                        // Sistema Automático de Subida de Nível
                         let xpProximoNivel = nivelLocalMemoria * 5000;
                         if(pontosLocaisMemoria >= xpProximoNivel) {
                             nivelLocalMemoria++;
+                            Swal.fire({ toast: true, position: 'top', icon: 'success', title: `Parabéns! Você subiu para o Nível ${nivelLocalMemoria}`, showConfirmButton: false, timer: 3000 });
                         }
 
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
@@ -867,7 +1121,7 @@
             if(!name || !key || isNaN(val) || val < minSaque) return alert(`Preencha todos os dados. O valor mínimo é R$ ${minSaque.toFixed(2)}.`);
             if(dinheiroLocalMemoria < val) return alert("Saldo insuficiente.");
 
-            // Salva PIX no armazenamento local do aparelho para uso futuro
+            // GRAVA O PIX NA MEMÓRIA DO CELULAR
             localStorage.setItem('userPixName', name);
             localStorage.setItem('userPixKey', key);
 
@@ -896,7 +1150,7 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             
-            // Busca Configurações do Painel Admin
+            // SINCRONIZA AS REGRAS DO PAINEL ADMIN
             try {
                 const { data: configDB } = await _supabase.from('config_global').select('*').eq('id', 1).single();
                 if(configDB) {
@@ -904,7 +1158,7 @@
                     configGlobal.taxa_conversao = parseInt(configDB.taxa_conversao);
                     
                     document.getElementById('saqueMinimoLabel').innerText = `Valor (Mínimo R$ ${configGlobal.saque_minimo.toFixed(2)})`;
-                    document.getElementById('btnSaqueText').innerText = `Sacar via Pix (Mínimo R$ ${configGlobal.saque_minimo.toFixed(2)})`;
+                    document.getElementById('btnSaqueText').innerText = `Sacar via Pix`;
                 }
             } catch(e) {}
 
