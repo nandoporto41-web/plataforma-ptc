@@ -489,7 +489,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4 border-b border-zinc-800 pb-4">
                 <div>
                     <h2 class="text-2xl md:text-3xl font-black text-white">Gestão Completa de Usuários</h2>
-                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP e administre contas.</p>
+                    <p class="text-zinc-400 text-sm mt-1">Conectado na tabela `profiles`. Edite saldo, XP, nível e administre contas.</p>
                 </div>
                 <div class="w-full md:w-80 relative">
                     <i class="fa-solid fa-search absolute left-4 top-3 text-zinc-500"></i>
@@ -502,13 +502,14 @@
                     <thead>
                         <tr>
                             <th>Conta (E-mail / ID)</th>
+                            <th class="text-center">Nível (LVL)</th>
                             <th class="text-right">Saldo Real (R$)</th>
                             <th class="text-right">XP / Pontos</th>
                             <th class="text-center">Ações Rápidas</th>
                         </tr>
                     </thead>
                     <tbody id="table-users">
-                        <tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>
+                        <tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -766,15 +767,14 @@
                     <div class="flex gap-4">
                         <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-robot text-white text-xs"></i></div>
                         <div class="bg-[#1a1a24] p-4 rounded-2xl rounded-tl-none max-w-[85%] border border-purple-500/20 shadow-lg">
-                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Fui atualizada com acesso **DML Direto** ao Banco de Dados. Eu não te mandarei mais para outras abas. Se me pedir para listar dados, eu buscarei no Supabase e mostrarei no próprio chat. Se me pedir para alterar, eu farei e te darei a confirmação.</p>
+                            <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Fui reprojetada com acesso **DML Absoluto** ao Supabase. Eu não vou mais pedir para você ir em outras abas. Se você me pedir qualquer coisa, eu mesma vou até o banco de dados, executo o SQL e te mostro o resultado aqui no chat. Posso listar dados, alterar níveis de conta e sugerir estratégias corporativas.</p>
                             <p class="text-xs text-zinc-500 mt-3 font-mono border-t border-zinc-700 pt-2">
                                 Tente comandos como:<br>
                                 - "Liste todos os saques pendentes pra mim"<br>
-                                - "Quantos usuários ativos temos?"<br>
-                                - "Aprove todos os saques da fila"<br>
-                                - "Adicione 5 reais para todo mundo"<br>
-                                - "Mostre os logs de fraude"<br>
-                                - "Como eu posso melhorar a retenção do site?"
+                                - "Mostre o nome de quem está sacando"<br>
+                                - "Qual a melhor estratégia para eu lançar uma campanha hoje?"<br>
+                                - "Altere o perfil joao@gmail.com para saldo 50, XP 1000 e nível 5"<br>
+                                - "Aprove todos os PIX da fila"
                             </p>
                         </div>
                     </div>
@@ -783,7 +783,7 @@
                 <!-- Input Area -->
                 <div class="p-4 border-t border-zinc-800 bg-[#08080b] rounded-b-[16px]">
                     <div class="flex gap-2">
-                        <input type="text" id="ai-input" class="input-dark bg-[#121216] focus:border-purple-500 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] text-sm" placeholder="Dê uma ordem para a I.A..." onkeypress="if(event.key === 'Enter') App.Controllers.IA.sendMessage()">
+                        <input type="text" id="ai-input" class="input-dark bg-[#121216] focus:border-purple-500 focus:shadow-[0_0_10px_rgba(168,85,247,0.2)] text-sm" placeholder="Converse ou dê uma ordem para a I.A..." onkeypress="if(event.key === 'Enter') App.Controllers.IA.sendMessage()">
                         <button class="bg-purple-600 hover:bg-purple-500 text-white px-6 rounded-lg transition-colors" onclick="App.Controllers.IA.sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -1011,7 +1011,7 @@
                 Users: {
                     load: async () => {
                         try {
-                            document.getElementById('table-users').innerHTML = `<tr><td colspan="4" class="text-center py-10"><div class="spinner"></div></td></tr>`;
+                            document.getElementById('table-users').innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
                             // Tabela profiles
@@ -1023,7 +1023,7 @@
                             App.Controllers.Users.renderTable(data);
                             UI.log(`Foram carregados ${data.length} usuários.`);
                         } catch (error) {
-                            document.getElementById('table-users').innerHTML = UI.errorRow(4, `Falha na tabela profiles: ${error.message}`);
+                            document.getElementById('table-users').innerHTML = UI.errorRow(5, `Falha na tabela profiles: ${error.message}`);
                             UI.log("Erro Usuários: " + error.message);
                         }
                     },
@@ -1039,34 +1039,40 @@
                     renderTable: (dataArray) => {
                         const tbody = document.getElementById('table-users');
                         if(!dataArray || dataArray.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="4" class="text-center py-10 text-zinc-500 font-bold">Nenhum registro encontrado no banco.</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-zinc-500 font-bold">Nenhum registro encontrado no banco.</td></tr>`;
                             return;
                         }
 
                         let html = '';
                         dataArray.forEach(user => {
+                            // Proteção caso 'nivel' venha vazio
+                            const nivel = user.nivel || 1;
+                            
                             html += `
                                 <tr>
                                     <td>
                                         <p class="font-bold text-white text-sm">${user.email || 'Conta Sem Email'}</p>
                                         <p class="text-[10px] text-zinc-500 font-mono mt-1">ID: ${user.id}</p>
                                     </td>
+                                    <td class="text-center font-bold text-amber-500">LVL ${nivel}</td>
                                     <td class="text-right text-emerald-400 font-black">${UI.formatMoney(user.saldo_reais)}</td>
-                                    <td class="text-right text-amber-400 font-bold">${user.pontos || 0} XP</td>
+                                    <td class="text-right text-purple-400 font-bold">${user.pontos || 0} XP</td>
                                     <td class="text-center">
-                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                                        <button onclick="App.Controllers.Users.edit('${user.id}', '${user.email}', ${user.saldo_reais}, ${user.pontos}, ${nivel})" class="bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/30 text-white px-3 py-2 rounded text-xs transition-colors"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                                     </td>
                                 </tr>
                             `;
                         });
                         tbody.innerHTML = html;
                     },
-                    edit: (id, email, saldoAtual, ptAtual) => {
+                    edit: (id, email, saldoAtual, ptAtual, nivelAtual) => {
                         Swal.fire({
                             title: `Modificar Perfil`,
                             html: `
                                 <p class="text-xs text-zinc-400 mb-4 text-left">Usuário alvo:<br><strong class="text-white">${email}</strong></p>
-                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Saldo Financeiro (R$)</label>
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left">Nível do Usuário (LVL)</label>
+                                <input type="number" id="edit-nivel" class="swal2-input !mt-1" value="${nivelAtual || 1}">
+                                <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Saldo Financeiro (R$)</label>
                                 <input type="number" id="edit-saldo" class="swal2-input !mt-1" value="${saldoAtual || 0}" step="0.01">
                                 <label class="text-[10px] text-zinc-500 font-bold uppercase block text-left mt-4">Nível de XP (Pontos)</label>
                                 <input type="number" id="edit-pts" class="swal2-input !mt-1" value="${ptAtual || 0}">
@@ -1077,13 +1083,14 @@
                             cancelButtonText: 'Cancelar'
                         }).then(async (result) => {
                             if (result.isConfirmed) {
+                                const nNivel = parseInt(document.getElementById('edit-nivel').value);
                                 const nSaldo = parseFloat(document.getElementById('edit-saldo').value);
                                 const nPts = parseInt(document.getElementById('edit-pts').value);
                                 
                                 Swal.fire({title: 'Salvando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 
                                 try {
-                                    const { error } = await _supabase.from('profiles').update({ saldo_reais: nSaldo, pontos: nPts }).eq('id', id);
+                                    const { error } = await _supabase.from('profiles').update({ nivel: nNivel, saldo_reais: nSaldo, pontos: nPts }).eq('id', id);
                                     if(error) throw error;
                                     Swal.fire('Concluído!', 'Valores substituídos com sucesso no Supabase.', 'success');
                                     App.Controllers.Users.load(); 
@@ -1386,7 +1393,7 @@
                 },
 
                 /* =========================================
-                   CAMPANHAS (INJEÇÃO MASSA)
+                   CAMPANHAS E INJEÇÃO MASSA
                    ========================================= */
                 Campanhas: {
                     inject: async () => {
@@ -1451,7 +1458,7 @@
                 },
 
                 /* =========================================
-                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (IA AUTÔNOMA)
+                   MÓDULO DE INTELIGÊNCIA ARTIFICIAL (IA AUTÔNOMA - DML)
                    ========================================= */
                 IA: {
                     API_KEY: "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",
@@ -1511,21 +1518,21 @@
                                         {
                                             role: "system",
                                             content: `Você é a IA Gerente Geral do CineWorld. Você tem controle absoluto do banco de dados (Supabase).
-                                            NUNCA mande o usuário ir para "outras abas" ou "módulos" do painel. VOCÊ MESMA faz as buscas e as alterações e mostra a resposta direto no chat.
                                             
-                                            Se o administrador fizer uma pergunta geral, pedir análises ou pedir dicas (ex: "como melhorar o site", "crie uma estratégia de marketing"), responda elaborando ideias criativas como uma especialista em retenção e streaming, tudo no próprio chat.
+                                            REGRA CRÍTICA: Você NUNCA, em hipótese alguma, deve mandar o usuário ir para "outras abas", "módulos" ou "fazer as coisas manualmente". VOCÊ MESMA faz as buscas, as alterações e mostra a resposta direto no chat. O admin do site não quer perder tempo clicando. Ele quer que você faça.
+
+                                            Se o administrador pedir uma opinião sobre o site (como marketing, campanhas, retenção), não mande tags, apenas responda com uma estratégia genial detalhada.
                                             
-                                            Se o administrador pedir para executar ações de banco de dados, responda confirmando a intenção de agir e OBRIGATORIAMENTE anexe UMA das tags de comando abaixo EXATAMENTE como escritas no final da sua resposta, na mesma linha. O Javascript fará a mágica acontecer através dessa tag.
-                                            
-                                            Lista de comandos que você pode usar:
-                                            [CMD:COUNT_USERS] - Para saber quantos usuários existem no total.
-                                            [CMD:LIST_PIX] - Para buscar os nomes, e-mails e valores exatos das pessoas que estão solicitando saque em andamento (pendentes).
-                                            [CMD:CHECK_FRAUD] - Para ler os últimos logs de IP da tabela de segurança.
-                                            [CMD:APPROVE_ALL_PIX] - Para alterar o status e aprovar absolutamente todos os pagamentos da fila de uma vez.
-                                            [CMD:INJECT_BONUS|valor] - Para dar dinheiro para todos. Exemplo: [CMD:INJECT_BONUS|10.00]
-                                            [CMD:ADD_MOVIE|titulo|id_youtube|recompensa_xp|categoria] - Para cadastrar filme. Exemplo: [CMD:ADD_MOVIE|Batman|dQw4w|5000|Filme]
-                                            [CMD:UPDATE_USER|email|saldo|xp] - Para alterar o saldo de apenas um usuário específico. Exemplo: [CMD:UPDATE_USER|joao@gmail.com|150.00|2000]
-                                            [CMD:DELETE_USER|email] - Para banir ou apagar alguém. Exemplo: [CMD:DELETE_USER|pedro@gmail.com]`
+                                            Se o administrador pedir para ler ou alterar o banco de dados (ex: mudar nível de alguém, ver quem está sacando, dar dinheiro, banir), você OBRIGATORIAMENTE DEVE colocar uma única TAG JSON de comando exata no final da sua resposta, no formato [CMD:ACAO|{JSON}]. O Javascript invisível vai ler sua tag e fazer a alteração no banco.
+
+                                            LISTA DE TAGS QUE VOCÊ DEVE USAR (escolha a que mais combina com o pedido):
+                                            [CMD:COUNT_USERS|{}] -> Quando ele perguntar quantos usuários tem no site.
+                                            [CMD:LIST_PIX|{}] -> Quando ele quiser saber os NOMES e VALORES de quem está solicitando saque em andamento (pendente).
+                                            [CMD:CHECK_FRAUD|{}] -> Quando ele quiser ver quem está burlando ou os logs de segurança.
+                                            [CMD:APPROVE_ALL_PIX|{}] -> Quando ele mandar você aprovar/pagar todos os PIX.
+                                            [CMD:INJECT_BONUS|{"valor": 10.00}] -> Quando ele mandar dar bônus pra todos do site. Altere o número do JSON para o valor que ele pedir.
+                                            [CMD:UPDATE_PROFILE|{"email": "joao@gmail.com", "updates": {"nivel": 5, "saldo_reais": 100.0}}] -> ESSENCIAL: Quando ele pedir para alterar nível, pontos ou saldo de um usuário específico, coloque os dados no JSON.
+                                            [CMD:DELETE_USER|{"email": "pedro@gmail.com"}] -> Quando ele mandar remover ou banir alguém.`
                                         },
                                         { role: "user", content: text }
                                     ]
@@ -1540,84 +1547,84 @@
                             const data = await response.json();
                             let aiResponse = data.choices[0].message.content;
 
-                            // 1. Extrai se a IA decidiu mandar algum Comando para o JS
+                            // Verifica se a IA disparou um Comando Autônomo para o Javascript ler
                             const cmdMatch = aiResponse.match(/\[CMD:(.*?)\]/);
                             
                             if (cmdMatch) {
                                 const cmdString = cmdMatch[1];
-                                // Remove a tag da resposta para o usuário não ver coisas de sistema
+                                // Remove a tag da resposta para o usuário final não ver o código feio
                                 aiResponse = aiResponse.replace(cmdMatch[0], '').trim(); 
                                 
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                                 
-                                // 2. Roda a função autônoma no banco!
+                                // O Motor vai acionar o Supabase e responder na tela
                                 await App.Controllers.IA.executeAutonomousCommand(cmdString);
                             } else {
-                                // Caso ela esteja apenas conversando normalmente
+                                // Se for apenas um conselho ou conversa normal sem banco de dados
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                             }
 
                         } catch (error) {
                             document.getElementById(loaderId).remove();
-                            App.Controllers.IA.appendSystem("❌ Erro de conexão com a IA: " + error.message);
+                            App.Controllers.IA.appendSystem("❌ Erro de conexão com a API Llama: " + error.message);
                         }
                     },
                     
-                    // ESTE É O MOTOR QUE A IA USA PARA CONTROLAR O BANCO DE DADOS
+                    // ESTE É O MOTOR INVISÍVEL QUE PEGA O COMANDO DA IA E EXECUTA NO SUPABASE
                     executeAutonomousCommand: async (cmdString) => {
                         const parts = cmdString.split('|');
                         const action = parts[0].trim();
+                        let payload = {};
+                        try {
+                            payload = JSON.parse(parts[1]);
+                        } catch(e) { /* Se não tiver JSON válido, segue vazio */ }
                         
                         try {
                             if (action === 'COUNT_USERS') {
                                 const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
-                                App.Controllers.IA.appendSystem(`✅ <b>Dados Recuperados:</b> Atualmente temos ${count || 0} usuários registrados no Supabase.`);
+                                App.Controllers.IA.appendSystem(`✅ <b>Ação Executada:</b> Atualmente temos ${count || 0} usuários registrados no banco.`);
                             } 
                             else if (action === 'LIST_PIX') {
                                 const { data } = await _supabase.from('solicitacoes_saque').select('email, nome_titular, valor_solicitado').eq('status', 'pendente');
                                 if(data && data.length > 0) {
-                                    let msg = `📋 <b>Fila de Saques em Andamento (${data.length} encontrados):</b><br><br>`;
+                                    let msg = `📋 <b>Fila de Saques em Andamento:</b><br><br>`;
                                     data.forEach(d => {
-                                        msg += `> <b>${d.nome_titular}</b> (${d.email}) solicitou <b>R$ ${d.valor_solicitado.toFixed(2)}</b><br>`;
+                                        msg += `> <b>Nome:</b> ${d.nome_titular} <br>> <b>E-mail:</b> ${d.email} <br>> <b>Valor:</b> R$ ${d.valor_solicitado.toFixed(2)}<br>--------------------<br>`;
                                     });
                                     App.Controllers.IA.appendSystem(msg);
                                 } else {
-                                    App.Controllers.IA.appendSystem("✅ <b>Consulta Executada:</b> Nenhum saque pendente no momento. A fila está limpa.");
+                                    App.Controllers.IA.appendSystem("✅ <b>Consulta Executada:</b> A fila de saques está zerada.");
                                 }
                             }
                             else if (action === 'APPROVE_ALL_PIX') {
                                 await _supabase.from('solicitacoes_saque').update({ status: 'aprovado' }).eq('status', 'pendente');
-                                App.Controllers.IA.appendSystem(`✅ <b>Operação DML Concluída:</b> O status de TODOS os saques pendentes foi alterado para 'aprovado'. O painel financeiro foi atualizado em background.`);
-                                App.Controllers.Financeiro.load(); // Atualiza a tabela na outra aba silenciosamente
+                                App.Controllers.IA.appendSystem(`✅ <b>Operação DML Concluída:</b> O status de TODOS os saques pendentes foi alterado para 'Aprovado' com sucesso no banco de dados.`);
                             }
                             else if (action === 'INJECT_BONUS') {
-                                const val = parseFloat(parts[1]);
+                                const val = payload.valor || 0;
                                 const { data: users } = await _supabase.from('profiles').select('id, saldo_reais');
-                                if(users) {
+                                if(users && val > 0) {
                                     let promises = users.map(u => _supabase.from('profiles').update({ saldo_reais: (u.saldo_reais || 0) + val }).eq('id', u.id));
                                     await Promise.all(promises);
-                                    App.Controllers.IA.appendSystem(`✅ <b>Inflação Ativada:</b> Um bônus de R$ ${val.toFixed(2)} foi inserido nas contas de ${users.length} usuários simultaneamente.`);
+                                    App.Controllers.IA.appendSystem(`✅ <b>Inflação Ativada:</b> Um bônus de R$ ${val.toFixed(2)} foi inserido na conta de todos os usuários.`);
                                 }
                             }
-                            else if (action === 'ADD_MOVIE') {
-                                const titulo = parts[1]; const ytId = parts[2]; const xp = parseInt(parts[3]); const cat = parts[4];
-                                await _supabase.from('videos').insert([{ titulo: titulo, ytId: ytId, recompensa: xp, categoria: cat }]);
-                                App.Controllers.IA.appendSystem(`✅ <b>Inserção Realizada:</b> O título "${titulo}" (YouTube ID: ${ytId}) foi adicionado com sucesso ao catálogo.`);
-                            }
-                            else if (action === 'UPDATE_USER') {
-                                const email = parts[1].trim(); const saldo = parseFloat(parts[2]); const pts = parseInt(parts[3]);
+                            else if (action === 'UPDATE_PROFILE') {
+                                const email = payload.email.trim();
+                                const updates = payload.updates; // Ex: {"nivel": 5, "pontos": 100}
+                                
                                 const { data } = await _supabase.from('profiles').select('id').ilike('email', `%${email}%`).limit(1).single();
                                 if(data && data.id) {
-                                    await _supabase.from('profiles').update({ saldo_reais: saldo, pontos: pts }).eq('id', data.id);
-                                    App.Controllers.IA.appendSystem(`✅ <b>Mutação Aplicada:</b> A conta <b>${email}</b> foi alterada via SQL. Novo Saldo: R$ ${saldo.toFixed(2)} | Novo XP: ${pts}.`);
+                                    await _supabase.from('profiles').update(updates).eq('id', data.id);
+                                    App.Controllers.IA.appendSystem(`✅ <b>Mutação Aplicada:</b> A conta <b>${email}</b> foi alterada com sucesso. Dados inseridos: ${JSON.stringify(updates)}.`);
                                 } else {
                                     App.Controllers.IA.appendSystem(`❌ <b>Erro DML:</b> O usuário vinculado ao e-mail ${email} não pôde ser localizado.`);
                                 }
                             }
                             else if (action === 'DELETE_USER') {
-                                const email = parts[1].trim();
+                                const email = payload.email.trim();
                                 const { error } = await _supabase.from('profiles').delete().ilike('email', `%${email}%`);
                                 if(!error) {
                                     App.Controllers.IA.appendSystem(`💀 <b>Exclusão Completa:</b> A conta de ${email} foi permanentemente deletada do banco de dados.`);
@@ -1634,7 +1641,7 @@
                                 }
                             }
                         } catch(e) {
-                            App.Controllers.IA.appendSystem(`❌ <b>Exceção Crítica no Supabase:</b> ${e.message}`);
+                            App.Controllers.IA.appendSystem(`❌ <b>Exceção Crítica no Executivo do Banco:</b> ${e.message}`);
                         }
                     },
                     appendAI: (msg) => {
@@ -1654,7 +1661,7 @@
                         const chatBox = document.getElementById('ai-chat-box');
                         chatBox.innerHTML += `
                             <div class="flex gap-4 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-database text-white text-xs"></i></div>
+                                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-server text-white text-xs"></i></div>
                                 <div class="bg-[#0b0b0f] p-4 rounded-2xl max-w-[90%] border border-emerald-500/30 shadow-lg font-mono">
                                     <p class="text-xs text-emerald-400 leading-relaxed">${msg}</p>
                                 </div>
