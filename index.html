@@ -301,6 +301,15 @@
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
         </div>
 
+        <!-- CAIXA DE SEO PROGRAMÁTICO (Invisível até o Google trazer o visitante via ?termo=...) -->
+        <div id="seo-container" style="display: none; background: rgba(15, 15, 20, 0.95); border: 1px solid rgba(255, 157, 0, 0.3); padding: 25px; border-radius: 16px; margin: 15px; text-align: center; backdrop-filter: blur(20px); z-index: 22;">
+            <h1 id="seo-titulo" style="color: #ff9d00; font-size: 22px; font-weight: 800; margin-bottom: 12px; line-height: 1.3;"></h1>
+            <p id="seo-texto" style="color: #cbd5e1; font-size: 13px; line-height: 1.6; margin-bottom: 20px;"></p>
+            <button onclick="document.getElementById('seo-container').style.display='none';" style="background: linear-gradient(90deg, #00bfa5, #00e676); color: #000; font-weight: 800; border: none; padding: 14px 24px; border-radius: 12px; cursor: pointer; font-size: 13px; box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);">
+                Entrar na Plataforma e Começar
+            </button>
+        </div>
+
         <!-- Autenticação -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
@@ -577,7 +586,6 @@
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
         // SISTEMA DE BACKUP: AS 192 MÍDIAS INTACAS NO CÓDIGO
-        // Se o Supabase falhar, o site puxa daqui e não fica vazio.
         let colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -848,7 +856,6 @@
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
-            // CARREGA A MEMÓRIA DO PIX SALVO NO CELULAR DO USUÁRIO
             document.getElementById('pixName').value = localStorage.getItem('userPixName') || '';
             document.getElementById('pixKey').value = localStorage.getItem('userPixKey') || '';
             
@@ -878,7 +885,6 @@
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
             pontosLocaisMemoria = pontos; dinheiroLocalMemoria = saldoReais; nivelLocalMemoria = nivel;
             
-            // Textos básicos
             document.getElementById('ptsTotal').innerText = pontos;
             document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
             
@@ -887,10 +893,9 @@
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
             
-            // SISTEMA VIP COLORIDO NO MENU
             const badgeLvl = document.getElementById('userLevelBadge');
             let tierName = "Bronze";
-            badgeLvl.style.background = "linear-gradient(90deg, #b87333, #e69138)"; // Padrão bronze
+            badgeLvl.style.background = "linear-gradient(90deg, #b87333, #e69138)";
             badgeLvl.style.color = "#fff";
             
             if(nivelLocalMemoria >= 6 && nivelLocalMemoria <= 10) {
@@ -904,7 +909,6 @@
             }
             badgeLvl.innerText = `LVL ${nivelLocalMemoria} (${tierName})`;
             
-            // BARRA DE PROGRESSO DE NÍVEL
             let xpProximoNivel = nivelLocalMemoria * 5000;
             let xpRestante = pontosLocaisMemoria;
             if(xpRestante > xpProximoNivel) xpRestante = xpProximoNivel;
@@ -913,13 +917,11 @@
             const xpPct = Math.min((pontosLocaisMemoria / xpProximoNivel) * 100, 100);
             document.getElementById('userXpBar').style.width = `${xpPct}%`;
 
-            // BARRA DE PROGRESSO DE SAQUE (BASEADA NO PAINEL ADMIN)
             const minSaque = configGlobal.saque_minimo || 20.00;
             const pct = Math.min((saldoReais / minSaque) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
             
-            // MISSÃO DIÁRIA PROGRESSO
             const pctMissao = Math.min((videosAssistidosHoje / 10) * 100, 100);
             document.getElementById('missionProgressBar').style.width = `${pctMissao}%`;
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Mídias`;
@@ -968,7 +970,6 @@
             const isoAgora = new Date().toISOString(); dataUltimoBonusIso = isoAgora;
             pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
             
-            // Checa Nível
             let xpProximoNivel = nivelLocalMemoria * 5000;
             if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
 
@@ -1014,14 +1015,12 @@
 
         async function buscarFilmesDoBanco() {
             try {
-                // Tenta puxar os vídeos reais do Supabase (onde a IA insere)
                 const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
                 if (!error && data && data.length > 0) {
                     colecaoVideos = data.filter(v => v.categoria === 'Hit');
                     colecaoFilmes = data.filter(v => v.categoria === 'Filme');
                 }
             } catch (e) {
-                // Se der erro de conexão, usa o backup das listas gigantes
                 console.log("Mantendo arrays locais como backup");
             }
         }
@@ -1081,17 +1080,15 @@
                     tempoAcumuladoSegundos++;
                     if (tempoAcumuladoSegundos >= 60) {
                         tempoAcumuladoSegundos = 0; 
-                        videosAssistidosHoje++; // Conta para a missão
+                        videosAssistidosHoje++;
                         const vData = colecaoVideos.find(v => v.id === idVideoAtivo) || colecaoFilmes.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
                         
                         pontosLocaisMemoria += parseInt(vData.recompensa); 
                         
-                        // Conversão dinâmica via Painel Master
                         let taxa = configGlobal.taxa_conversao || 10000;
                         dinheiroLocalMemoria += (parseInt(vData.recompensa) / taxa);
                         
-                        // Sistema Automático de Subida de Nível
                         let xpProximoNivel = nivelLocalMemoria * 5000;
                         if(pontosLocaisMemoria >= xpProximoNivel) {
                             nivelLocalMemoria++;
@@ -1121,7 +1118,6 @@
             if(!name || !key || isNaN(val) || val < minSaque) return alert(`Preencha todos os dados. O valor mínimo é R$ ${minSaque.toFixed(2)}.`);
             if(dinheiroLocalMemoria < val) return alert("Saldo insuficiente.");
 
-            // GRAVA O PIX NA MEMÓRIA DO CELULAR
             localStorage.setItem('userPixName', name);
             localStorage.setItem('userPixKey', key);
 
@@ -1148,9 +1144,32 @@
 
         async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
 
+        // MOTOR DE SEO PROGRAMÁTICO (Lê o parâmetro ?termo= na URL e puxa do Supabase)
+        async function carregarSeoProgramatico() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const termoBusca = urlParams.get('termo');
+
+            if (!termoBusca) return;
+
+            try {
+                const { data, error } = await _supabase
+                    .from('seo_paginas')
+                    .select('*')
+                    .eq('slug', termoBusca)
+                    .maybeSingle();
+
+                if (data) {
+                    document.getElementById('seo-titulo').innerText = data.titulo;
+                    document.getElementById('seo-texto').innerText = data.texto_apoio;
+                    document.title = data.titulo + " | Cine Rewards";
+                    document.getElementById('seo-container').style.display = 'block';
+                }
+            } catch (e) {
+                console.error("Erro ao carregar SEO:", e);
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
-            
-            // SINCRONIZA AS REGRAS DO PAINEL ADMIN
             try {
                 const { data: configDB } = await _supabase.from('config_global').select('*').eq('id', 1).single();
                 if(configDB) {
@@ -1163,6 +1182,9 @@
             } catch(e) {}
 
             await inicializarPlaylist();
+            
+            // Executa o motor de SEO Programático ao abrir a página
+            await carregarSeoProgramatico();
             
             const { data: { session } } = await _supabase.auth.getSession();
             if (session?.user) { document.getElementById('authScreen').classList.add('hidden'); await carregarDadosDoUsuario(session.user); }
