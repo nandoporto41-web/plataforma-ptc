@@ -288,7 +288,7 @@
                 </div>
             </div>
 
-            <!-- Trilhos de Filmes -->
+            <!-- Trilhos de Filmes Dinâmicos -->
             <div class="movie-rail" id="rail-continue" style="display: none;">
                 <h3 class="rail-title">Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
@@ -310,7 +310,7 @@
             </div>
             
             <div class="movie-rail">
-                <h3 class="rail-title">Ficção e Aventura</h3>
+                <h3 class="rail-title">Ficção e Fantasia</h3>
                 <div class="rail-scroll" id="carousel-scifi"></div>
             </div>
 
@@ -449,7 +449,7 @@
         let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista')) || [];
         let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso')) || {};
 
-        // 192 MÍDIAS INTACAS + CORREÇÕES DE IDs FALSOS
+        // 192 MÍDIAS INTACAS COMO BACKUP + CORREÇÕES DE IDs FALSOS
         let colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -559,118 +559,93 @@
         ];
 
         let colecaoFilmes = [
-            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200 },
-            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200 },
-            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200 },
-            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200 },
-            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200 },
-            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200 },
-            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200 },
-            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200 },
-            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200 },
-            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200 },
-            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200 },
-            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200 },
-            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200 },
-            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200 },
-            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200 },
-            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200 },
-            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200 },
-            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200 },
-            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200 },
-            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200 },
-            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200 },
-            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200 },
-            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200 },
-            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200 },
-            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200 },
-            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200 },
-            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200 },
-            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200 },
-            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200 },
-            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200 },
-            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200 },
-            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200 },
-            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200 },
-            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200 },
-            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200 },
-            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200 },
-            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200 },
-            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200 },
-            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200 },
-            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200 },
-            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200 },
-            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200 },
-            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200 },
-            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200 },
-            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200 },
-            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200 },
-            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200 },
-            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200 },
-            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200 },
-            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200 },
-            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200 },
-            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200 },
-            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200 },
-            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200 },
-            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200 },
-            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200 },
-            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200 },
-            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200 },
-            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200 },
-            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200 },
-            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200 },
-            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200 },
-            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200 },
-            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200 },
-            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200 },
-            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200 },
-            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200 },
-            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200 },
-            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200 },
-            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200 },
-            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200 },
-            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200 },
-            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200 },
-            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200 },
-            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200 },
-            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200 },
-            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200 },
-            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200 },
-            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200 },
-            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200 },
-            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200 },
-            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200 },
-            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200 },
-            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200 },
-            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
-            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
-            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 },
-            
-            // CORREÇÃO DOS IDs FALSOS (Utilizando IDs reais para não mostrar "Vídeo Indisponível")
-            { id: "f88", ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200 },
-            { id: "f89", ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200 },
-            { id: "f90", ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200 },
-            { id: "f91", ytId: "ibjo9quRNoM", titulo: "Velocidade Extrema", recompensa: 200 },
-            { id: "f92", ytId: "ZdCdPtZHvj8", titulo: "Invasão Alienígena", recompensa: 200 },
-            { id: "f93", ytId: "A81QkSgG64g", titulo: "O Último Sobrevivente", recompensa: 200 },
-            { id: "f94", ytId: "aGBk70oIqQ0", titulo: "Mistério no Pacífico", recompensa: 200 },
-            { id: "f95", ytId: "XaBzM91Y3C4", titulo: "A Fortaleza", recompensa: 200 },
-            { id: "f96", ytId: "49fvoJVJ-io", titulo: "Conspiração Global", recompensa: 200 },
-            { id: "f97", ytId: "Lc5tvT4xMlg", titulo: "Caçadores de Mitos", recompensa: 200 },
-            { id: "f98", ytId: "Ie4j83UDnhw", titulo: "A Vingança do Samurai", recompensa: 200 },
-            { id: "f99", ytId: "T2OblA5LCwI", titulo: "O Segredo do Faraó", recompensa: 200 },
-            { id: "f100", ytId: "HfQoBFovpG8", titulo: "Resgate nas Montanhas", recompensa: 200 },
-            { id: "f101", ytId: "DO4VaVbpyq4", titulo: "O Atirador de Elite", recompensa: 200 },
-            { id: "f102", ytId: "5pIchruuDuo", titulo: "Fogo Cruzado", recompensa: 200 },
-            { id: "f103", ytId: "umOlzb2IaKk", titulo: "A Maldição", recompensa: 200 },
-            { id: "f104", ytId: "fJOG2UDNnlw", titulo: "Guerra Cibernética", recompensa: 200 },
-            { id: "f105", ytId: "OOqr00sQc9U", titulo: "O Esquadrão", recompensa: 200 },
-            { id: "f106", ytId: "BUNcui7rpi4", titulo: "A Queda do Império", recompensa: 200 },
-            { id: "f107", ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200 },
-            { id: "f108", ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200 },
-            { id: "f109", ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200 },
-            { id: "f110", ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200 }
+            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200, categoria: "Ação" },
+            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200, categoria: "Suspense" },
+            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200, categoria: "Ação" },
+            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200, categoria: "Ficção" },
+            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200, categoria: "Ação" },
+            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200, categoria: "Suspense" },
+            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200, categoria: "Suspense" },
+            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200, categoria: "Ação" },
+            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200, categoria: "Ação" },
+            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200, categoria: "Ficção" },
+            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200, categoria: "Ação" },
+            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200, categoria: "Ação" },
+            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200, categoria: "Ação" },
+            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200, categoria: "Ação" },
+            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200, categoria: "Suspense" },
+            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200, categoria: "Comédia" },
+            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200, categoria: "Ficção" },
+            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200, categoria: "Suspense" },
+            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200, categoria: "Suspense" },
+            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200, categoria: "Ação" },
+            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200, categoria: "Ação" },
+            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200, categoria: "Ação" },
+            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200, categoria: "Ação" },
+            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200, categoria: "Ação" },
+            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200, categoria: "Ação" },
+            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200, categoria: "Suspense" },
+            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200, categoria: "Ação" },
+            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200, categoria: "Ficção" },
+            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200, categoria: "Suspense" },
+            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200, categoria: "Ação" },
+            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200, categoria: "Ação" },
+            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200, categoria: "Comédia" },
+            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200, categoria: "Ação" },
+            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200, categoria: "Ação" },
+            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200, categoria: "Ficção" },
+            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200, categoria: "Suspense" },
+            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200, categoria: "Ficção" },
+            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200, categoria: "Suspense" },
+            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200, categoria: "Ação" },
+            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200, categoria: "Ação" },
+            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200, categoria: "Suspense" },
+            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200, categoria: "Ação" },
+            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200, categoria: "Suspense" },
+            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200, categoria: "Ação" },
+            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200, categoria: "Ação" },
+            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200, categoria: "Ação" },
+            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200, categoria: "Ação" },
+            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200, categoria: "Ficção" },
+            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200, categoria: "Ficção" },
+            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200, categoria: "Suspense" },
+            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200, categoria: "Ação" },
+            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200, categoria: "Ficção" },
+            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200, categoria: "Suspense" },
+            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200, categoria: "Ação" },
+            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200, categoria: "Ficção" },
+            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200, categoria: "Ação" },
+            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200, categoria: "Ação" },
+            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200, categoria: "Suspense" },
+            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200, categoria: "Suspense" },
+            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200, categoria: "Ação" },
+            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200, categoria: "Comédia" },
+            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200, categoria: "Ficção" },
+            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200, categoria: "Comédia" },
+            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200, categoria: "Ação" },
+            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200, categoria: "Ação" },
+            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200, categoria: "Suspense" },
+            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200, categoria: "Ficção" },
+            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200, categoria: "Comédia" },
+            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200, categoria: "Comédia" },
+            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200, categoria: "Ficção" },
+            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200, categoria: "Ação" },
+            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200, categoria: "Ação" },
+            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200, categoria: "Ação" },
+            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200, categoria: "Ação" },
+            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200, categoria: "Suspense" },
+            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200, categoria: "Ação" },
+            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200, categoria: "Ficção" },
+            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200, categoria: "Ação" },
+            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200, categoria: "Ação" },
+            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200, categoria: "Suspense" },
+            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200, categoria: "Ficção" },
+            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200, categoria: "Ação" },
+            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200, categoria: "Ação" },
+            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200, categoria: "Ação" },
+            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200, categoria: "Suspense" },
+            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200, categoria: "Suspense" },
+            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200, categoria: "Ação" }
         ];
 
         // FUNÇÃO GERADORA DE CARDS HBO STYLE
@@ -712,10 +687,11 @@
 
         async function buscarFilmesDoBanco() {
             try {
+                // Tenta puxar do Supabase. Se houver filmes, substitui as listas locais.
                 const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
                 if (!error && data && data.length > 0) {
                     colecaoVideos = data.filter(v => v.categoria === 'Hit' || !v.categoria);
-                    colecaoFilmes = data.filter(v => v.categoria === 'Filme');
+                    colecaoFilmes = data.filter(v => v.categoria !== 'Hit' && v.categoria);
                 }
             } catch (e) { console.log("Mantendo arrays locais como backup"); }
         }
@@ -745,37 +721,34 @@
             }
         }
 
-        // CARREGA TODOS OS FILMES (SEM O LIMITE DO SLICE)
+        // CARREGA TODOS OS FILMES FILTRANDO POR CATEGORIA (SEM LIMITAR)
         function renderizarCarrosseis() {
+            const allMedia = [...colecaoVideos, ...colecaoFilmes];
+
             const hitsContainer = document.getElementById('carousel-hits');
             hitsContainer.innerHTML = "";
-            colecaoVideos.forEach(vid => {
-                hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
-            });
+            const hits = allMedia.filter(v => v.categoria === 'Hit' || !v.categoria);
+            hits.forEach(vid => hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id)))));
 
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
-            colecaoFilmes.slice(0, 35).forEach(vid => {
-                actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
-            });
+            const action = allMedia.filter(v => v.categoria === 'Ação' || v.categoria === 'Filme');
+            action.forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id)))));
 
             const suspenseContainer = document.getElementById('carousel-suspense');
             suspenseContainer.innerHTML = "";
-            colecaoFilmes.slice(35, 70).forEach(vid => {
-                suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
-            });
+            const suspense = allMedia.filter(v => v.categoria === 'Suspense');
+            suspense.forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id)))));
 
             const sciFiContainer = document.getElementById('carousel-scifi');
             sciFiContainer.innerHTML = "";
-            colecaoFilmes.slice(70, 95).forEach(vid => {
-                sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
-            });
+            const scifi = allMedia.filter(v => v.categoria === 'Ficção');
+            scifi.forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id)))));
 
             const comedyContainer = document.getElementById('carousel-comedy');
             comedyContainer.innerHTML = "";
-            colecaoFilmes.slice(95).forEach(vid => {
-                comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
-            });
+            const comedy = allMedia.filter(v => v.categoria === 'Comédia' || v.categoria === 'Comédia e Família');
+            comedy.forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id)))));
         }
 
         function atualizarContinueAssistindo() {
@@ -792,7 +765,7 @@
             rail.style.display = 'block';
             const allMedia = [...colecaoVideos, ...colecaoFilmes];
             
-            vidsComProgresso.slice(-5).reverse().forEach(id => {
+            vidsComProgresso.slice(-10).reverse().forEach(id => {
                 const vid = allMedia.find(v => v.id === id);
                 if(vid) {
                     container.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
