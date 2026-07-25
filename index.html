@@ -61,10 +61,13 @@
 
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
-        .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: opacity 0.3s; }
+        
+        /* CAPAS ESTILO NETFLIX (SEM BORDAS PRETAS) */
+        .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
+        .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
+        
         .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
-        .play-icon-overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.4); }
+        .play-icon-overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.4); z-index: 2; }
         .movie-poster:hover .play-icon-overlay { opacity: 1; }
         .play-icon-overlay i { font-size: 30px; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .progress-bar-continue { position: absolute; bottom: 0; left: 0; height: 3px; background: #8b5cf6; z-index: 5; transition: width 0.3s ease;}
@@ -384,9 +387,10 @@
             const btnClass = isSaved ? 'btn-add-list saved' : 'btn-add-list';
             const iconClass = isSaved ? 'fa-solid fa-check' : 'fa-solid fa-plus';
 
+            // CAPAS SEM BORDAS PRETAS (mqdefault.jpg + scale 1.35)
             card.innerHTML = `
                 <div class="poster-image-wrapper" onclick="document.getElementById('play-btn-${videoId}').click()">
-                    <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="${vid.titulo}">
+                    <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${vid.titulo}">
                     <div class="play-icon-overlay" id="play-btn-${videoId}">
                         <i class="fa-solid fa-circle-play"></i>
                     </div>
@@ -449,41 +453,34 @@
         }
 
         function renderizarCarrosseis() {
-            // Catálogo Completo
             const todosContainer = document.getElementById('carousel-todos');
             todosContainer.innerHTML = "";
             todasMidiasGerais.forEach(vid => todosContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Em Alta (Primeiros 12)
             const trendingContainer = document.getElementById('carousel-trending');
             trendingContainer.innerHTML = "";
             todasMidiasGerais.slice(0, 12).forEach(vid => trendingContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Ação
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
             const acaoList = todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação'));
             (acaoList.length > 0 ? acaoList : todasMidiasGerais.slice(0, 8)).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Suspense
             const suspenseContainer = document.getElementById('carousel-suspense');
             suspenseContainer.innerHTML = "";
             const suspenseList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror')));
             (suspenseList.length > 0 ? suspenseList : todasMidiasGerais.slice(4, 12)).forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Ficção
             const sciFiContainer = document.getElementById('carousel-scifi');
             sciFiContainer.innerHTML = "";
             const scifiList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia')));
             (scifiList.length > 0 ? scifiList : todasMidiasGerais.slice(8, 16)).forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Comédia
             const comedyContainer = document.getElementById('carousel-comedy');
             comedyContainer.innerHTML = "";
             const comedyList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('animação') || v.categoria.toLowerCase().includes('família')));
             (comedyList.length > 0 ? comedyList : todasMidiasGerais.slice(2, 10)).forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Dramas
             const dramaContainer = document.getElementById('carousel-drama');
             dramaContainer.innerHTML = "";
             const dramaList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('drama') || v.categoria.toLowerCase().includes('romance')));
@@ -619,7 +616,6 @@
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 nivelLocalMemoria = parseInt(data?.nivel) || 1;
                 
-                // SISTEMA BLINDADO CONTRA RESGATE DUPLO
                 const localBonusIso = localStorage.getItem('cine_ultimo_bonus_' + user.id);
                 const dbBonusIso = data?.ultimo_bonus;
                 
@@ -629,12 +625,26 @@
                     dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
                 }
 
-                if(navigator.geolocation) { await _supabase.from('antifraud_logs').insert([{ user_id: user.id, email: user.email, ip_address: "Acesso Mobile", localidade: "Brasil (Sincronizado)", dispositivo: navigator.userAgent }]); }
+                // REGISTRO DE SINAL DE PRESENÇA (ONLINE) IMEDIATO
+                await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user.id);
+
             } catch (e) { } 
             finally { 
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); 
                 gerenciarCronometroBonusDiario(); 
+                iniciarHeartbeatOnline();
             }
+        }
+
+        // HEARTBEAT: Mantém o usuário marcado como ONLINE a cada 30 segundos
+        function iniciarHeartbeatOnline() {
+            setInterval(async () => {
+                if (usuarioAtualId) {
+                    try {
+                        await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId);
+                    } catch(e) {}
+                }
+            }, 30000);
         }
 
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
@@ -696,7 +706,6 @@
             const isoAgora = new Date().toISOString(); 
             dataUltimoBonusIso = isoAgora;
             
-            // TRAVA IMEDIATA LOCAL
             localStorage.setItem('cine_ultimo_bonus_' + usuarioAtualId, isoAgora);
 
             pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
@@ -790,7 +799,9 @@
 
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
-                        await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60 }]);
+                        
+                        // GRAVAÇÃO NO HISTÓRICO PARA A TELEMETRIA DO PAINEL
+                        await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
                     }
                 }
             }, 1000);
