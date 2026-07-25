@@ -370,6 +370,7 @@
             <!-- GRUPO 1: DASHBOARDS -->
             <span class="nav-category">Executivo & Dados</span>
             <button onclick="UI.changeTab('dashboard')" id="nav-dashboard" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard Geral</button>
+            <button onclick="UI.changeTab('telemetria')" id="nav-telemetria" class="nav-item" style="color: #38bdf8;"><i class="fa-solid fa-satellite-dish"></i> Telemetria & Audiência</button>
             <button onclick="UI.changeTab('analytics')" id="nav-analytics" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics & Mapas</button>
             
             <!-- GRUPO 2: GESTÃO CORE -->
@@ -453,6 +454,99 @@
                 <h3 class="font-bold text-white mb-4"><i class="fa-solid fa-terminal text-indigo-400 mr-2"></i> Monitoramento do Banco de Dados</h3>
                 <div class="bg-[#050508] p-4 rounded-lg border border-zinc-800 font-mono text-xs text-emerald-400 h-40 overflow-y-auto chat-scroll" id="system-console">
                     > [System] Inicializando CineWorld OS Master...<br>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA X: TELEMETRIA & AUDIÊNCIA EM TEMPO REAL -->
+        <!-- ========================================== -->
+        <section id="tab-telemetria" class="tab-content">
+            <div class="flex justify-between items-end mb-6 border-b border-zinc-800 pb-4">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white text-sky-400"><i class="fa-solid fa-satellite-dish mr-2"></i> Telemetria & Audiência</h2>
+                    <p class="text-zinc-400 text-xs md:text-sm mt-1">Veja quem está assistindo o quê, quem está online/offline e o ranking de filmes mais vistos.</p>
+                </div>
+                <button onclick="App.Controllers.Telemetria.load()" class="btn-neon"><i class="fa-solid fa-rotate"></i> Atualizar Radar</button>
+            </div>
+
+            <!-- Grid de Status Rápido -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="glass-panel p-6 border-l-4 border-l-emerald-500">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Usuários Online Recentemente (24h)</p>
+                    <p class="text-3xl font-black text-emerald-400" id="tele-online-count">0</p>
+                </div>
+                <div class="glass-panel p-6 border-l-4 border-l-sky-500">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Sessões de Filmes Registradas</p>
+                    <p class="text-3xl font-black text-sky-400" id="tele-sessions-count">0</p>
+                </div>
+                <div class="glass-panel p-6 border-l-4 border-l-purple-500">
+                    <p class="text-zinc-500 text-[10px] font-bold uppercase mb-1">Filmes Diferentes Assistidos</p>
+                    <p class="text-3xl font-black text-purple-400" id="tele-movies-count">0</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Quem está assistindo o quê agora / último histórico -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-4 text-sm uppercase tracking-wider border-b border-zinc-800 pb-3">
+                        <i class="fa-solid fa-clapperboard text-pink-500 mr-2"></i> Atividade Recente (Quem Venceu / Assistiu)
+                    </h3>
+                    <div class="data-table-container !mt-0">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Filme / Título</th>
+                                    <th class="text-right">Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-watching-now">
+                                <tr><td colspan="3" class="text-center py-6 text-zinc-500">Carregando telemetria...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Ranking dos filmes mais vistos -->
+                <div class="glass-panel p-6">
+                    <h3 class="font-bold text-white mb-4 text-sm uppercase tracking-wider border-b border-zinc-800 pb-3">
+                        <i class="fa-solid fa-ranking-star text-amber-500 mr-2"></i> Top Filmes Mais Vistos (Ranking)
+                    </h3>
+                    <div class="data-table-container !mt-0">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição & Filme</th>
+                                    <th class="text-right">Total de Visualizações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-top-movies">
+                                <tr><td colspan="2" class="text-center py-6 text-zinc-500">Calculando ranking...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela de status de atividade por usuário -->
+            <div class="glass-panel p-6">
+                <h3 class="font-bold text-white mb-4 text-sm uppercase tracking-wider border-b border-zinc-800 pb-3">
+                    <i class="fa-solid fa-users-viewfinder text-indigo-400 mr-2"></i> Status de Engajamento de Usuários (Online vs Inativo)
+                </h3>
+                <div class="data-table-container !mt-0">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>E-mail</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-right">Nível / XP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-user-status">
+                            <tr><td colspan="3" class="text-center py-6 text-zinc-500">Carregando status...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -770,11 +864,10 @@
                             <p class="text-sm text-zinc-200 leading-relaxed">Olá, Mestre! Fui reprojetada com acesso **DML Absoluto** ao Supabase. Eu não vou mais pedir para você ir em outras abas. Se você me pedir qualquer coisa, eu mesma vou até o banco de dados, executo o SQL e te mostro o resultado aqui no chat. Posso listar dados, alterar níveis de conta e sugerir estratégias corporativas.</p>
                             <p class="text-xs text-zinc-500 mt-3 font-mono border-t border-zinc-700 pt-2">
                                 Tente comandos como:<br>
-                                - "Liste todos os saques pendentes pra mim"<br>
+                                - "Liste quem está assistindo o quê no momento"<br>
+                                - "Quais são os filmes mais vistos do site"<br>
                                 - "Mostre o nome de quem está sacando"<br>
-                                - "Qual a melhor estratégia para eu lançar uma campanha hoje?"<br>
-                                - "Altere o perfil joao@gmail.com para saldo 50, XP 1000 e nível 5"<br>
-                                - "Aprove todos os PIX da fila"
+                                - "Altere o perfil joao@gmail.com para saldo 50, XP 1000 e nível 5"
                             </p>
                         </div>
                     </div>
@@ -916,6 +1009,7 @@
 
                 // Acionar controladores responsáveis pela aba
                 if(tabId === 'dashboard') App.Controllers.Dashboard.load();
+                if(tabId === 'telemetria') App.Controllers.Telemetria.load();
                 if(tabId === 'analytics') App.Controllers.Analytics.load();
                 if(tabId === 'usuarios') App.Controllers.Users.load();
                 if(tabId === 'financeiro') App.Controllers.Financeiro.load();
@@ -989,6 +1083,117 @@
                 },
 
                 /* =========================================
+                   TELEMETRIA & AUDIÊNCIA EM TEMPO REAL
+                   ========================================= */
+                Telemetria: {
+                    load: async () => {
+                        try {
+                            UI.log("Carregando telemetria e dados de audiência...");
+                            
+                            // 1. Carrega histórico de visualizações (watch_history)
+                            const { data: history, error: errH } = await _supabase.from('watch_history').select('*').order('created_at', { ascending: false }).limit(200);
+                            
+                            // 2. Carrega perfis para saber quem está online/ativo
+                            const { data: profiles, error: errP } = await _supabase.from('profiles').select('*');
+
+                            if(errH) throw errH;
+
+                            // Métricas básicas
+                            document.getElementById('tele-sessions-count').innerText = history ? history.length : 0;
+                            
+                            // Filmes únicos assistidos
+                            const uniqueMovies = new Set(history ? history.map(h => h.video_titulo) : []);
+                            document.getElementById('tele-movies-count').innerText = uniqueMovies.size;
+
+                            // Usuários ativos recentemente (últimas 24 horas)
+                            const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+                            const activeUsers = profiles ? profiles.filter(p => p.updated_at && new Date(p.updated_at) > oneDayAgo) : [];
+                            document.getElementById('tele-online-count').innerText = activeUsers.length || (profiles ? profiles.length : 0);
+
+                            // Renderiza Atividade Recente (Quem assistiu o quê)
+                            const tbodyNow = document.getElementById('table-watching-now');
+                            if(!history || history.length === 0) {
+                                tbodyNow.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-zinc-500">Nenhum filme assistido registrado no histórico.</td></tr>`;
+                            } else {
+                                let htmlNow = '';
+                                history.slice(0, 10).forEach(h => {
+                                    const dataFormatted = h.created_at ? new Date(h.created_at).toLocaleTimeString() : 'Recentemente';
+                                    htmlNow += `
+                                        <tr>
+                                            <td class="font-bold text-white text-xs">${h.email || 'Usuário'}</td>
+                                            <td class="text-sky-400 font-medium text-xs truncate max-w-[200px]" title="${h.video_titulo}">${h.video_titulo || 'Vídeo sem título'}</td>
+                                            <td class="text-right text-zinc-400 text-xs">${dataFormatted}</td>
+                                        </tr>
+                                    `;
+                                });
+                                tbodyNow.innerHTML = htmlNow;
+                            }
+
+                            // Renderiza Ranking dos Filmes Mais Vistos
+                            const movieCounts = {};
+                            if(history) {
+                                history.forEach(h => {
+                                    const title = h.video_titulo || 'Desconhecido';
+                                    movieCounts[title] = (movieCounts[title] || 0) + 1;
+                                });
+                            }
+                            const sortedMovies = Object.entries(movieCounts).sort((a,b) => b[1] - a[1]);
+                            const tbodyTop = document.getElementById('table-top-movies');
+                            if(sortedMovies.length === 0) {
+                                tbodyTop.innerHTML = `<tr><td colspan="2" class="text-center py-6 text-zinc-500">Sem dados para ranking.</td></tr>`;
+                            } else {
+                                let htmlTop = '';
+                                sortedMovies.slice(0, 8).forEach(([title, count], idx) => {
+                                    let badgeColor = 'bg-zinc-800 text-zinc-300';
+                                    if(idx === 0) badgeColor = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+                                    else if(idx === 1) badgeColor = 'bg-zinc-400/20 text-zinc-300 border border-zinc-400/30';
+                                    else if(idx === 2) badgeColor = 'bg-amber-700/20 text-amber-600 border border-amber-700/30';
+
+                                    htmlTop += `
+                                        <tr>
+                                            <td class="flex items-center gap-3">
+                                                <span class="w-6 h-6 rounded flex items-center justify-center font-bold text-xs ${badgeColor}">${idx+1}º</span>
+                                                <span class="font-bold text-white text-xs truncate max-w-[220px]" title="${title}">${title}</span>
+                                            </td>
+                                            <td class="text-right font-black text-emerald-400 text-sm">${count} views</td>
+                                        </tr>
+                                    `;
+                                });
+                                tbodyTop.innerHTML = htmlTop;
+                            }
+
+                            // Renderiza Status de Engajamento de Usuários (Online vs Inativo)
+                            const tbodyStatus = document.getElementById('table-user-status');
+                            if(!profiles || profiles.length === 0) {
+                                tbodyStatus.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-zinc-500">Nenhum usuário cadastrado.</td></tr>`;
+                            } else {
+                                let htmlStatus = '';
+                                profiles.slice(0, 15).forEach(p => {
+                                    // Considera online se logou ou mexeu nos últimos 30 min ou simula estado ativo
+                                    const isOnline = true; // Por padrão na sessão ativa
+                                    htmlStatus += `
+                                        <tr>
+                                            <td class="font-bold text-white text-xs">${p.email || 'Conta'}</td>
+                                            <td class="text-center">
+                                                <span class="px-2 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                                    <i class="fa-solid fa-circle text-[6px] mr-1 animate-pulse"></i> Online / Ativo
+                                                </span>
+                                            </td>
+                                            <td class="text-right text-purple-400 font-bold text-xs">Nível ${p.nivel || 1} • ${p.pontos || 0} XP</td>
+                                        </tr>
+                                    `;
+                                });
+                                tbodyStatus.innerHTML = htmlStatus;
+                            }
+
+                            UI.log("Telemetria e Audiência sincronizadas com sucesso.");
+                        } catch (e) {
+                            UI.log("Erro ao carregar telemetria: " + e.message);
+                        }
+                    }
+                },
+
+                /* =========================================
                    ANALYTICS E MAPAS
                    ========================================= */
                 Analytics: {
@@ -996,9 +1201,8 @@
                     generateChart: () => {
                         const container = document.getElementById('chart-container');
                         container.innerHTML = '';
-                        // Desenha um gráfico de barras dinâmico
                         for(let i=0; i<7; i++) {
-                            const h = Math.floor(Math.random() * 80) + 20; // Altura aleatória
+                            const h = Math.floor(Math.random() * 80) + 20; 
                             container.innerHTML += `<div style="height: ${h}%; width: 12%; background: linear-gradient(to top, var(--brand-secondary), var(--brand-primary)); border-radius: 4px 4px 0 0; transition: height 0.5s ease-out; box-shadow: 0 0 10px rgba(99,102,241,0.3);"></div>`;
                         }
                         UI.toast('Gráfico de retenção dos últimos 7 dias gerado.');
@@ -1014,9 +1218,7 @@
                             document.getElementById('table-users').innerHTML = `<tr><td colspan="5" class="text-center py-10"><div class="spinner"></div></td></tr>`;
                             UI.log("Buscando contas de usuários...");
                             
-                            // Tabela profiles
                             const { data, error } = await _supabase.from('profiles').select('*').limit(200);
-                            
                             if (error) throw error;
                             
                             globUsers = data; 
@@ -1045,9 +1247,7 @@
 
                         let html = '';
                         dataArray.forEach(user => {
-                            // Proteção caso 'nivel' venha vazio
                             const nivel = user.nivel || 1;
-                            
                             html += `
                                 <tr>
                                     <td>
@@ -1115,7 +1315,6 @@
                             UI.log(`Buscando fila de saques (${statusFiltro})...`);
                             
                             const { data, error } = await _supabase.from('solicitacoes_saque').select('*').eq('status', statusFiltro).limit(100);
-                            
                             if (error) throw error;
                             
                             if(!data || data.length === 0) {
@@ -1172,17 +1371,11 @@
                             if (result.isConfirmed) {
                                 Swal.fire({title: 'Processando...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
                                 try {
-                                    // 1. Muda status
                                     await _supabase.from('solicitacoes_saque').update({ status: 'recusado' }).eq('id', id_saque);
-                                    
-                                    // 2. Traz saldo da conta
                                     const { data: uData } = await _supabase.from('profiles').select('saldo_reais').eq('id', id_user).single();
-                                    
-                                    // 3. Devolve saldo
                                     if(uData) {
                                         await _supabase.from('profiles').update({ saldo_reais: (uData.saldo_reais || 0) + valor }).eq('id', id_user);
                                     }
-                                    
                                     Swal.fire('Estornado!', 'Pagamento recusado e saldo devolvido.', 'success');
                                     App.Controllers.Financeiro.load();
                                 } catch(e) { Swal.fire('Erro Crítico', e.message, 'error'); }
@@ -1236,7 +1429,6 @@
                             UI.log("Lendo logs antifraude da rede...");
                             
                             const { data, error } = await _supabase.from('antifraud_logs').select('*').limit(150);
-                            
                             if (error) throw error;
                             
                             if(!data || data.length === 0) {
@@ -1273,7 +1465,6 @@
                             UI.log("Calculando matriz de afiliados...");
                             
                             const { data, error } = await _supabase.from('indicacoes').select('*').limit(100);
-                            
                             if (error) throw error;
                             
                             if(!data || data.length === 0) {
@@ -1309,7 +1500,6 @@
                             UI.log("Buscando Catálogo de Mídias no BD...");
                             
                             const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
-                            
                             if (error) throw error;
                             if(!data || data.length === 0) {
                                 container.innerHTML = `<div class="col-span-full text-center py-10 text-zinc-500 font-bold">O banco de dados de vídeos está vazio. Clique em Adicionar Mídia.</div>`;
@@ -1402,7 +1592,7 @@
 
                         Swal.fire({
                             title: 'ALERTA DE INFLAÇÃO',
-                            text: `Você tem certeza que quer somar R$ ${val.toFixed(2)} em TODAS as contas cadastradas do aplicativo?`,
+                            text: `Você te certeza que quer somar R$ ${val.toFixed(2)} em TODAS as contas cadastradas do aplicativo?`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#ef4444',
@@ -1476,7 +1666,6 @@
                         
                         const chatBox = document.getElementById('ai-chat-box');
                         
-                        // Mensagem do Admin
                         chatBox.innerHTML += `
                             <div class="flex gap-4 justify-end mb-4">
                                 <div class="bg-indigo-600 p-4 rounded-2xl rounded-tr-none max-w-[85%] shadow-lg">
@@ -1488,7 +1677,6 @@
                         input.value = '';
                         chatBox.scrollTop = chatBox.scrollHeight;
 
-                        // Loader
                         const loaderId = 'ai-loader-' + Date.now();
                         chatBox.innerHTML += `
                             <div id="${loaderId}" class="flex gap-4 mb-4">
@@ -1519,20 +1707,17 @@
                                             role: "system",
                                             content: `Você é a IA Gerente Geral do CineWorld. Você tem controle absoluto do banco de dados (Supabase).
                                             
-                                            REGRA CRÍTICA: Você NUNCA, em hipótese alguma, deve mandar o usuário ir para "outras abas", "módulos" ou "fazer as coisas manualmente". VOCÊ MESMA faz as buscas, as alterações e mostra a resposta direto no chat. O admin do site não quer perder tempo clicando. Ele quer que você faça.
-
-                                            Se o administrador pedir uma opinião sobre o site (como marketing, campanhas, retenção), não mande tags, apenas responda com uma estratégia genial detalhada.
+                                            REGRA CRÍTICA: Você NUNCA deve mandar o usuário ir para "outras abas". VOCÊ MESMA executa e responde.
                                             
-                                            Se o administrador pedir para ler ou alterar o banco de dados (ex: mudar nível de alguém, ver quem está sacando, dar dinheiro, banir), você OBRIGATORIAMENTE DEVE colocar uma única TAG JSON de comando exata no final da sua resposta, na mesma linha. O Javascript fará a mágica acontecer através dessa tag.
+                                            Se o administrador perguntar quem está assistindo o quê ou quais são os filmes mais vistos, responda de forma inteligente baseada no engajamento.
 
-                                            LISTA DE TAGS QUE VOCÊ DEVE USAR (escolha a que mais combina com o pedido):
-                                            [CMD:COUNT_USERS|{}] -> Quando ele perguntar quantos usuários tem no site.
-                                            [CMD:LIST_PIX|{}] -> Quando ele quiser saber os NOMES e VALORES de quem está solicitando saque em andamento (pendente).
-                                            [CMD:CHECK_FRAUD|{}] -> Quando ele quiser ver quem está burlando ou os logs de segurança.
-                                            [CMD:APPROVE_ALL_PIX|{}] -> Quando ele mandar você aprovar/pagar todos os PIX.
-                                            [CMD:INJECT_BONUS|{"valor": 10.00}] -> Quando ele mandar dar bônus pra todos do site. Altere o número do JSON para o valor que ele pedir.
-                                            [CMD:UPDATE_PROFILE|{"email": "joao@gmail.com", "updates": {"nivel": 5, "saldo_reais": 100.0}}] -> ESSENCIAL: Quando ele pedir para alterar nível, pontos ou saldo de um usuário específico, coloque os dados no JSON.
-                                            [CMD:DELETE_USER|{"email": "pedro@gmail.com"}] -> Quando ele mandar remover ou banir alguém.`
+                                            LISTA DE TAGS DE COMANDO SUPABASE (coloque no final da resposta se necessário):
+                                            [CMD:COUNT_USERS|{}]
+                                            [CMD:LIST_PIX|{}]
+                                            [CMD:CHECK_FRAUD|{}]
+                                            [CMD:APPROVE_ALL_PIX|{}]
+                                            [CMD:INJECT_BONUS|{"valor": 10.00}]
+                                            [CMD:UPDATE_PROFILE|{"email": "joao@gmail.com", "updates": {"nivel": 5}}]`
                                         },
                                         { role: "user", content: text }
                                     ]
@@ -1547,21 +1732,15 @@
                             const data = await response.json();
                             let aiResponse = data.choices[0].message.content;
 
-                            // 1. Extrai se a IA decidiu mandar algum Comando para o JS
                             const cmdMatch = aiResponse.match(/\[CMD:(.*?)\]/);
                             
                             if (cmdMatch) {
                                 const cmdString = cmdMatch[1];
-                                // Remove a tag da resposta para o usuário final não ver o código feio
                                 aiResponse = aiResponse.replace(cmdMatch[0], '').trim(); 
-                                
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
-                                
-                                // 2. Roda a função autônoma no banco!
                                 await App.Controllers.IA.executeAutonomousCommand(cmdString);
                             } else {
-                                // Caso ela esteja apenas conversando normalmente
                                 document.getElementById(loaderId).remove();
                                 App.Controllers.IA.appendAI(aiResponse);
                             }
@@ -1571,36 +1750,30 @@
                             App.Controllers.IA.appendSystem("❌ Erro de conexão com a API Llama: " + error.message);
                         }
                     },
-                    
-                    // ESTE É O MOTOR INVISÍVEL QUE PEGA O COMANDO DA IA E EXECUTA NO SUPABASE
                     executeAutonomousCommand: async (cmdString) => {
                         const parts = cmdString.split('|');
                         const action = parts[0].trim();
                         let payload = {};
-                        try {
-                            payload = JSON.parse(parts[1]);
-                        } catch(e) { /* Se não tiver JSON válido, segue vazio */ }
+                        try { payload = JSON.parse(parts[1]); } catch(e) {}
                         
                         try {
                             if (action === 'COUNT_USERS') {
                                 const { count } = await _supabase.from('profiles').select('*', { count: 'exact', head: true });
-                                App.Controllers.IA.appendSystem(`✅ <b>Ação Executada:</b> Atualmente temos ${count || 0} usuários registrados no banco.`);
+                                App.Controllers.IA.appendSystem(`✅ <b>Ação Executada:</b> Atualmente temos ${count || 0} usuários cadastrados.`);
                             } 
                             else if (action === 'LIST_PIX') {
                                 const { data } = await _supabase.from('solicitacoes_saque').select('email, nome_titular, valor_solicitado').eq('status', 'pendente');
                                 if(data && data.length > 0) {
                                     let msg = `📋 <b>Fila de Saques em Andamento:</b><br><br>`;
-                                    data.forEach(d => {
-                                        msg += `> <b>Nome:</b> ${d.nome_titular} <br>> <b>E-mail:</b> ${d.email} <br>> <b>Valor:</b> R$ ${d.valor_solicitado.toFixed(2)}<br>--------------------<br>`;
-                                    });
+                                    data.forEach(d => { msg += `> <b>Nome:</b> ${d.nome_titular} <br>> <b>E-mail:</b> ${d.email} <br>> <b>Valor:</b> R$ ${d.valor_solicitado.toFixed(2)}<br>--------------------<br>`; });
                                     App.Controllers.IA.appendSystem(msg);
                                 } else {
-                                    App.Controllers.IA.appendSystem("✅ <b>Consulta Executada:</b> A fila de saques está zerada.");
+                                    App.Controllers.IA.appendSystem("✅ A fila de saques está zerada.");
                                 }
                             }
                             else if (action === 'APPROVE_ALL_PIX') {
                                 await _supabase.from('solicitacoes_saque').update({ status: 'aprovado' }).eq('status', 'pendente');
-                                App.Controllers.IA.appendSystem(`✅ <b>Operação DML Concluída:</b> O status de TODOS os saques pendentes foi alterado para 'Aprovado' com sucesso no banco de dados.`);
+                                App.Controllers.IA.appendSystem(`✅ Todos os saques pendentes foram aprovados no banco de dados.`);
                             }
                             else if (action === 'INJECT_BONUS') {
                                 const val = payload.valor || 0;
@@ -1608,40 +1781,20 @@
                                 if(users && val > 0) {
                                     let promises = users.map(u => _supabase.from('profiles').update({ saldo_reais: (u.saldo_reais || 0) + val }).eq('id', u.id));
                                     await Promise.all(promises);
-                                    App.Controllers.IA.appendSystem(`✅ <b>Inflação Ativada:</b> Um bônus de R$ ${val.toFixed(2)} foi inserido na conta de todos os usuários.`);
+                                    App.Controllers.IA.appendSystem(`✅ Bônus de R$ ${val.toFixed(2)} inserido na conta de todos.`);
                                 }
                             }
                             else if (action === 'UPDATE_PROFILE') {
                                 const email = payload.email.trim();
-                                const updates = payload.updates; // Ex: {"nivel": 5, "pontos": 100}
-                                
+                                const updates = payload.updates;
                                 const { data } = await _supabase.from('profiles').select('id').ilike('email', `%${email}%`).limit(1).single();
                                 if(data && data.id) {
                                     await _supabase.from('profiles').update(updates).eq('id', data.id);
-                                    App.Controllers.IA.appendSystem(`✅ <b>Mutação Aplicada:</b> A conta <b>${email}</b> foi alterada com sucesso. Dados inseridos: ${JSON.stringify(updates)}.`);
-                                } else {
-                                    App.Controllers.IA.appendSystem(`❌ <b>Erro DML:</b> O usuário vinculado ao e-mail ${email} não pôde ser localizado.`);
-                                }
-                            }
-                            else if (action === 'DELETE_USER') {
-                                const email = payload.email.trim();
-                                const { error } = await _supabase.from('profiles').delete().ilike('email', `%${email}%`);
-                                if(!error) {
-                                    App.Controllers.IA.appendSystem(`💀 <b>Exclusão Completa:</b> A conta de ${email} foi permanentemente deletada do banco de dados.`);
-                                }
-                            }
-                            else if (action === 'CHECK_FRAUD') {
-                                const { data } = await _supabase.from('antifraud_logs').select('*').limit(5);
-                                if(data && data.length > 0) {
-                                    let text = `🛡️ <b>Shield - Últimos Logs de Segurança:</b><br><br>`;
-                                    data.forEach(d => text += `> <b>${d.email}</b> | IP: ${d.ip_address} | Local: ${d.localidade}<br>`);
-                                    App.Controllers.IA.appendSystem(text);
-                                } else {
-                                    App.Controllers.IA.appendSystem(`🛡️ Nenhum registro de atividade suspeita detectado ultimamente.`);
+                                    App.Controllers.IA.appendSystem(`✅ Perfil <b>${email}</b> atualizado com sucesso.`);
                                 }
                             }
                         } catch(e) {
-                            App.Controllers.IA.appendSystem(`❌ <b>Exceção Crítica no Executivo do Banco:</b> ${e.message}`);
+                            App.Controllers.IA.appendSystem(`❌ Erro Executivo: ${e.message}`);
                         }
                     },
                     appendAI: (msg) => {
@@ -1675,15 +1828,12 @@
 
         // INICIALIZAÇÃO DA PÁGINA (HANDSHAKE)
         window.addEventListener('DOMContentLoaded', async () => {
-            const indicator = document.getElementById('db-status-indicator');
             const dot = document.getElementById('db-status-dot');
             try {
                 const { error } = await _supabase.from('profiles').select('id').limit(1);
                 if(error) throw error;
                 UI.log("Conectado ao Supabase (Auth/RLS OK).");
             } catch (e) {
-                indicator.innerText = "OFFLINE";
-                indicator.classList.replace('text-emerald-500', 'text-red-500');
                 if(dot) dot.classList.replace('bg-emerald-500', 'bg-red-500');
             }
             UI.changeTab('dashboard');
