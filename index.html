@@ -41,11 +41,14 @@
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
-            /* Fundo Premium estilo HBO Max (Roxo Escuro para Preto) */
             background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 40%, #000000 100%);
         }
 
-        /* EFEITO GLASSMORPHISM PRINCIPAL */
+        :focus {
+            outline: 2px solid #8b5cf6 !important;
+            outline-offset: 2px;
+        }
+
         .cinema-container {
             position: relative;
             width: 100%;
@@ -79,7 +82,7 @@
             color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             display: flex; align-items: center; gap: 5px;
         }
-        .logo-text span { color: #8b5cf6; } /* Roxo HBO Max */
+        .logo-text span { color: #8b5cf6; } 
 
         .header-actions { display: flex; align-items: center; gap: 15px; }
         .header-icon { font-size: 20px; color: #fff; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
@@ -109,6 +112,8 @@
         .ad-overlay.active { display: flex; }
         .ad-spinner { border: 3px solid rgba(139,92,246,0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #adScriptContainer { display: none; }
 
         /* CONTEÚDO ROLÁVEL PRINCIPAL */
         .content-body {
@@ -168,7 +173,7 @@
         .search-box i { color: #9ca3af; }
         .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px; }
 
-        /* SUB TELAS (PERFIL, CARTEIRA, ETC) */
+        /* SUB TELAS */
         .sub-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 25; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 80px; }
         .sub-screen.active { display: flex; animation: slideIn 0.3s ease forwards; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
@@ -179,7 +184,6 @@
 
         .sub-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 
-        /* ESTILOS DE CARTEIRA E INPUTS */
         .data-card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
@@ -209,6 +213,19 @@
         .auth-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
         .auth-input:focus { border-color: #8b5cf6; }
         .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
+        
+        .live-withdrawal {
+            position: absolute; bottom: 80px; left: 15px; right: 15px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 10px 15px; border-radius: 12px; z-index: 35;
+            backdrop-filter: blur(20px);
+            display: flex; align-items: center; gap: 10px; font-size: 11px;
+            transform: translateY(200%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.2); pointer-events: none;
+        }
+        .live-withdrawal.active { transform: translateY(0); }
+        .live-withdrawal i { color: #00e676; font-size: 15px; text-shadow: 0 0 10px #00e676; }
     </style>
 </head>
 <body>
@@ -216,7 +233,6 @@
     <div class="cinema-container">
         <div id="adScriptContainer"></div>
 
-        <!-- Notificação de Saque -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
@@ -271,13 +287,13 @@
                     <button class="btn-secondary" id="dailyBonusBtn" disabled style="padding: 4px; font-size: 10px; margin-top: 4px;">Coletar</button>
                 </div>
                 <div class="gami-card" onclick="coletarMissaoDiaria()">
-                    <h4><i class="fa-solid fa-bolt" style="color:#34d399;"></i> Missão</h4>
-                    <p id="missionStatusText">Assista 5 mídias</p>
+                    <h4><i class="fa-solid fa-bolt" style="color:#34d399;"></i> Missão Diária</h4>
+                    <p id="missionStatusText">Assista 10 mídias</p>
                     <div class="gami-progress"><div class="gami-fill" id="missionProgressBar"></div></div>
                 </div>
             </div>
 
-            <!-- Trilho: Continue Assistindo (NOVO) -->
+            <!-- Trilho: Continue Assistindo -->
             <div class="movie-rail" id="rail-continue" style="display: none;">
                 <h3 class="rail-title">Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
@@ -291,14 +307,26 @@
 
             <!-- Trilho: Filmes de Ação -->
             <div class="movie-rail">
-                <h3 class="rail-title">Filmes de Ação</h3>
+                <h3 class="rail-title">Filmes de Ação e Adrenalina</h3>
                 <div class="rail-scroll" id="carousel-action"></div>
             </div>
-
-            <!-- Trilho: Filmes em Geral -->
+            
+            <!-- Trilho: Suspense -->
             <div class="movie-rail">
-                <h3 class="rail-title">Mais Filmes</h3>
-                <div class="rail-scroll" id="carousel-movies"></div>
+                <h3 class="rail-title">Suspense e Mistério</h3>
+                <div class="rail-scroll" id="carousel-suspense"></div>
+            </div>
+            
+            <!-- Trilho: Ficção -->
+            <div class="movie-rail">
+                <h3 class="rail-title">Ficção e Fantasia</h3>
+                <div class="rail-scroll" id="carousel-scifi"></div>
+            </div>
+
+            <!-- Trilho: Comedia/Outros -->
+            <div class="movie-rail">
+                <h3 class="rail-title">Comédia e Família</h3>
+                <div class="rail-scroll" id="carousel-comedy"></div>
             </div>
         </div>
 
@@ -435,7 +463,7 @@
         let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista')) || [];
         let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso')) || {};
 
-        // BACKUP COMPLETO DAS 192 MÍDIAS ORIGINAIS (Não removido)
+        // ARRAYS ORIGINAIS COMPLETOS DE BACKUP
         let colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -631,7 +659,31 @@
             { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200 },
             { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
             { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
-            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 }
+            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 },
+            // NOVOS ADICIONADOS PARA EXPANDIR O CATÁLOGO LOCAL (HBO STYLE)
+            { id: "f88", ytId: "S-1xg2E73vA", titulo: "O Código Assassino", recompensa: 200 },
+            { id: "f89", ytId: "q4f3tQpL5P0", titulo: "A Fuga Impossível", recompensa: 200 },
+            { id: "f90", ytId: "l8e7yV3xRkM", titulo: "Sombras da Noite", recompensa: 200 },
+            { id: "f91", ytId: "bY6c2o9Fw1E", titulo: "Velocidade Extrema", recompensa: 200 },
+            { id: "f92", ytId: "hT8p4QnL5Dk", titulo: "Invasão Alienígena", recompensa: 200 },
+            { id: "f93", ytId: "zV9m3LqR2cT", titulo: "O Último Sobrevivente", recompensa: 200 },
+            { id: "f94", ytId: "pW5j2BnT8Yq", titulo: "Mistério no Pacífico", recompensa: 200 },
+            { id: "f95", ytId: "xR4k1VpM7Ns", titulo: "A Fortaleza", recompensa: 200 },
+            { id: "f96", ytId: "jL9b3XqF5Cm", titulo: "Conspiração Global", recompensa: 200 },
+            { id: "f97", ytId: "tN6m2ZpV8Rw", titulo: "Caçadores de Mitos", recompensa: 200 },
+            { id: "f98", ytId: "mC4v1BqL9Tk", titulo: "A Vingança do Samurai", recompensa: 200 },
+            { id: "f99", ytId: "rP8x3NqT2Vm", titulo: "O Segredo do Faraó", recompensa: 200 },
+            { id: "f100", ytId: "qK2m5RpL8Vn", titulo: "Resgate nas Montanhas", recompensa: 200 },
+            { id: "f101", ytId: "wT7v4Mqn3Lp", titulo: "O Atirador de Elite", recompensa: 200 },
+            { id: "f102", ytId: "xP3m1LqV8Rn", titulo: "Fogo Cruzado", recompensa: 200 },
+            { id: "f103", ytId: "jT8v2Mqp5Ln", titulo: "A Maldição", recompensa: 200 },
+            { id: "f104", ytId: "bN6m3VqR8Tp", titulo: "Guerra Cibernética", recompensa: 200 },
+            { id: "f105", ytId: "pL4m2TqV9Rn", titulo: "O Esquadrão", recompensa: 200 },
+            { id: "f106", ytId: "tV9m3RqL5Pn", titulo: "A Queda do Império", recompensa: 200 },
+            { id: "f107", ytId: "rK4m2PqT8Ln", titulo: "Caçada Noturna", recompensa: 200 },
+            { id: "f108", ytId: "mP8v3TqN2Lm", titulo: "O Infiltrado", recompensa: 200 },
+            { id: "f109", ytId: "xL2m5RqP8Tn", titulo: "Ação Imediata", recompensa: 200 },
+            { id: "f110", ytId: "qV4m3PqL8Rn", titulo: "O Vingador", recompensa: 200 }
         ];
 
         // FUNÇÃO GERADORA DE CARDS HBO STYLE
@@ -661,13 +713,11 @@
                 </div>
             `;
             
-            // Adiciona evento de clique na imagem
             card.querySelector('.poster-image-wrapper').onclick = onPlayClick;
 
-            // Se tiver progresso salvo, atualiza a barrinha
             if(progressoVideos[vid.id]) {
                 const barra = card.querySelector(`#prog-bar-${vid.id}`);
-                barra.style.width = '50%'; // Apenas visual, indicando que já começou
+                barra.style.width = '50%';
             }
 
             return card;
@@ -690,7 +740,6 @@
             atualizarMinhaLista();
 
             if (typeof YT !== 'undefined' && YT.Player && colecaoVideos.length > 0 && !youtubePlayer) {
-                // Tenta carregar o último visto, se não, carrega o primeiro
                 let firstIdToLoad = colecaoVideos[0].ytId;
                 const lastKeys = Object.keys(progressoVideos);
                 if(lastKeys.length > 0) {
@@ -709,23 +758,38 @@
             }
         }
 
+        // AQUI ESTÁ A CORREÇÃO: SEM LIMITAR OS FILMES!
         function renderizarCarrosseis() {
             const hitsContainer = document.getElementById('carousel-hits');
             hitsContainer.innerHTML = "";
-            colecaoVideos.slice(0, 15).forEach(vid => {
+            // Mostra os vídeos (Hits)
+            colecaoVideos.forEach(vid => {
                 hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
             });
 
+            // Distribui os Filmes em Carrosseis Diferentes para emular o HBO Max
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
-            colecaoFilmes.slice(0, 10).forEach(vid => {
+            colecaoFilmes.slice(0, 35).forEach(vid => {
                 actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
             });
 
-            const moviesContainer = document.getElementById('carousel-movies');
-            moviesContainer.innerHTML = "";
-            colecaoFilmes.slice(10, 25).forEach(vid => {
-                moviesContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            const suspenseContainer = document.getElementById('carousel-suspense');
+            suspenseContainer.innerHTML = "";
+            colecaoFilmes.slice(35, 70).forEach(vid => {
+                suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            });
+
+            const sciFiContainer = document.getElementById('carousel-scifi');
+            sciFiContainer.innerHTML = "";
+            colecaoFilmes.slice(70, 95).forEach(vid => {
+                sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            });
+
+            const comedyContainer = document.getElementById('carousel-comedy');
+            comedyContainer.innerHTML = "";
+            colecaoFilmes.slice(95).forEach(vid => {
+                comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
             });
         }
 
@@ -743,7 +807,6 @@
             rail.style.display = 'block';
             const allMedia = [...colecaoVideos, ...colecaoFilmes];
             
-            // Pega os últimos 5 assistidos
             vidsComProgresso.slice(-5).reverse().forEach(id => {
                 const vid = allMedia.find(v => v.id === id);
                 if(vid) {
@@ -767,9 +830,8 @@
             minhaListaIds.forEach(id => {
                 const vid = allMedia.find(v => v.id === id);
                 if(vid) {
-                    // Reutiliza a função de card, mas com estilo diferente se precisar
                     container.appendChild(criarCardVideo(vid, () => {
-                        navegarParaAba('home'); // Volta pra home pra ver o vídeo
+                        navegarParaAba('home'); 
                         window.scrollTo(0,0);
                         intermediarAnuncio(() => trocarVideoAtivo(vid.id));
                     }));
@@ -778,7 +840,7 @@
         }
 
         function toggleMinhaLista(event, id) {
-            event.stopPropagation(); // Evita clicar no vídeo
+            event.stopPropagation();
             const idx = minhaListaIds.indexOf(id);
             if(idx > -1) {
                 minhaListaIds.splice(idx, 1);
@@ -789,7 +851,6 @@
             }
             localStorage.setItem('cine_minhalista', JSON.stringify(minhaListaIds));
             
-            // Re-renderiza para atualizar ícones
             renderizarCarrosseis();
             atualizarContinueAssistindo();
             atualizarMinhaLista();
@@ -815,19 +876,16 @@
         }
 
         function navegarParaAba(alvo) {
-            // Esconde todas
             document.getElementById('screen-home').classList.remove('active');
             document.getElementById('screen-search').classList.remove('active');
             document.getElementById('screen-mylist').classList.remove('active');
             document.getElementById('screen-perfil').classList.remove('active');
             
-            // Mostra a alvo
             if(alvo === 'home') document.getElementById('screen-home').style.display = 'flex';
             else document.getElementById('screen-home').style.display = 'none';
 
             if(alvo !== 'home') document.getElementById(`screen-${alvo}`).classList.add('active');
 
-            // Atualiza icones
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`);
             if(activeNav) activeNav.classList.add('active');
@@ -912,16 +970,23 @@
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
             
-            document.getElementById('userLevelBadge').innerText = `Nível ${nivelLocalMemoria}`;
+            const badgeLvl = document.getElementById('userLevelBadge');
+            let tierName = "Bronze";
+            badgeLvl.style.color = "#8b5cf6"; 
+            
+            if(nivelLocalMemoria >= 6 && nivelLocalMemoria <= 10) { tierName = "Prata"; badgeLvl.style.color = "#9ca3af"; } 
+            else if (nivelLocalMemoria > 10) { tierName = "Ouro"; badgeLvl.style.color = "#fbbf24"; }
+            
+            badgeLvl.innerText = `Nível ${nivelLocalMemoria} (${tierName})`;
             
             const minSaque = configGlobal.saque_minimo || 20.00;
             const pct = Math.min((saldoReais / minSaque) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
             document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
             
-            const pctMissao = Math.min((videosAssistidosHoje / 5) * 100, 100);
+            const pctMissao = Math.min((videosAssistidosHoje / 10) * 100, 100);
             document.getElementById('missionProgressBar').style.width = `${pctMissao}%`;
-            document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 5 Mídias`;
+            document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Mídias`;
         }
 
         function gerenciarCronometroBonusDiario() {
@@ -950,7 +1015,7 @@
                     textoStatus.innerText = `Próximo em: ${h}:${m}`;
                 }
             }
-            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 60000); // atualiza a cada minuto pra poupar CPU
+            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 60000); 
         }
 
         async function coletarBonusDiario() {
@@ -965,7 +1030,7 @@
         }
 
         async function coletarMissaoDiaria() {
-            if(videosAssistidosHoje >= 5) {
+            if(videosAssistidosHoje >= 10) {
                 videosAssistidosHoje = 0; pontosLocaisMemoria += 2500; dinheiroLocalMemoria += 0.25;
                 let xpProximoNivel = nivelLocalMemoria * 5000;
                 if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
@@ -990,8 +1055,7 @@
                 tempoRestante--;
                 if(tempoRestante <= 0) {
                     clearInterval(intervalo); layer.classList.remove('active'); emExibicaoAnuncio = false;
-                    callback(); // Troca o video
-                    // Tenta dar play automaticamente após o anuncio
+                    callback();
                     setTimeout(() => { if(youtubePlayer && youtubePlayer.playVideo) { try { youtubePlayer.playVideo(); } catch(e){} } }, 1000);
                 } else { timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`; }
             }, 1000);
@@ -1006,7 +1070,6 @@
             if(!vData) return;
             idVideoAtivo = id; tempoAcumuladoSegundos = 0; 
             
-            // Verifica se tem tempo salvo
             let startAt = 0;
             if(progressoVideos[id]) startAt = progressoVideos[id];
 
@@ -1039,11 +1102,10 @@
                 if (playerRealmenteTocando) {
                     tempoAcumuladoSegundos++;
                     
-                    // Salva progresso a cada 10 segundos
                     if(tempoAcumuladoSegundos % 10 === 0 && idVideoAtivo) {
                         progressoVideos[idVideoAtivo] = tempoAtual;
                         localStorage.setItem('cine_progresso', JSON.stringify(progressoVideos));
-                        atualizarContinueAssistindo(); // Atualiza a row silenciosamente
+                        atualizarContinueAssistindo(); 
                     }
 
                     if (tempoAcumuladoSegundos >= 60) {
