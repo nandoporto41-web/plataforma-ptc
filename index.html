@@ -46,16 +46,16 @@
         .ad-spinner { border: 3px solid rgba(139,92,246,0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* BOTÃO DE TELA CHEIA */
-        .video-actions { display: flex; justify-content: flex-end; padding: 10px 15px; background: rgba(0,0,0,0.5); }
-        .btn-fullscreen { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.3s; }
+        .video-actions { display: flex; justify-content: flex-end; padding: 8px 15px; background: rgba(0,0,0,0.5); }
+        .btn-fullscreen { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.3s; }
         .btn-fullscreen:active { background: #8b5cf6; border-color: #8b5cf6; }
 
         .content-body { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
         .content-body::-webkit-scrollbar { display: none; }
 
-        .movie-rail { margin-bottom: 25px; margin-top: 10px; }
-        .rail-title { font-size: 15px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; }
+        .movie-rail { margin-bottom: 20px; margin-top: 10px; }
+        .rail-title { font-size: 14px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
+        .rail-title i { color: #8b5cf6; }
         .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
         .rail-scroll::-webkit-scrollbar { display: none; }
 
@@ -158,54 +158,62 @@
             </div>
         </div>
         
-        <!-- Botão de Tela Cheia Nativ -->
         <div class="video-actions" id="videoActionsContainer" style="display: none;">
             <button class="btn-fullscreen" onclick="ativarTelaCheia()">
                 <i class="fa-solid fa-expand"></i> Assistir em Tela Cheia
             </button>
         </div>
 
-        <!-- ABA 1: FEED PRINCIPAL (HOME) -->
+        <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX -->
         <div class="content-body" id="screen-home">
-            
             <div class="movie-rail" id="rail-continue" style="display: none;">
-                <h3 class="rail-title">Continue assistindo</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-rotate-left"></i> Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title">Todos os Filmes (Catálogo Completo)</h3>
-                <div class="rail-scroll" id="carousel-todos"></div>
+                <h3 class="rail-title"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> Em Alta na Semana</h3>
+                <div class="rail-scroll" id="carousel-trending"></div>
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title">Ação e Adrenalina</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-gun"></i> Ação e Adrenalina</h3>
                 <div class="rail-scroll" id="carousel-action"></div>
             </div>
             
             <div class="movie-rail">
-                <h3 class="rail-title">Suspense e Mistério</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-ghost"></i> Suspense e Terror</h3>
                 <div class="rail-scroll" id="carousel-suspense"></div>
             </div>
             
             <div class="movie-rail">
-                <h3 class="rail-title">Ficção Científica e Fantasia</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-rocket"></i> Ficção Científica e Aventura</h3>
                 <div class="rail-scroll" id="carousel-scifi"></div>
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title">Comédia e Família</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-face-laugh-beam"></i> Comédia e Animação</h3>
                 <div class="rail-scroll" id="carousel-comedy"></div>
+            </div>
+
+            <div class="movie-rail">
+                <h3 class="rail-title"><i class="fa-solid fa-masks-theater"></i> Dramas e Romances</h3>
+                <div class="rail-scroll" id="carousel-drama"></div>
+            </div>
+
+            <div class="movie-rail">
+                <h3 class="rail-title"><i class="fa-solid fa-clapperboard"></i> Todos os Filmes (Catálogo Completo)</h3>
+                <div class="rail-scroll" id="carousel-todos"></div>
             </div>
         </div>
 
         <!-- ABA 2: PESQUISA -->
         <div class="sub-screen" id="screen-search">
-            <div class="sub-header"><h2>Explorar</h2></div>
+            <div class="sub-header"><h2>Explorar Catálogo</h2></div>
             <div class="search-container">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="buscaGeral" onkeyup="realizarBusca()" placeholder="Procure por um filme...">
+                    <input type="text" id="buscaGeral" onkeyup="realizarBusca()" placeholder="Digite o nome de um filme...">
                 </div>
             </div>
             <div class="content-body" style="padding: 0 20px;">
@@ -219,13 +227,13 @@
             <div class="content-body" style="padding: 0 20px;">
                 <div id="empty-list-msg" style="text-align: center; color: #9ca3af; font-size: 13px; margin-top: 50px;">
                     <i class="fa-regular fa-bookmark" style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;"></i><br>
-                    Você ainda não adicionou nenhum título à sua lista.
+                    Você ainda não adicionou nenhum filme à sua lista.
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-my-list"></div>
             </div>
         </div>
 
-        <!-- ABA 4: PERFIL, MISSÕES E CARTEIRA -->
+        <!-- ABA 4: PERFIL, BÔNUS E CARTEIRA -->
         <div class="sub-screen" id="screen-perfil">
             <div class="sub-header">
                 <i class="fa-solid fa-arrow-left" onclick="navegarParaAba('home')"></i>
@@ -327,12 +335,11 @@
         
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
-        let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v3')) || [];
-        let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v3')) || {};
+        let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v4')) || [];
+        let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v4')) || {};
 
         let todasMidiasGerais = []; 
 
-        // BACKUP LIMPO APENAS COM FILMES REAIS (Sem Clipes Musicais)
         const colecaoBackup = [
             { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
@@ -388,7 +395,7 @@
                 <div class="movie-info">
                     <h5 class="movie-title" title="${vid.titulo}">${vid.titulo}</h5>
                     <div class="movie-meta">
-                        <span class="movie-reward">+${vid.recompensa} XP</span>
+                        <span class="movie-reward">+${vid.recompensa || 200} XP</span>
                         <i class="${iconClass} ${btnClass}" onclick="toggleMinhaLista(event, '${videoId}')" title="Minha Lista"></i>
                     </div>
                 </div>
@@ -442,27 +449,45 @@
         }
 
         function renderizarCarrosseis() {
-            // O catálogo completo exibe tudo
+            // Catálogo Completo
             const todosContainer = document.getElementById('carousel-todos');
             todosContainer.innerHTML = "";
             todasMidiasGerais.forEach(vid => todosContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
-            // Filtros inteligentes e blindados
+            // Em Alta (Primeiros 12)
+            const trendingContainer = document.getElementById('carousel-trending');
+            trendingContainer.innerHTML = "";
+            todasMidiasGerais.slice(0, 12).forEach(vid => trendingContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+
+            // Ação
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
-            todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação')).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            const acaoList = todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação'));
+            (acaoList.length > 0 ? acaoList : todasMidiasGerais.slice(0, 8)).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
+            // Suspense
             const suspenseContainer = document.getElementById('carousel-suspense');
             suspenseContainer.innerHTML = "";
-            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror'))).forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            const suspenseList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror')));
+            (suspenseList.length > 0 ? suspenseList : todasMidiasGerais.slice(4, 12)).forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
+            // Ficção
             const sciFiContainer = document.getElementById('carousel-scifi');
             sciFiContainer.innerHTML = "";
-            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia'))).forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            const scifiList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia')));
+            (scifiList.length > 0 ? scifiList : todasMidiasGerais.slice(8, 16)).forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
+            // Comédia
             const comedyContainer = document.getElementById('carousel-comedy');
             comedyContainer.innerHTML = "";
-            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('família'))).forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            const comedyList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('animação') || v.categoria.toLowerCase().includes('família')));
+            (comedyList.length > 0 ? comedyList : todasMidiasGerais.slice(2, 10)).forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+
+            // Dramas
+            const dramaContainer = document.getElementById('carousel-drama');
+            dramaContainer.innerHTML = "";
+            const dramaList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('drama') || v.categoria.toLowerCase().includes('romance')));
+            (dramaList.length > 0 ? dramaList : todasMidiasGerais.slice(6, 14)).forEach(vid => dramaContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
         }
 
         function atualizarContinueAssistindo() {
@@ -504,7 +529,7 @@
             const idx = minhaListaIds.indexOf(videoId);
             if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } 
             else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
-            localStorage.setItem('cine_minhalista_v3', JSON.stringify(minhaListaIds));
+            localStorage.setItem('cine_minhalista_v4', JSON.stringify(minhaListaIds));
             renderizarCarrosseis(); atualizarContinueAssistindo(); atualizarMinhaLista();
         }
 
@@ -593,11 +618,23 @@
                 pontosLocaisMemoria = parseInt(data?.pontos) || 0;
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 nivelLocalMemoria = parseInt(data?.nivel) || 1;
-                dataUltimoBonusIso = data?.ultimo_bonus || null;
+                
+                // SISTEMA BLINDADO CONTRA RESGATE DUPLO
+                const localBonusIso = localStorage.getItem('cine_ultimo_bonus_' + user.id);
+                const dbBonusIso = data?.ultimo_bonus;
+                
+                if (localBonusIso && dbBonusIso) {
+                    dataUltimoBonusIso = new Date(localBonusIso) > new Date(dbBonusIso) ? localBonusIso : dbBonusIso;
+                } else {
+                    dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
+                }
 
                 if(navigator.geolocation) { await _supabase.from('antifraud_logs').insert([{ user_id: user.id, email: user.email, ip_address: "Acesso Mobile", localidade: "Brasil (Sincronizado)", dispositivo: navigator.userAgent }]); }
             } catch (e) { } 
-            finally { atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); gerenciarCronometroBonusDiario(); }
+            finally { 
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); 
+                gerenciarCronometroBonusDiario(); 
+            }
         }
 
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
@@ -621,34 +658,56 @@
             
             const pctMissao = Math.min((videosAssistidosHoje / 10) * 100, 100);
             document.getElementById('missionProgressBar').style.width = `${pctMissao}%`;
-            document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Mídias`;
+            document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Filmes`;
         }
 
         function gerenciarCronometroBonusDiario() {
             if (intervaloCronometroBonus) clearInterval(intervaloCronometroBonus);
             const botao = document.getElementById('dailyBonusBtn');
             const textoStatus = document.getElementById('dailyBonusStatus');
-            if (!dataUltimoBonusIso) { botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff"; textoStatus.innerText = "Disponível! Resgate."; return; }
+
+            if (!dataUltimoBonusIso) { 
+                botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff"; textoStatus.innerText = "Disponível! Resgate."; return; 
+            }
 
             function atualizarTempo() {
                 const agora = new Date(); const ultimaColeta = new Date(dataUltimoBonusIso);
                 const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000));
                 const diferencaMs = proximaColeta - agora;
-                if (diferencaMs <= 0) { clearInterval(intervaloCronometroBonus); botao.disabled = false; botao.style.background = "#8b5cf6"; dataUltimoBonusIso = null; textoStatus.innerText = "Disponível! Resgate.";
-                } else { botao.disabled = true; botao.style.background = "rgba(255,255,255,0.1)"; const h = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0'); const m = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); textoStatus.innerText = `Próximo em: ${h}:${m}`; }
+                
+                if (diferencaMs <= 0) { 
+                    clearInterval(intervaloCronometroBonus); 
+                    botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff";
+                    dataUltimoBonusIso = null; 
+                    if(usuarioAtualId) localStorage.removeItem('cine_ultimo_bonus_' + usuarioAtualId);
+                    textoStatus.innerText = "Disponível! Resgate.";
+                } else { 
+                    botao.disabled = true; botao.style.background = "rgba(255,255,255,0.1)"; botao.style.color = "#9ca3af";
+                    const h = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0'); 
+                    const m = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); 
+                    textoStatus.innerText = `Próximo em: ${h}:${m}`; 
+                }
             }
-            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 60000); 
+            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 1000); 
         }
 
         async function coletarBonusDiario() {
             if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
-            const isoAgora = new Date().toISOString(); dataUltimoBonusIso = isoAgora;
+            const isoAgora = new Date().toISOString(); 
+            dataUltimoBonusIso = isoAgora;
+            
+            // TRAVA IMEDIATA LOCAL
+            localStorage.setItem('cine_ultimo_bonus_' + usuarioAtualId, isoAgora);
+
             pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
             let xpProximoNivel = nivelLocalMemoria * 5000;
             if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
+            
             atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
             gerenciarCronometroBonusDiario();
+            
             await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, ultimo_bonus: isoAgora }).eq('id', usuarioAtualId);
+            UI.toast('Bônus Resgatado com Sucesso!');
         }
 
         async function coletarMissaoDiaria() {
@@ -714,7 +773,7 @@
                     tempoAcumuladoSegundos++;
                     if(tempoAcumuladoSegundos % 10 === 0 && idVideoAtivo) {
                         progressoVideos[idVideoAtivo] = tempoAtual;
-                        localStorage.setItem('cine_progresso_v3', JSON.stringify(progressoVideos));
+                        localStorage.setItem('cine_progresso_v4', JSON.stringify(progressoVideos));
                         atualizarContinueAssistindo(); 
                     }
 
@@ -723,8 +782,8 @@
                         const vData = todasMidiasGerais.find(v => (v.ytId || v.ytid) === idVideoAtivo);
                         if(!vData) return;
                         
-                        pontosLocaisMemoria += parseInt(vData.recompensa); 
-                        let taxa = configGlobal.taxa_conversao || 10000; dinheiroLocalMemoria += (parseInt(vData.recompensa) / taxa);
+                        pontosLocaisMemoria += parseInt(vData.recompensa || 200); 
+                        let taxa = configGlobal.taxa_conversao || 10000; dinheiroLocalMemoria += (parseInt(vData.recompensa || 200) / taxa);
                         
                         let xpProximoNivel = nivelLocalMemoria * 5000;
                         if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; UI.toast(`Você subiu para o Nível ${nivelLocalMemoria}!`); }
