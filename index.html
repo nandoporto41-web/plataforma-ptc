@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
@@ -62,6 +62,7 @@
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
         
+        /* CAPAS ESTILO NETFLIX (SEM BORDAS PRETAS) */
         .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
         .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
@@ -77,26 +78,46 @@
         .btn-add-list { color: #9ca3af; font-size: 12px; padding: 4px; }
         .btn-add-list.saved { color: #8b5cf6; }
 
-        /* MODAL ESTILO NETFLIX PARA DESCRIÇÃO DO FILME */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; display: none; opacity: 0; transition: opacity 0.3s; justify-content: center; align-items: flex-end; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .movie-modal { background: #121216; width: 100%; max-width: 450px; border-radius: 24px 24px 0 0; padding: 25px 20px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); border-top: 1px solid rgba(255,255,255,0.1); position: relative; max-height: 85vh; display: flex; flex-direction: column;}
-        .modal-overlay.active .movie-modal { transform: translateY(0); }
-        @media (min-width: 768px) { .modal-overlay { align-items: center; } .movie-modal { border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); } }
-        .modal-close { position: absolute; top: -45px; right: 15px; width: 36px; height: 36px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; cursor: pointer; border: none; font-size: 16px; }
-        .modal-img-container { width: 100%; height: 200px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; position: relative; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;}
-        .modal-header-img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); }
-        .modal-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #121216 5%, transparent 50%); }
-        .modal-title { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 6px; letter-spacing: -0.5px;}
-        .modal-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 15px; font-size: 12px; font-weight: 600;}
-        .modal-cat-badge { color: #fff; background: #8b5cf6; padding: 3px 8px; border-radius: 4px; }
-        .modal-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 20px; overflow-y: auto; padding-right: 5px;}
-        .modal-desc::-webkit-scrollbar { width: 4px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: auto;}
-        .btn-play-modal { flex: 1; background: #fff; color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 15px; transition: background 0.2s; }
-        .btn-play-modal:active { background: #e2e8f0; transform: scale(0.98); }
-        .btn-list-modal { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; font-size: 18px;}
-        .btn-list-modal:active { transform: scale(0.95); }
+        /* OVERLAY TELA CHEIA ESTILO HBO MAX (MAX) */
+        .hbo-details-screen { position: fixed; inset: 0; background: #000000; z-index: 250; display: none; flex-direction: column; overflow-y: auto; opacity: 0; transition: opacity 0.3s ease; }
+        .hbo-details-screen.active { display: flex; opacity: 1; }
+        
+        .hbo-hero-banner { width: 100%; height: 320px; position: relative; overflow: hidden; }
+        .hbo-hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.25); filter: brightness(0.85); }
+        .hbo-hero-gradient { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 40%, #000000 100%); }
+        .hbo-back-btn { position: absolute; top: 15px; left: 15px; z-index: 10; width: 38px; height: 38px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; }
+        
+        .hbo-content-padding { padding: 0 20px 40px 20px; margin-top: -30px; position: relative; z-index: 5; }
+        .hbo-movie-title-large { font-size: 32px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
+        
+        .hbo-badges-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; font-size: 12px; font-weight: 700; color: #a1a1aa; }
+        .badge-age { background: #d97706; color: #ffffff; font-weight: 900; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+        .badge-quality { border: 1px solid rgba(255,255,255,0.3); padding: 1px 6px; border-radius: 3px; font-size: 10px; color: #e4e4e7; }
+        
+        .hbo-btn-play { width: 100%; background: #ffffff; color: #000000; font-weight: 800; font-size: 16px; border: none; padding: 14px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px; transition: transform 0.2s, background 0.2s; }
+        .hbo-btn-play:active { background: #e4e4e7; transform: scale(0.98); }
+        
+        .hbo-actions-bar { display: flex; justify-content: space-around; align-items: center; margin-bottom: 25px; padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .hbo-action-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #a1a1aa; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .hbo-action-item i { font-size: 20px; color: #ffffff; }
+        .hbo-action-item.active i { color: #8b5cf6; }
+
+        .hbo-synopsis { font-size: 14px; color: #d4d4d8; line-height: 1.6; margin-bottom: 12px; font-weight: 400; }
+        .hbo-genres { font-size: 12px; color: #71717a; font-weight: 600; margin-bottom: 15px; }
+        .hbo-disclaimer { font-size: 11px; color: #52525b; line-height: 1.4; margin-bottom: 25px; }
+
+        /* ABA DE CONTEÚDO TIPO HBO MAX (VOCÊ TAMBÉM PODE GOSTAR / DETALHES) */
+        .hbo-tabs-header { display: flex; gap: 25px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .hbo-tab-btn { font-size: 14px; font-weight: 800; color: #71717a; padding-bottom: 10px; cursor: pointer; position: relative; transition: color 0.2s; }
+        .hbo-tab-btn.active { color: #ffffff; }
+        .hbo-tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: #ffffff; }
+
+        .hbo-tab-panel { display: none; }
+        .hbo-tab-panel.active { display: block; }
+
+        .hbo-details-group { margin-bottom: 18px; }
+        .hbo-details-label { font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
+        .hbo-details-value { font-size: 13px; color: #a1a1aa; line-height: 1.5; }
 
         .search-container { padding: 0 20px; margin-bottom: 20px; }
         .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
@@ -187,34 +208,90 @@
             </button>
         </div>
 
-        <!-- MODAL DE DESCRIÇÃO DOS FILMES (ESTILO NETFLIX) -->
-        <div class="modal-overlay" id="movieModalOverlay" onclick="fecharDetalhesFilme(event)">
-            <div class="movie-modal" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="fecharDetalhesFilme()"><i class="fa-solid fa-xmark"></i></button>
+        <!-- TELA DE DETALHES DO FILME NO ESTILO HBO MAX / MAX -->
+        <div class="hbo-details-screen" id="hboDetailsScreen">
+            <button class="hbo-back-btn" onclick="fecharDetalhesHBO()"><i class="fa-solid fa-arrow-left"></i></button>
+            
+            <div class="hbo-hero-banner">
+                <img src="" id="hboHeroImg" class="hbo-hero-img">
+                <div class="hbo-hero-gradient"></div>
+            </div>
+
+            <div class="hbo-content-padding">
+                <h1 class="hbo-movie-title-large" id="hboTitle">NOME DO FILME</h1>
                 
-                <div class="modal-img-container">
-                    <img src="" id="modalImg" class="modal-header-img">
-                    <div class="modal-img-overlay"></div>
+                <div class="hbo-badges-row">
+                    <span class="badge-age" id="hboAgeBadge">A14</span>
+                    <span id="hboDuration">1 h e 38 min</span>
+                    <span id="hboYear">2026</span>
+                    <span class="badge-quality">4K UHD</span>
+                    <span style="color: #34d399; background: rgba(52,211,153,0.1); padding: 1px 6px; border-radius: 4px;" id="hboXpBadge">+200 XP</span>
                 </div>
-                
-                <h3 class="modal-title" id="modalTitle">Título do Filme</h3>
-                
-                <div class="modal-meta-row">
-                    <span class="modal-cat-badge" id="modalCat">Categoria</span>
-                    <span id="modalXp" style="color: #34d399; background: rgba(52,211,153,0.1); padding: 3px 8px; border-radius: 4px;">+200 XP</span>
-                    <span style="color: #cbd5e1;"><i class="fa-solid fa-star text-amber-400"></i> 4.8</span>
+
+                <button class="hbo-btn-play" id="hboBtnPlayMain">
+                    <i class="fa-solid fa-play"></i> Assistir agora
+                </button>
+
+                <div class="hbo-actions-bar">
+                    <div class="hbo-action-item" id="hboActionMyList">
+                        <i class="fa-solid fa-plus" id="hboIconMyList"></i>
+                        <span>Minha lista</span>
+                    </div>
+                    <div class="hbo-action-item" onclick="UI.toast('Obrigado pela sua avaliação!')">
+                        <i class="fa-regular fa-thumbs-up"></i>
+                        <span>Classificar</span>
+                    </div>
+                    <div class="hbo-action-item" onclick="UI.toast('Iniciando reprodução...')">
+                        <i class="fa-solid fa-clapperboard"></i>
+                        <span>Trailer</span>
+                    </div>
                 </div>
-                
-                <p class="modal-desc" id="modalDesc">Prepare-se para uma experiência incrível. Assista agora a este grande título, aproveite a história completa e ganhe recompensas reais aqui no CineWorld!</p>
-                
-                <div class="modal-actions">
-                    <button class="btn-play-modal" id="modalBtnPlay"><i class="fa-solid fa-play"></i> Assistir Agora</button>
-                    <button class="btn-list-modal" id="modalBtnList"><i class="fa-solid fa-plus"></i></button>
+
+                <p class="hbo-synopsis" id="hboSynopsis">
+                    Sinopse detalhada do filme...
+                </p>
+
+                <div class="hbo-genres" id="hboGenres">Drama • Ação</div>
+                <p class="hbo-disclaimer">A disponibilidade de 4K UHD, HDR e Dolby Atmos varia de acordo com o dispositivo e o plano.</p>
+
+                <!-- NAVEGAÇÃO ENTRE RECOMENDADOS E DETALHES DA FICHA TÉCNICA -->
+                <div class="hbo-tabs-header">
+                    <div class="hbo-tab-btn active" id="tabBtnRelated" onclick="alternarAbaHBO('related')">Você também pode gostar</div>
+                    <div class="hbo-tab-btn" id="tabBtnInfo" onclick="alternarAbaHBO('info')">Detalhes</div>
+                </div>
+
+                <!-- PAINEL 1: RECOMENDADOS -->
+                <div class="hbo-tab-panel active" id="panelRelated">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="gridHboRelated"></div>
+                </div>
+
+                <!-- PAINEL 2: FICHA TÉCNICA COMPLETA -->
+                <div class="hbo-tab-panel" id="panelInfo">
+                    <div class="hbo-details-group">
+                        <div class="hbo-details-label">Informações de classificação</div>
+                        <div class="hbo-details-value"><span class="badge-age" id="hboInfoAge">A14</span> Conteúdo recomendado para maiores de 14 anos.</div>
+                    </div>
+                    <div class="hbo-details-group">
+                        <div class="hbo-details-label">Idiomas das legendas</div>
+                        <div class="hbo-details-value">Português (Brasil), Espanhol (América Latina), Inglês</div>
+                    </div>
+                    <div class="hbo-details-group">
+                        <div class="hbo-details-label">Idiomas do áudio</div>
+                        <div class="hbo-details-value">Português (Brasil) - Dublado Oficial</div>
+                    </div>
+                    <div class="hbo-details-group">
+                        <div class="hbo-details-label">Estrelando</div>
+                        <div class="hbo-details-value" id="hboCast">Atores Principais, Elenco de Hollywood</div>
+                    </div>
+                    <div class="hbo-details-group">
+                        <div class="hbo-details-label">Diretor</div>
+                        <div class="hbo-details-value" id="hboDirector">Direção de Cinema</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX -->
+        <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX / HBO -->
         <div class="content-body" id="screen-home">
             <div class="movie-rail" id="rail-continue" style="display: none;">
                 <h3 class="rail-title"><i class="fa-solid fa-rotate-left"></i> Continue assistindo</h3>
@@ -391,7 +468,7 @@
         let todasMidiasGerais = []; 
 
         const colecaoBackup = [
-            { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
+            { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
             { ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200, categoria: "Ação" },
             { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" }
@@ -405,49 +482,135 @@
         }
 
         // ==========================================
-        // SISTEMA DE MODAL DE DETALHES ESTILO NETFLIX
+        // GERADOR INTELIGENTE DE FICHA TÉCNICA E SINOPSES HBO MAX
+        // ==========================================
+        function gerarInfoHBOMax(vid) {
+            const cat = (vid.categoria || 'Ação').toLowerCase();
+            let sinopse = vid.descricao;
+            let elenco = vid.elenco || "Elenco Principal de Cinema, Estrelas de Hollywood";
+            let diretor = vid.diretor || "Direção Aclamada";
+            let duracao = "1 h e 38 min";
+            let ano = "2024";
+            let idade = "A14";
+
+            if (!sinopse) {
+                if (cat.includes('ação') || cat.includes('máfia') || cat.includes('guerra')) {
+                    sinopse = `Em meio a uma crise sem precedentes e sob intensa pressão, os protagonistas enfrentam desafios extremas, conspirações e confrontos decisivos onde cada escolha pode ser a diferença entre a vida e a morte.`;
+                    duracao = "1 h e 45 min"; idade = "A16";
+                } else if (cat.includes('terror') || cat.includes('suspense')) {
+                    sinopse = `Uma sequência de acontecimentos sombrios e visões perturbadoras revela um segredo macabro do passado. Presos em um pesadelo psicológico, eles lutam contra forças ocultas antes que o tempo acabe.`;
+                    duracao = "1 h e 32 min"; idade = "A16";
+                } else if (cat.includes('comédia') || cat.includes('família') || cat.includes('animação')) {
+                    sinopse = `Uma divertida e emocionante jornada cheia de reviravoltas, encontros inusitados e lições valiosas. Uma história perfeita para relaxar e se divertir com momentos inesquecíveis.`;
+                    duracao = "1 h e 28 min"; idade = "L";
+                } else if (cat.includes('drama') || cat.includes('romance')) {
+                    sinopse = `Uma história profunda sobre laços afetivos, escolhas difíceis e segundas chances. Dois caminhos se cruzam em meio a dilemas pessoais onde o amor e o perdão testam os limites dos personagens.`;
+                    duracao = "1 h e 50 min"; idade = "A12";
+                } else {
+                    sinopse = `Acompanhe esta incrível produção repleta de suspense, reviravoltas e emoção do início ao fim. Assista agora e ganhe recompensas exclusivas na sua carteira CineWorld.`;
+                }
+            }
+
+            return { sinopse, elenco, diretor, duracao, ano, idade };
+        }
+
+        // ==========================================
+        // SISTEMA DE DETALHES TELA TIPO HBO MAX (MAX)
         // ==========================================
         function abrirDetalhesFilme(videoId, playCallback) {
             const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === videoId);
             if(!vid) return;
 
-            document.getElementById('modalImg').src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-            document.getElementById('modalTitle').innerText = vid.titulo;
-            document.getElementById('modalCat').innerText = vid.categoria || 'Filme';
-            document.getElementById('modalXp').innerText = `+${vid.recompensa || 200} XP`;
-            
-            // Puxa a descrição do banco ou exibe uma Genérica Convidativa
-            document.getElementById('modalDesc').innerText = vid.descricao || "Prepare-se para uma experiência incrível. Assista agora a este grande título, acompanhe a história completa e ganhe recompensas reais na sua carteira do CineWorld!";
+            const info = gerarInfoHBOMax(vid);
 
-            // Lógica da Minha Lista no Modal
+            document.getElementById('hboHeroImg').src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            document.getElementById('hboTitle').innerText = vid.titulo;
+            document.getElementById('hboAgeBadge').innerText = info.idade;
+            document.getElementById('hboInfoAge').innerText = info.idade;
+            document.getElementById('hboDuration').innerText = info.duracao;
+            document.getElementById('hboYear').innerText = info.ano;
+            document.getElementById('hboXpBadge').innerText = `+${vid.recompensa || 200} XP`;
+            document.getElementById('hboSynopsis').innerText = info.sinopse;
+            document.getElementById('hboGenres').innerText = `${vid.categoria || 'Filme'} • Lançamento HD`;
+            document.getElementById('hboCast').innerText = info.elenco;
+            document.getElementById('hboDirector').innerText = info.diretor;
+
+            // Configura botão de Minha Lista
             const isSaved = minhaListaIds.includes(videoId);
-            const btnList = document.getElementById('modalBtnList');
-            btnList.innerHTML = isSaved ? '<i class="fa-solid fa-check" style="color:#8b5cf6;"></i>' : '<i class="fa-solid fa-plus"></i>';
+            const btnList = document.getElementById('hboActionMyList');
+            const iconList = document.getElementById('hboIconMyList');
+            if(isSaved) {
+                iconList.className = "fa-solid fa-check";
+                btnList.classList.add('active');
+            } else {
+                iconList.className = "fa-solid fa-plus";
+                btnList.classList.remove('active');
+            }
             btnList.onclick = (e) => {
                 toggleMinhaLista(e, videoId);
-                abrirDetalhesFilme(videoId, playCallback); // Recarrega o modal para atualizar ícone
+                abrirDetalhesFilme(videoId, playCallback);
             };
 
-            // Lógica do Botão Assistir no Modal
-            document.getElementById('modalBtnPlay').onclick = () => {
-                fecharDetalhesFilme();
+            // Configura botão Assistir Agora
+            document.getElementById('hboBtnPlayMain').onclick = () => {
+                fecharDetalhesHBO();
                 document.getElementById('videoActionsContainer').style.display = 'flex';
                 window.scrollTo({top: 0, behavior: 'smooth'});
                 if(playCallback) playCallback();
             };
 
-            // Animação de Abertura
-            const overlay = document.getElementById('movieModalOverlay');
-            overlay.style.display = 'flex';
-            void overlay.offsetWidth; // Força renderização do navegador
-            overlay.classList.add('active');
+            // Renderiza Recomendados no Painel do Modal
+            const gridRelated = document.getElementById('gridHboRelated');
+            gridRelated.innerHTML = '';
+            const recomendados = todasMidiasGerais.filter(v => (v.ytId || v.ytid) !== videoId).slice(0, 6);
+            recomendados.forEach(rec => {
+                const recId = rec.ytId || rec.ytid;
+                const item = document.createElement('div');
+                item.className = 'movie-poster';
+                item.style.width = '100%';
+                item.innerHTML = `
+                    <div class="poster-image-wrapper">
+                        <img src="https://img.youtube.com/vi/${recId}/mqdefault.jpg" alt="${rec.titulo}">
+                    </div>
+                    <div class="movie-info">
+                        <h5 class="movie-title">${rec.titulo}</h5>
+                    </div>
+                `;
+                item.onclick = () => {
+                    abrirDetalhesFilme(recId, () => intermediarAnuncio(() => trocarVideoAtivo(recId)));
+                };
+                gridRelated.appendChild(item);
+            });
+
+            // Reseta abas para "Você também pode gostar"
+            alternarAbaHBO('related');
+
+            // Exibe a tela em full overlay
+            const screen = document.getElementById('hboDetailsScreen');
+            screen.style.display = 'flex';
+            void screen.offsetWidth;
+            screen.classList.add('active');
         }
 
-        function fecharDetalhesFilme(e) {
-            if(e && e.target !== document.getElementById('movieModalOverlay')) return;
-            const overlay = document.getElementById('movieModalOverlay');
-            overlay.classList.remove('active');
-            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        function fecharDetalhesHBO() {
+            const screen = document.getElementById('hboDetailsScreen');
+            screen.classList.remove('active');
+            setTimeout(() => { screen.style.display = 'none'; }, 300);
+        }
+
+        function alternarAbaHBO(aba) {
+            document.getElementById('tabBtnRelated').classList.remove('active');
+            document.getElementById('tabBtnInfo').classList.remove('active');
+            document.getElementById('panelRelated').classList.remove('active');
+            document.getElementById('panelInfo').classList.remove('active');
+
+            if (aba === 'related') {
+                document.getElementById('tabBtnRelated').classList.add('active');
+                document.getElementById('panelRelated').classList.add('active');
+            } else {
+                document.getElementById('tabBtnInfo').classList.add('active');
+                document.getElementById('panelInfo').classList.add('active');
+            }
         }
 
         function criarCardVideo(vid, onPlayClick) {
@@ -477,7 +640,7 @@
                 </div>
             `;
             
-            // O clique na capa não toca mais direto, ABRE O MODAL NETFLIX
+            // Clique na capa abre a tela completa HBO Max
             card.querySelector('.poster-image-wrapper').onclick = () => {
                 abrirDetalhesFilme(videoId, onPlayClick);
             };
@@ -594,7 +757,7 @@
         }
 
         function toggleMinhaLista(event, videoId) {
-            event.stopPropagation();
+            if(event) event.stopPropagation();
             const idx = minhaListaIds.indexOf(videoId);
             if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } 
             else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
@@ -697,7 +860,7 @@
                     dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
                 }
 
-                // SINAL DE PRESENÇA
+                // SINAL DE PRESENÇA ONLINE
                 await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user.id);
 
             } catch (e) { } 
@@ -869,7 +1032,7 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
                         
-                        // HISTÓRICO PARA TELEMETRIA
+                        // HISTÓRICO EM TEMPO REAL PARA A TELEMETRIA DO PAINEL
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
                     }
                 }
