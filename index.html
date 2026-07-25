@@ -17,9 +17,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
+    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) -->
+    <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #08080a; color: #ffffff; display: flex; justify-content: center; align-items: flex-start; height: 100vh; height: 100dvh; overflow: hidden; background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 30%, #000000 100%); }
@@ -44,6 +47,7 @@
         .ad-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 18; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
         .ad-overlay.active { display: flex; }
         .ad-spinner { border: 3px solid rgba(139,92,246,0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .video-actions { display: flex; justify-content: flex-end; padding: 8px 15px; background: rgba(0,0,0,0.5); }
         .btn-fullscreen { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.3s; }
@@ -177,7 +181,6 @@
 <body>
 
     <div class="cinema-container">
-        <div id="adScriptContainer"></div>
 
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
@@ -974,8 +977,6 @@
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true; pararContagemGanhos();
             if (youtubePlayer && youtubePlayer.pauseVideo) { try { youtubePlayer.pauseVideo(); } catch(e){} }
-            const containerScripts = document.getElementById('adScriptContainer'); containerScripts.innerHTML = "";
-            const script1 = document.createElement('script'); script1.async = true; script1.src = 'https://n6wxm.com/vignette.min.js'; script1.dataset.zone = '11218300'; containerScripts.appendChild(script1);
             
             const layer = document.getElementById('adLayer'); const timerTxt = document.getElementById('adTimerText');
             layer.classList.add('active'); let tempoRestante = 5; timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`;
