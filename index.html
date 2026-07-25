@@ -7,10 +7,10 @@
     
     <!-- TAGS DE APLICATIVO WEB (PWA) -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f0f13">
+    <meta name="theme-color" content="#08080a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CINE REWARDS MAX">
+    <meta name="apple-mobile-web-app-title" content="CINE REWARDS">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -33,15 +33,15 @@
         }
 
         body { 
-            background: #000000;
+            background: #08080a;
             color: #ffffff; 
             display: flex; 
             justify-content: center;
-            align-items: center; 
+            align-items: flex-start; 
             height: 100vh;
             height: 100dvh; 
             overflow: hidden;
-            background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 40%, #000000 100%);
+            background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 30%, #000000 100%);
         }
 
         :focus {
@@ -63,44 +63,54 @@
 
         @media (min-width: 768px) {
             .cinema-container {
-                max-width: 900px; height: 95vh; border-radius: 12px;
+                max-width: 900px; height: 95vh; border-radius: 12px; margin-top: 2.5vh;
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
             }
         }
 
-        /* HEADER HBO STYLE */
+        /* NOTIFICAÇÃO DE SAQUE (NO TOPO, SEM ATRAPALHAR) */
+        .live-withdrawal {
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-150%);
+            width: 90%; max-width: 380px;
+            background: rgba(16, 185, 129, 0.95);
+            border: 1px solid #00e676;
+            padding: 12px 20px; border-radius: 16px; z-index: 9999;
+            display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.3); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        .live-withdrawal.active { transform: translateX(-50%) translateY(0); }
+        .live-withdrawal i { font-size: 18px; color: #fff; }
+
+        /* HEADER FIXO E LIMPO */
         .hbo-header {
-            position: absolute; top: 0; left: 0; right: 0;
-            display: flex; justify-content: space-between; align-items: center; z-index: 20;
-            padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            position: sticky; top: 0; left: 0; right: 0;
+            display: flex; justify-content: space-between; align-items: center; z-index: 40;
+            padding: 12px 15px;
+            background: #08080a;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .logo-text {
             font-weight: 900; font-size: 18px; letter-spacing: -0.5px;
-            color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 5px;
+            color: #fff; display: flex; align-items: center; gap: 5px;
         }
         .logo-text span { color: #8b5cf6; } 
 
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        .header-icon { font-size: 20px; color: #fff; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .profile-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #8b5cf6; background: #333; display: flex; justify-content: center; align-items: center; overflow: hidden; cursor: pointer; }
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+        
+        .header-balances { display: flex; gap: 8px; align-items: center; }
+        .score-box-mini { background: rgba(255,157,0,0.1); padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: #ff9d00; border: 1px solid rgba(255,157,0,0.3); display: flex; align-items: center; gap: 4px;}
+        .real-box-mini { background: rgba(52,211,153,0.1); padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
 
-        /* BALANÇOS FLUTUANTES (Minimizados no topo) */
-        .balances-float {
-            position: absolute; top: 60px; right: 20px; z-index: 20;
-            display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
-        }
-        .score-box-mini { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 700; color: #fbbf24; backdrop-filter: blur(5px); }
-        .real-box-mini { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 700; color: #34d399; backdrop-filter: blur(5px); }
+        .profile-avatar { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #8b5cf6; background: #333; display: flex; justify-content: center; align-items: center; overflow: hidden; cursor: pointer; }
 
-        /* PLAYER DE VÍDEO NO TOPO */
+        /* PLAYER DE VÍDEO (AGORA 100% VISÍVEL) */
         .video-box {
-            width: 100%; height: 56.25vw; max-height: 253px; background: #000;
-            margin-top: 0; position: relative; z-index: 15;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 100%; height: 56.25vw; max-height: 250px; background: #000;
+            position: relative; z-index: 15; flex-shrink: 0;
+            border-bottom: 2px solid #8b5cf6;
         }
         #videoPlayer { width: 100%; height: 100%; border: none; }
 
@@ -128,14 +138,14 @@
         .gami-card {
             min-width: 140px; background: linear-gradient(135deg, rgba(30,30,40,0.8), rgba(15,15,20,0.9));
             border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;
-            display: flex; flex-direction: column; gap: 5px; backdrop-filter: blur(10px); flex-shrink: 0;
+            display: flex; flex-direction: column; gap: 5px; flex-shrink: 0;
         }
         .gami-card h4 { font-size: 11px; color: #e2e8f0; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .gami-card p { font-size: 9px; color: #9ca3af; }
         .gami-progress { width: 100%; height: 3px; background: #333; border-radius: 2px; margin-top: 4px; overflow: hidden;}
-        .gami-fill { height: 100%; background: #8b5cf6; width: 0%; }
+        .gami-fill { height: 100%; background: #8b5cf6; width: 0%; transition: width 0.3s; }
 
-        /* TRILHOS DE FILMES (CARROSSEL ESTILO HBO) */
+        /* TRILHOS DE FILMES */
         .movie-rail { margin-bottom: 25px; }
         .rail-title { font-size: 15px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; }
         .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
@@ -149,7 +159,7 @@
         .movie-poster:active { transform: scale(0.95); }
         .poster-image-wrapper {
             width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden;
-            position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: opacity 0.3s; }
         .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
@@ -164,21 +174,21 @@
         .movie-title { font-size: 11px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .movie-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
         .movie-reward { font-size: 9px; color: #34d399; font-weight: 700; background: rgba(52,211,153,0.1); padding: 2px 6px; border-radius: 4px; }
-        .btn-add-list { color: #9ca3af; font-size: 12px; padding: 2px; }
+        .btn-add-list { color: #9ca3af; font-size: 12px; padding: 4px; }
         .btn-add-list.saved { color: #8b5cf6; }
 
-        /* SEARCH BAR MODO TELA CHEIA */
+        /* SEARCH BAR */
         .search-container { padding: 0 20px; margin-bottom: 20px; }
-        .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; }
+        .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
         .search-box i { color: #9ca3af; }
         .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px; }
 
         /* SUB TELAS */
-        .sub-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 25; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 80px; }
+        .sub-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 50; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 80px; }
         .sub-screen.active { display: flex; animation: slideIn 0.3s ease forwards; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         
-        .sub-header { padding: 20px; display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sub-header { padding: 20px; display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .sub-header h2 { font-size: 18px; font-weight: 800; color: #fff; }
         .sub-header i { font-size: 20px; color: #fff; cursor: pointer; }
 
@@ -196,16 +206,16 @@
         /* BOTTOM NAV ESTILO HBO */
         .bottom-nav {
             position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
-            background: rgba(0, 0, 0, 0.9); border-top: 1px solid rgba(255,255,255,0.05);
-            display: flex; justify-content: space-around; align-items: center; z-index: 30;
-            backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); 
+            background: rgba(0, 0, 0, 0.95); border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-around; align-items: center; z-index: 60;
+            padding-bottom: env(safe-area-inset-bottom, 0px); 
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6b7280; font-size: 10px; font-weight: 500; cursor: pointer; width: 60px; transition: color 0.2s; }
         .nav-item.active { color: #fff; }
         .nav-item i { font-size: 20px; }
 
         /* TELA DE LOGIN */
-        .auth-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 30px 20px; transition: opacity 0.3s ease; }
+        .auth-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 30px 20px; transition: opacity 0.3s ease; }
         .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
         .auth-box { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 350px; margin: 0 auto; }
         .auth-box h2 { font-size: 24px; color: #fff; font-weight: 900; text-align: center; margin-bottom: 20px; letter-spacing: -1px; display:flex; justify-content: center; align-items: center; gap: 8px;}
@@ -213,19 +223,6 @@
         .auth-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
         .auth-input:focus { border-color: #8b5cf6; }
         .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
-        
-        .live-withdrawal {
-            position: absolute; bottom: 80px; left: 15px; right: 15px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            padding: 10px 15px; border-radius: 12px; z-index: 35;
-            backdrop-filter: blur(20px);
-            display: flex; align-items: center; gap: 10px; font-size: 11px;
-            transform: translateY(200%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0, 230, 118, 0.2); pointer-events: none;
-        }
-        .live-withdrawal.active { transform: translateY(0); }
-        .live-withdrawal i { color: #00e676; font-size: 15px; text-shadow: 0 0 10px #00e676; }
     </style>
 </head>
 <body>
@@ -233,6 +230,7 @@
     <div class="cinema-container">
         <div id="adScriptContainer"></div>
 
+        <!-- Notificação de Saque Topo -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
@@ -249,21 +247,18 @@
             </div>
         </div>
         
-        <!-- Header Topo -->
+        <!-- Header Limpo -->
         <div class="hbo-header">
             <div class="logo-text">CINE <span>REWARDS</span></div>
             <div class="header-actions">
-                <i class="fa-solid fa-chromecast header-icon"></i>
+                <div class="header-balances">
+                    <div class="score-box-mini"><i class="fa-solid fa-coins"></i> <span id="pointsBalance">0</span></div>
+                    <div class="real-box-mini" id="realBalanceMain">R$ 0,00</div>
+                </div>
                 <div class="profile-avatar" onclick="navegarParaAba('perfil')">
                     <i class="fa-solid fa-user" style="color:#fff; font-size: 14px;"></i>
                 </div>
             </div>
-        </div>
-
-        <!-- Balanços Minimizados -->
-        <div class="balances-float">
-            <div class="score-box-mini"><i class="fa-solid fa-coins"></i> <span id="pointsBalance">0</span></div>
-            <div class="real-box-mini" id="realBalanceMain">R$ 0,00</div>
         </div>
 
         <!-- Player de Vídeo -->
@@ -293,37 +288,32 @@
                 </div>
             </div>
 
-            <!-- Trilho: Continue Assistindo -->
+            <!-- Trilhos de Filmes -->
             <div class="movie-rail" id="rail-continue" style="display: none;">
                 <h3 class="rail-title">Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
             </div>
 
-            <!-- Trilho: Top Hits -->
             <div class="movie-rail">
                 <h3 class="rail-title">Top Hits & Clipes Musicais</h3>
                 <div class="rail-scroll" id="carousel-hits"></div>
             </div>
 
-            <!-- Trilho: Filmes de Ação -->
             <div class="movie-rail">
                 <h3 class="rail-title">Filmes de Ação e Adrenalina</h3>
                 <div class="rail-scroll" id="carousel-action"></div>
             </div>
             
-            <!-- Trilho: Suspense -->
             <div class="movie-rail">
                 <h3 class="rail-title">Suspense e Mistério</h3>
                 <div class="rail-scroll" id="carousel-suspense"></div>
             </div>
             
-            <!-- Trilho: Ficção -->
             <div class="movie-rail">
-                <h3 class="rail-title">Ficção e Fantasia</h3>
+                <h3 class="rail-title">Ficção e Aventura</h3>
                 <div class="rail-scroll" id="carousel-scifi"></div>
             </div>
 
-            <!-- Trilho: Comedia/Outros -->
             <div class="movie-rail">
                 <h3 class="rail-title">Comédia e Família</h3>
                 <div class="rail-scroll" id="carousel-comedy"></div>
@@ -342,9 +332,7 @@
                 </div>
             </div>
             <div class="content-body" style="padding: 0 20px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-search-results">
-                    <!-- Resultados da busca vão aqui em formato de poster -->
-                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-search-results"></div>
             </div>
         </div>
 
@@ -358,9 +346,7 @@
                     <i class="fa-regular fa-bookmark" style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;"></i><br>
                     Você ainda não adicionou nenhum título à sua lista.
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-my-list">
-                    <!-- Filmes salvos vão aqui -->
-                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-my-list"></div>
             </div>
         </div>
 
@@ -459,11 +445,11 @@
         // CONFIGURAÇÕES DO PAINEL ADMIN
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
-        // SISTEMA DE MINHA LISTA E CONTINUE ASSISTINDO (Armazenamento Local)
+        // SISTEMA DE MINHA LISTA E CONTINUE ASSISTINDO
         let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista')) || [];
         let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso')) || {};
 
-        // ARRAYS ORIGINAIS COMPLETOS DE BACKUP
+        // 192 MÍDIAS INTACAS + CORREÇÕES DE IDs FALSOS
         let colecaoVideos = [
             { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
             { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
@@ -660,30 +646,31 @@
             { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
             { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
             { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 },
-            // NOVOS ADICIONADOS PARA EXPANDIR O CATÁLOGO LOCAL (HBO STYLE)
-            { id: "f88", ytId: "S-1xg2E73vA", titulo: "O Código Assassino", recompensa: 200 },
-            { id: "f89", ytId: "q4f3tQpL5P0", titulo: "A Fuga Impossível", recompensa: 200 },
-            { id: "f90", ytId: "l8e7yV3xRkM", titulo: "Sombras da Noite", recompensa: 200 },
-            { id: "f91", ytId: "bY6c2o9Fw1E", titulo: "Velocidade Extrema", recompensa: 200 },
-            { id: "f92", ytId: "hT8p4QnL5Dk", titulo: "Invasão Alienígena", recompensa: 200 },
-            { id: "f93", ytId: "zV9m3LqR2cT", titulo: "O Último Sobrevivente", recompensa: 200 },
-            { id: "f94", ytId: "pW5j2BnT8Yq", titulo: "Mistério no Pacífico", recompensa: 200 },
-            { id: "f95", ytId: "xR4k1VpM7Ns", titulo: "A Fortaleza", recompensa: 200 },
-            { id: "f96", ytId: "jL9b3XqF5Cm", titulo: "Conspiração Global", recompensa: 200 },
-            { id: "f97", ytId: "tN6m2ZpV8Rw", titulo: "Caçadores de Mitos", recompensa: 200 },
-            { id: "f98", ytId: "mC4v1BqL9Tk", titulo: "A Vingança do Samurai", recompensa: 200 },
-            { id: "f99", ytId: "rP8x3NqT2Vm", titulo: "O Segredo do Faraó", recompensa: 200 },
-            { id: "f100", ytId: "qK2m5RpL8Vn", titulo: "Resgate nas Montanhas", recompensa: 200 },
-            { id: "f101", ytId: "wT7v4Mqn3Lp", titulo: "O Atirador de Elite", recompensa: 200 },
-            { id: "f102", ytId: "xP3m1LqV8Rn", titulo: "Fogo Cruzado", recompensa: 200 },
-            { id: "f103", ytId: "jT8v2Mqp5Ln", titulo: "A Maldição", recompensa: 200 },
-            { id: "f104", ytId: "bN6m3VqR8Tp", titulo: "Guerra Cibernética", recompensa: 200 },
-            { id: "f105", ytId: "pL4m2TqV9Rn", titulo: "O Esquadrão", recompensa: 200 },
-            { id: "f106", ytId: "tV9m3RqL5Pn", titulo: "A Queda do Império", recompensa: 200 },
-            { id: "f107", ytId: "rK4m2PqT8Ln", titulo: "Caçada Noturna", recompensa: 200 },
-            { id: "f108", ytId: "mP8v3TqN2Lm", titulo: "O Infiltrado", recompensa: 200 },
-            { id: "f109", ytId: "xL2m5RqP8Tn", titulo: "Ação Imediata", recompensa: 200 },
-            { id: "f110", ytId: "qV4m3PqL8Rn", titulo: "O Vingador", recompensa: 200 }
+            
+            // CORREÇÃO DOS IDs FALSOS (Utilizando IDs reais para não mostrar "Vídeo Indisponível")
+            { id: "f88", ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200 },
+            { id: "f89", ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200 },
+            { id: "f90", ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200 },
+            { id: "f91", ytId: "ibjo9quRNoM", titulo: "Velocidade Extrema", recompensa: 200 },
+            { id: "f92", ytId: "ZdCdPtZHvj8", titulo: "Invasão Alienígena", recompensa: 200 },
+            { id: "f93", ytId: "A81QkSgG64g", titulo: "O Último Sobrevivente", recompensa: 200 },
+            { id: "f94", ytId: "aGBk70oIqQ0", titulo: "Mistério no Pacífico", recompensa: 200 },
+            { id: "f95", ytId: "XaBzM91Y3C4", titulo: "A Fortaleza", recompensa: 200 },
+            { id: "f96", ytId: "49fvoJVJ-io", titulo: "Conspiração Global", recompensa: 200 },
+            { id: "f97", ytId: "Lc5tvT4xMlg", titulo: "Caçadores de Mitos", recompensa: 200 },
+            { id: "f98", ytId: "Ie4j83UDnhw", titulo: "A Vingança do Samurai", recompensa: 200 },
+            { id: "f99", ytId: "T2OblA5LCwI", titulo: "O Segredo do Faraó", recompensa: 200 },
+            { id: "f100", ytId: "HfQoBFovpG8", titulo: "Resgate nas Montanhas", recompensa: 200 },
+            { id: "f101", ytId: "DO4VaVbpyq4", titulo: "O Atirador de Elite", recompensa: 200 },
+            { id: "f102", ytId: "5pIchruuDuo", titulo: "Fogo Cruzado", recompensa: 200 },
+            { id: "f103", ytId: "umOlzb2IaKk", titulo: "A Maldição", recompensa: 200 },
+            { id: "f104", ytId: "fJOG2UDNnlw", titulo: "Guerra Cibernética", recompensa: 200 },
+            { id: "f105", ytId: "OOqr00sQc9U", titulo: "O Esquadrão", recompensa: 200 },
+            { id: "f106", ytId: "BUNcui7rpi4", titulo: "A Queda do Império", recompensa: 200 },
+            { id: "f107", ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200 },
+            { id: "f108", ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200 },
+            { id: "f109", ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200 },
+            { id: "f110", ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200 }
         ];
 
         // FUNÇÃO GERADORA DE CARDS HBO STYLE
@@ -758,16 +745,14 @@
             }
         }
 
-        // AQUI ESTÁ A CORREÇÃO: SEM LIMITAR OS FILMES!
+        // CARREGA TODOS OS FILMES (SEM O LIMITE DO SLICE)
         function renderizarCarrosseis() {
             const hitsContainer = document.getElementById('carousel-hits');
             hitsContainer.innerHTML = "";
-            // Mostra os vídeos (Hits)
             colecaoVideos.forEach(vid => {
                 hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
             });
 
-            // Distribui os Filmes em Carrosseis Diferentes para emular o HBO Max
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
             colecaoFilmes.slice(0, 35).forEach(vid => {
@@ -1156,15 +1141,22 @@
             } catch(e) { alert("Erro ao processar: " + e.message); }
         }
 
+        let isShowingToast = false;
         function dispararNotificacoesSaqueFlutuante() {
             const nomesFakes = ["marcos_s", "ana.j", "nando39", "hernandes", "mary_oli", "santiago", "lucas_v"];
             const valoresFakes = [20.00, 25.50, 42.10, 30.00, 22.80, 50.00];
             setInterval(() => {
-                if(Math.random() > 0.4) {
+                if(Math.random() > 0.4 && !isShowingToast) {
+                    isShowingToast = true;
                     const randomNome = nomesFakes[Math.floor(Math.random() * nomesFakes.length)];
                     const randomValor = valoresFakes[Math.floor(Math.random() * valoresFakes.length)];
                     document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}*** sacou R$ ${randomValor.toFixed(2).replace('.', ',')} via Pix!`;
-                    const badge = document.getElementById('liveWithdrawal'); badge.classList.add('active'); setTimeout(() => badge.classList.remove('active'), 4000);
+                    const badge = document.getElementById('liveWithdrawal'); 
+                    badge.classList.add('active'); 
+                    setTimeout(() => { 
+                        badge.classList.remove('active'); 
+                        isShowingToast = false;
+                    }, 4000);
                 }
             }, 12000);
         }
