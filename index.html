@@ -1,149 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head> 
-    <meta name="google-site-verification" content="O38UAj9CVvyHagNOG23Pr3zxUnqeGSvyrcUPQzVkVXc" />
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CINE REWARDS PRO</title>
+    <title>CINE REWARDS MAX</title>
     
+    <!-- TAGS DE APLICATIVO WEB (PWA) -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#E50914">
+    <meta name="theme-color" content="#0f0f13">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CINE REWARDS MAX">
     <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
 
-    <!-- SDKs e Bibliotecas -->
+    <!-- SDKs e Bibliotecas Core -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        body { background: #141414; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; height: 100dvh; overflow: hidden; }
-        ::-webkit-scrollbar { display: none; }
-
-        .cinema-container { position: relative; width: 100%; max-width: 450px; height: 100vh; height: 100dvh; background: #141414; display: flex; flex-direction: column; overflow: hidden; }
-
-        @media (min-width: 768px) {
-            .cinema-container { max-width: 900px; height: 95vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        :root { --netflix-red: #E50914; --netflix-dark: #141414; --money-green: #00e676; }
+        body { 
+            background: #000000;
+            color: #ffffff; 
+            display: flex; 
+            justify-content: center;
+            align-items: center; 
+            height: 100vh;
+            height: 100dvh; 
+            overflow: hidden;
+            /* Fundo Premium estilo HBO Max (Roxo Escuro para Preto) */
+            background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 40%, #000000 100%);
+        }
 
-        /* HEADER E SALDOS */
-        .points-header { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; z-index: 30; background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%); padding: 15px 20px; transition: background 0.3s; }
-        .logo-text { font-weight: 900; font-size: 18px; color: var(--netflix-red); letter-spacing: 1px; text-transform: uppercase; }
-        .header-balances { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-        .score-box { display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 4px; color: #fff; font-weight: 700; font-size: 11px; }
-        .real-box-main { font-size: 12px; font-weight: 800; color: var(--money-green); text-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
+        /* EFEITO GLASSMORPHISM PRINCIPAL */
+        .cinema-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            height: 100dvh;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-        /* PLAYER DE VÍDEO NO TOPO (Agora Ocultável) */
-        .video-box-container { width: 100%; background: #000; position: relative; z-index: 25; margin-top: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: none; flex-direction: column; }
-        .btn-fechar-video { background: #333; color: #fff; border: none; padding: 8px; font-size: 12px; font-weight: 700; text-align: right; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
-        .btn-fechar-video:hover { background: #444; }
-        .video-box { width: 100%; height: 56.25vw; max-height: 253px; position: relative; }
+        @media (min-width: 768px) {
+            .cinema-container {
+                max-width: 900px; height: 95vh; border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        /* HEADER HBO STYLE */
+        .hbo-header {
+            position: absolute; top: 0; left: 0; right: 0;
+            display: flex; justify-content: space-between; align-items: center; z-index: 20;
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .logo-text {
+            font-weight: 900; font-size: 18px; letter-spacing: -0.5px;
+            color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .logo-text span { color: #8b5cf6; } /* Roxo HBO Max */
+
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .header-icon { font-size: 20px; color: #fff; cursor: pointer; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .profile-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #8b5cf6; background: #333; display: flex; justify-content: center; align-items: center; overflow: hidden; cursor: pointer; }
+
+        /* BALANÇOS FLUTUANTES (Minimizados no topo) */
+        .balances-float {
+            position: absolute; top: 60px; right: 20px; z-index: 20;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+        }
+        .score-box-mini { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 700; color: #fbbf24; backdrop-filter: blur(5px); }
+        .real-box-mini { background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 700; color: #34d399; backdrop-filter: blur(5px); }
+
+        /* PLAYER DE VÍDEO NO TOPO */
+        .video-box {
+            width: 100%; height: 56.25vw; max-height: 253px; background: #000;
+            margin-top: 0; position: relative; z-index: 15;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
         #videoPlayer { width: 100%; height: 100%; border: none; }
 
-        /* TELA DE PERFIS */
-        .profile-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #141414; z-index: 60; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.4s ease; }
-        .profile-screen.hidden { opacity: 0; pointer-events: none; }
-        .profile-title { font-size: 24px; font-weight: 600; margin-bottom: 30px; color: #fff; }
-        .profiles-container { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-        .profile-card { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.2s; }
-        .profile-card:hover { transform: scale(1.05); }
-        .profile-avatar { width: 90px; height: 90px; border-radius: 8px; border: 2px solid transparent; background-size: cover; background-position: center; transition: border 0.2s; }
-        .profile-card:hover .profile-avatar { border-color: #fff; }
-        .profile-name { color: #808080; font-size: 14px; transition: color 0.2s; }
-        .profile-card:hover .profile-name { color: #fff; }
+        .ad-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 18; display: none;
+            flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;
+        }
+        .ad-overlay.active { display: flex; }
+        .ad-spinner { border: 3px solid rgba(139,92,246,0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* CONTEÚDO PRINCIPAL */
-        .content-body { flex: 1; padding-top: 70px; display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 140px; }
+        /* CONTEÚDO ROLÁVEL PRINCIPAL */
+        .content-body {
+            flex: 1; display: flex; flex-direction: column;
+            overflow-y: auto; overflow-x: hidden; padding-bottom: 90px;
+        }
+        .content-body::-webkit-scrollbar { display: none; }
+
+        /* CARDS DE GAMIFICAÇÃO EM CIMA */
+        .gamification-row { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; scrollbar-width: none; }
+        .gamification-row::-webkit-scrollbar { display: none; }
+        .gami-card {
+            min-width: 140px; background: linear-gradient(135deg, rgba(30,30,40,0.8), rgba(15,15,20,0.9));
+            border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;
+            display: flex; flex-direction: column; gap: 5px; backdrop-filter: blur(10px); flex-shrink: 0;
+        }
+        .gami-card h4 { font-size: 11px; color: #e2e8f0; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .gami-card p { font-size: 9px; color: #9ca3af; }
+        .gami-progress { width: 100%; height: 3px; background: #333; border-radius: 2px; margin-top: 4px; overflow: hidden;}
+        .gami-fill { height: 100%; background: #8b5cf6; width: 0%; }
+
+        /* TRILHOS DE FILMES (CARROSSEL ESTILO HBO) */
+        .movie-rail { margin-bottom: 25px; }
+        .rail-title { font-size: 15px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; }
+        .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+        .rail-scroll::-webkit-scrollbar { display: none; }
+
+        /* POSTER VERTICAL DE CINEMA */
+        .movie-poster {
+            width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer;
+            position: relative; transition: transform 0.2s;
+        }
+        .movie-poster:active { transform: scale(0.95); }
+        .poster-image-wrapper {
+            width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden;
+            position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: opacity 0.3s; }
+        .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
         
-        .netflix-row { margin-bottom: 25px; padding-left: 15px; }
-        .row-title { font-size: 15px; font-weight: 700; color: #e5e5e5; margin-bottom: 10px; padding-right: 15px; }
+        .play-icon-overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.4); }
+        .movie-poster:hover .play-icon-overlay { opacity: 1; }
+        .play-icon-overlay i { font-size: 30px; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+
+        .progress-bar-continue { position: absolute; bottom: 0; left: 0; height: 3px; background: #8b5cf6; z-index: 5; }
+
+        .movie-info { padding: 0 2px; }
+        .movie-title { font-size: 11px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+        .movie-reward { font-size: 9px; color: #34d399; font-weight: 700; background: rgba(52,211,153,0.1); padding: 2px 6px; border-radius: 4px; }
+        .btn-add-list { color: #9ca3af; font-size: 12px; padding: 2px; }
+        .btn-add-list.saved { color: #8b5cf6; }
+
+        /* SEARCH BAR MODO TELA CHEIA */
+        .search-container { padding: 0 20px; margin-bottom: 20px; }
+        .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 15px; display: flex; align-items: center; gap: 10px; }
+        .search-box i { color: #9ca3af; }
+        .search-box input { background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px; }
+
+        /* SUB TELAS (PERFIL, CARTEIRA, ETC) */
+        .sub-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 25; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 80px; }
+        .sub-screen.active { display: flex; animation: slideIn 0.3s ease forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         
-        .row-posters { display: flex; overflow-x: auto; overflow-y: hidden; gap: 10px; padding-bottom: 10px; padding-right: 15px; scroll-behavior: smooth; }
-        .row-posters::-webkit-scrollbar { display: none; }
-        
-        .poster-card { position: relative; min-width: 140px; width: 140px; height: 80px; border-radius: 4px; overflow: hidden; cursor: pointer; transition: transform 0.3s ease; background: #222; }
-        .poster-card:hover, .poster-card.active { transform: scale(1.05); z-index: 10; border: 2px solid var(--netflix-red); }
-        .poster-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: opacity 0.3s; }
-        .poster-card:hover img, .poster-card.active img { opacity: 1; }
-        .play-icon-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.8); font-size: 24px; opacity: 0; transition: opacity 0.3s; }
-        .poster-card:hover .play-icon-overlay { opacity: 1; }
-        .reward-tag { position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 2px; font-size: 9px; color: var(--money-green); font-weight: 700; border: 1px solid var(--money-green); }
+        .sub-header { padding: 20px; display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); position: sticky; top: 0; z-index: 30; backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sub-header h2 { font-size: 18px; font-weight: 800; color: #fff; }
+        .sub-header i { font-size: 20px; color: #fff; cursor: pointer; }
 
-        /* CARDS DE GAMIFICAÇÃO ORIGINAIS RESTAURADOS */
-        .gamification-bar { display: flex; gap: 10px; padding: 0 15px; margin-bottom: 25px; }
-        .gami-btn { flex: 1; background: #222; border: 1px solid #333; padding: 12px; border-radius: 4px; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .gami-btn:active { transform: scale(0.95); }
-        .gami-btn h4 { font-size: 12px; color: #fff; font-weight: 600; margin-bottom: 4px; }
-        .gami-btn p { font-size: 10px; color: #808080; }
-        .gami-btn i { color: var(--netflix-red); font-size: 16px; margin-bottom: 5px; }
-        .gami-btn.mission i { color: #38bdf8; }
-        .btn-ready { box-shadow: 0 0 15px rgba(229, 9, 20, 0.6); border-color: var(--netflix-red); }
+        .sub-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 
-        /* PROGRESSO MISSÃO */
-        .mission-progress-bg { width: 100%; height: 4px; background: #000; border-radius: 2px; margin-top: 6px; overflow: hidden; }
-        .mission-progress-fill { width: 0%; height: 100%; background: #38bdf8; transition: width 0.3s; }
+        /* ESTILOS DE CARTEIRA E INPUTS */
+        .data-card { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .input-field { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; transition: border-color 0.3s; }
+        .input-field:focus { border-color: #8b5cf6; }
+        .btn-primary { background: #8b5cf6; color: #fff; font-weight: 700; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
+        .btn-primary:active { background: #7c3aed; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; border: none; }
 
-        /* MENUS E ABAS INFERIORES */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 65px; background: rgba(20,20,20,0.95); border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; z-index: 30; backdrop-filter: blur(10px); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #808080; font-size: 10px; font-weight: 500; cursor: pointer; width: 60px; transition: color 0.3s; }
+        /* BOTTOM NAV ESTILO HBO */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+            background: rgba(0, 0, 0, 0.9); border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-around; align-items: center; z-index: 30;
+            backdrop-filter: blur(20px); padding-bottom: env(safe-area-inset-bottom, 0px); 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6b7280; font-size: 10px; font-weight: 500; cursor: pointer; width: 60px; transition: color 0.2s; }
         .nav-item.active { color: #fff; }
         .nav-item i { font-size: 20px; }
 
-        /* MENU LATERAL DRAWER */
-        .menu-drawer { position: absolute; top: 0; left: -100%; width: 85%; max-width: 350px; height: 100%; background: #141414; border-right: 1px solid #333; z-index: 70; transition: left 0.3s; padding: 20px 15px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
-        .menu-drawer.active { left: 0; }
-        .menu-header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .btn-fechar-painel { background: transparent; color: #fff; border: none; font-size: 20px; cursor: pointer; }
-        
-        .xp-card { background: #222; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; gap: 8px; border: 1px solid #333; }
-        .xp-header { display: flex; justify-content: space-between; align-items: center; }
-        .lvl-badge { background: var(--netflix-red); color: #fff; font-weight: 800; font-size: 10px; padding: 4px 8px; border-radius: 4px; }
-        .xp-bar-bg { width: 100%; height: 4px; background: #000; border-radius: 2px; overflow: hidden; }
-        .xp-bar-fill { width: 0%; height: 100%; background: var(--netflix-red); transition: width 0.5s ease; }
-
-        .btn-saque { background: #fff; color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 14px; gap: 8px; display: flex; justify-content: center; align-items: center; transition: background 0.2s; margin-top: 10px; }
-        .btn-saque:hover { background: #e5e5e5; }
-        
-        .sub-screen { position: absolute; top: 60px; left: 0; width: 100%; bottom: 65px; background: #141414; z-index: 20; display: none; flex-direction: column; padding: 20px 15px; overflow-y: auto; gap: 15px; }
-        .sub-screen.active { display: flex; }
-        .sub-screen h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-        
-        .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 11px; color: #808080; font-weight: 600; }
-        .input-field { background: #333; border: 1px solid #444; padding: 14px; border-radius: 4px; color: #fff; font-size: 14px; outline: none; }
-        .input-field:focus { border-color: var(--netflix-red); }
-
         /* TELA DE LOGIN */
-        .auth-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 80; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; transition: opacity 0.3s; background-image: url('https://assets.nflxext.com/ffe/siteui/vlv3/9d3533b2-0e2b-40b2-95e0-fa47f30f8ca0/e7c2e399-52e6-4d76-88ab-d1f5da112807/BR-pt-20240311-popsignuptwoweeks-perspective_alpha_website_small.jpg'); background-size: cover; background-position: center; }
-        .auth-screen::before { content: ''; position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: -1; }
-        .auth-screen.hidden { opacity: 0; pointer-events: none; }
-        .auth-box { width: 100%; max-width: 400px; background: rgba(0,0,0,0.85); padding: 40px 30px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .auth-box h2 { font-size: 32px; color: var(--netflix-red); font-weight: 900; text-align: center; margin-bottom: 20px; letter-spacing: 2px; }
-        .auth-input { background: #333; border: none; padding: 16px; border-radius: 4px; color: #fff; font-size: 15px; outline: none; }
-        .btn-auth { background: var(--netflix-red); color: #fff; font-weight: 700; font-size: 16px; padding: 16px; border-radius: 4px; border: none; cursor: pointer; margin-top: 10px; }
-        .auth-toggle-link { text-align: center; font-size: 14px; color: #b3b3b3; cursor: pointer; margin-top: 15px; }
-        .auth-toggle-link span { color: #fff; }
-
-        /* ANUNCIO FLUTUANTE */
-        .anuncio-rodape-fixo { position: fixed; bottom: 70px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 28; pointer-events: auto; }
-        .ad-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 30; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .ad-overlay.active { display: flex; }
-        .ad-spinner { border: 4px solid #333; border-top: 4px solid var(--netflix-red); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* NOTIFICAÇÃO DE SAQUE */
-        .live-withdrawal { position: absolute; bottom: 140px; left: 15px; right: 15px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); padding: 10px 15px; border-radius: 8px; z-index: 35; backdrop-filter: blur(20px); display: flex; align-items: center; gap: 10px; font-size: 11px; transform: translateY(200%); transition: transform 0.5s; box-shadow: 0 4px 20px rgba(0, 230, 118, 0.2); pointer-events: none; }
-        .live-withdrawal.active { transform: translateY(0); }
-        .live-withdrawal i { color: #00e676; font-size: 15px; }
+        .auth-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #08080a; z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 30px 20px; transition: opacity 0.3s ease; }
+        .auth-screen.hidden { opacity: 0; pointer-events: none; display: none !important; }
+        .auth-box { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 350px; margin: 0 auto; }
+        .auth-box h2 { font-size: 24px; color: #fff; font-weight: 900; text-align: center; margin-bottom: 20px; letter-spacing: -1px; display:flex; justify-content: center; align-items: center; gap: 8px;}
+        .auth-box h2 span { color: #8b5cf6; }
+        .auth-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
+        .auth-input:focus { border-color: #8b5cf6; }
+        .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -151,239 +216,230 @@
     <div class="cinema-container">
         <div id="adScriptContainer"></div>
 
+        <!-- Notificação de Saque -->
         <div class="live-withdrawal" id="liveWithdrawal">
             <i class="fa-solid fa-circle-check"></i>
             <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
         </div>
 
-        <!-- AUTH SCREEN -->
+        <!-- Autenticação -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
-                <h2>CINE REWARDS</h2>
-                <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 10px;" id="authSubtitle">Entrar</h3>
-                <input type="email" id="authEmail" class="auth-input" placeholder="Email">
+                <h2>CINE <span>REWARDS</span></h2>
+                <input type="email" id="authEmail" class="auth-input" placeholder="E-mail">
                 <input type="password" id="authPassword" class="auth-input" placeholder="Senha">
-                <button class="btn-auth" id="authButton" onclick="handleAuth()">Entrar</button>
-                <div class="auth-toggle-link" id="authToggle" onclick="toggleAuthMode()">Novo por aqui? <span>Assine agora.</span></div>
+                <button class="btn-primary" id="authButton" onclick="handleAuth()" style="margin-top: 10px;">Entrar</button>
+                <div class="auth-toggle-link" id="authToggle" onclick="toggleAuthMode()">Ainda não tem conta? Assine agora.</div>
             </div>
-        </div>
-
-        <!-- TELA DE SELEÇÃO DE PERFIL -->
-        <div class="profile-screen hidden" id="profileScreen">
-            <div class="profile-title">Quem está assistindo?</div>
-            <div class="profiles-container">
-                <div class="profile-card" onclick="selectProfile('Principal')">
-                    <div class="profile-avatar" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');"></div>
-                    <div class="profile-name">Principal</div>
-                </div>
-                <div class="profile-card" onclick="selectProfile('Secundário')">
-                    <div class="profile-avatar" style="background-image: url('https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u2.jpg');"></div>
-                    <div class="profile-name">Convidado</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MENU LATERAL DRAWER -->
-        <div class="menu-drawer" id="menuDrawer">
-            <div class="menu-header-box">
-                <h2 style="font-size: 16px; font-weight: 700;">Minha Conta</h2>
-                <button class="btn-fechar-painel" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div style="display:flex; align-items:center; gap: 10px; margin-bottom: 10px;">
-                <div id="drawerAvatar" class="profile-avatar" style="width: 40px; height: 40px; background-image: url('https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png');"></div>
-                <div style="font-size: 12px; color: #808080;" id="userDisplay">Desconectado</div>
-            </div>
-
-            <div class="xp-card">
-                <div class="xp-header">
-                    <span class="lvl-badge" id="userLevelBadge">NÍVEL 1</span>
-                    <span style="font-size: 10px; color: #b3b3b3;" id="userXpText">0 / 5000 XP</span>
-                </div>
-                <div class="xp-bar-bg"><div class="xp-bar-fill" id="userXpBar"></div></div>
-            </div>
-
-            <div class="xp-card" style="border-color: rgba(0, 230, 118, 0.3);">
-                <p style="font-size: 11px; color: #b3b3b3;">Saldo Disponível</p>
-                <span id="realBalance" style="color: var(--money-green); font-size: 20px; font-weight: 800;">R$ 0,00</span>
-                <button class="btn-saque" onclick="navegarParaAba('saque')">Ir para Carteira</button>
-            </div>
-
-            <button class="btn-saque" style="background: #333; color: #fff; margin-top:0;" onclick="navegarParaAba('regras')">Diretrizes e Regras</button>
-            <button class="btn-saque" style="background: transparent; color: #808080; border: 1px solid #333;" onclick="switchProfile()">Trocar de Perfil</button>
-            <button class="btn-saque" style="background: transparent; color: #e50914; border: 1px solid #e50914;" onclick="handleLogout()">Sair da Conta</button>
         </div>
         
-        <!-- HEADER PRINCIPAL -->
-        <div class="points-header">
-            <div style="display:flex; align-items:center; gap: 15px;">
-                <i class="fa-solid fa-bars" style="font-size:20px; cursor:pointer;" onclick="toggleMenu()"></i>
-                <span class="logo-text">CINE REWARDS</span>
-            </div>
-            <div class="header-balances">
-                <div class="score-box"><i class="fa-solid fa-bolt" style="color:#ffce54;"></i> <span id="pointsBalance">0</span></div>
-                <span class="real-box-main" id="realBalanceMain">R$ 0,00</span>
-            </div>
-        </div>
-
-        <!-- VIDEO PLAYER BOX (OCULTÁVEL) -->
-        <div class="video-box-container" id="videoBoxContainer">
-            <button class="btn-fechar-video" onclick="fecharVideo()">
-                <span>Assistindo Agora</span>
-                <i class="fa-solid fa-xmark" style="font-size: 18px;"></i>
-            </button>
-            <div class="video-box">
-                <div id="videoPlayer"></div>
-                <div class="ad-overlay" id="adLayer">
-                    <div class="ad-spinner"></div>
-                    <h4 style="color:#fff; font-size:14px; font-weight:700;">Carregando Mídia...</h4>
-                    <p style="font-size:11px; color:#808080; margin-top:6px;" id="adTimerText">Aguarde 5 segundos</p>
+        <!-- Header Topo -->
+        <div class="hbo-header">
+            <div class="logo-text">CINE <span>REWARDS</span></div>
+            <div class="header-actions">
+                <i class="fa-solid fa-chromecast header-icon"></i>
+                <div class="profile-avatar" onclick="navegarParaAba('perfil')">
+                    <i class="fa-solid fa-user" style="color:#fff; font-size: 14px;"></i>
                 </div>
             </div>
         </div>
 
-        <!-- TELA INICIAL: FEED DE FILMES -->
+        <!-- Balanços Minimizados -->
+        <div class="balances-float">
+            <div class="score-box-mini"><i class="fa-solid fa-coins"></i> <span id="pointsBalance">0</span></div>
+            <div class="real-box-mini" id="realBalanceMain">R$ 0,00</div>
+        </div>
+
+        <!-- Player de Vídeo -->
+        <div class="video-box">
+            <div id="videoPlayer"></div>
+            <div class="ad-overlay" id="adLayer">
+                <div class="ad-spinner"></div>
+                <h4 style="color:#fff; font-size:14px; font-weight:700;">Carregando Experiência...</h4>
+                <p style="font-size:11px; color:#9ca3af; margin-top:6px;" id="adTimerText">Aguarde 5 segundos</p>
+            </div>
+        </div>
+
+        <!-- ABA 1: FEED PRINCIPAL (HOME) -->
         <div class="content-body" id="screen-home">
             
-            <div class="gamification-bar">
-                <!-- Botões originais de Bônus e Missão Restaurados -->
-                <div class="gami-btn" id="dailyBonusBtn" onclick="coletarBonusDiario()">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <h4>Bônus Diário</h4>
+            <!-- Gamificação Rápida -->
+            <div class="gamification-row">
+                <div class="gami-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
+                    <h4><i class="fa-solid fa-gift" style="color:#8b5cf6;"></i> Bônus Diário</h4>
                     <p id="dailyBonusStatus">Verificando...</p>
+                    <button class="btn-secondary" id="dailyBonusBtn" disabled style="padding: 4px; font-size: 10px; margin-top: 4px;">Coletar</button>
                 </div>
-                <div class="gami-btn mission" onclick="coletarMissaoDiaria()">
-                    <i class="fa-solid fa-gift"></i>
-                    <h4>Missão Diária</h4>
-                    <p id="missionStatusText">0 / 5 Mídias</p>
-                    <div class="mission-progress-bg"><div class="mission-progress-fill" id="missionProgressBar"></div></div>
+                <div class="gami-card" onclick="coletarMissaoDiaria()">
+                    <h4><i class="fa-solid fa-bolt" style="color:#34d399;"></i> Missão</h4>
+                    <p id="missionStatusText">Assista 5 mídias</p>
+                    <div class="gami-progress"><div class="gami-fill" id="missionProgressBar"></div></div>
                 </div>
             </div>
 
-            <div class="netflix-row" id="row-continuar" style="display: none;">
-                <div class="row-title">Continuar Assistindo <span id="spanProfileName"></span></div>
-                <div class="row-posters" id="carrossel-continuar"></div>
+            <!-- Trilho: Continue Assistindo (NOVO) -->
+            <div class="movie-rail" id="rail-continue" style="display: none;">
+                <h3 class="rail-title">Continue assistindo</h3>
+                <div class="rail-scroll" id="carousel-continue"></div>
             </div>
 
-            <!-- Catálogos Reorganizados -->
-            <div class="netflix-row">
-                <div class="row-title">Em Alta Hoje</div>
-                <div class="row-posters" id="carrossel-alta"></div>
+            <!-- Trilho: Top Hits -->
+            <div class="movie-rail">
+                <h3 class="rail-title">Top Hits & Clipes Musicais</h3>
+                <div class="rail-scroll" id="carousel-hits"></div>
             </div>
 
-            <div class="netflix-row">
-                <div class="row-title">Ação e Adrenalina</div>
-                <div class="row-posters" id="carrossel-acao"></div>
+            <!-- Trilho: Filmes de Ação -->
+            <div class="movie-rail">
+                <h3 class="rail-title">Filmes de Ação</h3>
+                <div class="rail-scroll" id="carousel-action"></div>
             </div>
 
-            <div class="netflix-row">
-                <div class="row-title">Suspense e Mistério</div>
-                <div class="row-posters" id="carrossel-suspense"></div>
-            </div>
-
-            <div class="netflix-row">
-                <div class="row-title">Hits e Clipes Musicais</div>
-                <div class="row-posters" id="carrossel-hits"></div>
+            <!-- Trilho: Filmes em Geral -->
+            <div class="movie-rail">
+                <h3 class="rail-title">Mais Filmes</h3>
+                <div class="rail-scroll" id="carousel-movies"></div>
             </div>
         </div>
 
-        <!-- TELA: CARTEIRA -->
-        <div class="sub-screen" id="screen-saque">
-            <h3>Retirada de Fundos</h3>
-            <div class="xp-card" style="border-color:rgba(0,230,118,0.3); margin-bottom: 20px;">
-                <p style="color: #b3b3b3; font-size: 12px;">Saldo Disponível para Saque</p>
-                <span id="saqueRealBalance" style="color:var(--money-green); font-size:28px; font-weight:800;">R$ 0,00</span>
+        <!-- ABA 2: PESQUISA / EXPLORAR -->
+        <div class="sub-screen" id="screen-search">
+            <div class="sub-header">
+                <h2>Explorar</h2>
             </div>
-            <div class="input-group">
-                <label>Nome Completo</label>
-                <input type="text" class="input-field" id="pixName" placeholder="Conforme chave Pix">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="buscaGeral" onkeyup="realizarBusca()" placeholder="O que você quer assistir?">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Chave Pix</label>
-                <input type="text" class="input-field" id="pixKey" placeholder="CPF, Celular ou Email">
-            </div>
-            <div class="input-group">
-                <label>Valor (Mínimo R$ 20)</label>
-                <input type="number" class="input-field" id="saqueAmount" placeholder="0.00">
-            </div>
-            <button class="btn-saque" style="background:var(--money-green); color:#000;" onclick="executarPedidoSaque()">Processar Saque Seguro</button>
-        </div>
-
-        <!-- TELA: INDICAÇÕES -->
-        <div class="sub-screen" id="screen-indica">
-            <h3>Convidar Amigos</h3>
-            <p style="font-size: 12px; color: #808080; margin-bottom: 20px;">Convide amigos para assinar o Cine Rewards e ganhe bônus diretamente na sua carteira.</p>
-            <div class="input-group">
-                <label>Seu Link Exclusivo</label>
-                <input type="text" class="input-field" id="shareLinkField" readonly style="color:var(--netflix-red); font-weight:700;">
-            </div>
-            <button class="btn-saque" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
-        </div>
-
-        <!-- TELA: REGRAS -->
-        <div class="sub-screen" id="screen-regras">
-            <h3>Diretrizes da Plataforma</h3>
-            <div style="background: #222; padding: 15px; border-radius: 8px; border-left: 4px solid var(--netflix-red);">
-                <p style="font-size: 12px; color: #ccc; line-height: 1.6;">
-                    <strong>1. Ganhos por Minuto:</strong> Você é recompensado pelo tempo de exibição ativo. Minimizar o app pausa o XP.<br><br>
-                    <strong>2. Uso de Perfis:</strong> Você pode usar perfis secundários, mas os ganhos vão para a mesma carteira central.<br><br>
-                    <strong>3. Saque Seguro:</strong> Todos os saques passam por uma análise anti-fraude antes de liberar o Pix.
-                </p>
+            <div class="content-body" style="padding: 0 20px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-search-results">
+                    <!-- Resultados da busca vão aqui em formato de poster -->
+                </div>
             </div>
         </div>
 
-        <!-- ANÚNCIO FLUTUANTE MONETAG -->
-        <div class="anuncio-rodape-fixo">
-            <script>(function(s){s.dataset.zone='11386153',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+        <!-- ABA 3: MINHA LISTA (FAVORITOS) -->
+        <div class="sub-screen" id="screen-mylist">
+            <div class="sub-header">
+                <h2>Minha lista</h2>
+            </div>
+            <div class="content-body" style="padding: 0 20px;">
+                <div id="empty-list-msg" style="text-align: center; color: #9ca3af; font-size: 13px; margin-top: 50px;">
+                    <i class="fa-regular fa-bookmark" style="font-size: 40px; margin-bottom: 10px; opacity: 0.5;"></i><br>
+                    Você ainda não adicionou nenhum título à sua lista.
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" id="grid-my-list">
+                    <!-- Filmes salvos vão aqui -->
+                </div>
+            </div>
         </div>
 
-        <!-- BOTTOM NAV NETFLIX STYLE -->
+        <!-- ABA 4: PERFIL E CARTEIRA (CONTA) -->
+        <div class="sub-screen" id="screen-perfil">
+            <div class="sub-header">
+                <i class="fa-solid fa-arrow-left" onclick="navegarParaAba('home')"></i>
+                <h2>Minha Conta</h2>
+            </div>
+            <div class="sub-content">
+                
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <div class="profile-avatar" style="width: 60px; height: 60px; font-size: 25px;"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div id="userDisplay" style="font-weight: 700; font-size: 14px; color: #fff;">Usuario</div>
+                        <div id="userLevelBadge" style="font-size: 11px; color: #8b5cf6; font-weight: 700;">Nível 1</div>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <p>Meu Saldo Disponível</p>
+                    <span id="saqueRealBalance" style="color:#34d399; font-size:24px;">R$ 0,00</span>
+                    <div style="width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 8px; overflow: hidden;">
+                        <div id="progressBar" style="height: 100%; background: #34d399; width: 0%;"></div>
+                    </div>
+                    <div id="progressPercent" style="font-size: 10px; color: #9ca3af; text-align: right; margin-top: 4px;">0% para saque</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Nome Completo (Titular Pix)</label>
+                    <input type="text" class="input-field" id="pixName" placeholder="Seu nome">
+                </div>
+                <div class="input-group">
+                    <label>Chave Pix</label>
+                    <input type="text" class="input-field" id="pixKey" placeholder="Sua chave">
+                </div>
+                <div class="input-group">
+                    <label id="saqueMinimoLabel">Valor a sacar</label>
+                    <input type="number" class="input-field" id="saqueAmount" placeholder="0.00">
+                </div>
+                <button class="btn-primary" style="margin-top: 10px;" onclick="executarPedidoSaque()">Solicitar Retirada</button>
+
+                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">Indique e Ganhe</h3>
+                <div class="input-group">
+                    <input type="text" class="input-field" id="shareLinkField" readonly style="color:#8b5cf6; font-size: 12px; text-align: center;">
+                </div>
+                <button class="btn-secondary" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
+
+                <button class="btn-secondary" style="color: #ef4444; margin-top: 20px;" onclick="handleLogout()">Sair da Conta</button>
+            </div>
+        </div>
+
+        <!-- Bottom Nav HBO Style -->
         <div class="bottom-nav">
             <div class="nav-item active" id="nav-home" onclick="navegarParaAba('home')">
                 <i class="fa-solid fa-house"></i>
                 <span>Início</span>
             </div>
-            <div class="nav-item" id="nav-saque" onclick="navegarParaAba('saque')">
+            <div class="nav-item" id="nav-search" onclick="navegarParaAba('search')">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Pesquisa</span>
+            </div>
+            <div class="nav-item" id="nav-mylist" onclick="navegarParaAba('mylist')">
+                <i class="fa-solid fa-plus"></i>
+                <span>Minha Lista</span>
+            </div>
+            <div class="nav-item" id="nav-perfil" onclick="navegarParaAba('perfil')">
                 <i class="fa-solid fa-wallet"></i>
                 <span>Carteira</span>
-            </div>
-            <div class="nav-item" id="nav-indica" onclick="navegarParaAba('indica')">
-                <i class="fa-solid fa-users"></i>
-                <span>Convites</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Função Utilitária de Confetes Restaurada
-        function atirarConfetes() {
-            var duration = 3 * 1000; var end = Date.now() + duration;
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#E50914', '#00e676', '#ffffff'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#E50914', '#00e676', '#ffffff'] });
-                if (Date.now() < end) { requestAnimationFrame(frame); }
-            }());
-        }
-
-        // CONFIGURAÇÕES SUPABASE
+        // CONEXÃO COM O BANCO DE DADOS
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_mxIGnK-spI1ne3h-JYu4WQ_fqj1_dBM";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true }
+        });
 
-        // VARIÁVEIS PRINCIPAIS (Restauradas do código original)
+        // VARIÁVEIS DE SISTEMA
         let isSignUpMode = false; let usuarioAtualId = null; let usuarioEmail = "";
         let youtubePlayer = null; let cronometroPontuacao = null; let tempoAcumuladoSegundos = 0;
         let idVideoAtivo = null; let emExibicaoAnuncio = false;
         
-        let pontosLocaisMemoria = 0; let dinheiroLocalMemoria = 0.00; let nivelLocalMemoria = 1;
-        let dataUltimoBonusIso = null; let intervaloCronometroBonus = null; let videosAssistidosHoje = 0;
-        let currentProfile = "Principal";
+        // VARIÁVEIS DE USUÁRIO
+        let pontosLocaisMemoria = 0; 
+        let dinheiroLocalMemoria = 0.00;
+        let nivelLocalMemoria = 1;
+        
+        // MISSÃO E BÔNUS
+        let dataUltimoBonusIso = null; let intervaloCronometroBonus = null;
+        let videosAssistidosHoje = 0;
+        
+        // CONFIGURAÇÕES DO PAINEL ADMIN
+        let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
-        // TODOS OS 105 HITS + 87 FILMES INTACTOS
+        // SISTEMA DE MINHA LISTA E CONTINUE ASSISTINDO (Armazenamento Local)
+        let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista')) || [];
+        let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso')) || {};
+
+        // BACKUP COMPLETO DAS 192 MÍDIAS ORIGINAIS (Não removido)
         let colecaoVideos = [
-            { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE", recompensa: 150 },
-            { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito", recompensa: 200 },
-            { id: "3", ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk", recompensa: 100 },
+            { id: "1", ytId: "9bZkp7q19f0", titulo: "PSY - GANGNAM STYLE (강남스타일)", recompensa: 150 },
+            { id: "2", ytId: "kJQP7kiw5Fk", titulo: "Luis Fonsi - Despacito ft. Daddy Yankee", recompensa: 200 },
+            { id: "3", ytId: "OPf0YbXqDm0", titulo: "Mark Ronson - Uptown Funk ft. Bruno Mars", recompensa: 100 },
             { id: "4", ytId: "JGwWNGJdvx8", titulo: "Ed Sheeran - Shape of You", recompensa: 180 },
             { id: "5", ytId: "RgKAFK5djSk", titulo: "Wiz Khalifa - See You Again", recompensa: 120 },
             { id: "6", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar", recompensa: 140 },
@@ -398,7 +454,7 @@
             { id: "15", ytId: "0KSOMA3QBU0", titulo: "Katy Perry - Dark Horse", recompensa: 155 },
             { id: "16", ytId: "pB-5XG-DbAA", titulo: "Eminem - Love The Way You Lie", recompensa: 170 },
             { id: "17", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself", recompensa: 115 },
-            { id: "18", ytId: "3AtDnEC4zak", titulo: "Charlie Puth - We Don't Talk", recompensa: 125 },
+            { id: "18", ytId: "3AtDnEC4zak", titulo: "Charlie Puth - We Don't Talk Anymore", recompensa: 125 },
             { id: "19", ytId: "iX-QaNzd-0Y", titulo: "Milky Chance - Stolen Dance", recompensa: 180 },
             { id: "20", ytId: "fLexgOxsZu0", titulo: "Bruno Mars - The Lazy Song", recompensa: 190 },
             { id: "21", ytId: "ALZHF5UqnU4", titulo: "Marshmello - Alone", recompensa: 200 },
@@ -407,20 +463,20 @@
             { id: "24", ytId: "YykjpeuMNEk", titulo: "Coldplay - Hymn For The Weekend", recompensa: 140 },
             { id: "25", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 110 },
             { id: "26", ytId: "hLQl3WQQoQ0", titulo: "Adele - Someone Like You", recompensa: 130 },
-            { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP", recompensa: 120 },
+            { id: "27", ytId: "ru0K8uYEZWw", titulo: "Justin Timberlake - CAN'T STOP THE FEELING!", recompensa: 120 },
             { id: "28", ytId: "V1bFr2SWP1I", titulo: "Avicii - Wake Me Up", recompensa: 180 },
             { id: "29", ytId: "kffacxfA7G4", titulo: "Justin Bieber - Baby", recompensa: 190 },
             { id: "30", ytId: "K_yBUfMGvzc", titulo: "Oasis - Wonderwall", recompensa: 150 },
             { id: "31", ytId: "RBumgq5yVrA", titulo: "Passenger - Let Her Go", recompensa: 160 },
             { id: "32", ytId: "SlPhMPnQ58k", titulo: "Maroon 5 - Girls Like You", recompensa: 140 },
-            { id: "33", ytId: "AJtDXIazrMo", titulo: "Ellie Goulding - Love Me Like You", recompensa: 130 },
+            { id: "33", ytId: "AJtDXIazrMo", titulo: "Ellie Goulding - Love Me Like You Do", recompensa: 130 },
             { id: "34", ytId: "WpYeekQkAdc", titulo: "The Black Eyed Peas - I Gotta Feeling", recompensa: 170 },
             { id: "35", ytId: "IcrbM1l_BoI", titulo: "Avicii - Levels", recompensa: 110 },
             { id: "36", ytId: "QK8mJJJvaes", titulo: "Macklemore - Thrift Shop", recompensa: 120 },
-            { id: "37", ytId: "pRpeEdMmi3I", titulo: "Shakira - Waka Waka", recompensa: 180 },
+            { id: "37", ytId: "pRpeEdMmi3I", titulo: "Shakira - Waka Waka (This Time for Africa)", recompensa: 180 },
             { id: "38", ytId: "7PCkvCPvVNk", titulo: "Sia - Chandelier", recompensa: 190 },
             { id: "39", ytId: "Dkk9gvTmCXY", titulo: "Imagine Dragons - Believer", recompensa: 150 },
-            { id: "40", ytId: "kTJczUoc26U", titulo: "The Kid LAROI - STAY", recompensa: 160 },
+            { id: "40", ytId: "kTJczUoc26U", titulo: "The Kid LAROI, Justin Bieber - STAY", recompensa: 160 },
             { id: "41", ytId: "v2AC41dglnM", titulo: "AC/DC - Thunderstruck", recompensa: 140 },
             { id: "42", ytId: "1G4isv_Fylg", titulo: "Coldplay - Paradise", recompensa: 130 },
             { id: "43", ytId: "oyEuk8j8imI", titulo: "Justin Bieber - Peaches", recompensa: 170 },
@@ -429,7 +485,7 @@
             { id: "46", ytId: "XXYlCGOU_yQ", titulo: "The Weeknd - Starboy", recompensa: 180 },
             { id: "47", ytId: "fKopy74weus", titulo: "Imagine Dragons - Thunder", recompensa: 190 },
             { id: "48", ytId: "SYM-RJwSGQ8", titulo: "Tones and I - Dance Monkey", recompensa: 150 },
-            { id: "49", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar Remix", recompensa: 160 },
+            { id: "49", ytId: "09R8_2nJtjg", titulo: "Maroon 5 - Sugar (Remix)", recompensa: 160 },
             { id: "50", ytId: "mWRsgZuwf_8", titulo: "Imagine Dragons - Demons", recompensa: 140 },
             { id: "51", ytId: "C_3d6GntKbk", titulo: "Queen - Bohemian Rhapsody", recompensa: 130 },
             { id: "52", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now", recompensa: 170 },
@@ -441,20 +497,20 @@
             { id: "58", ytId: "cZAw8qxn0ZE", titulo: "Katy Perry - Firework", recompensa: 160 },
             { id: "59", ytId: "kOkQ4T5wVQY", titulo: "Rihanna - Diamonds", recompensa: 140 },
             { id: "60", ytId: "cvh0nX08nRw", titulo: "Rihanna - Umbrella", recompensa: 130 },
-            { id: "61", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself", recompensa: 170 },
+            { id: "61", ytId: "uelHwf8o7_U", titulo: "Justin Bieber - Love Yourself (Acoustic)", recompensa: 170 },
             { id: "62", ytId: "60ItHLz5WEA", titulo: "Alan Walker - Faded", recompensa: 110 },
             { id: "63", ytId: "hcm55lU9knw", titulo: "Michel Teló - Ai Se Eu Te Pego", recompensa: 120 },
             { id: "64", ytId: "W2sJv3xI9c0", titulo: "Gusttavo Lima - Balada", recompensa: 180 },
             { id: "65", ytId: "cgbQZGEk2OQ", titulo: "Anitta - Show das Poderosas", recompensa: 190 },
-            { id: "66", ytId: "c1oEUZtD8_Q", titulo: "Henrique e Juliano - Vidinha", recompensa: 150 },
+            { id: "66", ytId: "c1oEUZtD8_Q", titulo: "Henrique e Juliano - Vidinha de Balada", recompensa: 150 },
             { id: "67", ytId: "mXwFkHlO7m8", titulo: "Luan Santana - Te Esperando", recompensa: 160 },
             { id: "68", ytId: "qN4ooNx77u0", titulo: "Jorge & Mateus - Sosseguei", recompensa: 140 },
             { id: "69", ytId: "1-xGerv5FOk", titulo: "Marília Mendonça - Infiel", recompensa: 130 },
             { id: "70", ytId: "QvR_bNqFqX8", titulo: "Wesley Safadão - Camarote", recompensa: 170 },
             { id: "71", ytId: "1ZzZ1jV0S3k", titulo: "Kevinho - Olha a Explosão", recompensa: 110 },
-            { id: "72", ytId: "U3v1wO_iY4A", titulo: "Zé Neto e Cristiano - Largado", recompensa: 120 },
+            { id: "72", ytId: "U3v1wO_iY4A", titulo: "Zé Neto e Cristiano - Largado Às Traças", recompensa: 120 },
             { id: "73", ytId: "z1z2z3z4z5A", titulo: "Coldplay - Viva La Vida", recompensa: 180 },
-            { id: "74", ytId: "o1tj2zJ2Wvg", titulo: "Guns N' Roses - Sweet Child", recompensa: 190 },
+            { id: "74", ytId: "o1tj2zJ2Wvg", titulo: "Guns N' Roses - Sweet Child O' Mine", recompensa: 190 },
             { id: "75", ytId: "CSvFpBOe8eY", titulo: "System Of A Down - Chop Suey!", recompensa: 150 },
             { id: "76", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (HD)", recompensa: 160 },
             { id: "77", ytId: "YlUKcNNmywk", titulo: "Red Hot Chili Peppers - Californication", recompensa: 140 },
@@ -474,7 +530,7 @@
             { id: "91", ytId: "1cQh1ccqu8M", titulo: "Eagles - Hotel California", recompensa: 180 },
             { id: "92", ytId: "FkNBgM2p-Wc", titulo: "Pink Floyd - Comfortably Numb", recompensa: 190 },
             { id: "93", ytId: "m_lz2rFosY0", titulo: "Queen - Another One Bites The Dust", recompensa: 150 },
-            { id: "94", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now", recompensa: 160 },
+            { id: "94", ytId: "HgzGwKwLmgM", titulo: "Queen - Don't Stop Me Now (Official)", recompensa: 160 },
             { id: "95", ytId: "g4vLz10sWl8", titulo: "Queen - I Want To Break Free", recompensa: 140 },
             { id: "96", ytId: "zRIbf6JqkNc", titulo: "Guns N' Roses - Don't Cry", recompensa: 130 },
             { id: "97", ytId: "Q0oIoR9mLwc", titulo: "Red Hot Chili Peppers - Snow (Hey Oh)", recompensa: 170 },
@@ -483,324 +539,389 @@
             { id: "100", ytId: "Rbm6GXllBiw", titulo: "Guns N' Roses - Welcome To The Jungle", recompensa: 180 },
             { id: "101", ytId: "Fp1tA_i6kXg", titulo: "Scorpions - Wind Of Change", recompensa: 190 },
             { id: "102", ytId: "zUwEIt9ez7M", titulo: "Scorpions - Still Loving You", recompensa: 150 },
-            { id: "103", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain", recompensa: 160 },
+            { id: "103", ytId: "1w7OgIMMRc4", titulo: "Guns N' Roses - November Rain (Official)", recompensa: 160 },
             { id: "104", ytId: "V_4CZu4ghMo", titulo: "Aerosmith - I Don't Want to Miss a Thing", recompensa: 140 },
             { id: "105", ytId: "qfNmyxV2Ncw", titulo: "Aerosmith - Crazy", recompensa: 130 }
         ];
 
         let colecaoFilmes = [
-            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200, cat: "acao" },
-            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200, cat: "suspense" },
-            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200, cat: "acao" },
-            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200, cat: "alta" },
-            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200, cat: "acao" },
-            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200, cat: "suspense" },
-            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200, cat: "suspense" },
-            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200, cat: "acao" },
-            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200, cat: "acao" },
-            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200, cat: "suspense" },
-            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200, cat: "alta" },
-            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200, cat: "acao" },
-            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200, cat: "alta" },
-            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200, cat: "acao" },
-            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200, cat: "suspense" },
-            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200, cat: "alta" },
-            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200, cat: "acao" },
-            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200, cat: "suspense" },
-            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200, cat: "alta" },
-            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200, cat: "acao" },
-            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200, cat: "suspense" },
-            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200, cat: "acao" },
-            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200, cat: "acao" },
-            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200, cat: "alta" },
-            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200, cat: "acao" },
-            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200, cat: "suspense" },
-            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200, cat: "acao" },
-            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200, cat: "alta" },
-            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200, cat: "suspense" },
-            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200, cat: "acao" },
-            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200, cat: "acao" },
-            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200, cat: "alta" },
-            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200, cat: "acao" },
-            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200, cat: "suspense" },
-            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200, cat: "alta" },
-            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200, cat: "suspense" },
-            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200, cat: "alta" },
-            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200, cat: "suspense" },
-            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200, cat: "acao" },
-            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200, cat: "acao" },
-            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200, cat: "suspense" },
-            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200, cat: "acao" },
-            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200, cat: "suspense" },
-            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200, cat: "alta" },
-            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200, cat: "acao" },
-            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200, cat: "acao" },
-            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200, cat: "alta" },
-            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200, cat: "suspense" },
-            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200, cat: "alta" },
-            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200, cat: "suspense" },
-            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200, cat: "acao" },
-            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200, cat: "acao" },
-            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200, cat: "suspense" },
-            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200, cat: "acao" },
-            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200, cat: "alta" },
-            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200, cat: "acao" },
-            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200, cat: "acao" },
-            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200, cat: "suspense" },
-            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200, cat: "suspense" },
-            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200, cat: "acao" },
-            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200, cat: "suspense" },
-            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200, cat: "alta" },
-            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200, cat: "suspense" },
-            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200, cat: "acao" },
-            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200, cat: "acao" },
-            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200, cat: "suspense" },
-            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200, cat: "alta" },
-            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200, cat: "alta" },
-            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200, cat: "suspense" },
-            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200, cat: "alta" },
-            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200, cat: "acao" },
-            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200, cat: "acao" },
-            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200, cat: "suspense" },
-            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200, cat: "acao" },
-            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200, cat: "suspense" },
-            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200, cat: "acao" },
-            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200, cat: "alta" },
-            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200, cat: "acao" },
-            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200, cat: "suspense" },
-            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200, cat: "alta" },
-            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200, cat: "suspense" },
-            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200, cat: "acao" },
-            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200, cat: "acao" },
-            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200, cat: "acao" },
-            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200, cat: "suspense" },
-            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200, cat: "suspense" },
-            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200, cat: "acao" }
+            { id: "f1", ytId: "JkDhDTK_WpA", titulo: "Violação de conduta", recompensa: 200 },
+            { id: "f2", ytId: "4rAmC0XmAxA", titulo: "Ponto cego", recompensa: 200 },
+            { id: "f3", ytId: "7YEBYYApGBg", titulo: "O contrato", recompensa: 200 },
+            { id: "f4", ytId: "ibjo9quRNoM", titulo: "Fúria da natureza", recompensa: 200 },
+            { id: "f5", ytId: "ZdCdPtZHvj8", titulo: "Filme de Ação - Combate", recompensa: 200 },
+            { id: "f6", ytId: "A81QkSgG64g", titulo: "Memória mortal", recompensa: 200 },
+            { id: "f7", ytId: "aGBk70oIqQ0", titulo: "A noite dos mortos vivos", recompensa: 200 },
+            { id: "f8", ytId: "XaBzM91Y3C4", titulo: "Mafia digital", recompensa: 200 },
+            { id: "f9", ytId: "49fvoJVJ-io", titulo: "Killers filme de ação", recompensa: 200 },
+            { id: "f10", ytId: "Lc5tvT4xMlg", titulo: "Godsend", recompensa: 200 },
+            { id: "f11", ytId: "Ie4j83UDnhw", titulo: "O protetor", recompensa: 200 },
+            { id: "f12", ytId: "T2OblA5LCwI", titulo: "Marca negra", recompensa: 200 },
+            { id: "f13", ytId: "HfQoBFovpG8", titulo: "Spartacus", recompensa: 200 },
+            { id: "f14", ytId: "DO4VaVbpyq4", titulo: "Sem lei", recompensa: 200 },
+            { id: "f15", ytId: "5pIchruuDuo", titulo: "A equipe da noite", recompensa: 200 },
+            { id: "f16", ytId: "umOlzb2IaKk", titulo: "Carrosa de ouro", recompensa: 200 },
+            { id: "f17", ytId: "fJOG2UDNnlw", titulo: "Dominion", recompensa: 200 },
+            { id: "f18", ytId: "OOqr00sQc9U", titulo: "A investigação", recompensa: 200 },
+            { id: "f19", ytId: "BUNcui7rpi4", titulo: "Animais", recompensa: 200 },
+            { id: "f20", ytId: "T4eo_VY2nzk", titulo: "Terra sem lei", recompensa: 200 },
+            { id: "f21", ytId: "rsbV3ylqhys", titulo: "Justiça cega", recompensa: 200 },
+            { id: "f22", ytId: "v-L_Ra_x7GE", titulo: "Quando a guerra acabar", recompensa: 200 },
+            { id: "f23", ytId: "aYL5EUeIGC0", titulo: "Justiça implacável", recompensa: 200 },
+            { id: "f24", ytId: "YGTAOPolj_E", titulo: "6 balas", recompensa: 200 },
+            { id: "f25", ytId: "0WxHFTKxDEI", titulo: "Point break", recompensa: 200 },
+            { id: "f26", ytId: "OpsN61crot8", titulo: "O perigo mora aí lado", recompensa: 200 },
+            { id: "f27", ytId: "ZaI9rKkBxAw", titulo: "Código de honra", recompensa: 200 },
+            { id: "f28", ytId: "S9NnvXICi2c", titulo: "Tracks", recompensa: 200 },
+            { id: "f29", ytId: "K3GAUTrPpOs", titulo: "Reze pela noiva", recompensa: 200 },
+            { id: "f30", ytId: "Gww7LS0ndZs", titulo: "Vingança no Rio vermelho", recompensa: 200 },
+            { id: "f31", ytId: "L6wmsdpgxUc", titulo: "Guerra au terror", recompensa: 200 },
+            { id: "f32", ytId: "Epk7gOg-kko", titulo: "Par perfeito", recompensa: 200 },
+            { id: "f33", ytId: "-wi0knD9CbE", titulo: "O libertador", recompensa: 200 },
+            { id: "f34", ytId: "u8y99vZq9Kw", titulo: "Focus filme de ação", recompensa: 200 },
+            { id: "f35", ytId: "hUW_u0Gq_78", titulo: "12 horas para o fim do mundo", recompensa: 200 },
+            { id: "f36", ytId: "hCQ6PEY8S6M", titulo: "Testemunha ocular", recompensa: 200 },
+            { id: "f37", ytId: "LFKyAq-Jk6Y", titulo: "Sobre o domínio dos robôs", recompensa: 200 },
+            { id: "f38", ytId: "4gMGBQMNJ-0", titulo: "As prisioneiras", recompensa: 200 },
+            { id: "f39", ytId: "t4Oj_968T9w", titulo: "Chaos", recompensa: 200 },
+            { id: "f40", ytId: "_Ey_DJ9I6xs", titulo: "O cobrador de dividas", recompensa: 200 },
+            { id: "f41", ytId: "gGCaRtZ8zyo", titulo: "Rostos na multidão", recompensa: 200 },
+            { id: "f42", ytId: "Sk2R4MzmBw4", titulo: "The Debt Collector 2", recompensa: 200 },
+            { id: "f43", ytId: "OXFtBRIAzkI", titulo: "Vaniching", recompensa: 200 },
+            { id: "f44", ytId: "tGncZl3is68", titulo: "The general", recompensa: 200 },
+            { id: "f45", ytId: "9cfpDQZvPKc", titulo: "Combate umano", recompensa: 200 },
+            { id: "f46", ytId: "TNU5ldksteU", titulo: "Conduzido para matar", recompensa: 200 },
+            { id: "f47", ytId: "lt_lAf_ezcE", titulo: "Nobody 3", recompensa: 200 },
+            { id: "f48", ytId: "7lkywZUeTDs", titulo: "Bigfoot", recompensa: 200 },
+            { id: "f49", ytId: "n3orItX9fQY", titulo: "Jurassic world", recompensa: 200 },
+            { id: "f50", ytId: "Sl_T-MydBMI", titulo: "100 passos", recompensa: 200 },
+            { id: "f51", ytId: "cEb-IBGBO-M", titulo: "Sem saída", recompensa: 200 },
+            { id: "f52", ytId: "KKJ5e_ksjO4", titulo: "O destructo", recompensa: 200 },
+            { id: "f53", ytId: "HkXjsmZ2Chk", titulo: "Wake", recompensa: 200 },
+            { id: "f54", ytId: "uKOETw8n0pg", titulo: "O alvo final", recompensa: 200 },
+            { id: "f55", ytId: "1etKABdGUmI", titulo: "Space", recompensa: 200 },
+            { id: "f56", ytId: "L40yrwx8kfk", titulo: "Logan", recompensa: 200 },
+            { id: "f57", ytId: "iJrP6tm3DJY", titulo: "Jason Statham", recompensa: 200 },
+            { id: "f58", ytId: "BybOmwUoYiI", titulo: "Ligação assassina", recompensa: 200 },
+            { id: "f59", ytId: "3H7Lms8_cRU", titulo: "A doente indefesa", recompensa: 200 },
+            { id: "f60", ytId: "Oumgi3t6AVg", titulo: "O grande mestre 4", recompensa: 200 },
+            { id: "f61", ytId: "jsu-5FqXQK0", titulo: "A mulher do outro lado da linha", recompensa: 200 },
+            { id: "f62", ytId: "QJmrBPiYnvI", titulo: "Impacto Lunar", recompensa: 200 },
+            { id: "f63", ytId: "f5jcHLOAYbA", titulo: "Caminhos do coração", recompensa: 200 },
+            { id: "f64", ytId: "AUqSf8WhcMw", titulo: "O último guarda costas", recompensa: 200 },
+            { id: "f65", ytId: "6IHfDQDJLBw", titulo: "Imbatível", recompensa: 200 },
+            { id: "f66", ytId: "NuFsvzIxHv0", titulo: "Provando do próprio venono", recompensa: 200 },
+            { id: "f67", ytId: "flhf8LDNQB8", titulo: "Nova ordem mundial", recompensa: 200 },
+            { id: "f68", ytId: "cT6Irdnj4VY", titulo: "Arthur e os minimoys", recompensa: 200 },
+            { id: "f69", ytId: "QhQNnBHPW6c", titulo: "A família perfeita", recompensa: 200 },
+            { id: "f70", ytId: "avHHgGUP7Sc", titulo: "Terra fracturada", recompensa: 200 },
+            { id: "f71", ytId: "19HjSbdRa2Y", titulo: "Os fugitivos", recompensa: 200 },
+            { id: "f72", ytId: "IZyd_mNGbuo", titulo: "Operação Gerônimo", recompensa: 200 },
+            { id: "f73", ytId: "NdVL0W0wsKA", titulo: "O substituto", recompensa: 200 },
+            { id: "f74", ytId: "abg06bJu7f0", titulo: "Operação de combate", recompensa: 200 },
+            { id: "f75", ytId: "HS8cAkfnitc", titulo: "A informante", recompensa: 200 },
+            { id: "f76", ytId: "eRLEGdCkncI", titulo: "O preço da vingança", recompensa: 200 },
+            { id: "f77", ytId: "IzVWWngN1ww", titulo: "O caçador de dragões", recompensa: 200 },
+            { id: "f78", ytId: "3pXofWBVhbc", titulo: "Sangue na veia", recompensa: 200 },
+            { id: "f79", ytId: "8cHiAILepMg", titulo: "Na mira dos assassinos", recompensa: 200 },
+            { id: "f80", ytId: "ICLuzEMzCVM", titulo: "Eclesiastes", recompensa: 200 },
+            { id: "f81", ytId: "KCDaJMkPb3I", titulo: "Tempestade na estrada", recompensa: 200 },
+            { id: "f82", ytId: "oizZ-6t0fKg", titulo: "Implacável", recompensa: 200 },
+            { id: "f83", ytId: "mUsROlZNAVs", titulo: "Corrida mortal", recompensa: 200 },
+            { id: "f84", ytId: "gZ-8-ombrJ4", titulo: "Fuga mortal", recompensa: 200 },
+            { id: "f85", ytId: "zpmGQeMOiiE", titulo: "O cão do inferno", recompensa: 200 },
+            { id: "f86", ytId: "9DgNyHFGMWE", titulo: "Viagem sem volta", recompensa: 200 },
+            { id: "f87", ytId: "XPBrVL2GHLM", titulo: "O novo cherife", recompensa: 200 }
         ];
 
-        // FUNÇÕES DE UI E NAVEGAÇÃO
-        function fecharVideo() {
-            document.getElementById('videoBoxContainer').style.display = 'none';
-            if (youtubePlayer && youtubePlayer.pauseVideo) youtubePlayer.pauseVideo();
-            pararContagemGanhos();
-        }
-
-        function navegarParaAba(alvo) {
-            document.getElementById('menuDrawer').classList.remove('active');
+        // FUNÇÃO GERADORA DE CARDS HBO STYLE
+        function criarCardVideo(vid, onPlayClick) {
+            const card = document.createElement('div');
+            card.className = `movie-poster`; 
+            card.id = `vcard-${vid.id}`;
             
-            // Lógica de Ocultar o Vídeo ao mudar de aba
-            if (alvo !== 'home') {
-                fecharVideo();
+            const isSaved = minhaListaIds.includes(vid.id);
+            const btnClass = isSaved ? 'btn-add-list saved' : 'btn-add-list';
+            const iconClass = isSaved ? 'fa-solid fa-check' : 'fa-solid fa-plus';
+
+            card.innerHTML = `
+                <div class="poster-image-wrapper" onclick="document.getElementById('play-btn-${vid.id}').click()">
+                    <img src="https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg" alt="${vid.titulo}">
+                    <div class="play-icon-overlay" id="play-btn-${vid.id}">
+                        <i class="fa-solid fa-circle-play"></i>
+                    </div>
+                    <div class="progress-bar-continue" id="prog-bar-${vid.id}" style="width: 0%;"></div>
+                </div>
+                <div class="movie-info">
+                    <h5 class="movie-title" title="${vid.titulo}">${vid.titulo}</h5>
+                    <div class="movie-meta">
+                        <span class="movie-reward">+${vid.recompensa} XP</span>
+                        <i class="${iconClass} ${btnClass}" onclick="toggleMinhaLista(event, '${vid.id}')" title="Minha Lista"></i>
+                    </div>
+                </div>
+            `;
+            
+            // Adiciona evento de clique na imagem
+            card.querySelector('.poster-image-wrapper').onclick = onPlayClick;
+
+            // Se tiver progresso salvo, atualiza a barrinha
+            if(progressoVideos[vid.id]) {
+                const barra = card.querySelector(`#prog-bar-${vid.id}`);
+                barra.style.width = '50%'; // Apenas visual, indicando que já começou
             }
 
-            document.getElementById('screen-home').style.display = alvo === 'home' ? 'flex' : 'none';
-            document.getElementById('screen-saque').classList.toggle('active', alvo === 'saque');
-            document.getElementById('screen-indica').classList.toggle('active', alvo === 'indica');
-            document.getElementById('screen-regras').classList.toggle('active', alvo === 'regras');
-
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(document.getElementById(`nav-${alvo}`)) document.getElementById(`nav-${alvo}`).classList.add('active');
+            return card;
         }
 
-        function toggleAuthMode() {
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('authSubtitle').innerText = isSignUpMode ? "Assinar" : "Entrar";
-            document.getElementById('authButton').innerText = isSignUpMode ? "Criar Conta" : "Entrar";
-            document.getElementById('authToggle').innerHTML = isSignUpMode ? "Já é assinante? <span>Faça Login.</span>" : "Novo por aqui? <span>Assine agora.</span>";
-        }
-
-        function toggleMenu() { document.getElementById('menuDrawer').classList.toggle('active'); }
-
-        // GERENCIAMENTO DE PERFIS (Netflix Style)
-        function checkProfile() {
-            const savedProfile = localStorage.getItem('activeProfile');
-            if(savedProfile) { selectProfile(savedProfile); } 
-            else { document.getElementById('profileScreen').classList.remove('hidden'); }
-        }
-
-        function selectProfile(profileName) {
-            currentProfile = profileName;
-            localStorage.setItem('activeProfile', profileName);
-            document.getElementById('profileScreen').classList.add('hidden');
-            document.getElementById('spanProfileName').innerText = profileName;
-            
-            const avatarUrl = profileName === 'Principal' ? 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png' : 'https://ih0.redbubble.net/image.618427277.3222/flat,1000x1000,075,f.u2.jpg';
-            document.getElementById('drawerAvatar').style.backgroundImage = `url('${avatarUrl}')`;
-            
-            renderizarContinuarAssistindo();
-        }
-
-        function switchProfile() {
-            toggleMenu();
-            localStorage.removeItem('activeProfile');
-            document.getElementById('profileScreen').classList.remove('hidden');
-            fecharVideo();
-        }
-
-        // CARROSSEL DE FILMES E HITS
-        function renderizarCarrosseis() {
-            const containerAcao = document.getElementById('carrossel-acao');
-            const containerSuspense = document.getElementById('carrossel-suspense');
-            const containerAlta = document.getElementById('carrossel-alta');
-            const containerHits = document.getElementById('carrossel-hits');
-            
-            containerAcao.innerHTML = ""; containerSuspense.innerHTML = ""; containerAlta.innerHTML = ""; containerHits.innerHTML = "";
-
-            // Renderiza Filmes
-            colecaoFilmes.forEach(filme => {
-                const imgUrl = `https://img.youtube.com/vi/${filme.ytId}/hqdefault.jpg`;
-                const cardHtml = `
-                    <div class="poster-card" id="fcard-${filme.id}" onclick="intermediarAnuncio(() => trocarVideoAtivo('${filme.id}', 'filme'))">
-                        <img src="${imgUrl}" alt="${filme.titulo}">
-                        <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-                        <span class="reward-tag">+${filme.recompensa} XP</span>
-                    </div>
-                `;
-                if(filme.cat === 'acao') containerAcao.innerHTML += cardHtml;
-                else if(filme.cat === 'suspense') containerSuspense.innerHTML += cardHtml;
-                else containerAlta.innerHTML += cardHtml;
-            });
-
-            // Renderiza Hits/Clipes Musicais na aba designada
-            colecaoVideos.forEach(vid => {
-                const imgUrl = `https://img.youtube.com/vi/${vid.ytId}/hqdefault.jpg`;
-                const cardHtml = `
-                    <div class="poster-card" id="vcard-${vid.id}" onclick="intermediarAnuncio(() => trocarVideoAtivo('${vid.id}', 'hit'))">
-                        <img src="${imgUrl}" alt="${vid.titulo}">
-                        <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-                        <span class="reward-tag">+${vid.recompensa} XP</span>
-                    </div>
-                `;
-                containerHits.innerHTML += cardHtml;
-            });
-
-            renderizarContinuarAssistindo();
-        }
-
-        function renderizarContinuarAssistindo() {
-            const lastWatchedId = localStorage.getItem(`lastWatched_${usuarioAtualId}_${currentProfile}`);
-            const lastWatchedType = localStorage.getItem(`lastWatchedType_${usuarioAtualId}_${currentProfile}`) || 'filme';
-            const rowContinuar = document.getElementById('row-continuar');
-            const containerContinuar = document.getElementById('carrossel-continuar');
-            
-            if(lastWatchedId) {
-                const acervo = lastWatchedType === 'hit' ? colecaoVideos : colecaoFilmes;
-                const filme = acervo.find(f => f.id === lastWatchedId);
-                if(filme) {
-                    rowContinuar.style.display = "block";
-                    containerContinuar.innerHTML = `
-                        <div class="poster-card active" onclick="intermediarAnuncio(() => trocarVideoAtivo('${filme.id}', '${lastWatchedType}'))">
-                            <img src="https://img.youtube.com/vi/${filme.ytId}/hqdefault.jpg" alt="${filme.titulo}">
-                            <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-                            <span class="reward-tag">Assistindo</span>
-                        </div>
-                    `;
+        async function buscarFilmesDoBanco() {
+            try {
+                const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
+                if (!error && data && data.length > 0) {
+                    colecaoVideos = data.filter(v => v.categoria === 'Hit' || !v.categoria);
+                    colecaoFilmes = data.filter(v => v.categoria === 'Filme');
                 }
-            } else { rowContinuar.style.display = "none"; }
+            } catch (e) { console.log("Mantendo arrays locais como backup"); }
         }
 
-        function trocarVideoAtivo(id, type) {
-            const acervo = type === 'hit' ? colecaoVideos : colecaoFilmes;
-            const vData = acervo.find(v => v.id === id);
-            if(!vData) return;
-            
-            idVideoAtivo = id; tempoAcumuladoSegundos = 0;
-            
-            // Salva no histórico local do perfil
-            localStorage.setItem(`lastWatched_${usuarioAtualId}_${currentProfile}`, id);
-            localStorage.setItem(`lastWatchedType_${usuarioAtualId}_${currentProfile}`, type);
-            renderizarContinuarAssistindo();
+        async function inicializarPlaylist() {
+            await buscarFilmesDoBanco();
+            renderizarCarrosseis();
+            atualizarContinueAssistindo();
+            atualizarMinhaLista();
 
-            // Abre o player caso esteja fechado
-            document.getElementById('videoBoxContainer').style.display = 'flex';
+            if (typeof YT !== 'undefined' && YT.Player && colecaoVideos.length > 0 && !youtubePlayer) {
+                // Tenta carregar o último visto, se não, carrega o primeiro
+                let firstIdToLoad = colecaoVideos[0].ytId;
+                const lastKeys = Object.keys(progressoVideos);
+                if(lastKeys.length > 0) {
+                    const lastVid = [...colecaoVideos, ...colecaoFilmes].find(v => v.id === lastKeys[lastKeys.length - 1]);
+                    if(lastVid) {
+                        firstIdToLoad = lastVid.ytId;
+                        idVideoAtivo = lastVid.id;
+                    }
+                }
 
-            if(youtubePlayer && youtubePlayer.loadVideoById) { 
-                youtubePlayer.loadVideoById(vData.ytId); 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (typeof YT !== 'undefined' && YT.Player) {
                 youtubePlayer = new YT.Player('videoPlayer', { 
-                    videoId: vData.ytId, 
-                    playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 1 }, 
+                    videoId: firstIdToLoad, 
+                    playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 0 }, 
                     events: { 'onStateChange': gerenciarMudancaEstadoPlayer } 
                 });
             }
         }
 
-        // PLAYER DE VÍDEO INIT
-        window.onYouTubeIframeAPIReady = function() {
-            // Player só será inicializado quando clicarem em um vídeo para poupar banda.
-        };
+        function renderizarCarrosseis() {
+            const hitsContainer = document.getElementById('carousel-hits');
+            hitsContainer.innerHTML = "";
+            colecaoVideos.slice(0, 15).forEach(vid => {
+                hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            });
 
-        function intermediarAnuncio(callback) {
-            emExibicaoAnuncio = true; pararContagemGanhos();
-            if (youtubePlayer && youtubePlayer.pauseVideo) try { youtubePlayer.pauseVideo(); } catch(e){}
-            const containerScripts = document.getElementById('adScriptContainer'); containerScripts.innerHTML = "";
-            const script1 = document.createElement('script'); script1.async = true; script1.src = 'https://n6wxm.com/vignette.min.js'; script1.dataset.zone = '11218300'; containerScripts.appendChild(script1);
-            
-            document.getElementById('videoBoxContainer').style.display = 'flex';
-            const layer = document.getElementById('adLayer'); const timerTxt = document.getElementById('adTimerText');
-            layer.classList.add('active'); let tempoRestante = 5; timerTxt.innerText = `Aguarde ${tempoRestante} segundos`;
+            const actionContainer = document.getElementById('carousel-action');
+            actionContainer.innerHTML = "";
+            colecaoFilmes.slice(0, 10).forEach(vid => {
+                actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            });
 
-            const intervalo = setInterval(() => {
-                tempoRestante--;
-                if(tempoRestante <= 0) {
-                    clearInterval(intervalo); layer.classList.remove('active'); emExibicaoAnuncio = false;
-                    callback();
-                } else { timerTxt.innerText = `Aguarde ${tempoRestante} segundos`; }
-            }, 1000);
+            const moviesContainer = document.getElementById('carousel-movies');
+            moviesContainer.innerHTML = "";
+            colecaoFilmes.slice(10, 25).forEach(vid => {
+                moviesContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+            });
         }
 
-        // SISTEMA DE GANHOS E AUTENTICAÇÃO (100% Restaurado)
+        function atualizarContinueAssistindo() {
+            const container = document.getElementById('carousel-continue');
+            const rail = document.getElementById('rail-continue');
+            container.innerHTML = "";
+            
+            const vidsComProgresso = Object.keys(progressoVideos);
+            if(vidsComProgresso.length === 0) {
+                rail.style.display = 'none';
+                return;
+            }
+
+            rail.style.display = 'block';
+            const allMedia = [...colecaoVideos, ...colecaoFilmes];
+            
+            // Pega os últimos 5 assistidos
+            vidsComProgresso.slice(-5).reverse().forEach(id => {
+                const vid = allMedia.find(v => v.id === id);
+                if(vid) {
+                    container.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.id))));
+                }
+            });
+        }
+
+        function atualizarMinhaLista() {
+            const container = document.getElementById('grid-my-list');
+            const emptyMsg = document.getElementById('empty-list-msg');
+            container.innerHTML = "";
+            
+            if(minhaListaIds.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            
+            emptyMsg.style.display = 'none';
+            const allMedia = [...colecaoVideos, ...colecaoFilmes];
+            minhaListaIds.forEach(id => {
+                const vid = allMedia.find(v => v.id === id);
+                if(vid) {
+                    // Reutiliza a função de card, mas com estilo diferente se precisar
+                    container.appendChild(criarCardVideo(vid, () => {
+                        navegarParaAba('home'); // Volta pra home pra ver o vídeo
+                        window.scrollTo(0,0);
+                        intermediarAnuncio(() => trocarVideoAtivo(vid.id));
+                    }));
+                }
+            });
+        }
+
+        function toggleMinhaLista(event, id) {
+            event.stopPropagation(); // Evita clicar no vídeo
+            const idx = minhaListaIds.indexOf(id);
+            if(idx > -1) {
+                minhaListaIds.splice(idx, 1);
+                UI.toast('Removido da Minha Lista');
+            } else {
+                minhaListaIds.push(id);
+                UI.toast('Adicionado à Minha Lista');
+            }
+            localStorage.setItem('cine_minhalista', JSON.stringify(minhaListaIds));
+            
+            // Re-renderiza para atualizar ícones
+            renderizarCarrosseis();
+            atualizarContinueAssistindo();
+            atualizarMinhaLista();
+        }
+
+        function realizarBusca() {
+            const termo = document.getElementById('buscaGeral').value.toLowerCase();
+            const grid = document.getElementById('grid-search-results');
+            grid.innerHTML = "";
+            
+            if(termo.length < 2) return;
+
+            const allMedia = [...colecaoVideos, ...colecaoFilmes];
+            const resultados = allMedia.filter(v => v.titulo.toLowerCase().includes(termo));
+            
+            resultados.forEach(vid => {
+                grid.appendChild(criarCardVideo(vid, () => {
+                    navegarParaAba('home');
+                    window.scrollTo(0,0);
+                    intermediarAnuncio(() => trocarVideoAtivo(vid.id));
+                }));
+            });
+        }
+
+        function navegarParaAba(alvo) {
+            // Esconde todas
+            document.getElementById('screen-home').classList.remove('active');
+            document.getElementById('screen-search').classList.remove('active');
+            document.getElementById('screen-mylist').classList.remove('active');
+            document.getElementById('screen-perfil').classList.remove('active');
+            
+            // Mostra a alvo
+            if(alvo === 'home') document.getElementById('screen-home').style.display = 'flex';
+            else document.getElementById('screen-home').style.display = 'none';
+
+            if(alvo !== 'home') document.getElementById(`screen-${alvo}`).classList.add('active');
+
+            // Atualiza icones
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const activeNav = document.getElementById(`nav-${alvo}`);
+            if(activeNav) activeNav.classList.add('active');
+        }
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            document.getElementById('authButton').innerText = isSignUpMode ? "Criar Conta" : "Entrar";
+            document.getElementById('authToggle').innerText = isSignUpMode ? "Já tem conta? Fazer Login" : "Ainda não tem conta? Assine agora.";
+        }
+
         async function handleAuth() {
             const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value.trim();
-            if (!email || !password) return alert("Preencha os campos.");
+            if (!email || !password) return alert("Preencha todos os campos!");
 
             try {
                 if (isSignUpMode) {
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    alert("Conta criada! Faça login."); toggleAuthMode();
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const indicadorId = urlParams.get('ref');
+                    
+                    if (indicadorId && indicadorId !== data.user.id) {
+                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
+                        if (dadosIndicador) {
+                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
+                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
+                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: novoSaldo }).eq('id', indicadorId);
+                            await _supabase.from('indicacoes').insert([{ indicador_id: indicadorId, indicado_id: data.user.id, created_at: new Date().toISOString() }]);
+                        }
+                    }
+                    alert("Conta criada com sucesso! Faça o login.");
+                    isSignUpMode = false; toggleAuthMode();
                 } else {
-                    const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                    const { data, error = null } = await _supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     document.getElementById('authScreen').classList.add('hidden');
                     await carregarDadosDoUsuario(data.user);
-                    checkProfile();
                 }
-            } catch (err) { alert("Erro: " + err.message); }
+            } catch (err) { alert("Erro de Autenticação: " + (err.message || JSON.stringify(err))); }
         }
 
         async function carregarDadosDoUsuario(user) {
+            if (!user) return;
             usuarioAtualId = user.id; usuarioEmail = user.email;
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
             
+            document.getElementById('pixName').value = localStorage.getItem('userPixName') || '';
+            document.getElementById('pixKey').value = localStorage.getItem('userPixKey') || '';
+            
             try {
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
                 if (!data) {
-                    const { data: fallback } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, nivel: 1, pontos: 0, saldo_reais: 0.00 }]).select().single();
-                    data = fallback;
+                    const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, nivel: 1, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
+                    data = fallbackProfile;
                 }
                 
-                pontosLocaisMemoria = parseInt(data?.pontos) || 0; dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00; nivelLocalMemoria = parseInt(data?.nivel) || 1;
+                pontosLocaisMemoria = parseInt(data?.pontos) || 0;
+                dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
+                nivelLocalMemoria = parseInt(data?.nivel) || 1;
                 dataUltimoBonusIso = data?.ultimo_bonus || null;
-            } catch (e) {} finally {
-                atualizarInterfaceDados(); renderizarCarrosseis(); dispararNotificacoesSaqueFlutuante(); gerenciarCronometroBonusDiario();
+
+                if(navigator.geolocation) {
+                    await _supabase.from('antifraud_logs').insert([{ user_id: user.id, email: user.email, ip_address: "Acesso Mobile", localidade: "Brasil (Sincronizado)", dispositivo: navigator.userAgent }]);
+                }
+            } catch (e) { 
+                console.error("Erro na sincronização:", e.message);
+            } finally {
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
+                gerenciarCronometroBonusDiario(); dispararNotificacoesSaqueFlutuante();
             }
         }
 
-        function atualizarInterfaceDados() {
-            document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
-            const formatado = `R$ ${dinheiroLocalMemoria.toFixed(2).replace('.', ',')}`;
-            document.getElementById('realBalance').innerText = formatado; document.getElementById('realBalanceMain').innerText = formatado; document.getElementById('saqueRealBalance').innerText = formatado;
-            document.getElementById('userLevelBadge').innerText = `NÍVEL ${nivelLocalMemoria}`;
+        function atualizarInterfaceDados(pontos, saldoReais, nivel) {
+            pontosLocaisMemoria = pontos; dinheiroLocalMemoria = saldoReais; nivelLocalMemoria = nivel;
             
-            let xpProximoNivel = nivelLocalMemoria * 5000;
-            document.getElementById('userXpText').innerText = `${pontosLocaisMemoria} / ${xpProximoNivel} XP`;
-            document.getElementById('userXpBar').style.width = `${Math.min((pontosLocaisMemoria / xpProximoNivel) * 100, 100)}%`;
+            document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
+            const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
+            document.getElementById('realBalanceMain').innerText = formatado;
+            document.getElementById('saqueRealBalance').innerText = formatado;
+            
+            document.getElementById('userLevelBadge').innerText = `Nível ${nivelLocalMemoria}`;
+            
+            const minSaque = configGlobal.saque_minimo || 20.00;
+            const pct = Math.min((saldoReais / minSaque) * 100, 100);
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressPercent').innerText = `${Math.floor(pct)}% para saque`;
+            
+            const pctMissao = Math.min((videosAssistidosHoje / 5) * 100, 100);
+            document.getElementById('missionProgressBar').style.width = `${pctMissao}%`;
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 5 Mídias`;
-            document.getElementById('missionProgressBar').style.width = `${Math.min((videosAssistidosHoje / 5) * 100, 100)}%`;
         }
 
         function gerenciarCronometroBonusDiario() {
@@ -809,8 +930,8 @@
             const textoStatus = document.getElementById('dailyBonusStatus');
 
             if (!dataUltimoBonusIso) {
-                botao.classList.add("btn-ready");
-                textoStatus.innerText = "Disponível! Resgate agora.";
+                botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff";
+                textoStatus.innerText = "Disponível! Resgate.";
                 return;
             }
 
@@ -820,130 +941,195 @@
                 const diferencaMs = proximaColeta - agora;
 
                 if (diferencaMs <= 0) {
-                    clearInterval(intervaloCronometroBonus); 
-                    botao.classList.add("btn-ready");
-                    dataUltimoBonusIso = null; 
-                    textoStatus.innerText = "Disponível! Resgate agora.";
+                    clearInterval(intervaloCronometroBonus); botao.disabled = false; botao.style.background = "#8b5cf6";
+                    dataUltimoBonusIso = null; textoStatus.innerText = "Disponível! Resgate.";
                 } else {
-                    botao.classList.remove("btn-ready");
+                    botao.disabled = true; botao.style.background = "rgba(255,255,255,0.1)";
                     const h = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0');
                     const m = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                    const s = String(Math.floor((diferencaMs % (1000 * 60)) / 1000)).padStart(2, '0');
-                    textoStatus.innerText = `${h}:${m}:${s}`;
+                    textoStatus.innerText = `Próximo em: ${h}:${m}`;
                 }
             }
-            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 1000);
+            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 60000); // atualiza a cada minuto pra poupar CPU
         }
 
         async function coletarBonusDiario() {
-            if (!usuarioAtualId || document.getElementById('dailyBonusStatus').innerText.includes(":")) return;
+            if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
             const isoAgora = new Date().toISOString(); dataUltimoBonusIso = isoAgora;
             pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
-            
-            let subiuNivel = false;
-            if(pontosLocaisMemoria >= nivelLocalMemoria * 5000) { nivelLocalMemoria++; subiuNivel = true; }
-
-            atualizarInterfaceDados(); gerenciarCronometroBonusDiario();
+            let xpProximoNivel = nivelLocalMemoria * 5000;
+            if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
+            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
+            gerenciarCronometroBonusDiario();
             await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, ultimo_bonus: isoAgora }).eq('id', usuarioAtualId);
-            
-            if(subiuNivel) { atirarConfetes(); Swal.fire({ position: 'center', icon: 'success', title: `Subiu para o Nível ${nivelLocalMemoria}!`, showConfirmButton: false, timer: 3000 }); } 
-            else { Swal.fire({ toast: true, position: 'top', icon: 'success', title: 'Check-in realizado! +1000 XP', showConfirmButton: false, timer: 3000 }); }
         }
 
         async function coletarMissaoDiaria() {
             if(videosAssistidosHoje >= 5) {
-                videosAssistidosHoje = 0; pontosLocaisMemoria += 5000; dinheiroLocalMemoria += 0.50;
-                
-                let subiuNivel = false;
-                if(pontosLocaisMemoria >= nivelLocalMemoria * 5000) { nivelLocalMemoria++; subiuNivel = true; }
-                
-                atualizarInterfaceDados();
+                videosAssistidosHoje = 0; pontosLocaisMemoria += 2500; dinheiroLocalMemoria += 0.25;
+                let xpProximoNivel = nivelLocalMemoria * 5000;
+                if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
+                atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                 await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
-                
-                atirarConfetes();
-                if(subiuNivel) { Swal.fire({ position: 'center', icon: 'success', title: `Level Up! Nível ${nivelLocalMemoria}!`, text: 'Missão concluída!', showConfirmButton: false, timer: 3500 }); } 
-                else { Swal.fire({ position: 'center', icon: 'success', title: 'Missão Cumprida!', text: '+5000 XP adicionados.', showConfirmButton: false, timer: 3000 }); }
-            } else { Swal.fire({ toast: true, position: 'top', icon: 'info', title: 'Assista mais filmes para concluir!', showConfirmButton: false, timer: 3000 }); }
+                UI.toast('Missão Cumprida! +2500 XP');
+            } else {
+                UI.toast('Assista mais vídeos para concluir!');
+            }
+        }
+
+        function intermediarAnuncio(callback) {
+            emExibicaoAnuncio = true; pararContagemGanhos();
+            if (youtubePlayer && youtubePlayer.pauseVideo) { try { youtubePlayer.pauseVideo(); } catch(e){} }
+            const containerScripts = document.getElementById('adScriptContainer'); containerScripts.innerHTML = "";
+            const script1 = document.createElement('script'); script1.async = true; script1.src = 'https://n6wxm.com/vignette.min.js'; script1.dataset.zone = '11218300'; containerScripts.appendChild(script1);
+            
+            const layer = document.getElementById('adLayer'); const timerTxt = document.getElementById('adTimerText');
+            layer.classList.add('active'); let tempoRestante = 5; timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`;
+
+            const intervalo = setInterval(() => {
+                tempoRestante--;
+                if(tempoRestante <= 0) {
+                    clearInterval(intervalo); layer.classList.remove('active'); emExibicaoAnuncio = false;
+                    callback(); // Troca o video
+                    // Tenta dar play automaticamente após o anuncio
+                    setTimeout(() => { if(youtubePlayer && youtubePlayer.playVideo) { try { youtubePlayer.playVideo(); } catch(e){} } }, 1000);
+                } else { timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`; }
+            }, 1000);
+        }
+
+        const UI = {
+            toast: (msg) => { Swal.fire({ toast: true, position: 'top', icon: 'success', title: msg, showConfirmButton: false, timer: 2000, background: '#1d0f33', color: '#fff' }); }
+        };
+
+        function trocarVideoAtivo(id) {
+            const vData = colecaoVideos.find(v => v.id === id) || colecaoFilmes.find(v => v.id === id);
+            if(!vData) return;
+            idVideoAtivo = id; tempoAcumuladoSegundos = 0; 
+            
+            // Verifica se tem tempo salvo
+            let startAt = 0;
+            if(progressoVideos[id]) startAt = progressoVideos[id];
+
+            if(youtubePlayer && youtubePlayer.loadVideoById) { 
+                youtubePlayer.loadVideoById({videoId: vData.ytId, startSeconds: startAt}); 
+            }
         }
 
         function gerenciarMudancaEstadoPlayer(ev) {
-            if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) iniciarContagemGanhos(); else pararContagemGanhos();
+            if (ev.data === YT.PlayerState.PLAYING && !emExibicaoAnuncio) { iniciarContagemGanhos(); } 
+            else { pararContagemGanhos(); }
         }
 
         function iniciarContagemGanhos() {
             if(cronometroPontuacao) return;
             cronometroPontuacao = setInterval(async () => {
                 if(!usuarioAtualId || emExibicaoAnuncio || document.hidden) return;
-                let tocando = false;
-                try { if (youtubePlayer && youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) tocando = true; } catch(e){}
+                let playerRealmenteTocando = false;
+                let tempoAtual = 0;
+                
+                try { 
+                    if (youtubePlayer && typeof youtubePlayer.getPlayerState === 'function') {
+                        if(youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                            playerRealmenteTocando = true; 
+                            tempoAtual = Math.floor(youtubePlayer.getCurrentTime());
+                        }
+                    } 
+                } catch(e) {}
 
-                if (tocando) {
+                if (playerRealmenteTocando) {
                     tempoAcumuladoSegundos++;
+                    
+                    // Salva progresso a cada 10 segundos
+                    if(tempoAcumuladoSegundos % 10 === 0 && idVideoAtivo) {
+                        progressoVideos[idVideoAtivo] = tempoAtual;
+                        localStorage.setItem('cine_progresso', JSON.stringify(progressoVideos));
+                        atualizarContinueAssistindo(); // Atualiza a row silenciosamente
+                    }
+
                     if (tempoAcumuladoSegundos >= 60) {
-                        tempoAcumuladoSegundos = 0; videosAssistidosHoje++;
-                        
-                        // Busca se é hit ou filme
-                        let vData = colecaoFilmes.find(v => v.id === idVideoAtivo) || colecaoVideos.find(v => v.id === idVideoAtivo);
+                        tempoAcumuladoSegundos = 0; 
+                        videosAssistidosHoje++;
+                        const vData = colecaoVideos.find(v => v.id === idVideoAtivo) || colecaoFilmes.find(v => v.id === idVideoAtivo);
                         if(!vData) return;
                         
                         pontosLocaisMemoria += parseInt(vData.recompensa); 
-                        dinheiroLocalMemoria += (parseInt(vData.recompensa) / 10000);
+                        let taxa = configGlobal.taxa_conversao || 10000;
+                        dinheiroLocalMemoria += (parseInt(vData.recompensa) / taxa);
                         
-                        let subiu = false;
-                        if(pontosLocaisMemoria >= nivelLocalMemoria * 5000) { nivelLocalMemoria++; subiu = true; }
+                        let xpProximoNivel = nivelLocalMemoria * 5000;
+                        if(pontosLocaisMemoria >= xpProximoNivel) {
+                            nivelLocalMemoria++;
+                            UI.toast(`Você subiu para o Nível ${nivelLocalMemoria}!`);
+                        }
 
-                        atualizarInterfaceDados();
+                        atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
+                        
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
-
-                        if (subiu) { confetti({particleCount: 100, spread: 70}); Swal.fire({ toast:true, position: 'top', icon: 'success', title: `Nível ${nivelLocalMemoria} alcançado!`, showConfirmButton: false, timer: 3000 }); }
+                        await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60 }]);
                     }
                 }
             }, 1000);
         }
 
         function pararContagemGanhos() { if(cronometroPontuacao) { clearInterval(cronometroPontuacao); cronometroPontuacao = null; } }
-        async function handleLogout() { await _supabase.auth.signOut(); localStorage.removeItem('activeProfile'); window.location.reload(); }
 
-        function executarCompartilhamento() { navigator.clipboard.writeText(document.getElementById('shareLinkField').value); alert("Link copiado!"); }
-        
+        function executarCompartilhamento() { navigator.clipboard.writeText(document.getElementById('shareLinkField').value); UI.toast("Link copiado!"); }
+
         async function executarPedidoSaque() {
             const val = parseFloat(document.getElementById('saqueAmount').value); 
             const key = document.getElementById('pixKey').value.trim(); 
             const name = document.getElementById('pixName').value.trim();
-            const minSaque = 20.00;
+            const minSaque = configGlobal.saque_minimo || 20.00;
 
-            if(!name || !key || isNaN(val) || val < minSaque) return alert(`Preencha todos os dados. O valor mínimo é R$ ${minSaque.toFixed(2)}.`);
+            if(!name || !key || isNaN(val) || val < minSaque) return alert(`Preencha todos os dados. Valor mínimo: R$ ${minSaque.toFixed(2)}.`);
             if(dinheiroLocalMemoria < val) return alert("Saldo insuficiente.");
+
+            localStorage.setItem('userPixName', name); localStorage.setItem('userPixKey', key);
 
             try {
                 let novoSaldo = dinheiroLocalMemoria - val;
                 await _supabase.from('profiles').update({ saldo_reais: novoSaldo }).eq('id', usuarioAtualId);
                 await _supabase.from('solicitacoes_saque').insert([{ user_id: usuarioAtualId, email: usuarioEmail, nome_titular: name, chave_pix: key, valor_solicitado: val, status: 'pendente' }]);
-                alert("Sua solicitação foi enviada para processamento Pix!"); location.reload();
+                alert("Sua solicitação foi enviada para análise e processamento Pix!"); location.reload();
             } catch(e) { alert("Erro ao processar: " + e.message); }
         }
 
         function dispararNotificacoesSaqueFlutuante() {
+            const nomesFakes = ["marcos_s", "ana.j", "nando39", "hernandes", "mary_oli", "santiago", "lucas_v"];
+            const valoresFakes = [20.00, 25.50, 42.10, 30.00, 22.80, 50.00];
             setInterval(() => {
-                if(Math.random() > 0.5) {
-                    document.getElementById('liveWithdrawalText').innerText = `Usuário anon*** sacou R$ ${(Math.random() * 30 + 20).toFixed(2).replace('.', ',')} via Pix!`;
+                if(Math.random() > 0.4) {
+                    const randomNome = nomesFakes[Math.floor(Math.random() * nomesFakes.length)];
+                    const randomValor = valoresFakes[Math.floor(Math.random() * valoresFakes.length)];
+                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}*** sacou R$ ${randomValor.toFixed(2).replace('.', ',')} via Pix!`;
                     const badge = document.getElementById('liveWithdrawal'); badge.classList.add('active'); setTimeout(() => badge.classList.remove('active'), 4000);
                 }
-            }, 15000);
+            }, 12000);
         }
 
+        async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
+
         window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const { data: configDB } = await _supabase.from('config_global').select('*').eq('id', 1).single();
+                if(configDB) {
+                    configGlobal.saque_minimo = parseFloat(configDB.saque_minimo);
+                    configGlobal.taxa_conversao = parseInt(configDB.taxa_conversao);
+                    document.getElementById('saqueMinimoLabel').innerText = `Valor (Mínimo R$ ${configGlobal.saque_minimo.toFixed(2)})`;
+                }
+            } catch(e) {}
+
+            await inicializarPlaylist();
+            
             const { data: { session } } = await _supabase.auth.getSession();
-            if (session?.user) { 
-                document.getElementById('authScreen').classList.add('hidden'); 
-                await carregarDadosDoUsuario(session.user);
-                checkProfile();
-            }
+            if (session?.user) { document.getElementById('authScreen').classList.add('hidden'); await carregarDadosDoUsuario(session.user); }
             _supabase.auth.onAuthStateChange(async (event, session) => {
-                if (session?.user) { document.getElementById('authScreen').classList.add('hidden'); if (usuarioAtualId !== session.user.id) { await carregarDadosDoUsuario(session.user); checkProfile(); } } 
-                else { document.getElementById('authScreen').classList.remove('hidden'); }
+                if (session?.user) { document.getElementById('authScreen').classList.add('hidden'); if (usuarioAtualId !== session.user.id) { await carregarDadosDoUsuario(session.user); }
+                } else { document.getElementById('authScreen').classList.remove('hidden'); }
             });
         });
+
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('SW Erro:', err)); }); }
     </script>
 </body>
 </html>
