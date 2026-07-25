@@ -28,11 +28,6 @@
         .cinema-container { position: relative; width: 100%; max-width: 450px; height: 100vh; height: 100dvh; background: transparent; display: flex; flex-direction: column; overflow: hidden; }
         @media (min-width: 768px) { .cinema-container { max-width: 900px; height: 95vh; border-radius: 12px; margin-top: 2.5vh; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); } }
 
-        /* NOTIFICAÇÃO CORRIGIDA: ACIMA DO MENU INFERIOR */
-        .live-withdrawal { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(150%); width: 90%; max-width: 380px; background: rgba(16, 185, 129, 0.95); border: 1px solid #00e676; padding: 12px 20px; border-radius: 16px; z-index: 9999; display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: #fff; box-shadow: 0 10px 30px rgba(0, 230, 118, 0.3); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
-        .live-withdrawal.active { transform: translateX(-50%) translateY(0); }
-        .live-withdrawal i { font-size: 18px; color: #fff; }
-
         .hbo-header { position: sticky; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; z-index: 40; padding: 12px 15px; background: #08080a; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .logo-text { font-weight: 900; font-size: 18px; letter-spacing: -0.5px; color: #fff; display: flex; align-items: center; gap: 5px; }
         .logo-text span { color: #8b5cf6; } 
@@ -51,10 +46,15 @@
         .ad-spinner { border: 3px solid rgba(139,92,246,0.2); border-top: 3px solid #8b5cf6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* BOTÃO DE TELA CHEIA */
+        .video-actions { display: flex; justify-content: flex-end; padding: 10px 15px; background: rgba(0,0,0,0.5); }
+        .btn-fullscreen { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.3s; }
+        .btn-fullscreen:active { background: #8b5cf6; border-color: #8b5cf6; }
+
         .content-body { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
         .content-body::-webkit-scrollbar { display: none; }
 
-        .movie-rail { margin-bottom: 25px; margin-top: 15px; }
+        .movie-rail { margin-bottom: 25px; margin-top: 10px; }
         .rail-title { font-size: 15px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; }
         .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
         .rail-scroll::-webkit-scrollbar { display: none; }
@@ -125,11 +125,6 @@
     <div class="cinema-container">
         <div id="adScriptContainer"></div>
 
-        <div class="live-withdrawal" id="liveWithdrawal">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="liveWithdrawalText">Usuário ***@gmail.com sacou R$ 24,50 via Pix!</span>
-        </div>
-
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
                 <h2>CINE <span>REWARDS</span></h2>
@@ -162,21 +157,29 @@
                 <p style="font-size:11px; color:#9ca3af; margin-top:6px;" id="adTimerText">Aguarde 5 segundos</p>
             </div>
         </div>
+        
+        <!-- Botão de Tela Cheia Nativ -->
+        <div class="video-actions" id="videoActionsContainer" style="display: none;">
+            <button class="btn-fullscreen" onclick="ativarTelaCheia()">
+                <i class="fa-solid fa-expand"></i> Assistir em Tela Cheia
+            </button>
+        </div>
 
         <!-- ABA 1: FEED PRINCIPAL (HOME) -->
         <div class="content-body" id="screen-home">
+            
             <div class="movie-rail" id="rail-continue" style="display: none;">
                 <h3 class="rail-title">Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title">Top Hits & Clipes Musicais</h3>
-                <div class="rail-scroll" id="carousel-hits"></div>
+                <h3 class="rail-title">Todos os Filmes (Catálogo Completo)</h3>
+                <div class="rail-scroll" id="carousel-todos"></div>
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title">Filmes de Ação e Adrenalina</h3>
+                <h3 class="rail-title">Ação e Adrenalina</h3>
                 <div class="rail-scroll" id="carousel-action"></div>
             </div>
             
@@ -186,7 +189,7 @@
             </div>
             
             <div class="movie-rail">
-                <h3 class="rail-title">Ficção e Fantasia</h3>
+                <h3 class="rail-title">Ficção Científica e Fantasia</h3>
                 <div class="rail-scroll" id="carousel-scifi"></div>
             </div>
 
@@ -202,7 +205,7 @@
             <div class="search-container">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="buscaGeral" onkeyup="realizarBusca()" placeholder="O que você quer assistir?">
+                    <input type="text" id="buscaGeral" onkeyup="realizarBusca()" placeholder="Procure por um filme...">
                 </div>
             </div>
             <div class="content-body" style="padding: 0 20px;">
@@ -246,7 +249,7 @@
                     </div>
                     <div class="gami-card" onclick="coletarMissaoDiaria()">
                         <h4><i class="fa-solid fa-bolt" style="color:#34d399;"></i> Missão Diária</h4>
-                        <p id="missionStatusText">Assista 10 mídias</p>
+                        <p id="missionStatusText">Assista 10 filmes</p>
                         <div class="gami-progress"><div class="gami-fill" id="missionProgressBar"></div></div>
                     </div>
                 </div>
@@ -324,12 +327,12 @@
         
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
 
-        // BANCO DE DADOS LOCAL RESETADO (Evita o bug do 'undefined' antigo)
-        let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v2')) || [];
-        let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v2')) || {};
+        let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v3')) || [];
+        let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v3')) || {};
 
         let todasMidiasGerais = []; 
 
+        // BACKUP LIMPO APENAS COM FILMES REAIS (Sem Clipes Musicais)
         const colecaoBackup = [
             { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
@@ -354,15 +357,16 @@
             { ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200, categoria: "Suspense" },
             { ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200, categoria: "Ação" },
             { ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200, categoria: "Ação" },
-            { ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200, categoria: "Ação" },
-            { ytId: "iyEOg89n7-0", titulo: "Hit Musical e Clipes", recompensa: 150, categoria: "Hit" },
-            { ytId: "-mbKzp6W8AA", titulo: "Hit Musical e Clipes", recompensa: 150, categoria: "Hit" },
-            { ytId: "0NxtPaHbbNs", titulo: "Hit Musical e Clipes", recompensa: 150, categoria: "Hit" },
-            { ytId: "RWIWQvc_crw", titulo: "Hit Musical e Clipes", recompensa: 150, categoria: "Hit" },
-            { ytId: "mddlgdWmR5A", titulo: "Hit Musical e Clipes", recompensa: 150, categoria: "Hit" }
+            { ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200, categoria: "Ação" }
         ];
 
-        // CORREÇÃO: "vid.ytId || vid.ytid" BLINDA CONTRA ERROS DO BANCO DE DADOS
+        function ativarTelaCheia() {
+            const videoElement = document.getElementById("videoBox");
+            if (videoElement.requestFullscreen) { videoElement.requestFullscreen(); } 
+            else if (videoElement.webkitRequestFullscreen) { videoElement.webkitRequestFullscreen(); } 
+            else if (videoElement.msRequestFullscreen) { videoElement.msRequestFullscreen(); }
+        }
+
         function criarCardVideo(vid, onPlayClick) {
             const card = document.createElement('div');
             card.className = `movie-poster`; 
@@ -390,7 +394,10 @@
                 </div>
             `;
             
-            card.querySelector('.poster-image-wrapper').onclick = onPlayClick;
+            card.querySelector('.poster-image-wrapper').onclick = () => {
+                document.getElementById('videoActionsContainer').style.display = 'flex';
+                onPlayClick();
+            };
 
             if(progressoVideos[videoId]) {
                 const barra = card.querySelector(`#prog-bar-${videoId}`);
@@ -402,11 +409,8 @@
         async function buscarFilmesDoBanco() {
             try {
                 const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
-                if (!error && data && data.length > 0) {
-                    todasMidiasGerais = data; 
-                } else {
-                    todasMidiasGerais = colecaoBackup; 
-                }
+                if (!error && data && data.length > 0) { todasMidiasGerais = data; } 
+                else { todasMidiasGerais = colecaoBackup; }
             } catch (e) { todasMidiasGerais = colecaoBackup; }
         }
 
@@ -424,17 +428,13 @@
                 if(lastKeys.length > 0) {
                     firstYtIdToLoad = lastKeys[lastKeys.length - 1];
                     idVideoAtivo = firstYtIdToLoad;
+                    document.getElementById('videoActionsContainer').style.display = 'flex';
                 }
 
                 youtubePlayer = new YT.Player('videoPlayer', { 
                     videoId: firstYtIdToLoad, 
                     playerVars: { 
-                        'playsinline': 1, 
-                        'controls': 1, 
-                        'rel': 0, 
-                        'modestbranding': 1, 
-                        'autoplay': 0,
-                        'fs': 1 
+                        'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 0, 'fs': 1 
                     }, 
                     events: { 'onStateChange': gerenciarMudancaEstadoPlayer } 
                 });
@@ -442,30 +442,27 @@
         }
 
         function renderizarCarrosseis() {
-            const hitsContainer = document.getElementById('carousel-hits');
-            hitsContainer.innerHTML = "";
-            const hits = todasMidiasGerais.filter(v => v.categoria === 'Hit' || !v.categoria);
-            hits.forEach(vid => hitsContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            // O catálogo completo exibe tudo
+            const todosContainer = document.getElementById('carousel-todos');
+            todosContainer.innerHTML = "";
+            todasMidiasGerais.forEach(vid => todosContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
+            // Filtros inteligentes e blindados
             const actionContainer = document.getElementById('carousel-action');
             actionContainer.innerHTML = "";
-            const action = todasMidiasGerais.filter(v => v.categoria && v.categoria.includes('Ação'));
-            action.forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação')).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
             const suspenseContainer = document.getElementById('carousel-suspense');
             suspenseContainer.innerHTML = "";
-            const suspense = todasMidiasGerais.filter(v => v.categoria && v.categoria.includes('Suspense'));
-            suspense.forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror'))).forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
             const sciFiContainer = document.getElementById('carousel-scifi');
             sciFiContainer.innerHTML = "";
-            const scifi = todasMidiasGerais.filter(v => v.categoria && v.categoria.includes('Ficção'));
-            scifi.forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia'))).forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
 
             const comedyContainer = document.getElementById('carousel-comedy');
             comedyContainer.innerHTML = "";
-            const comedy = todasMidiasGerais.filter(v => v.categoria && v.categoria.includes('Comédia'));
-            comedy.forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('família'))).forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
         }
 
         function atualizarContinueAssistindo() {
@@ -474,17 +471,12 @@
             container.innerHTML = "";
             
             const vidsComProgresso = Object.keys(progressoVideos);
-            if(vidsComProgresso.length === 0) {
-                rail.style.display = 'none';
-                return;
-            }
+            if(vidsComProgresso.length === 0) { rail.style.display = 'none'; return; }
 
             rail.style.display = 'block';
             vidsComProgresso.slice(-10).reverse().forEach(yId => {
                 const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === yId);
-                if(vid) {
-                    container.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid))));
-                }
+                if(vid) { container.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))); }
             });
         }
 
@@ -493,18 +485,14 @@
             const emptyMsg = document.getElementById('empty-list-msg');
             container.innerHTML = "";
             
-            if(minhaListaIds.length === 0) {
-                emptyMsg.style.display = 'block';
-                return;
-            }
+            if(minhaListaIds.length === 0) { emptyMsg.style.display = 'block'; return; }
             
             emptyMsg.style.display = 'none';
             minhaListaIds.forEach(yId => {
                 const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === yId);
                 if(vid) {
                     container.appendChild(criarCardVideo(vid, () => {
-                        navegarParaAba('home'); 
-                        window.scrollTo(0,0);
+                        navegarParaAba('home'); window.scrollTo(0,0);
                         intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid));
                     }));
                 }
@@ -514,14 +502,9 @@
         function toggleMinhaLista(event, videoId) {
             event.stopPropagation();
             const idx = minhaListaIds.indexOf(videoId);
-            if(idx > -1) {
-                minhaListaIds.splice(idx, 1);
-                UI.toast('Removido da Minha Lista');
-            } else {
-                minhaListaIds.push(videoId);
-                UI.toast('Adicionado à Minha Lista');
-            }
-            localStorage.setItem('cine_minhalista_v2', JSON.stringify(minhaListaIds));
+            if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } 
+            else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
+            localStorage.setItem('cine_minhalista_v3', JSON.stringify(minhaListaIds));
             renderizarCarrosseis(); atualizarContinueAssistindo(); atualizarMinhaLista();
         }
 
@@ -614,7 +597,7 @@
 
                 if(navigator.geolocation) { await _supabase.from('antifraud_logs').insert([{ user_id: user.id, email: user.email, ip_address: "Acesso Mobile", localidade: "Brasil (Sincronizado)", dispositivo: navigator.userAgent }]); }
             } catch (e) { } 
-            finally { atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); gerenciarCronometroBonusDiario(); dispararNotificacoesSaqueFlutuante(); }
+            finally { atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); gerenciarCronometroBonusDiario(); }
         }
 
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
@@ -676,7 +659,7 @@
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                 await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
                 UI.toast('Missão Cumprida! +2500 XP');
-            } else { UI.toast('Assista mais vídeos para concluir!'); }
+            } else { UI.toast('Assista mais filmes para concluir!'); }
         }
 
         function intermediarAnuncio(callback) {
@@ -731,7 +714,7 @@
                     tempoAcumuladoSegundos++;
                     if(tempoAcumuladoSegundos % 10 === 0 && idVideoAtivo) {
                         progressoVideos[idVideoAtivo] = tempoAtual;
-                        localStorage.setItem('cine_progresso_v2', JSON.stringify(progressoVideos));
+                        localStorage.setItem('cine_progresso_v3', JSON.stringify(progressoVideos));
                         atualizarContinueAssistindo(); 
                     }
 
@@ -771,19 +754,6 @@
                 await _supabase.from('solicitacoes_saque').insert([{ user_id: usuarioAtualId, email: usuarioEmail, nome_titular: name, chave_pix: key, valor_solicitado: val, status: 'pendente' }]);
                 alert("Sua solicitação foi enviada para análise e processamento Pix!"); location.reload();
             } catch(e) { alert("Erro ao processar: " + e.message); }
-        }
-
-        let isShowingToast = false;
-        function dispararNotificacoesSaqueFlutuante() {
-            const nomesFakes = ["marcos_s", "ana.j", "nando39", "hernandes", "mary_oli", "santiago", "lucas_v"]; const valoresFakes = [20.00, 25.50, 42.10, 30.00, 22.80, 50.00];
-            setInterval(() => {
-                if(Math.random() > 0.4 && !isShowingToast) {
-                    isShowingToast = true; const randomNome = nomesFakes[Math.floor(Math.random() * nomesFakes.length)]; const randomValor = valoresFakes[Math.floor(Math.random() * valoresFakes.length)];
-                    document.getElementById('liveWithdrawalText').innerText = `Usuário ${randomNome}*** sacou R$ ${randomValor.toFixed(2).replace('.', ',')} via Pix!`;
-                    const badge = document.getElementById('liveWithdrawal'); badge.classList.add('active'); 
-                    setTimeout(() => { badge.classList.remove('active'); isShowingToast = false; }, 4000);
-                }
-            }, 12000);
         }
 
         async function handleLogout() { await _supabase.auth.signOut(); window.location.reload(); }
