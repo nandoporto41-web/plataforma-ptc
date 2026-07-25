@@ -62,21 +62,41 @@
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
         
-        /* CAPAS ESTILO NETFLIX (SEM BORDAS PRETAS) */
         .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
-        
         .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
         .play-icon-overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.4); z-index: 2; }
         .movie-poster:hover .play-icon-overlay { opacity: 1; }
         .play-icon-overlay i { font-size: 30px; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .progress-bar-continue { position: absolute; bottom: 0; left: 0; height: 3px; background: #8b5cf6; z-index: 5; transition: width 0.3s ease;}
+        
         .movie-info { padding: 0 2px; }
         .movie-title { font-size: 11px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .movie-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
         .movie-reward { font-size: 9px; color: #34d399; font-weight: 700; background: rgba(52,211,153,0.1); padding: 2px 6px; border-radius: 4px; }
         .btn-add-list { color: #9ca3af; font-size: 12px; padding: 4px; }
         .btn-add-list.saved { color: #8b5cf6; }
+
+        /* MODAL ESTILO NETFLIX PARA DESCRIÇÃO DO FILME */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; display: none; opacity: 0; transition: opacity 0.3s; justify-content: center; align-items: flex-end; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .movie-modal { background: #121216; width: 100%; max-width: 450px; border-radius: 24px 24px 0 0; padding: 25px 20px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); border-top: 1px solid rgba(255,255,255,0.1); position: relative; max-height: 85vh; display: flex; flex-direction: column;}
+        .modal-overlay.active .movie-modal { transform: translateY(0); }
+        @media (min-width: 768px) { .modal-overlay { align-items: center; } .movie-modal { border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); } }
+        .modal-close { position: absolute; top: -45px; right: 15px; width: 36px; height: 36px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; cursor: pointer; border: none; font-size: 16px; }
+        .modal-img-container { width: 100%; height: 200px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; position: relative; border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;}
+        .modal-header-img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); }
+        .modal-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, #121216 5%, transparent 50%); }
+        .modal-title { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 6px; letter-spacing: -0.5px;}
+        .modal-meta-row { display: flex; gap: 12px; align-items: center; margin-bottom: 15px; font-size: 12px; font-weight: 600;}
+        .modal-cat-badge { color: #fff; background: #8b5cf6; padding: 3px 8px; border-radius: 4px; }
+        .modal-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 20px; overflow-y: auto; padding-right: 5px;}
+        .modal-desc::-webkit-scrollbar { width: 4px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: auto;}
+        .btn-play-modal { flex: 1; background: #fff; color: #000; font-weight: 800; border: none; padding: 14px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 15px; transition: background 0.2s; }
+        .btn-play-modal:active { background: #e2e8f0; transform: scale(0.98); }
+        .btn-list-modal { width: 50px; height: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.2s; font-size: 18px;}
+        .btn-list-modal:active { transform: scale(0.95); }
 
         .search-container { padding: 0 20px; margin-bottom: 20px; }
         .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
@@ -165,6 +185,33 @@
             <button class="btn-fullscreen" onclick="ativarTelaCheia()">
                 <i class="fa-solid fa-expand"></i> Assistir em Tela Cheia
             </button>
+        </div>
+
+        <!-- MODAL DE DESCRIÇÃO DOS FILMES (ESTILO NETFLIX) -->
+        <div class="modal-overlay" id="movieModalOverlay" onclick="fecharDetalhesFilme(event)">
+            <div class="movie-modal" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="fecharDetalhesFilme()"><i class="fa-solid fa-xmark"></i></button>
+                
+                <div class="modal-img-container">
+                    <img src="" id="modalImg" class="modal-header-img">
+                    <div class="modal-img-overlay"></div>
+                </div>
+                
+                <h3 class="modal-title" id="modalTitle">Título do Filme</h3>
+                
+                <div class="modal-meta-row">
+                    <span class="modal-cat-badge" id="modalCat">Categoria</span>
+                    <span id="modalXp" style="color: #34d399; background: rgba(52,211,153,0.1); padding: 3px 8px; border-radius: 4px;">+200 XP</span>
+                    <span style="color: #cbd5e1;"><i class="fa-solid fa-star text-amber-400"></i> 4.8</span>
+                </div>
+                
+                <p class="modal-desc" id="modalDesc">Prepare-se para uma experiência incrível. Assista agora a este grande título, aproveite a história completa e ganhe recompensas reais aqui no CineWorld!</p>
+                
+                <div class="modal-actions">
+                    <button class="btn-play-modal" id="modalBtnPlay"><i class="fa-solid fa-play"></i> Assistir Agora</button>
+                    <button class="btn-list-modal" id="modalBtnList"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>
         </div>
 
         <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX -->
@@ -347,27 +394,7 @@
             { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
             { ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200, categoria: "Ação" },
-            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" },
-            { ytId: "ibjo9quRNoM", titulo: "Velocidade Extrema", recompensa: 200, categoria: "Ação" },
-            { ytId: "ZdCdPtZHvj8", titulo: "Invasão Alienígena", recompensa: 200, categoria: "Ficção" },
-            { ytId: "A81QkSgG64g", titulo: "O Último Sobrevivente", recompensa: 200, categoria: "Suspense" },
-            { ytId: "aGBk70oIqQ0", titulo: "Mistério no Pacífico", recompensa: 200, categoria: "Suspense" },
-            { ytId: "XaBzM91Y3C4", titulo: "A Fortaleza", recompensa: 200, categoria: "Ação" },
-            { ytId: "49fvoJVJ-io", titulo: "Conspiração Global", recompensa: 200, categoria: "Ação" },
-            { ytId: "Lc5tvT4xMlg", titulo: "Caçadores de Mitos", recompensa: 200, categoria: "Ficção" },
-            { ytId: "Ie4j83UDnhw", titulo: "A Vingança do Samurai", recompensa: 200, categoria: "Ação" },
-            { ytId: "T2OblA5LCwI", titulo: "O Segredo do Faraó", recompensa: 200, categoria: "Suspense" },
-            { ytId: "HfQoBFovpG8", titulo: "Resgate nas Montanhas", recompensa: 200, categoria: "Ação" },
-            { ytId: "DO4VaVbpyq4", titulo: "O Atirador de Elite", recompensa: 200, categoria: "Ação" },
-            { ytId: "5pIchruuDuo", titulo: "Fogo Cruzado", recompensa: 200, categoria: "Ação" },
-            { ytId: "umOlzb2IaKk", titulo: "A Maldição", recompensa: 200, categoria: "Suspense" },
-            { ytId: "fJOG2UDNnlw", titulo: "Guerra Cibernética", recompensa: 200, categoria: "Ficção" },
-            { ytId: "OOqr00sQc9U", titulo: "O Esquadrão", recompensa: 200, categoria: "Ação" },
-            { ytId: "BUNcui7rpi4", titulo: "A Queda do Império", recompensa: 200, categoria: "Ficção" },
-            { ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200, categoria: "Suspense" },
-            { ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200, categoria: "Ação" },
-            { ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200, categoria: "Ação" },
-            { ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200, categoria: "Ação" }
+            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" }
         ];
 
         function ativarTelaCheia() {
@@ -375,6 +402,52 @@
             if (videoElement.requestFullscreen) { videoElement.requestFullscreen(); } 
             else if (videoElement.webkitRequestFullscreen) { videoElement.webkitRequestFullscreen(); } 
             else if (videoElement.msRequestFullscreen) { videoElement.msRequestFullscreen(); }
+        }
+
+        // ==========================================
+        // SISTEMA DE MODAL DE DETALHES ESTILO NETFLIX
+        // ==========================================
+        function abrirDetalhesFilme(videoId, playCallback) {
+            const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === videoId);
+            if(!vid) return;
+
+            document.getElementById('modalImg').src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+            document.getElementById('modalTitle').innerText = vid.titulo;
+            document.getElementById('modalCat').innerText = vid.categoria || 'Filme';
+            document.getElementById('modalXp').innerText = `+${vid.recompensa || 200} XP`;
+            
+            // Puxa a descrição do banco ou exibe uma Genérica Convidativa
+            document.getElementById('modalDesc').innerText = vid.descricao || "Prepare-se para uma experiência incrível. Assista agora a este grande título, acompanhe a história completa e ganhe recompensas reais na sua carteira do CineWorld!";
+
+            // Lógica da Minha Lista no Modal
+            const isSaved = minhaListaIds.includes(videoId);
+            const btnList = document.getElementById('modalBtnList');
+            btnList.innerHTML = isSaved ? '<i class="fa-solid fa-check" style="color:#8b5cf6;"></i>' : '<i class="fa-solid fa-plus"></i>';
+            btnList.onclick = (e) => {
+                toggleMinhaLista(e, videoId);
+                abrirDetalhesFilme(videoId, playCallback); // Recarrega o modal para atualizar ícone
+            };
+
+            // Lógica do Botão Assistir no Modal
+            document.getElementById('modalBtnPlay').onclick = () => {
+                fecharDetalhesFilme();
+                document.getElementById('videoActionsContainer').style.display = 'flex';
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                if(playCallback) playCallback();
+            };
+
+            // Animação de Abertura
+            const overlay = document.getElementById('movieModalOverlay');
+            overlay.style.display = 'flex';
+            void overlay.offsetWidth; // Força renderização do navegador
+            overlay.classList.add('active');
+        }
+
+        function fecharDetalhesFilme(e) {
+            if(e && e.target !== document.getElementById('movieModalOverlay')) return;
+            const overlay = document.getElementById('movieModalOverlay');
+            overlay.classList.remove('active');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
 
         function criarCardVideo(vid, onPlayClick) {
@@ -387,12 +460,11 @@
             const btnClass = isSaved ? 'btn-add-list saved' : 'btn-add-list';
             const iconClass = isSaved ? 'fa-solid fa-check' : 'fa-solid fa-plus';
 
-            // CAPAS SEM BORDAS PRETAS (mqdefault.jpg + scale 1.35)
             card.innerHTML = `
-                <div class="poster-image-wrapper" onclick="document.getElementById('play-btn-${videoId}').click()">
+                <div class="poster-image-wrapper">
                     <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${vid.titulo}">
                     <div class="play-icon-overlay" id="play-btn-${videoId}">
-                        <i class="fa-solid fa-circle-play"></i>
+                        <i class="fa-solid fa-circle-info" style="font-size: 35px;"></i>
                     </div>
                     <div class="progress-bar-continue" id="prog-bar-${videoId}" style="width: 0%;"></div>
                 </div>
@@ -405,9 +477,9 @@
                 </div>
             `;
             
+            // O clique na capa não toca mais direto, ABRE O MODAL NETFLIX
             card.querySelector('.poster-image-wrapper').onclick = () => {
-                document.getElementById('videoActionsContainer').style.display = 'flex';
-                onPlayClick();
+                abrirDetalhesFilme(videoId, onPlayClick);
             };
 
             if(progressoVideos[videoId]) {
@@ -625,7 +697,7 @@
                     dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
                 }
 
-                // REGISTRO DE SINAL DE PRESENÇA (ONLINE) IMEDIATO
+                // SINAL DE PRESENÇA
                 await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user.id);
 
             } catch (e) { } 
@@ -636,13 +708,10 @@
             }
         }
 
-        // HEARTBEAT: Mantém o usuário marcado como ONLINE a cada 30 segundos
         function iniciarHeartbeatOnline() {
             setInterval(async () => {
                 if (usuarioAtualId) {
-                    try {
-                        await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId);
-                    } catch(e) {}
+                    try { await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId); } catch(e) {}
                 }
             }, 30000);
         }
@@ -800,7 +869,7 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
                         
-                        // GRAVAÇÃO NO HISTÓRICO PARA A TELEMETRIA DO PAINEL
+                        // HISTÓRICO PARA TELEMETRIA
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
                     }
                 }
