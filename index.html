@@ -23,7 +23,7 @@
     <!-- MOTOR DE CONFETES -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) RESTAURADO -->
+    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) -->
     <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
     
     <style>
@@ -59,7 +59,7 @@
         .content-body { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
         .content-body::-webkit-scrollbar { display: none; }
 
-        .movie-rail { margin-bottom: 20px; margin-top: 10px; display: none; /* Escondido por padrão, só aparece se tiver filme */ }
+        .movie-rail { margin-bottom: 20px; margin-top: 10px; display: none; }
         .rail-title { font-size: 14px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
         .rail-title i { color: #8b5cf6; }
         .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
@@ -322,6 +322,20 @@
                 </div>
                 <button class="btn-primary" style="margin-top: 10px;" onclick="executarPedidoSaque()">Solicitar Retirada</button>
 
+                <!-- NOVA SESSÃO DE SUPORTE -->
+                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <i class="fa-solid fa-headset" style="color: #34d399;"></i> Central de Ajuda
+                </h3>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <!-- Lembre-se de trocar o número 5511999999999 pelo SEU NÚMERO real -->
+                    <button class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.2);" onclick="window.open('https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20minha%20conta%20CineRewards!', '_blank')">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> WhatsApp
+                    </button>
+                    <button class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="UI.toast('FAQ de dúvidas em breve!')">
+                        <i class="fa-solid fa-circle-question" style="font-size: 18px;"></i> Dúvidas
+                    </button>
+                </div>
+
                 <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">Indique e Ganhe</h3>
                 <div class="input-group">
                     <input type="text" class="input-field" id="shareLinkField" readonly style="color:#8b5cf6; font-size: 12px; text-align: center;">
@@ -446,7 +460,6 @@
             }
         }
 
-        // SISTEMA INTELIGENTE DE CATEGORIAS: Esconde os trilhos vazios
         function popularTrilho(containerId, railId, lista) {
             const rail = document.getElementById(railId);
             if(lista.length === 0) { rail.style.display = 'none'; return; }
@@ -552,7 +565,6 @@
             if (!user) return;
             usuarioAtualId = user.id; usuarioEmail = user.email;
             
-            // LÓGICA DO NOME PREMIUM (Usa o nome do PIX ou a primeira parte do e-mail limpa)
             const nomePixSalvo = localStorage.getItem('userPixName');
             let nomeExibicao = nomePixSalvo ? nomePixSalvo : user.email.split('@')[0].replace(/[0-9]/g, '');
             document.getElementById('userDisplay').innerText = nomeExibicao;
@@ -574,7 +586,6 @@
                 totalFilmesMemoria = parseInt(data?.total_filmes_vistos) || 0;
                 diasSeguidosMemoria = parseInt(data?.dias_consecutivos) || 1;
                 
-                // Correção do carregamento dos dados dos mini-games
                 dataUltimoBau = data?.bau_data || null;
                 dataUltimaRoleta = data?.roleta_data || null;
 
@@ -623,18 +634,25 @@
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Filmes`;
         }
 
+        // SISTEMA DE TRAVA DUPLA (CACHE + BANCO DE DADOS)
         function verificarStatusMiniGames() {
             const agora = new Date();
             
+            let localRoleta = localStorage.getItem('cine_roleta_' + usuarioAtualId);
+            let validRoleta = (dataUltimaRoleta && (!localRoleta || new Date(dataUltimaRoleta) > new Date(localRoleta))) ? dataUltimaRoleta : localRoleta;
+
             const statusRoleta = document.getElementById('statusRoleta');
-            if (dataUltimaRoleta && new Date(dataUltimaRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+            if (validRoleta && new Date(validRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 statusRoleta.innerText = "Volte amanhã!"; statusRoleta.style.color = "#9ca3af";
             } else {
                 statusRoleta.innerText = "Gire grátis agora!"; statusRoleta.style.color = "#34d399";
             }
 
+            let localBau = localStorage.getItem('cine_bau_' + usuarioAtualId);
+            let validBau = (dataUltimoBau && (!localBau || new Date(dataUltimoBau) > new Date(localBau))) ? dataUltimoBau : localBau;
+
             const statusBau = document.getElementById('statusBau');
-            if (dataUltimoBau && new Date(dataUltimoBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+            if (validBau && new Date(validBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 statusBau.innerText = "Volte amanhã!"; statusBau.style.color = "#9ca3af";
             } else {
                 statusBau.innerText = "Disponível agora!"; statusBau.style.color = "#34d399";
@@ -644,7 +662,10 @@
         async function abrirRoleta() {
             if (!usuarioAtualId) return;
             const agora = new Date();
-            if (dataUltimaRoleta && new Date(dataUltimaRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+            let localRoleta = localStorage.getItem('cine_roleta_' + usuarioAtualId);
+            let validRoleta = (dataUltimaRoleta && (!localRoleta || new Date(dataUltimaRoleta) > new Date(localRoleta))) ? dataUltimaRoleta : localRoleta;
+
+            if (validRoleta && new Date(validRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 return UI.toast('Roleta já girada hoje. Volte amanhã!');
             }
 
@@ -658,12 +679,13 @@
                 const ganho = premios[Math.floor(Math.random() * premios.length)];
                 
                 pontosLocaisMemoria += ganho.xp; dinheiroLocalMemoria += ganho.rs;
+                
                 dataUltimaRoleta = new Date().toISOString();
+                localStorage.setItem('cine_roleta_' + usuarioAtualId, dataUltimaRoleta);
                 
                 await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, roleta_data: dataUltimaRoleta }).eq('id', usuarioAtualId);
                 
                 dispararRecompensaVisual(); atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); verificarStatusMiniGames();
-                
                 Swal.fire({ title: 'Parabéns!', text: `Você ganhou +${ganho.xp} XP e R$ ${ganho.rs.toFixed(2)}`, icon: 'success', background: '#1d0f33', color: '#fff' });
             });
         }
@@ -671,7 +693,10 @@
         async function abrirBau() {
             if (!usuarioAtualId) return;
             const agora = new Date();
-            if (dataUltimoBau && new Date(dataUltimoBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+            let localBau = localStorage.getItem('cine_bau_' + usuarioAtualId);
+            let validBau = (dataUltimoBau && (!localBau || new Date(dataUltimoBau) > new Date(localBau))) ? dataUltimoBau : localBau;
+
+            if (validBau && new Date(validBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 return UI.toast('Baú já aberto hoje. Volte amanhã!');
             }
 
@@ -685,12 +710,13 @@
                 const ganho = premios[Math.floor(Math.random() * premios.length)];
                 
                 pontosLocaisMemoria += ganho.xp; dinheiroLocalMemoria += ganho.rs;
+                
                 dataUltimoBau = new Date().toISOString();
+                localStorage.setItem('cine_bau_' + usuarioAtualId, dataUltimoBau);
                 
                 await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, bau_data: dataUltimoBau }).eq('id', usuarioAtualId);
                 
                 dispararRecompensaVisual(); atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); verificarStatusMiniGames();
-                
                 Swal.fire({ title: 'Baú Aberto!', text: `Você encontrou +${ganho.xp} XP e R$ ${ganho.rs.toFixed(2)}`, icon: 'success', background: '#1d0f33', color: '#fff' });
             });
         }
@@ -713,7 +739,6 @@
             } else { UI.toast('Assista mais filmes para concluir!'); }
         }
 
-        // SISTEMA DE INTERMEDIAÇÃO DE ANÚNCIO (ADSTERRA LIMPO E SEGURO)
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true; pararContagemGanhos();
             if (youtubePlayer && youtubePlayer.pauseVideo) { try { youtubePlayer.pauseVideo(); } catch(e){} }
@@ -776,7 +801,6 @@
 
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                         
-                        // SALVAMENTO GLOBAL NO SUPABASE CORRIGIDO
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, total_filmes_vistos: totalFilmesMemoria }).eq('id', usuarioAtualId);
                         
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
