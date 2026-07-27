@@ -20,8 +20,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
-    <!-- MOTOR DE CONFETES E RECOMPENSAS VISUAIS -->
+    <!-- MOTOR DE CONFETES -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) RESTAURADO -->
+    <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -56,7 +59,7 @@
         .content-body { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
         .content-body::-webkit-scrollbar { display: none; }
 
-        .movie-rail { margin-bottom: 20px; margin-top: 10px; }
+        .movie-rail { margin-bottom: 20px; margin-top: 10px; display: none; /* Escondido por padrão, só aparece se tiver filme */ }
         .rail-title { font-size: 14px; font-weight: 800; color: #fff; margin: 0 20px 10px 20px; letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
         .rail-title i { color: #8b5cf6; }
         .rail-scroll { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
@@ -65,7 +68,6 @@
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
         
-        /* CAPAS ESTILO NETFLIX */
         .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
         
@@ -126,7 +128,6 @@
         .auth-input:focus { border-color: #8b5cf6; }
         .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
         
-        /* ANIMAÇÃO MINI-GAMES */
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
         .shake-anim { animation: shake 0.5s; animation-iteration-count: infinite; }
         .swal2-popup { border-radius: 16px !important; border: 1px solid rgba(255,255,255,0.1) !important; }
@@ -135,8 +136,6 @@
 <body>
 
     <div class="cinema-container">
-        <!-- ANÚNCIOS AQUI -->
-        <div id="adScriptContainer"></div>
 
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
@@ -177,44 +176,44 @@
             </button>
         </div>
 
-        <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX -->
+        <!-- ABA 1: FEED PRINCIPAL -->
         <div class="content-body" id="screen-home">
-            <div class="movie-rail" id="rail-continue" style="display: none;">
+            <div class="movie-rail" id="rail-continue">
                 <h3 class="rail-title"><i class="fa-solid fa-rotate-left"></i> Continue assistindo</h3>
                 <div class="rail-scroll" id="carousel-continue"></div>
             </div>
 
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-trending">
                 <h3 class="rail-title"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> Em Alta na Semana</h3>
                 <div class="rail-scroll" id="carousel-trending"></div>
             </div>
 
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-action">
                 <h3 class="rail-title"><i class="fa-solid fa-gun"></i> Ação e Adrenalina</h3>
                 <div class="rail-scroll" id="carousel-action"></div>
             </div>
             
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-suspense">
                 <h3 class="rail-title"><i class="fa-solid fa-ghost"></i> Suspense e Terror</h3>
                 <div class="rail-scroll" id="carousel-suspense"></div>
             </div>
             
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-scifi">
                 <h3 class="rail-title"><i class="fa-solid fa-rocket"></i> Ficção Científica e Aventura</h3>
                 <div class="rail-scroll" id="carousel-scifi"></div>
             </div>
 
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-comedy">
                 <h3 class="rail-title"><i class="fa-solid fa-face-laugh-beam"></i> Comédia e Animação</h3>
                 <div class="rail-scroll" id="carousel-comedy"></div>
             </div>
 
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-drama">
                 <h3 class="rail-title"><i class="fa-solid fa-masks-theater"></i> Dramas e Romances</h3>
                 <div class="rail-scroll" id="carousel-drama"></div>
             </div>
 
-            <div class="movie-rail">
+            <div class="movie-rail" id="rail-todos">
                 <h3 class="rail-title"><i class="fa-solid fa-clapperboard"></i> Todos os Filmes</h3>
                 <div class="rail-scroll" id="carousel-todos"></div>
             </div>
@@ -246,7 +245,7 @@
             </div>
         </div>
 
-        <!-- ABA 4: NOVO PERFIL PREMIUM GAMIFICADO -->
+        <!-- ABA 4: PERFIL PREMIUM -->
         <div class="sub-screen" id="screen-perfil">
             <div class="sub-header">
                 <i class="fa-solid fa-arrow-left" onclick="navegarParaAba('home')"></i>
@@ -254,13 +253,12 @@
             </div>
             <div class="sub-content">
                 
-                <!-- CABEÇALHO DO USUÁRIO & NÍVEL -->
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
                     <div class="profile-avatar" style="width: 65px; height: 65px; font-size: 28px; border-color: #fbbf24; background: linear-gradient(135deg, #3b2a00, #1a1a1a);">
                         <i class="fa-solid fa-crown" style="color: #fbbf24;"></i>
                     </div>
                     <div style="flex: 1;">
-                        <div id="userDisplay" style="font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px;">Usuario</div>
+                        <div id="userDisplay" style="font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px; text-transform: capitalize;">Usuário Premium</div>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px;">
                             <span id="userLevelBadge" style="font-size: 12px; color: #fbbf24; font-weight: 800; text-transform: uppercase;">Mestre Ouro</span>
                             <span style="font-size: 10px; color: #9ca3af;"><span id="pointsBalanceProfile">0</span> XP</span>
@@ -271,12 +269,11 @@
                     </div>
                 </div>
 
-                <!-- ESTATÍSTICAS REAIS DO BANCO DE DADOS -->
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
                         <i class="fa-solid fa-fire" style="color: #ef4444; font-size: 16px; margin-bottom: 5px;"></i>
                         <div style="font-size: 10px; color: #9ca3af;">Sequência Diária</div>
-                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="diasConsecutivos">0 Dias</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="diasConsecutivos">0 Dia(s)</div>
                     </div>
                     <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
                         <i class="fa-solid fa-play" style="color: #8b5cf6; font-size: 16px; margin-bottom: 5px;"></i>
@@ -285,15 +282,12 @@
                     </div>
                 </div>
 
-                <!-- MINI-GAMES E BÔNUS (LIGADOS AO BANCO) -->
                 <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 5px;"><i class="fa-solid fa-gamepad" style="color: #fbbf24;"></i> Eventos Diários</h3>
                 <div class="gamification-row">
-                    <!-- ROLETA DA SORTE -->
                     <div class="gami-card" id="cardRoleta" onclick="abrirRoleta()">
                         <h4><i class="fa-solid fa-dharmachakra" style="color:#f43f5e;"></i> Roleta da Sorte</h4>
                         <p id="statusRoleta" style="color: #34d399; font-weight: bold;">Gire grátis agora!</p>
                     </div>
-                    <!-- BAÚ DIÁRIO -->
                     <div class="gami-card" id="cardBau" onclick="abrirBau()">
                         <h4><i class="fa-solid fa-box-open" style="color:#eab308;"></i> Baú Misterioso</h4>
                         <p id="statusBau" style="color: #34d399; font-weight: bold;">Disponível agora!</p>
@@ -305,7 +299,6 @@
                     </div>
                 </div>
 
-                <!-- CARTEIRA E SAQUE -->
                 <div class="data-card">
                     <p>Meu Saldo Disponível</p>
                     <span id="saqueRealBalance" style="color:#34d399; font-size:24px; font-weight: 900;">R$ 0,00</span>
@@ -376,7 +369,6 @@
         let totalFilmesMemoria = 0;
         let diasSeguidosMemoria = 0;
         
-        // Tempos dos Mini-Games
         let dataUltimaRoleta = null;
         let dataUltimoBau = null;
         let videosAssistidosHoje = 0;
@@ -385,13 +377,6 @@
         let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v4')) || [];
         let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v4')) || {};
         let todasMidiasGerais = []; 
-
-        const colecaoBackup = [
-            { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
-            { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
-            { ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200, categoria: "Ação" },
-            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" }
-        ];
 
         function ativarTelaCheia() {
             const videoElement = document.getElementById("videoBox");
@@ -437,8 +422,8 @@
             try {
                 const { data, error } = await _supabase.from('videos').select('*').order('id', { ascending: false });
                 if (!error && data && data.length > 0) { todasMidiasGerais = data; } 
-                else { todasMidiasGerais = colecaoBackup; }
-            } catch (e) { todasMidiasGerais = colecaoBackup; }
+                else { todasMidiasGerais = []; }
+            } catch (e) { todasMidiasGerais = []; }
         }
 
         async function inicializarPlaylist() {
@@ -461,24 +446,43 @@
             }
         }
 
+        // SISTEMA INTELIGENTE DE CATEGORIAS: Esconde os trilhos vazios
+        function popularTrilho(containerId, railId, lista) {
+            const rail = document.getElementById(railId);
+            if(lista.length === 0) { rail.style.display = 'none'; return; }
+            rail.style.display = 'block';
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            lista.forEach(vid => container.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+        }
+
         function renderizarCarrosseis() {
-            const todosContainer = document.getElementById('carousel-todos');
-            todosContainer.innerHTML = "";
-            todasMidiasGerais.forEach(vid => todosContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            popularTrilho('carousel-todos', 'rail-todos', todasMidiasGerais);
+            
+            const trendingList = todasMidiasGerais.slice(0, 12);
+            popularTrilho('carousel-trending', 'rail-trending', trendingList);
 
-            const trendingContainer = document.getElementById('carousel-trending');
-            trendingContainer.innerHTML = "";
-            todasMidiasGerais.slice(0, 12).forEach(vid => trendingContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
-
-            const actionContainer = document.getElementById('carousel-action');
-            actionContainer.innerHTML = "";
             const acaoList = todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação'));
-            (acaoList.length > 0 ? acaoList : todasMidiasGerais.slice(0, 8)).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
+            popularTrilho('carousel-action', 'rail-action', acaoList);
+
+            const suspenseList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror')));
+            popularTrilho('carousel-suspense', 'rail-suspense', suspenseList);
+
+            const scifiList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia')));
+            popularTrilho('carousel-scifi', 'rail-scifi', scifiList);
+
+            const comedyList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('animação') || v.categoria.toLowerCase().includes('família')));
+            popularTrilho('carousel-comedy', 'rail-comedy', comedyList);
+
+            const dramaList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('drama') || v.categoria.toLowerCase().includes('romance')));
+            popularTrilho('carousel-drama', 'rail-drama', dramaList);
         }
 
         function atualizarContinueAssistindo() {
-            const container = document.getElementById('carousel-continue'); const rail = document.getElementById('rail-continue'); container.innerHTML = "";
             const vidsComProgresso = Object.keys(progressoVideos);
+            const rail = document.getElementById('rail-continue');
+            const container = document.getElementById('carousel-continue');
+            container.innerHTML = "";
             if(vidsComProgresso.length === 0) { rail.style.display = 'none'; return; }
             rail.style.display = 'block';
             vidsComProgresso.slice(-10).reverse().forEach(yId => {
@@ -547,8 +551,15 @@
         async function carregarDadosDoUsuario(user) {
             if (!user) return;
             usuarioAtualId = user.id; usuarioEmail = user.email;
-            document.getElementById('userDisplay').innerText = user.email;
+            
+            // LÓGICA DO NOME PREMIUM (Usa o nome do PIX ou a primeira parte do e-mail limpa)
+            const nomePixSalvo = localStorage.getItem('userPixName');
+            let nomeExibicao = nomePixSalvo ? nomePixSalvo : user.email.split('@')[0].replace(/[0-9]/g, '');
+            document.getElementById('userDisplay').innerText = nomeExibicao;
+            
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
+            document.getElementById('pixName').value = nomePixSalvo || '';
+            document.getElementById('pixKey').value = localStorage.getItem('userPixKey') || '';
             
             try {
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
@@ -560,13 +571,13 @@
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 nivelLocalMemoria = parseInt(data?.nivel) || 1;
                 
-                // NOVOS DADOS DA ETAPA 3
                 totalFilmesMemoria = parseInt(data?.total_filmes_vistos) || 0;
                 diasSeguidosMemoria = parseInt(data?.dias_consecutivos) || 1;
-                dataUltimoBau = data?.bau_data;
-                dataUltimaRoleta = data?.roleta_data;
+                
+                // Correção do carregamento dos dados dos mini-games
+                dataUltimoBau = data?.bau_data || null;
+                dataUltimaRoleta = data?.roleta_data || null;
 
-                // Lógica simples de atualização da sequência diária (Streak)
                 const ultimoAcesso = new Date(data?.updated_at || new Date());
                 const hoje = new Date();
                 const diffTime = Math.abs(hoje - ultimoAcesso);
@@ -599,7 +610,6 @@
             else if (nivelLocalMemoria > 10) { tierName = "Ouro"; badgeLvl.style.color = "#fbbf24"; }
             badgeLvl.innerText = `Nível ${nivelLocalMemoria} (${tierName})`;
             
-            // ATUALIZANDO ESTATÍSTICAS REAIS
             document.getElementById('diasConsecutivos').innerText = `${diasSeguidosMemoria} Dia(s)`;
             document.getElementById('totalFilmesAssistidos').innerText = totalFilmesMemoria;
 
@@ -613,13 +623,9 @@
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Filmes`;
         }
 
-        // ==========================================
-        // SISTEMA DE GAMIFICAÇÃO (ROLETA E BAÚ)
-        // ==========================================
         function verificarStatusMiniGames() {
             const agora = new Date();
             
-            // Checa Roleta
             const statusRoleta = document.getElementById('statusRoleta');
             if (dataUltimaRoleta && new Date(dataUltimaRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 statusRoleta.innerText = "Volte amanhã!"; statusRoleta.style.color = "#9ca3af";
@@ -627,7 +633,6 @@
                 statusRoleta.innerText = "Gire grátis agora!"; statusRoleta.style.color = "#34d399";
             }
 
-            // Checa Baú
             const statusBau = document.getElementById('statusBau');
             if (dataUltimoBau && new Date(dataUltimoBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
                 statusBau.innerText = "Volte amanhã!"; statusBau.style.color = "#9ca3af";
@@ -643,7 +648,6 @@
                 return UI.toast('Roleta já girada hoje. Volte amanhã!');
             }
 
-            // Simulação da Roleta com SweetAlert
             Swal.fire({
                 title: 'Girando a Roleta...',
                 html: '<i class="fa-solid fa-dharmachakra fa-spin" style="font-size: 60px; color: #f43f5e; margin: 20px 0;"></i>',
@@ -709,11 +713,10 @@
             } else { UI.toast('Assista mais filmes para concluir!'); }
         }
 
+        // SISTEMA DE INTERMEDIAÇÃO DE ANÚNCIO (ADSTERRA LIMPO E SEGURO)
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true; pararContagemGanhos();
             if (youtubePlayer && youtubePlayer.pauseVideo) { try { youtubePlayer.pauseVideo(); } catch(e){} }
-            const containerScripts = document.getElementById('adScriptContainer'); containerScripts.innerHTML = "";
-            const script1 = document.createElement('script'); script1.async = true; script1.src = 'https://n6wxm.com/vignette.min.js'; script1.dataset.zone = '11218300'; containerScripts.appendChild(script1);
             
             const layer = document.getElementById('adLayer'); const timerTxt = document.getElementById('adTimerText');
             layer.classList.add('active'); let tempoRestante = 5; timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`;
@@ -772,6 +775,8 @@
                         if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; UI.toast(`Você subiu para o Nível ${nivelLocalMemoria}!`); }
 
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
+                        
+                        // SALVAMENTO GLOBAL NO SUPABASE CORRIGIDO
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, total_filmes_vistos: totalFilmesMemoria }).eq('id', usuarioAtualId);
                         
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
