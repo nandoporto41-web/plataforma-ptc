@@ -65,7 +65,7 @@
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
         
-        /* CAPAS ESTILO NETFLIX (SEM BORDAS PRETAS) */
+        /* CAPAS ESTILO NETFLIX */
         .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
         
@@ -96,7 +96,8 @@
 
         .gamification-row { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; margin-bottom: 10px;}
         .gamification-row::-webkit-scrollbar { display: none; }
-        .gami-card { min-width: 140px; background: linear-gradient(135deg, rgba(30,30,40,0.8), rgba(15,15,20,0.9)); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+        .gami-card { min-width: 140px; background: linear-gradient(135deg, rgba(30,30,40,0.8), rgba(15,15,20,0.9)); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; cursor: pointer; transition: transform 0.2s;}
+        .gami-card:active { transform: scale(0.95); }
         .gami-card h4 { font-size: 11px; color: #e2e8f0; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .gami-card p { font-size: 9px; color: #9ca3af; }
         .gami-progress { width: 100%; height: 3px; background: #333; border-radius: 2px; margin-top: 4px; overflow: hidden;}
@@ -124,11 +125,17 @@
         .auth-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
         .auth-input:focus { border-color: #8b5cf6; }
         .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
+        
+        /* ANIMAÇÃO MINI-GAMES */
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        .shake-anim { animation: shake 0.5s; animation-iteration-count: infinite; }
+        .swal2-popup { border-radius: 16px !important; border: 1px solid rgba(255,255,255,0.1) !important; }
     </style>
 </head>
 <body>
 
     <div class="cinema-container">
+        <!-- ANÚNCIOS AQUI -->
         <div id="adScriptContainer"></div>
 
         <div class="auth-screen" id="authScreen">
@@ -208,7 +215,7 @@
             </div>
 
             <div class="movie-rail">
-                <h3 class="rail-title"><i class="fa-solid fa-clapperboard"></i> Todos os Filmes (Catálogo Completo)</h3>
+                <h3 class="rail-title"><i class="fa-solid fa-clapperboard"></i> Todos os Filmes</h3>
                 <div class="rail-scroll" id="carousel-todos"></div>
             </div>
         </div>
@@ -264,12 +271,12 @@
                     </div>
                 </div>
 
-                <!-- ESTATÍSTICAS RÁPIDAS -->
+                <!-- ESTATÍSTICAS REAIS DO BANCO DE DADOS -->
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
                         <i class="fa-solid fa-fire" style="color: #ef4444; font-size: 16px; margin-bottom: 5px;"></i>
-                        <div style="font-size: 10px; color: #9ca3af;">Sequência</div>
-                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="diasConsecutivos">1 Dia</div>
+                        <div style="font-size: 10px; color: #9ca3af;">Sequência Diária</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="diasConsecutivos">0 Dias</div>
                     </div>
                     <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
                         <i class="fa-solid fa-play" style="color: #8b5cf6; font-size: 16px; margin-bottom: 5px;"></i>
@@ -278,12 +285,18 @@
                     </div>
                 </div>
 
-                <!-- MISSÕES E BÔNUS (AGORA COM CONFETES) -->
+                <!-- MINI-GAMES E BÔNUS (LIGADOS AO BANCO) -->
+                <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 5px;"><i class="fa-solid fa-gamepad" style="color: #fbbf24;"></i> Eventos Diários</h3>
                 <div class="gamification-row">
-                    <div class="gami-card" id="dailyBonusCard" onclick="dispararRecompensaVisual(); coletarBonusDiario();">
-                        <h4><i class="fa-solid fa-gift" style="color:#8b5cf6;"></i> Bônus Diário</h4>
-                        <p id="dailyBonusStatus">Verificando...</p>
-                        <button class="btn-secondary" id="dailyBonusBtn" disabled style="padding: 4px; font-size: 10px; margin-top: 4px;">Coletar</button>
+                    <!-- ROLETA DA SORTE -->
+                    <div class="gami-card" id="cardRoleta" onclick="abrirRoleta()">
+                        <h4><i class="fa-solid fa-dharmachakra" style="color:#f43f5e;"></i> Roleta da Sorte</h4>
+                        <p id="statusRoleta" style="color: #34d399; font-weight: bold;">Gire grátis agora!</p>
+                    </div>
+                    <!-- BAÚ DIÁRIO -->
+                    <div class="gami-card" id="cardBau" onclick="abrirBau()">
+                        <h4><i class="fa-solid fa-box-open" style="color:#eab308;"></i> Baú Misterioso</h4>
+                        <p id="statusBau" style="color: #34d399; font-weight: bold;">Disponível agora!</p>
                     </div>
                     <div class="gami-card" onclick="coletarMissaoDiaria()">
                         <h4><i class="fa-solid fa-bolt" style="color:#34d399;"></i> Missão Diária</h4>
@@ -292,7 +305,7 @@
                     </div>
                 </div>
 
-                <!-- CARTEIRA E SAQUE (MANTIDO) -->
+                <!-- CARTEIRA E SAQUE -->
                 <div class="data-card">
                     <p>Meu Saldo Disponível</p>
                     <span id="saqueRealBalance" style="color:#34d399; font-size:24px; font-weight: 900;">R$ 0,00</span>
@@ -360,42 +373,24 @@
         let pontosLocaisMemoria = 0; 
         let dinheiroLocalMemoria = 0.00;
         let nivelLocalMemoria = 1;
+        let totalFilmesMemoria = 0;
+        let diasSeguidosMemoria = 0;
         
-        let dataUltimoBonusIso = null; let intervaloCronometroBonus = null;
+        // Tempos dos Mini-Games
+        let dataUltimaRoleta = null;
+        let dataUltimoBau = null;
         let videosAssistidosHoje = 0;
         
         let configGlobal = { saque_minimo: 20.00, taxa_conversao: 10000 };
-
         let minhaListaIds = JSON.parse(localStorage.getItem('cine_minhalista_v4')) || [];
         let progressoVideos = JSON.parse(localStorage.getItem('cine_progresso_v4')) || {};
-
         let todasMidiasGerais = []; 
 
         const colecaoBackup = [
             { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
             { ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200, categoria: "Ação" },
-            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" },
-            { ytId: "ibjo9quRNoM", titulo: "Velocidade Extrema", recompensa: 200, categoria: "Ação" },
-            { ytId: "ZdCdPtZHvj8", titulo: "Invasão Alienígena", recompensa: 200, categoria: "Ficção" },
-            { ytId: "A81QkSgG64g", titulo: "O Último Sobrevivente", recompensa: 200, categoria: "Suspense" },
-            { ytId: "aGBk70oIqQ0", titulo: "Mistério no Pacífico", recompensa: 200, categoria: "Suspense" },
-            { ytId: "XaBzM91Y3C4", titulo: "A Fortaleza", recompensa: 200, categoria: "Ação" },
-            { ytId: "49fvoJVJ-io", titulo: "Conspiração Global", recompensa: 200, categoria: "Ação" },
-            { ytId: "Lc5tvT4xMlg", titulo: "Caçadores de Mitos", recompensa: 200, categoria: "Ficção" },
-            { ytId: "Ie4j83UDnhw", titulo: "A Vingança do Samurai", recompensa: 200, categoria: "Ação" },
-            { ytId: "T2OblA5LCwI", titulo: "O Segredo do Faraó", recompensa: 200, categoria: "Suspense" },
-            { ytId: "HfQoBFovpG8", titulo: "Resgate nas Montanhas", recompensa: 200, categoria: "Ação" },
-            { ytId: "DO4VaVbpyq4", titulo: "O Atirador de Elite", recompensa: 200, categoria: "Ação" },
-            { ytId: "5pIchruuDuo", titulo: "Fogo Cruzado", recompensa: 200, categoria: "Ação" },
-            { ytId: "umOlzb2IaKk", titulo: "A Maldição", recompensa: 200, categoria: "Suspense" },
-            { ytId: "fJOG2UDNnlw", titulo: "Guerra Cibernética", recompensa: 200, categoria: "Ficção" },
-            { ytId: "OOqr00sQc9U", titulo: "O Esquadrão", recompensa: 200, categoria: "Ação" },
-            { ytId: "BUNcui7rpi4", titulo: "A Queda do Império", recompensa: 200, categoria: "Ficção" },
-            { ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200, categoria: "Suspense" },
-            { ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200, categoria: "Ação" },
-            { ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200, categoria: "Ação" },
-            { ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200, categoria: "Ação" }
+            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" }
         ];
 
         function ativarTelaCheia() {
@@ -408,14 +403,11 @@
         function criarCardVideo(vid, onPlayClick) {
             const card = document.createElement('div');
             card.className = `movie-poster`; 
-            
             const videoId = vid.ytId || vid.ytid; 
-
             const isSaved = minhaListaIds.includes(videoId);
             const btnClass = isSaved ? 'btn-add-list saved' : 'btn-add-list';
             const iconClass = isSaved ? 'fa-solid fa-check' : 'fa-solid fa-plus';
 
-            // CAPAS SEM BORDAS PRETAS (mqdefault.jpg + scale 1.35)
             card.innerHTML = `
                 <div class="poster-image-wrapper" onclick="document.getElementById('play-btn-${videoId}').click()">
                     <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${vid.titulo}">
@@ -437,11 +429,7 @@
                 document.getElementById('videoActionsContainer').style.display = 'flex';
                 onPlayClick();
             };
-
-            if(progressoVideos[videoId]) {
-                const barra = card.querySelector(`#prog-bar-${videoId}`);
-                barra.style.width = '50%';
-            }
+            if(progressoVideos[videoId]) { card.querySelector(`#prog-bar-${videoId}`).style.width = '50%'; }
             return card;
         }
 
@@ -455,13 +443,9 @@
 
         async function inicializarPlaylist() {
             await buscarFilmesDoBanco();
-            renderizarCarrosseis();
-            atualizarContinueAssistindo();
-            atualizarMinhaLista();
-
+            renderizarCarrosseis(); atualizarContinueAssistindo(); atualizarMinhaLista();
             if (typeof YT !== 'undefined' && YT.Player && todasMidiasGerais.length > 0 && !youtubePlayer) {
                 document.getElementById('videoPlaceholder').style.display = 'none';
-                
                 let firstYtIdToLoad = todasMidiasGerais[0].ytId || todasMidiasGerais[0].ytid;
                 const lastKeys = Object.keys(progressoVideos);
                 if(lastKeys.length > 0) {
@@ -469,12 +453,9 @@
                     idVideoAtivo = firstYtIdToLoad;
                     document.getElementById('videoActionsContainer').style.display = 'flex';
                 }
-
                 youtubePlayer = new YT.Player('videoPlayer', { 
                     videoId: firstYtIdToLoad, 
-                    playerVars: { 
-                        'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 0, 'fs': 1 
-                    }, 
+                    playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 0, 'fs': 1 }, 
                     events: { 'onStateChange': gerenciarMudancaEstadoPlayer } 
                 });
             }
@@ -493,36 +474,12 @@
             actionContainer.innerHTML = "";
             const acaoList = todasMidiasGerais.filter(v => v.categoria && v.categoria.toLowerCase().includes('ação'));
             (acaoList.length > 0 ? acaoList : todasMidiasGerais.slice(0, 8)).forEach(vid => actionContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
-
-            const suspenseContainer = document.getElementById('carousel-suspense');
-            suspenseContainer.innerHTML = "";
-            const suspenseList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('suspense') || v.categoria.toLowerCase().includes('terror')));
-            (suspenseList.length > 0 ? suspenseList : todasMidiasGerais.slice(4, 12)).forEach(vid => suspenseContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
-
-            const sciFiContainer = document.getElementById('carousel-scifi');
-            sciFiContainer.innerHTML = "";
-            const scifiList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('ficção') || v.categoria.toLowerCase().includes('fantasia')));
-            (scifiList.length > 0 ? scifiList : todasMidiasGerais.slice(8, 16)).forEach(vid => sciFiContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
-
-            const comedyContainer = document.getElementById('carousel-comedy');
-            comedyContainer.innerHTML = "";
-            const comedyList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('comédia') || v.categoria.toLowerCase().includes('animação') || v.categoria.toLowerCase().includes('família')));
-            (comedyList.length > 0 ? comedyList : todasMidiasGerais.slice(2, 10)).forEach(vid => comedyContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
-
-            const dramaContainer = document.getElementById('carousel-drama');
-            dramaContainer.innerHTML = "";
-            const dramaList = todasMidiasGerais.filter(v => v.categoria && (v.categoria.toLowerCase().includes('drama') || v.categoria.toLowerCase().includes('romance')));
-            (dramaList.length > 0 ? dramaList : todasMidiasGerais.slice(6, 14)).forEach(vid => dramaContainer.appendChild(criarCardVideo(vid, () => intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)))));
         }
 
         function atualizarContinueAssistindo() {
-            const container = document.getElementById('carousel-continue');
-            const rail = document.getElementById('rail-continue');
-            container.innerHTML = "";
-            
+            const container = document.getElementById('carousel-continue'); const rail = document.getElementById('rail-continue'); container.innerHTML = "";
             const vidsComProgresso = Object.keys(progressoVideos);
             if(vidsComProgresso.length === 0) { rail.style.display = 'none'; return; }
-
             rail.style.display = 'block';
             vidsComProgresso.slice(-10).reverse().forEach(yId => {
                 const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === yId);
@@ -531,61 +488,36 @@
         }
 
         function atualizarMinhaLista() {
-            const container = document.getElementById('grid-my-list');
-            const emptyMsg = document.getElementById('empty-list-msg');
-            container.innerHTML = "";
-            
+            const container = document.getElementById('grid-my-list'); const emptyMsg = document.getElementById('empty-list-msg'); container.innerHTML = "";
             if(minhaListaIds.length === 0) { emptyMsg.style.display = 'block'; return; }
-            
             emptyMsg.style.display = 'none';
             minhaListaIds.forEach(yId => {
                 const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === yId);
-                if(vid) {
-                    container.appendChild(criarCardVideo(vid, () => {
-                        navegarParaAba('home'); window.scrollTo(0,0);
-                        intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid));
-                    }));
-                }
+                if(vid) { container.appendChild(criarCardVideo(vid, () => { navegarParaAba('home'); window.scrollTo(0,0); intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)); })); }
             });
         }
 
         function toggleMinhaLista(event, videoId) {
-            event.stopPropagation();
-            const idx = minhaListaIds.indexOf(videoId);
-            if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } 
-            else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
+            event.stopPropagation(); const idx = minhaListaIds.indexOf(videoId);
+            if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
             localStorage.setItem('cine_minhalista_v4', JSON.stringify(minhaListaIds));
             renderizarCarrosseis(); atualizarContinueAssistindo(); atualizarMinhaLista();
         }
 
         function realizarBusca() {
-            const termo = document.getElementById('buscaGeral').value.toLowerCase();
-            const grid = document.getElementById('grid-search-results');
-            grid.innerHTML = "";
+            const termo = document.getElementById('buscaGeral').value.toLowerCase(); const grid = document.getElementById('grid-search-results'); grid.innerHTML = "";
             if(termo.length < 2) return;
             const resultados = todasMidiasGerais.filter(v => v.titulo.toLowerCase().includes(termo));
-            resultados.forEach(vid => {
-                grid.appendChild(criarCardVideo(vid, () => {
-                    navegarParaAba('home'); window.scrollTo(0,0);
-                    intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid));
-                }));
-            });
+            resultados.forEach(vid => { grid.appendChild(criarCardVideo(vid, () => { navegarParaAba('home'); window.scrollTo(0,0); intermediarAnuncio(() => trocarVideoAtivo(vid.ytId || vid.ytid)); })); });
         }
 
         function navegarParaAba(alvo) {
-            document.getElementById('screen-home').classList.remove('active');
-            document.getElementById('screen-search').classList.remove('active');
-            document.getElementById('screen-mylist').classList.remove('active');
-            document.getElementById('screen-perfil').classList.remove('active');
-            
-            if(alvo === 'home') document.getElementById('screen-home').style.display = 'flex';
-            else document.getElementById('screen-home').style.display = 'none';
-
+            document.getElementById('screen-home').classList.remove('active'); document.getElementById('screen-search').classList.remove('active');
+            document.getElementById('screen-mylist').classList.remove('active'); document.getElementById('screen-perfil').classList.remove('active');
+            if(alvo === 'home') document.getElementById('screen-home').style.display = 'flex'; else document.getElementById('screen-home').style.display = 'none';
             if(alvo !== 'home') document.getElementById(`screen-${alvo}`).classList.add('active');
-
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const activeNav = document.getElementById(`nav-${alvo}`);
-            if(activeNav) activeNav.classList.add('active');
+            const activeNav = document.getElementById(`nav-${alvo}`); if(activeNav) activeNav.classList.add('active');
         }
 
         function toggleAuthMode() {
@@ -595,26 +527,12 @@
         }
 
         async function handleAuth() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
+            const email = document.getElementById('authEmail').value.trim(); const password = document.getElementById('authPassword').value.trim();
             if (!email || !password) return alert("Preencha todos os campos!");
-
             try {
                 if (isSignUpMode) {
                     const { data, error } = await _supabase.auth.signUp({ email, password });
                     if (error) throw error;
-                    
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const indicadorId = urlParams.get('ref');
-                    if (indicadorId && indicadorId !== data.user.id) {
-                        let { data: dadosIndicador } = await _supabase.from('profiles').select('pontos, saldo_reais').eq('id', indicadorId).maybeSingle();
-                        if (dadosIndicador) {
-                            let novosPts = (parseInt(dadosIndicador.pontos) || 0) + 5000;
-                            let novoSaldo = (parseFloat(dadosIndicador.saldo_reais) || 0) + 0.50;
-                            await _supabase.from('profiles').update({ pontos: novosPts, saldo_reais: novoSaldo }).eq('id', indicadorId);
-                            await _supabase.from('indicacoes').insert([{ indicador_id: indicadorId, indicado_id: data.user.id, created_at: new Date().toISOString() }]);
-                        }
-                    }
                     alert("Conta criada com sucesso! Faça o login.");
                     isSignUpMode = false; toggleAuthMode();
                 } else {
@@ -631,58 +549,45 @@
             usuarioAtualId = user.id; usuarioEmail = user.email;
             document.getElementById('userDisplay').innerText = user.email;
             document.getElementById('shareLinkField').value = window.location.origin + "?ref=" + user.id;
-            document.getElementById('pixName').value = localStorage.getItem('userPixName') || '';
-            document.getElementById('pixKey').value = localStorage.getItem('userPixKey') || '';
             
             try {
                 let { data, error } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
                 if (!data) {
-                    const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, nivel: 1, pontos: 0, saldo_reais: 0.00, ultimo_bonus: null }]).select().single();
+                    const { data: fallbackProfile } = await _supabase.from('profiles').insert([{ id: user.id, email: user.email, nivel: 1, pontos: 0, saldo_reais: 0.00, dias_consecutivos: 1, total_filmes_vistos: 0 }]).select().single();
                     data = fallbackProfile;
                 }
                 pontosLocaisMemoria = parseInt(data?.pontos) || 0;
                 dinheiroLocalMemoria = parseFloat(data?.saldo_reais) || 0.00;
                 nivelLocalMemoria = parseInt(data?.nivel) || 1;
                 
-                const localBonusIso = localStorage.getItem('cine_ultimo_bonus_' + user.id);
-                const dbBonusIso = data?.ultimo_bonus;
-                
-                if (localBonusIso && dbBonusIso) {
-                    dataUltimoBonusIso = new Date(localBonusIso) > new Date(dbBonusIso) ? localBonusIso : dbBonusIso;
-                } else {
-                    dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
-                }
+                // NOVOS DADOS DA ETAPA 3
+                totalFilmesMemoria = parseInt(data?.total_filmes_vistos) || 0;
+                diasSeguidosMemoria = parseInt(data?.dias_consecutivos) || 1;
+                dataUltimoBau = data?.bau_data;
+                dataUltimaRoleta = data?.roleta_data;
 
-                // REGISTRO DE SINAL DE PRESENÇA (ONLINE) IMEDIATO
-                await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user.id);
+                // Lógica simples de atualização da sequência diária (Streak)
+                const ultimoAcesso = new Date(data?.updated_at || new Date());
+                const hoje = new Date();
+                const diffTime = Math.abs(hoje - ultimoAcesso);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                if (diffDays > 2) { diasSeguidosMemoria = 1; } 
+                else if (diffDays === 2) { diasSeguidosMemoria++; }
+
+                await _supabase.from('profiles').update({ updated_at: new Date().toISOString(), dias_consecutivos: diasSeguidosMemoria }).eq('id', user.id);
 
             } catch (e) { } 
             finally { 
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); 
-                gerenciarCronometroBonusDiario(); 
-                iniciarHeartbeatOnline();
+                verificarStatusMiniGames();
             }
-        }
-
-        // HEARTBEAT: Mantém o usuário marcado como ONLINE a cada 30 segundos
-        function iniciarHeartbeatOnline() {
-            setInterval(async () => {
-                if (usuarioAtualId) {
-                    try {
-                        await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId);
-                    } catch(e) {}
-                }
-            }, 30000);
         }
 
         function atualizarInterfaceDados(pontos, saldoReais, nivel) {
             pontosLocaisMemoria = pontos; dinheiroLocalMemoria = saldoReais; nivelLocalMemoria = nivel;
-            
             document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
             
-            // ATUALIZA O XP DO NOVO PERFIL PREMIUM
-            let profileXp = document.getElementById('pointsBalanceProfile');
-            if(profileXp) profileXp.innerText = pontosLocaisMemoria;
+            let profileXp = document.getElementById('pointsBalanceProfile'); if(profileXp) profileXp.innerText = pontosLocaisMemoria;
 
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalanceMain').innerText = formatado;
@@ -694,6 +599,10 @@
             else if (nivelLocalMemoria > 10) { tierName = "Ouro"; badgeLvl.style.color = "#fbbf24"; }
             badgeLvl.innerText = `Nível ${nivelLocalMemoria} (${tierName})`;
             
+            // ATUALIZANDO ESTATÍSTICAS REAIS
+            document.getElementById('diasConsecutivos').innerText = `${diasSeguidosMemoria} Dia(s)`;
+            document.getElementById('totalFilmesAssistidos').innerText = totalFilmesMemoria;
+
             const minSaque = configGlobal.saque_minimo || 20.00;
             const pct = Math.min((saldoReais / minSaque) * 100, 100);
             document.getElementById('progressBar').style.width = `${pct}%`;
@@ -704,91 +613,99 @@
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Filmes`;
         }
 
-        function gerenciarCronometroBonusDiario() {
-            if (intervaloCronometroBonus) clearInterval(intervaloCronometroBonus);
-            const botao = document.getElementById('dailyBonusBtn');
-            const textoStatus = document.getElementById('dailyBonusStatus');
-
-            if (!dataUltimoBonusIso) { 
-                botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff"; textoStatus.innerText = "Disponível! Resgate."; return; 
+        // ==========================================
+        // SISTEMA DE GAMIFICAÇÃO (ROLETA E BAÚ)
+        // ==========================================
+        function verificarStatusMiniGames() {
+            const agora = new Date();
+            
+            // Checa Roleta
+            const statusRoleta = document.getElementById('statusRoleta');
+            if (dataUltimaRoleta && new Date(dataUltimaRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+                statusRoleta.innerText = "Volte amanhã!"; statusRoleta.style.color = "#9ca3af";
+            } else {
+                statusRoleta.innerText = "Gire grátis agora!"; statusRoleta.style.color = "#34d399";
             }
 
-            function atualizarTempo() {
-                const agora = new Date(); const ultimaColeta = new Date(dataUltimoBonusIso);
-                const proximaColeta = new Date(ultimaColeta.getTime() + (24 * 60 * 60 * 1000));
-                const diferencaMs = proximaColeta - agora;
+            // Checa Baú
+            const statusBau = document.getElementById('statusBau');
+            if (dataUltimoBau && new Date(dataUltimoBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+                statusBau.innerText = "Volte amanhã!"; statusBau.style.color = "#9ca3af";
+            } else {
+                statusBau.innerText = "Disponível agora!"; statusBau.style.color = "#34d399";
+            }
+        }
+
+        async function abrirRoleta() {
+            if (!usuarioAtualId) return;
+            const agora = new Date();
+            if (dataUltimaRoleta && new Date(dataUltimaRoleta).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+                return UI.toast('Roleta já girada hoje. Volte amanhã!');
+            }
+
+            // Simulação da Roleta com SweetAlert
+            Swal.fire({
+                title: 'Girando a Roleta...',
+                html: '<i class="fa-solid fa-dharmachakra fa-spin" style="font-size: 60px; color: #f43f5e; margin: 20px 0;"></i>',
+                background: '#1d0f33', color: '#fff',
+                showConfirmButton: false, timer: 3000
+            }).then(async () => {
+                const premios = [ { xp: 500, rs: 0 }, { xp: 1000, rs: 0.05 }, { xp: 200, rs: 0 }, { xp: 5000, rs: 0.10 } ];
+                const ganho = premios[Math.floor(Math.random() * premios.length)];
                 
-                if (diferencaMs <= 0) { 
-                    clearInterval(intervaloCronometroBonus); 
-                    botao.disabled = false; botao.style.background = "#8b5cf6"; botao.style.color = "#fff";
-                    dataUltimoBonusIso = null; 
-                    if(usuarioAtualId) localStorage.removeItem('cine_ultimo_bonus_' + usuarioAtualId);
-                    textoStatus.innerText = "Disponível! Resgate.";
-                } else { 
-                    botao.disabled = true; botao.style.background = "rgba(255,255,255,0.1)"; botao.style.color = "#9ca3af";
-                    const h = String(Math.floor(diferencaMs / (1000 * 60 * 60))).padStart(2, '0'); 
-                    const m = String(Math.floor((diferencaMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); 
-                    textoStatus.innerText = `Próximo em: ${h}:${m}`; 
-                }
+                pontosLocaisMemoria += ganho.xp; dinheiroLocalMemoria += ganho.rs;
+                dataUltimaRoleta = new Date().toISOString();
+                
+                await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, roleta_data: dataUltimaRoleta }).eq('id', usuarioAtualId);
+                
+                dispararRecompensaVisual(); atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); verificarStatusMiniGames();
+                
+                Swal.fire({ title: 'Parabéns!', text: `Você ganhou +${ganho.xp} XP e R$ ${ganho.rs.toFixed(2)}`, icon: 'success', background: '#1d0f33', color: '#fff' });
+            });
+        }
+
+        async function abrirBau() {
+            if (!usuarioAtualId) return;
+            const agora = new Date();
+            if (dataUltimoBau && new Date(dataUltimoBau).getTime() + (24 * 60 * 60 * 1000) > agora.getTime()) {
+                return UI.toast('Baú já aberto hoje. Volte amanhã!');
             }
-            atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 1000); 
+
+            Swal.fire({
+                title: 'Abrindo Baú Misterioso...',
+                html: '<i class="fa-solid fa-box-open shake-anim" style="font-size: 60px; color: #eab308; margin: 20px 0;"></i>',
+                background: '#1d0f33', color: '#fff',
+                showConfirmButton: false, timer: 2000
+            }).then(async () => {
+                const premios = [ { xp: 1500, rs: 0.15 }, { xp: 3000, rs: 0.30 }, { xp: 800, rs: 0.05 } ];
+                const ganho = premios[Math.floor(Math.random() * premios.length)];
+                
+                pontosLocaisMemoria += ganho.xp; dinheiroLocalMemoria += ganho.rs;
+                dataUltimoBau = new Date().toISOString();
+                
+                await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, bau_data: dataUltimoBau }).eq('id', usuarioAtualId);
+                
+                dispararRecompensaVisual(); atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); verificarStatusMiniGames();
+                
+                Swal.fire({ title: 'Baú Aberto!', text: `Você encontrou +${ganho.xp} XP e R$ ${ganho.rs.toFixed(2)}`, icon: 'success', background: '#1d0f33', color: '#fff' });
+            });
         }
 
         function dispararRecompensaVisual() {
-            if (document.getElementById('dailyBonusBtn').disabled) return;
-            
-            // Dispara os confetes na tela
-            var duration = 3 * 1000;
-            var end = Date.now() + duration;
-
+            var duration = 3 * 1000; var end = Date.now() + duration;
             (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#8b5cf6', '#34d399', '#fbbf24']
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#8b5cf6', '#34d399', '#fbbf24']
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#8b5cf6', '#34d399', '#fbbf24'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#8b5cf6', '#34d399', '#fbbf24'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
-        }
-
-        async function coletarBonusDiario() {
-            if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
-            const isoAgora = new Date().toISOString(); 
-            dataUltimoBonusIso = isoAgora;
-            
-            localStorage.setItem('cine_ultimo_bonus_' + usuarioAtualId, isoAgora);
-
-            pontosLocaisMemoria += 1000; dinheiroLocalMemoria += 0.10;
-            let xpProximoNivel = nivelLocalMemoria * 5000;
-            if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
-            
-            atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
-            gerenciarCronometroBonusDiario();
-            
-            await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, ultimo_bonus: isoAgora }).eq('id', usuarioAtualId);
-            UI.toast('Bônus Resgatado com Sucesso!');
         }
 
         async function coletarMissaoDiaria() {
             if(videosAssistidosHoje >= 10) {
                 videosAssistidosHoje = 0; pontosLocaisMemoria += 2500; dinheiroLocalMemoria += 0.25;
-                let xpProximoNivel = nivelLocalMemoria * 5000;
-                if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; }
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
-                await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
-                UI.toast('Missão Cumprida! +2500 XP');
+                await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria }).eq('id', usuarioAtualId);
+                dispararRecompensaVisual(); UI.toast('Missão Cumprida! +2500 XP');
             } else { UI.toast('Assista mais filmes para concluir!'); }
         }
 
@@ -817,13 +734,8 @@
             const vData = todasMidiasGerais.find(v => (v.ytId || v.ytid) === ytid_param);
             if(!vData) return;
             idVideoAtivo = ytid_param; tempoAcumuladoSegundos = 0; 
-            
-            let startAt = 0;
-            if(progressoVideos[ytid_param]) startAt = progressoVideos[ytid_param];
-
-            if(youtubePlayer && youtubePlayer.loadVideoById) { 
-                youtubePlayer.loadVideoById({videoId: ytid_param, startSeconds: startAt}); 
-            }
+            let startAt = 0; if(progressoVideos[ytid_param]) startAt = progressoVideos[ytid_param];
+            if(youtubePlayer && youtubePlayer.loadVideoById) { youtubePlayer.loadVideoById({videoId: ytid_param, startSeconds: startAt}); }
         }
 
         function gerenciarMudancaEstadoPlayer(ev) {
@@ -849,7 +761,7 @@
                     }
 
                     if (tempoAcumuladoSegundos >= 60) {
-                        tempoAcumuladoSegundos = 0; videosAssistidosHoje++;
+                        tempoAcumuladoSegundos = 0; videosAssistidosHoje++; totalFilmesMemoria++;
                         const vData = todasMidiasGerais.find(v => (v.ytId || v.ytid) === idVideoAtivo);
                         if(!vData) return;
                         
@@ -860,9 +772,8 @@
                         if(pontosLocaisMemoria >= xpProximoNivel) { nivelLocalMemoria++; UI.toast(`Você subiu para o Nível ${nivelLocalMemoria}!`); }
 
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
-                        await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
+                        await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria, total_filmes_vistos: totalFilmesMemoria }).eq('id', usuarioAtualId);
                         
-                        // GRAVAÇÃO NO HISTÓRICO PARA A TELEMETRIA DO PAINEL
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
                     }
                 }
