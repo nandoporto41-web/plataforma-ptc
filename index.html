@@ -6,7 +6,7 @@
     <title>CINE REWARDS MAX</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#08080a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CINE REWARDS">
@@ -17,12 +17,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://www.youtube.com/iframe_api"></script>
     
-    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) -->
-    <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
-
+    <!-- MOTOR DE CONFETES E RECOMPENSAS VISUAIS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #08080a; color: #ffffff; display: flex; justify-content: center; align-items: flex-start; height: 100vh; height: 100dvh; overflow: hidden; background-image: linear-gradient(to bottom, #1d0f33 0%, #08080a 30%, #000000 100%); }
@@ -65,14 +65,15 @@
         .movie-poster { width: 110px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; cursor: pointer; position: relative; transition: transform 0.2s; }
         .movie-poster:active { transform: scale(0.95); }
         
+        /* CAPAS ESTILO NETFLIX (SEM BORDAS PRETAS) */
         .poster-image-wrapper { width: 100%; aspect-ratio: 2 / 3; background: #1a1a24; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
         .poster-image-wrapper img { width: 100%; height: 100%; object-fit: cover; object-position: center; transform: scale(1.35); transition: opacity 0.3s; }
+        
         .movie-poster:hover .poster-image-wrapper img { opacity: 0.7; }
         .play-icon-overlay { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; background: rgba(0,0,0,0.4); z-index: 2; }
         .movie-poster:hover .play-icon-overlay { opacity: 1; }
         .play-icon-overlay i { font-size: 30px; color: #fff; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .progress-bar-continue { position: absolute; bottom: 0; left: 0; height: 3px; background: #8b5cf6; z-index: 5; transition: width 0.3s ease;}
-        
         .movie-info { padding: 0 2px; }
         .movie-title { font-size: 11px; font-weight: 600; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .movie-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
@@ -80,59 +81,6 @@
         .btn-add-list { color: #9ca3af; font-size: 12px; padding: 4px; }
         .btn-add-list.saved { color: #8b5cf6; }
 
-        /* =========================================
-           ESTILIZAÇÃO 100% FIEL À HBO MAX (MAX)
-           ========================================= */
-        .max-overlay { position: fixed; inset: 0; background: #000000; z-index: 200; display: none; flex-direction: column; overflow-y: auto; overflow-x: hidden; opacity: 0; transition: opacity 0.3s ease; }
-        .max-overlay.active { display: flex; opacity: 1; }
-        .max-overlay::-webkit-scrollbar { display: none; }
-
-        .max-topbar { position: absolute; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 10; }
-        .max-icon-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; color: #fff; font-size: 18px; border: none; cursor: pointer; }
-
-        .max-hero { width: 100%; height: 350px; position: relative; }
-        .max-hero-img { width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0.8; }
-        .max-hero-fade { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 30%, #000000 100%); }
-
-        .max-content { padding: 0 20px 40px 20px; margin-top: -60px; position: relative; z-index: 5; }
-        .max-title { font-size: 34px; font-weight: 900; font-family: 'Inter', sans-serif; color: #ffffff; text-transform: uppercase; line-height: 1.1; margin-bottom: 15px; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        
-        .max-meta-row { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; color: #a1a1aa; margin-bottom: 20px; flex-wrap: wrap;}
-        .max-badge-age { background: #d97706; color: #fff; font-weight: 900; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
-        .max-badge-quality { border: 1px solid rgba(255,255,255,0.3); padding: 1px 6px; border-radius: 3px; font-size: 10px; color: #e4e4e7; }
-        .max-badge-xp { color: #34d399; background: rgba(52,211,153,0.1); padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 800;}
-
-        .max-btn-play { width: 100%; background: #ffffff; color: #000000; font-size: 16px; font-weight: 800; border: none; padding: 14px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer; transition: transform 0.2s; }
-        .max-btn-play:active { transform: scale(0.98); background: #e4e4e7; }
-        .max-btn-download { width: 100%; background: rgba(255,255,255,0.1); color: #ffffff; font-size: 16px; font-weight: 700; border: none; padding: 14px; border-radius: 8px; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 25px; cursor: pointer; }
-
-        .max-actions { display: flex; justify-content: space-around; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 0; margin-bottom: 20px; }
-        .max-action-item { display: flex; flex-direction: column; align-items: center; gap: 6px; color: #a1a1aa; font-size: 11px; font-weight: 500; cursor: pointer; }
-        .max-action-item i { font-size: 20px; color: #ffffff; }
-        .max-action-item.active i { color: #8b5cf6; }
-
-        .max-synopsis { font-size: 14px; color: #d4d4d8; line-height: 1.6; margin-bottom: 15px; }
-        .max-genres { font-size: 12px; color: #a1a1aa; font-weight: 600; margin-bottom: 15px; }
-        .max-disclaimer { font-size: 10px; color: #71717a; line-height: 1.4; margin-bottom: 25px; }
-
-        .max-tabs { display: flex; gap: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .max-tab { font-size: 14px; font-weight: 800; color: #71717a; padding-bottom: 12px; cursor: pointer; position: relative; transition: color 0.3s; }
-        .max-tab.active { color: #ffffff; }
-        .max-tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: #ffffff; border-radius: 2px 2px 0 0; }
-
-        .max-tab-content { display: none; animation: fadeIn 0.3s ease;}
-        .max-tab-content.active { display: block; }
-        
-        .max-related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .max-related-card { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 2/3; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);}
-        .max-related-card img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.35); }
-        .max-related-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 15px 10px 5px 10px; font-size: 11px; font-weight: 700; color: #fff; text-align: center;}
-
-        .max-details-row { margin-bottom: 15px; }
-        .max-details-label { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 6px; }
-        .max-details-text { font-size: 13px; color: #a1a1aa; line-height: 1.5; }
-
-        /* ABA PESQUISA, PERFIL ETC */
         .search-container { padding: 0 20px; margin-bottom: 20px; }
         .search-box { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
         .search-box i { color: #9ca3af; }
@@ -181,6 +129,7 @@
 <body>
 
     <div class="cinema-container">
+        <div id="adScriptContainer"></div>
 
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
@@ -219,96 +168,6 @@
             <button class="btn-fullscreen" onclick="ativarTelaCheia()">
                 <i class="fa-solid fa-expand"></i> Assistir em Tela Cheia
             </button>
-        </div>
-
-        <!-- TELA DE DESCRIÇÃO DO FILME (DESIGN 100% HBO MAX) -->
-        <div class="max-overlay" id="maxOverlay">
-            <div class="max-topbar">
-                <button class="max-icon-btn" onclick="fecharMaxScreen()"><i class="fa-solid fa-arrow-left"></i></button>
-                <button class="max-icon-btn" onclick="UI.toast('Link copiado!')"><i class="fa-solid fa-share-nodes"></i></button>
-            </div>
-
-            <div class="max-hero">
-                <!-- Usando hqdefault para melhor resolução com object-fit cover -->
-                <img src="" id="maxHeroImg" class="max-hero-img">
-                <div class="max-hero-fade"></div>
-            </div>
-
-            <div class="max-content">
-                <h1 class="max-title" id="maxTitle">NOME DO FILME</h1>
-                
-                <div class="max-meta-row">
-                    <span class="max-badge-age" id="maxAge">A14</span>
-                    <span id="maxDuration">1 h e 32 min</span>
-                    <span id="maxYear">2026</span>
-                    <span class="max-badge-quality">4K UHD</span>
-                    <span class="max-badge-xp" id="maxXp">+200 XP</span>
-                </div>
-
-                <button class="max-btn-play" id="maxBtnPlay">
-                    <i class="fa-solid fa-play"></i> Assistir agora
-                </button>
-                <button class="max-btn-download" onclick="UI.toast('Download indisponível no plano atual.')">
-                    <i class="fa-solid fa-arrow-down"></i> Download
-                </button>
-
-                <div class="max-actions">
-                    <div class="max-action-item" id="maxBtnList">
-                        <i class="fa-solid fa-plus" id="maxIconList"></i>
-                        <span>Minha lista</span>
-                    </div>
-                    <div class="max-action-item" onclick="UI.toast('Obrigado pela sua avaliação!')">
-                        <i class="fa-regular fa-thumbs-up"></i>
-                        <span>Classificar</span>
-                    </div>
-                    <div class="max-action-item" onclick="UI.toast('Carregando trailer...')">
-                        <i class="fa-solid fa-clapperboard"></i>
-                        <span>Trailer</span>
-                    </div>
-                </div>
-
-                <p class="max-synopsis" id="maxSynopsis">Carregando sinopse...</p>
-                <p class="max-genres" id="maxGenres">Drama • Lançamento HD</p>
-                <p class="max-disclaimer">A disponibilidade de 4K UHD, HDR e Dolby Atmos varia de acordo com o dispositivo e o plano.</p>
-
-                <div class="max-tabs">
-                    <div class="max-tab active" id="tabSugestoes" onclick="alternarMaxTab('sugestoes')">Você também pode gostar</div>
-                    <div class="max-tab" id="tabDetalhes" onclick="alternarMaxTab('detalhes')">Detalhes</div>
-                </div>
-
-                <!-- Aba: Você também pode gostar -->
-                <div class="max-tab-content active" id="contentSugestoes">
-                    <div class="max-related-grid" id="maxRelatedGrid"></div>
-                </div>
-
-                <!-- Aba: Detalhes da Ficha Técnica -->
-                <div class="max-tab-content" id="contentDetalhes">
-                    <div class="max-details-row">
-                        <div class="max-details-label">Informações de classificação</div>
-                        <div class="max-details-text"><span class="max-badge-age" id="maxDetailsAge">A14</span> Violência, Tensão, Linguagem Imprópria.</div>
-                    </div>
-                    <div class="max-details-row">
-                        <div class="max-details-label">Idiomas das legendas</div>
-                        <div class="max-details-text">Português (Brasil), Espanhol (América Latina), Inglês</div>
-                    </div>
-                    <div class="max-details-row">
-                        <div class="max-details-label">Idiomas do áudio</div>
-                        <div class="max-details-text">Inglês - Original, Português (Brasil)</div>
-                    </div>
-                    <div class="max-details-row">
-                        <div class="max-details-label">Estrelando</div>
-                        <div class="max-details-text" id="maxCast">Elenco Principal</div>
-                    </div>
-                    <div class="max-details-row">
-                        <div class="max-details-label">Diretor</div>
-                        <div class="max-details-text" id="maxDirector">Diretor Reconhecido</div>
-                    </div>
-                    <div class="max-details-row">
-                        <div class="max-details-label">Roteiristas</div>
-                        <div class="max-details-text" id="maxWriters">Autores e Roteiristas</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- ABA 1: FEED PRINCIPAL ESTILO NETFLIX -->
@@ -380,7 +239,7 @@
             </div>
         </div>
 
-        <!-- ABA 4: PERFIL E CARTEIRA -->
+        <!-- ABA 4: NOVO PERFIL PREMIUM GAMIFICADO -->
         <div class="sub-screen" id="screen-perfil">
             <div class="sub-header">
                 <i class="fa-solid fa-arrow-left" onclick="navegarParaAba('home')"></i>
@@ -388,16 +247,40 @@
             </div>
             <div class="sub-content">
                 
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-                    <div class="profile-avatar" style="width: 60px; height: 60px; font-size: 25px;"><i class="fa-solid fa-user"></i></div>
-                    <div>
-                        <div id="userDisplay" style="font-weight: 700; font-size: 14px; color: #fff;">Usuario</div>
-                        <div id="userLevelBadge" style="font-size: 11px; color: #8b5cf6; font-weight: 700;">Nível 1</div>
+                <!-- CABEÇALHO DO USUÁRIO & NÍVEL -->
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                    <div class="profile-avatar" style="width: 65px; height: 65px; font-size: 28px; border-color: #fbbf24; background: linear-gradient(135deg, #3b2a00, #1a1a1a);">
+                        <i class="fa-solid fa-crown" style="color: #fbbf24;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div id="userDisplay" style="font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -0.5px;">Usuario</div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4px;">
+                            <span id="userLevelBadge" style="font-size: 12px; color: #fbbf24; font-weight: 800; text-transform: uppercase;">Mestre Ouro</span>
+                            <span style="font-size: 10px; color: #9ca3af;"><span id="pointsBalanceProfile">0</span> XP</span>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 5px; overflow: hidden;">
+                            <div id="levelProgressBar" style="height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); width: 45%;"></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- ESTATÍSTICAS RÁPIDAS -->
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                        <i class="fa-solid fa-fire" style="color: #ef4444; font-size: 16px; margin-bottom: 5px;"></i>
+                        <div style="font-size: 10px; color: #9ca3af;">Sequência</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="diasConsecutivos">1 Dia</div>
+                    </div>
+                    <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; text-align: center;">
+                        <i class="fa-solid fa-play" style="color: #8b5cf6; font-size: 16px; margin-bottom: 5px;"></i>
+                        <div style="font-size: 10px; color: #9ca3af;">Filmes Vistos</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #fff;" id="totalFilmesAssistidos">0</div>
+                    </div>
+                </div>
+
+                <!-- MISSÕES E BÔNUS (AGORA COM CONFETES) -->
                 <div class="gamification-row">
-                    <div class="gami-card" id="dailyBonusCard" onclick="coletarBonusDiario()">
+                    <div class="gami-card" id="dailyBonusCard" onclick="dispararRecompensaVisual(); coletarBonusDiario();">
                         <h4><i class="fa-solid fa-gift" style="color:#8b5cf6;"></i> Bônus Diário</h4>
                         <p id="dailyBonusStatus">Verificando...</p>
                         <button class="btn-secondary" id="dailyBonusBtn" disabled style="padding: 4px; font-size: 10px; margin-top: 4px;">Coletar</button>
@@ -409,9 +292,10 @@
                     </div>
                 </div>
 
+                <!-- CARTEIRA E SAQUE (MANTIDO) -->
                 <div class="data-card">
                     <p>Meu Saldo Disponível</p>
-                    <span id="saqueRealBalance" style="color:#34d399; font-size:24px;">R$ 0,00</span>
+                    <span id="saqueRealBalance" style="color:#34d399; font-size:24px; font-weight: 900;">R$ 0,00</span>
                     <div style="width: 100%; height: 4px; background: #333; border-radius: 2px; margin-top: 8px; overflow: hidden;">
                         <div id="progressBar" style="height: 100%; background: #34d399; width: 0%;"></div>
                     </div>
@@ -488,10 +372,30 @@
         let todasMidiasGerais = []; 
 
         const colecaoBackup = [
-            { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia" },
+            { ytId: "96FxHNVeBuw", titulo: "Deu a Louca nos Bichos", recompensa: 200, categoria: "Comédia e Família" },
             { ytId: "JkDhDTK_WpA", titulo: "O Código Assassino", recompensa: 200, categoria: "Ação" },
             { ytId: "4rAmC0XmAxA", titulo: "A Fuga Impossível", recompensa: 200, categoria: "Ação" },
-            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" }
+            { ytId: "7YEBYYApGBg", titulo: "Sombras da Noite", recompensa: 200, categoria: "Suspense" },
+            { ytId: "ibjo9quRNoM", titulo: "Velocidade Extrema", recompensa: 200, categoria: "Ação" },
+            { ytId: "ZdCdPtZHvj8", titulo: "Invasão Alienígena", recompensa: 200, categoria: "Ficção" },
+            { ytId: "A81QkSgG64g", titulo: "O Último Sobrevivente", recompensa: 200, categoria: "Suspense" },
+            { ytId: "aGBk70oIqQ0", titulo: "Mistério no Pacífico", recompensa: 200, categoria: "Suspense" },
+            { ytId: "XaBzM91Y3C4", titulo: "A Fortaleza", recompensa: 200, categoria: "Ação" },
+            { ytId: "49fvoJVJ-io", titulo: "Conspiração Global", recompensa: 200, categoria: "Ação" },
+            { ytId: "Lc5tvT4xMlg", titulo: "Caçadores de Mitos", recompensa: 200, categoria: "Ficção" },
+            { ytId: "Ie4j83UDnhw", titulo: "A Vingança do Samurai", recompensa: 200, categoria: "Ação" },
+            { ytId: "T2OblA5LCwI", titulo: "O Segredo do Faraó", recompensa: 200, categoria: "Suspense" },
+            { ytId: "HfQoBFovpG8", titulo: "Resgate nas Montanhas", recompensa: 200, categoria: "Ação" },
+            { ytId: "DO4VaVbpyq4", titulo: "O Atirador de Elite", recompensa: 200, categoria: "Ação" },
+            { ytId: "5pIchruuDuo", titulo: "Fogo Cruzado", recompensa: 200, categoria: "Ação" },
+            { ytId: "umOlzb2IaKk", titulo: "A Maldição", recompensa: 200, categoria: "Suspense" },
+            { ytId: "fJOG2UDNnlw", titulo: "Guerra Cibernética", recompensa: 200, categoria: "Ficção" },
+            { ytId: "OOqr00sQc9U", titulo: "O Esquadrão", recompensa: 200, categoria: "Ação" },
+            { ytId: "BUNcui7rpi4", titulo: "A Queda do Império", recompensa: 200, categoria: "Ficção" },
+            { ytId: "T4eo_VY2nzk", titulo: "Caçada Noturna", recompensa: 200, categoria: "Suspense" },
+            { ytId: "rsbV3ylqhys", titulo: "O Infiltrado", recompensa: 200, categoria: "Ação" },
+            { ytId: "v-L_Ra_x7GE", titulo: "Ação Imediata", recompensa: 200, categoria: "Ação" },
+            { ytId: "aYL5EUeIGC0", titulo: "O Vingador", recompensa: 200, categoria: "Ação" }
         ];
 
         function ativarTelaCheia() {
@@ -499,133 +403,6 @@
             if (videoElement.requestFullscreen) { videoElement.requestFullscreen(); } 
             else if (videoElement.webkitRequestFullscreen) { videoElement.webkitRequestFullscreen(); } 
             else if (videoElement.msRequestFullscreen) { videoElement.msRequestFullscreen(); }
-        }
-
-        // ==========================================
-        // GERADOR INTELIGENTE DE SINOPSES HBO MAX
-        // ==========================================
-        function gerarInfoHBOMax(vid) {
-            const cat = (vid.categoria || 'Ação').toLowerCase();
-            let sinopse = vid.descricao;
-            let elenco = vid.elenco || "Grandes Astros do Cinema";
-            let diretor = vid.diretor || "Direção Aclamada";
-            let roteirista = vid.roteirista || "Roteiristas Premiados";
-            let duracao = "1 h e 45 min";
-            let ano = "2024";
-            let idade = "A14";
-
-            if (!sinopse) {
-                if (cat.includes('ação') || cat.includes('guerra')) {
-                    sinopse = `Em meio a uma crise sem precedentes e sob intensa pressão, os protagonistas enfrentam desafios extremos, conspirações e confrontos decisivos onde cada escolha pode ser a diferença entre a vida e a morte.`;
-                    duracao = "1 h e 45 min"; idade = "A16"; elenco = "Dolph Lundgren, Steve Austin, Atores de Ação"; diretor = "Diretor de Ação";
-                } else if (cat.includes('terror') || cat.includes('suspense')) {
-                    sinopse = `Uma sequência de acontecimentos sombrios e visões perturbadoras revela um segredo macabro do passado. Presos em um pesadelo psicológico, eles lutam contra forças ocultas antes que o tempo acabe.`;
-                    duracao = "1 h e 32 min"; idade = "A16"; elenco = "Lin Shaye, Patrick Wilson, Elenco de Suspense";
-                } else if (cat.includes('comédia') || cat.includes('família') || cat.includes('animação')) {
-                    sinopse = `Uma divertida e emocionante jornada cheia de reviravoltas, encontros inusitados e lições valiosas. Uma história perfeita para relaxar e se divertir com momentos inesquecíveis.`;
-                    duracao = "1 h e 28 min"; idade = "L"; elenco = "Atores de Comédia, Dubladores Oficiais";
-                } else if (cat.includes('drama') || cat.includes('romance')) {
-                    sinopse = `Uma história profunda sobre laços afetivos, escolhas difíceis e segundas chances. Dois caminhos se cruzam em meio a dilemas pessoais onde o amor e o perdão testam os limites dos personagens.`;
-                    duracao = "1 h e 50 min"; idade = "A12"; elenco = "Jude Law, Meryl Streep, Elenco de Drama";
-                } else {
-                    sinopse = `Acompanhe esta incrível produção repleta de suspense, reviravoltas e emoção do início ao fim. Assista agora e ganhe recompensas exclusivas na sua carteira CineWorld.`;
-                }
-            }
-
-            return { sinopse, elenco, diretor, roteirista, duracao, ano, idade };
-        }
-
-        // ==========================================
-        // TELA DE DETALHES HBO MAX
-        // ==========================================
-        function abrirMaxScreen(videoId, playCallback) {
-            const vid = todasMidiasGerais.find(v => (v.ytId || v.ytid) === videoId);
-            if(!vid) return;
-
-            const info = gerarInfoHBOMax(vid);
-
-            document.getElementById('maxHeroImg').src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-            document.getElementById('maxTitle').innerText = vid.titulo;
-            document.getElementById('maxAge').innerText = info.idade;
-            document.getElementById('maxDetailsAge').innerText = info.idade;
-            document.getElementById('maxDuration').innerText = info.duracao;
-            document.getElementById('maxYear').innerText = info.ano;
-            document.getElementById('maxXp').innerText = `+${vid.recompensa || 200} XP`;
-            document.getElementById('maxSynopsis').innerText = info.sinopse;
-            document.getElementById('maxGenres').innerText = `${vid.categoria || 'Filme'} • Lançamento HD`;
-            
-            document.getElementById('maxCast').innerText = info.elenco;
-            document.getElementById('maxDirector').innerText = info.diretor;
-            document.getElementById('maxWriters').innerText = info.roteirista;
-
-            const isSaved = minhaListaIds.includes(videoId);
-            const btnList = document.getElementById('maxBtnList');
-            const iconList = document.getElementById('maxIconList');
-            if(isSaved) {
-                iconList.className = "fa-solid fa-check";
-                btnList.classList.add('active');
-            } else {
-                iconList.className = "fa-solid fa-plus";
-                btnList.classList.remove('active');
-            }
-            btnList.onclick = (e) => {
-                toggleMinhaLista(e, videoId);
-                abrirMaxScreen(videoId, playCallback);
-            };
-
-            document.getElementById('maxBtnPlay').onclick = () => {
-                fecharMaxScreen();
-                document.getElementById('videoActionsContainer').style.display = 'flex';
-                window.scrollTo({top: 0, behavior: 'smooth'});
-                if(playCallback) playCallback();
-            };
-
-            // Sugestões
-            const gridRelated = document.getElementById('maxRelatedGrid');
-            gridRelated.innerHTML = '';
-            const sugeridos = todasMidiasGerais.filter(v => (v.ytId || v.ytid) !== videoId).slice(0, 4);
-            sugeridos.forEach(rec => {
-                const recId = rec.ytId || rec.ytid;
-                const item = document.createElement('div');
-                item.className = 'max-related-card';
-                item.innerHTML = `
-                    <img src="https://img.youtube.com/vi/${recId}/mqdefault.jpg">
-                    <div class="max-related-title">${rec.titulo}</div>
-                `;
-                item.onclick = () => {
-                    abrirMaxScreen(recId, () => intermediarAnuncio(() => trocarVideoAtivo(recId)));
-                };
-                gridRelated.appendChild(item);
-            });
-
-            alternarMaxTab('sugestoes');
-
-            const screen = document.getElementById('maxOverlay');
-            screen.style.display = 'flex';
-            void screen.offsetWidth;
-            screen.classList.add('active');
-            screen.scrollTo(0,0);
-        }
-
-        function fecharMaxScreen() {
-            const screen = document.getElementById('maxOverlay');
-            screen.classList.remove('active');
-            setTimeout(() => { screen.style.display = 'none'; }, 300);
-        }
-
-        function alternarMaxTab(aba) {
-            document.getElementById('tabSugestoes').classList.remove('active');
-            document.getElementById('tabDetalhes').classList.remove('active');
-            document.getElementById('contentSugestoes').classList.remove('active');
-            document.getElementById('contentDetalhes').classList.remove('active');
-
-            if (aba === 'sugestoes') {
-                document.getElementById('tabSugestoes').classList.add('active');
-                document.getElementById('contentSugestoes').classList.add('active');
-            } else {
-                document.getElementById('tabDetalhes').classList.add('active');
-                document.getElementById('contentDetalhes').classList.add('active');
-            }
         }
 
         function criarCardVideo(vid, onPlayClick) {
@@ -638,11 +415,12 @@
             const btnClass = isSaved ? 'btn-add-list saved' : 'btn-add-list';
             const iconClass = isSaved ? 'fa-solid fa-check' : 'fa-solid fa-plus';
 
+            // CAPAS SEM BORDAS PRETAS (mqdefault.jpg + scale 1.35)
             card.innerHTML = `
-                <div class="poster-image-wrapper">
+                <div class="poster-image-wrapper" onclick="document.getElementById('play-btn-${videoId}').click()">
                     <img src="https://img.youtube.com/vi/${videoId}/mqdefault.jpg" alt="${vid.titulo}">
                     <div class="play-icon-overlay" id="play-btn-${videoId}">
-                        <i class="fa-solid fa-circle-info" style="font-size: 35px;"></i>
+                        <i class="fa-solid fa-circle-play"></i>
                     </div>
                     <div class="progress-bar-continue" id="prog-bar-${videoId}" style="width: 0%;"></div>
                 </div>
@@ -656,7 +434,8 @@
             `;
             
             card.querySelector('.poster-image-wrapper').onclick = () => {
-                abrirMaxScreen(videoId, onPlayClick);
+                document.getElementById('videoActionsContainer').style.display = 'flex';
+                onPlayClick();
             };
 
             if(progressoVideos[videoId]) {
@@ -771,7 +550,7 @@
         }
 
         function toggleMinhaLista(event, videoId) {
-            if(event) event.stopPropagation();
+            event.stopPropagation();
             const idx = minhaListaIds.indexOf(videoId);
             if(idx > -1) { minhaListaIds.splice(idx, 1); UI.toast('Removido da Minha Lista'); } 
             else { minhaListaIds.push(videoId); UI.toast('Adicionado à Minha Lista'); }
@@ -874,7 +653,9 @@
                     dataUltimoBonusIso = localBonusIso || dbBonusIso || null;
                 }
 
+                // REGISTRO DE SINAL DE PRESENÇA (ONLINE) IMEDIATO
                 await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', user.id);
+
             } catch (e) { } 
             finally { 
                 atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria); 
@@ -883,10 +664,13 @@
             }
         }
 
+        // HEARTBEAT: Mantém o usuário marcado como ONLINE a cada 30 segundos
         function iniciarHeartbeatOnline() {
             setInterval(async () => {
                 if (usuarioAtualId) {
-                    try { await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId); } catch(e) {}
+                    try {
+                        await _supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', usuarioAtualId);
+                    } catch(e) {}
                 }
             }, 30000);
         }
@@ -895,6 +679,11 @@
             pontosLocaisMemoria = pontos; dinheiroLocalMemoria = saldoReais; nivelLocalMemoria = nivel;
             
             document.getElementById('pointsBalance').innerText = pontosLocaisMemoria;
+            
+            // ATUALIZA O XP DO NOVO PERFIL PREMIUM
+            let profileXp = document.getElementById('pointsBalanceProfile');
+            if(profileXp) profileXp.innerText = pontosLocaisMemoria;
+
             const formatado = `R$ ${saldoReais.toFixed(2).replace('.', ',')}`;
             document.getElementById('realBalanceMain').innerText = formatado;
             document.getElementById('saqueRealBalance').innerText = formatado;
@@ -945,6 +734,35 @@
             atualizarTempo(); intervaloCronometroBonus = setInterval(atualizarTempo, 1000); 
         }
 
+        function dispararRecompensaVisual() {
+            if (document.getElementById('dailyBonusBtn').disabled) return;
+            
+            // Dispara os confetes na tela
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#8b5cf6', '#34d399', '#fbbf24']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#8b5cf6', '#34d399', '#fbbf24']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
         async function coletarBonusDiario() {
             if (!usuarioAtualId || document.getElementById('dailyBonusBtn').disabled) return;
             const isoAgora = new Date().toISOString(); 
@@ -977,6 +795,8 @@
         function intermediarAnuncio(callback) {
             emExibicaoAnuncio = true; pararContagemGanhos();
             if (youtubePlayer && youtubePlayer.pauseVideo) { try { youtubePlayer.pauseVideo(); } catch(e){} }
+            const containerScripts = document.getElementById('adScriptContainer'); containerScripts.innerHTML = "";
+            const script1 = document.createElement('script'); script1.async = true; script1.src = 'https://n6wxm.com/vignette.min.js'; script1.dataset.zone = '11218300'; containerScripts.appendChild(script1);
             
             const layer = document.getElementById('adLayer'); const timerTxt = document.getElementById('adTimerText');
             layer.classList.add('active'); let tempoRestante = 5; timerTxt.innerText = `Aguarde ${tempoRestante} segundos...`;
@@ -1042,6 +862,7 @@
                         atualizarInterfaceDados(pontosLocaisMemoria, dinheiroLocalMemoria, nivelLocalMemoria);
                         await _supabase.from('profiles').update({ pontos: pontosLocaisMemoria, saldo_reais: dinheiroLocalMemoria, nivel: nivelLocalMemoria }).eq('id', usuarioAtualId);
                         
+                        // GRAVAÇÃO NO HISTÓRICO PARA A TELEMETRIA DO PAINEL
                         await _supabase.from('watch_history').insert([{ user_id: usuarioAtualId, email: usuarioEmail, video_titulo: vData.titulo, tempo_assistido: 60, created_at: new Date().toISOString() }]);
                     }
                 }
