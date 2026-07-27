@@ -22,9 +22,6 @@
     
     <!-- MOTOR DE CONFETES -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <!-- SCRIPT ADSTERRA GLOBAL (SOCIAL BAR) -->
-    <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -112,7 +109,7 @@
         .input-field:focus { border-color: #8b5cf6; }
         .btn-primary { background: #8b5cf6; color: #fff; font-weight: 700; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s; }
         .btn-primary:active { background: #7c3aed; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; border: none; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px;}
 
         .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: rgba(0, 0, 0, 0.95); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 60; padding-bottom: env(safe-area-inset-bottom, 0px); }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #6b7280; font-size: 10px; font-weight: 500; cursor: pointer; width: 60px; transition: color 0.2s; }
@@ -128,6 +125,14 @@
         .auth-input:focus { border-color: #8b5cf6; }
         .auth-toggle-link { text-align: center; font-size: 13px; color: #8b5cf6; cursor: pointer; margin-top: 10px; font-weight: 600; }
         
+        /* ESTILOS DA TELA DE FAQ */
+        .faq-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+        .faq-question { padding: 15px; font-weight: 700; font-size: 13px; color: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-question i { color: #8b5cf6; transition: transform 0.3s; }
+        .faq-answer { padding: 0 15px 15px 15px; font-size: 12px; color: #9ca3af; line-height: 1.5; display: none; }
+        .faq-item.open .faq-answer { display: block; }
+        .faq-item.open .faq-question i { transform: rotate(180deg); }
+
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
         .shake-anim { animation: shake 0.5s; animation-iteration-count: infinite; }
         .swal2-popup { border-radius: 16px !important; border: 1px solid rgba(255,255,255,0.1) !important; }
@@ -136,6 +141,8 @@
 <body>
 
     <div class="cinema-container">
+
+        <div id="adScriptContainer"></div>
 
         <div class="auth-screen" id="authScreen">
             <div class="auth-box">
@@ -322,16 +329,16 @@
                 </div>
                 <button class="btn-primary" style="margin-top: 10px;" onclick="executarPedidoSaque()">Solicitar Retirada</button>
 
-                <!-- NOVA SESSÃO DE SUPORTE -->
+                <!-- TELA DE SUPORTE ATUALIZADA -->
                 <h3 style="font-size: 14px; font-weight: 700; color: #fff; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
                     <i class="fa-solid fa-headset" style="color: #34d399;"></i> Central de Ajuda
                 </h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <!-- Lembre-se de trocar o número 5511999999999 pelo SEU NÚMERO real -->
-                    <button class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.2);" onclick="window.open('https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20minha%20conta%20CineRewards!', '_blank')">
+                    <button class="btn-secondary" style="flex: 1; background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.2);" onclick="window.open('https://wa.me/5511999999999?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20minha%20conta%20CineRewards!', '_blank')">
                         <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> WhatsApp
                     </button>
-                    <button class="btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="UI.toast('FAQ de dúvidas em breve!')">
+                    <!-- BOTÃO DÚVIDAS ABRE O FAQ -->
+                    <button class="btn-secondary" style="flex: 1;" onclick="abrirFAQ()">
                         <i class="fa-solid fa-circle-question" style="font-size: 18px;"></i> Dúvidas
                     </button>
                 </div>
@@ -343,6 +350,46 @@
                 <button class="btn-secondary" onclick="executarCompartilhamento()"><i class="fa-solid fa-copy"></i> Copiar Link</button>
 
                 <button class="btn-secondary" style="color: #ef4444; margin-top: 20px;" onclick="handleLogout()">Sair da Conta</button>
+            </div>
+        </div>
+
+        <!-- ABA 5: TELA DE FAQ (NOVA) -->
+        <div class="sub-screen" id="screen-faq">
+            <div class="sub-header">
+                <i class="fa-solid fa-arrow-left" onclick="navegarParaAba('perfil')"></i>
+                <h2>Dúvidas Frequentes</h2>
+            </div>
+            <div class="sub-content">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Como eu ganho dinheiro? <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Você acumula XP ao assistir filmes, abrir o Baú Misterioso, girar a Roleta e cumprir as Missões Diárias. Esse XP é automaticamente convertido em saldo real na sua carteira.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Qual o valor mínimo para saque? <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">O valor mínimo para solicitar uma retirada via PIX é de R$ 20,00. Certifique-se de preencher a sua chave PIX corretamente na aba Carteira.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Quanto tempo demora o PIX? <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Após solicitar o saque, o seu pedido entra em uma análise de segurança pela nossa equipe antifraude. O pagamento costuma ser aprovado e enviado em até 48 a 72 horas úteis.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Posso usar VPN ou criar várias contas? <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Não. É estritamente proibido o uso de VPNs, emuladores ou a criação de contas duplicadas. Nosso sistema identifica essas práticas e a conta será banida permanentemente, perdendo todo o saldo.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Como funciona o Indique e Ganhe? <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">Ao compartilhar o seu link exclusivo, você ganha um Bônus Especial em Dinheiro e XP na hora que seu amigo criar a conta e começar a assistir aos filmes.</div>
+                </div>
             </div>
         </div>
 
@@ -365,6 +412,9 @@
             </div>
         </div>
     </div>
+
+    <!-- SCRIPT DA ADSTERRA INJETADO AQUI PARA MÁXIMA PERFORMANCE E VISIBILIDADE -->
+    <script src="https://pl30536105.effectivecpmnetwork.com/ef/7b/9e/ef7b9e014ba920eb50f85d0aae39bba5.js"></script>
 
     <script>
         const SUPABASE_URL = "https://hvivrmdygytttdlapjbi.supabase.co"; 
@@ -529,13 +579,20 @@
         }
 
         function navegarParaAba(alvo) {
-            document.getElementById('screen-home').classList.remove('active'); document.getElementById('screen-search').classList.remove('active');
-            document.getElementById('screen-mylist').classList.remove('active'); document.getElementById('screen-perfil').classList.remove('active');
+            document.getElementById('screen-home').classList.remove('active'); 
+            document.getElementById('screen-search').classList.remove('active');
+            document.getElementById('screen-mylist').classList.remove('active'); 
+            document.getElementById('screen-perfil').classList.remove('active');
+            document.getElementById('screen-faq').classList.remove('active');
+
             if(alvo === 'home') document.getElementById('screen-home').style.display = 'flex'; else document.getElementById('screen-home').style.display = 'none';
             if(alvo !== 'home') document.getElementById(`screen-${alvo}`).classList.add('active');
+            
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             const activeNav = document.getElementById(`nav-${alvo}`); if(activeNav) activeNav.classList.add('active');
         }
+
+        function abrirFAQ() { navegarParaAba('faq'); }
 
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
@@ -634,7 +691,6 @@
             document.getElementById('missionStatusText').innerText = `${videosAssistidosHoje} / 10 Filmes`;
         }
 
-        // SISTEMA DE TRAVA DUPLA (CACHE + BANCO DE DADOS)
         function verificarStatusMiniGames() {
             const agora = new Date();
             
